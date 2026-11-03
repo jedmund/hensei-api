@@ -37,8 +37,8 @@ module WeaponSkills
         # has no family of its own: the gbf.wiki template for that boost alone
         # (Template:Weapon Skills/Might is ATK, Aegis is HP, Trium is DA and TA, …).
         BASE_FAMILIES = {
-          "atk" => "Might", "hp" => "Aegis", "da" => "Trium", "ta" => "Trium", "critical" => "Verity",
-          "enmity" => "Enmity", "stamina" => "Stamina", "heal_cap" => "Healing"
+          'atk' => 'Might', 'hp' => 'Aegis', 'da' => 'Trium', 'ta' => 'Trium', 'critical' => 'Verity',
+          'enmity' => 'Enmity', 'stamina' => 'Stamina', 'heal_cap' => 'Healing'
         }.freeze
 
         # The Optimus last resort (canonical_curve): which skill series may take it, and the
@@ -53,7 +53,7 @@ module WeaponSkills
           effects = WeaponSkillEffect.base_effects.order(:id).pluck(:modifier, :boost_type).map do |m, b|
             Effect.new(modifier: m, boost_type: b)
           end
-          curve_effects = WeaponSkillEffect.base_effects.where(scaling_kind: "weapon_skill_curve").distinct.pluck(:modifier)
+          curve_effects = WeaponSkillEffect.base_effects.where(scaling_kind: 'weapon_skill_curve').distinct.pluck(:modifier)
           new(data: data, effects: effects, curve_effect_modifiers: curve_effects)
         end
 
@@ -101,7 +101,7 @@ module WeaponSkills
         # any boost type but ATK, takes the normal (Optimus) curve, then normal_omega's
         # (LAST_RESORT_SERIES). It never takes a Taboo, Odious, omega-only or EX curve that
         # way. ATK keeps the strict rule. last_resort? tells the caller which path was taken.
-        def canonical_curve(boost_type:, size:, formula_type: "flat", series: nil)
+        def canonical_curve(boost_type:, size:, formula_type: 'flat', series: nil)
           tier = @curves_by_tier.fetch([boost_type, size, formula_type], [])
           pick(tier, boost_type, SERIES_FALLBACK.fetch(series, [series])) ||
             (last_resort_allowed?(boost_type, series) && pick(tier, boost_type, LAST_RESORT_SERIES)) ||
@@ -145,7 +145,7 @@ module WeaponSkills
         end
 
         def last_resort_allowed?(boost_type, series)
-          boost_type != "atk" && LAST_RESORT_FOR.include?(series)
+          boost_type != 'atk' && LAST_RESORT_FOR.include?(series)
         end
 
         def series_matched(group, compatible)
@@ -153,7 +153,7 @@ module WeaponSkills
           return matched if matched.any?
 
           lone = group.map(&:series).uniq
-          lone.size == 1 && lone.first != "normal_omega" ? group : []
+          lone.size == 1 && lone.first != 'normal_omega' ? group : []
         end
       end
     end

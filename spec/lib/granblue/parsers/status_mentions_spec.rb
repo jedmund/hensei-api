@@ -25,7 +25,7 @@ RSpec.describe Granblue::Parsers::StatusMentions do
       .to eq([['ATK Up', 'buff'], ['Overheated', 'debuff']])
   end
 
-  it "reads a level raised on a foe as a debuff" do
+  it 'reads a level raised on a foe as a debuff' do
     expect(votes("Light damage to a foe.<br />Raise foe's {{status|Tune}} lvl by 1.")).to eq([%w[Tune debuff]])
   end
 
@@ -55,7 +55,7 @@ RSpec.describe Granblue::Parsers::StatusMentions do
   end
 
   it 'says how the text uses each mention' do
-    text = "Gain {{status|A}}. Self-inflict {{status|B}}. Inflict {{status|C}}. " \
+    text = 'Gain {{status|A}}. Self-inflict {{status|B}}. Inflict {{status|C}}. ' \
            "('''When {{status|D}} is in effect:''' …)"
     kinds = described_class.in(text).map(&:kind)
     expect(kinds).to eq(%w[gain self_inflict inflict condition])

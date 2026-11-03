@@ -8,7 +8,7 @@ module WeaponSkills
   # WEAPON_SKILL_BUILD: "off" (old writers only), "shadow" (build, diff, roll back) or
   # "write" (the build owns generated rows). Read here and nowhere else.
   def self.build_mode
-    mode = ENV.fetch("WEAPON_SKILL_BUILD", "off").to_s.strip.downcase
-    BUILD_MODES.include?(mode) ? mode : "off"
+    mode = ENV.fetch('WEAPON_SKILL_BUILD', 'off').to_s.strip.downcase
+    BUILD_MODES.include?(mode) ? mode : 'off'
   end
 end

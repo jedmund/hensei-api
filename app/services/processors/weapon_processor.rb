@@ -464,7 +464,7 @@ module Processors
 
       # Primary: reverse-lookup via element_variant_ids JSONB
       weapon = Weapon.where(
-        "EXISTS (SELECT 1 FROM jsonb_each_text(element_variant_ids) AS kv WHERE kv.value = ?)",
+        'EXISTS (SELECT 1 FROM jsonb_each_text(element_variant_ids) AS kv WHERE kv.value = ?)',
         weapon_id
       ).first
       if weapon

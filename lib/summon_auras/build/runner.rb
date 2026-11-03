@@ -42,15 +42,15 @@ module SummonAuras
       #           next deploy, and the deploy carries on.
       def self.deploy(mode: SummonAuras.build_mode, io: $stdout)
         case mode
-        when "shadow"
+        when 'shadow'
           begin
-            new(mode: "shadow", diff_limit: 50, io: io).call
+            new(mode: 'shadow', diff_limit: 50, io: io).call
           rescue StandardError => e
             io.puts "build_summon_auras (shadow) failed; the deploy continues: #{e.class}: #{e.message}"
             nil
           end
-        when "write"
-          summary = new(mode: "write", io: io).call
+        when 'write'
+          summary = new(mode: 'write', io: io).call
           io.puts "build_summon_auras (write): #{summary.failed} summons failed and kept their existing rows" if summary.failed.positive?
           summary
         end
@@ -72,7 +72,7 @@ module SummonAuras
         @summary = Summary.new(mode: @mode, in_scope: 0, stale: 0, built: 0, failed: 0, errors: [], no_source: 0, empty: 0,
                                counts: Writer::Report.zero, results: [])
 
-        if @mode == "write"
+        if @mode == 'write'
           run
         else
           ActiveRecord::Base.transaction do
@@ -82,7 +82,7 @@ module SummonAuras
         end
 
         @summary.seconds = Process.clock_gettime(Process::CLOCK_MONOTONIC) - started
-        print_changes if @mode == "shadow"
+        print_changes if @mode == 'shadow'
         @io.puts summary_line
         @summary
       end
@@ -102,8 +102,8 @@ module SummonAuras
 
       # → [[summon id, fingerprint]] for the stale summons, from the sources' stored sha256.
       def targets
-        wiki = Source.select(1).where(owner_type: Summon.polymorphic_name, kind: "wiki_raw", key: "")
-                     .where("sources.owner_id = summons.id")
+        wiki = Source.select(1).where(owner_type: Summon.polymorphic_name, kind: 'wiki_raw', key: '')
+                     .where('sources.owner_id = summons.id')
         rows = scope.pluck(:id, :granblue_id, Arel.sql("NOT EXISTS (#{wiki.to_sql})"), :summon_aura_build_fingerprint)
         report_unknown_ids(rows.map(&:second))
         @summary.in_scope = rows.size
@@ -136,27 +136,27 @@ module SummonAuras
         # surrounding (shadow) transaction usable.
         ActiveRecord::Base.transaction(requires_new: true) do
           report = Writer.call(summon.granblue_id, records)
-          summon.update_columns(summon_aura_build_fingerprint: fingerprint) if @mode == "write"
+          summon.update_columns(summon_aura_build_fingerprint: fingerprint) if @mode == 'write'
         end
         @summary.counts.merge!(report)
         @summary.built += 1
-        @summary.results << Result.new(summon: summon, status: "built", report: report)
+        @summary.results << Result.new(summon: summon, status: 'built', report: report)
       rescue StandardError => e
         @summary.failed += 1
         @summary.errors << [summon.granblue_id, e]
-        @summary.results << Result.new(summon: summon, status: "failed", error: e)
+        @summary.results << Result.new(summon: summon, status: 'failed', error: e)
         @io.puts "#{label(summon)}: #{e.class}: #{e.message.lines.first&.strip}"
       end
 
       def no_source(summon)
         @summary.no_source += 1
-        @summary.results << Result.new(summon: summon, status: "no_source")
+        @summary.results << Result.new(summon: summon, status: 'no_source')
         @io.puts "#{label(summon)}: no wiki_raw; kept its existing auras"
       end
 
       def empty(summon)
         @summary.empty += 1
-        @summary.results << Result.new(summon: summon, status: "empty")
+        @summary.results << Result.new(summon: summon, status: 'empty')
         @io.puts "#{label(summon)}: the build made no auras; kept its existing auras"
       end
 

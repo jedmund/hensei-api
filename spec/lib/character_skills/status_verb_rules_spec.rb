@@ -69,7 +69,7 @@ RSpec.describe CharacterSkills::StatusVerbRules do
     expect(rule('If successful, inflict {{status|Paralyzed}}.')).to eq('inflict')
     expect(rule('If successful, all allies gain {{status|Shield}}.')).to eq('gain')
     expect(rule('Upon dodging, gain {{status|Charged}} next turn.')).to eq('gain')
-    expect(rule("When a foe has {{status|Beguile}} at end of turn: …")).to eq('condition')
+    expect(rule('When a foe has {{status|Beguile}} at end of turn: …')).to eq('condition')
   end
 
   it 'keeps the earlier rules: self-inflict, inflict, gain, field' do

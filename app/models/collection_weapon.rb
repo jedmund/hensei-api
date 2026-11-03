@@ -58,7 +58,7 @@ class CollectionWeapon < ApplicationRecord
   scope :transcended, -> { where('transcendence_step > 0') }
   scope :with_awakening, -> { where.not(awakening_id: nil) }
   scope :by_name, ->(query) {
-    joins(:weapon).where("weapons.name_en ILIKE :q OR weapons.name_jp ILIKE :q", q: "%#{sanitize_sql_like(query)}%")
+    joins(:weapon).where('weapons.name_en ILIKE :q OR weapons.name_jp ILIKE :q', q: "%#{sanitize_sql_like(query)}%")
   }
 
   scope :sorted_by, ->(sort_key, locale = 'en') {
@@ -100,7 +100,7 @@ class CollectionWeapon < ApplicationRecord
 
     # Validate weapon_key4 is only on Opus/Draconic weapons
     if weapon_key4.present? && !weapon.opus_or_draconic?
-      errors.add(:weapon_key4, "can only be set on Opus or Draconic weapons")
+      errors.add(:weapon_key4, 'can only be set on Opus or Draconic weapons')
     end
 
     weapon_keys.each do |key|
@@ -112,13 +112,13 @@ class CollectionWeapon < ApplicationRecord
     # Check for duplicate keys
     key_ids = [weapon_key1_id, weapon_key2_id, weapon_key3_id, weapon_key4_id].compact
     if key_ids.length != key_ids.uniq.length
-      errors.add(:weapon_keys, "cannot have duplicate keys")
+      errors.add(:weapon_keys, 'cannot have duplicate keys')
     end
 
     # Check for duplicate slots
     slots = weapon_keys.map(&:slot)
     if slots.length != slots.uniq.length
-      errors.add(:weapon_keys, "cannot have multiple keys for the same slot")
+      errors.add(:weapon_keys, 'cannot have multiple keys for the same slot')
     end
   end
 
@@ -126,18 +126,18 @@ class CollectionWeapon < ApplicationRecord
     # Befoulment: must have both modifier and strength
     if (befoulment_modifier.present? && befoulment_strength.blank?) ||
        (befoulment_modifier.blank? && befoulment_strength.present?)
-      errors.add(:base, "Befoulment must have both modifier and strength")
+      errors.add(:base, 'Befoulment must have both modifier and strength')
     end
 
     # Validate category is 'befoulment'
     if befoulment_modifier.present? && befoulment_modifier.category != 'befoulment'
-      errors.add(:befoulment_modifier, "must be a befoulment modifier")
+      errors.add(:befoulment_modifier, 'must be a befoulment modifier')
     end
 
     # Exorcism level only makes sense with befoulment or befoulment-capable weapons
     if exorcism_level.present? && exorcism_level > 0 && befoulment_modifier.blank? &&
        weapon_augment_type != 'befoulment'
-      errors.add(:exorcism_level, "cannot be set without a befoulment")
+      errors.add(:exorcism_level, 'cannot be set without a befoulment')
     end
   end
 
@@ -145,7 +145,7 @@ class CollectionWeapon < ApplicationRecord
     return unless element.present? && weapon.present?
 
     unless weapon_element_changeable?
-      errors.add(:element, "can only be set on element-changeable weapons")
+      errors.add(:element, 'can only be set on element-changeable weapons')
     end
   end
 
@@ -153,13 +153,13 @@ class CollectionWeapon < ApplicationRecord
     return unless awakening.present?
 
     unless awakening.object_type == 'Weapon'
-      errors.add(:awakening, "must be a weapon awakening")
+      errors.add(:awakening, 'must be a weapon awakening')
     end
   end
 
   def validate_awakening_level
     if awakening_level.present? && awakening_level > 1 && awakening_id.blank?
-      errors.add(:awakening_level, "cannot be set without an awakening")
+      errors.add(:awakening_level, 'cannot be set without an awakening')
     end
   end
 
@@ -172,7 +172,7 @@ class CollectionWeapon < ApplicationRecord
 
     # Some weapons might not support transcendence
     if weapon.present? && !weapon.transcendence
-      errors.add(:transcendence_step, "not available for this weapon") if transcendence_step > 0
+      errors.add(:transcendence_step, 'not available for this weapon') if transcendence_step > 0
     end
   end
 

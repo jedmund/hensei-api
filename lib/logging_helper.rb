@@ -18,7 +18,7 @@ module LoggingHelper
   end
 
   def log_divider(character = '+', leading_newline = true, trailing_newlines = 1)
-    output = ""
+    output = ''
     output += "\n" if leading_newline
     output += character * 60
     output += "\n" * trailing_newlines

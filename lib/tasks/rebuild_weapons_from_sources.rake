@@ -19,18 +19,18 @@ namespace :granblue do
   DESC
   task rebuild_weapons_from_sources: :environment do
     ActiveRecord::Base.logger = nil
-    groups = ENV.fetch("group", "misrouted,skillless").split(",").map(&:strip)
-    ids = ENV["ids"].presence&.split(",")&.map(&:strip)
+    groups = ENV.fetch('group', 'misrouted,skillless').split(',').map(&:strip)
+    ids = ENV['ids'].presence&.split(',')&.map(&:strip)
 
     english_s1_desc = '(^|\n)\|[[:space:]]*s1_desc[[:space:]]*=' # "|jps1_desc=" doesn't match
     scopes = {
-      "misrouted" => lambda {
+      'misrouted' => lambda {
         pages = Weapon.owned_sources(:wiki_raw)
-                      .where("body LIKE ? AND body ILIKE ? AND body !~ ?", "%{{Weapon/Common/%", "%s1_desc=%",
+                      .where('body LIKE ? AND body ILIKE ? AND body !~ ?', '%{{Weapon/Common/%', '%s1_desc=%',
                              english_s1_desc)
         Weapon.where(id: pages.select(:owner_id))
       },
-      "skillless" => lambda {
+      'skillless' => lambda {
         Weapon.with_source(:wiki_raw).left_joins(:weapon_skills).where(weapon_skills: { id: nil }, rarity: 3)
       }
     }
@@ -38,9 +38,9 @@ namespace :granblue do
     abort "unknown group=#{unknown.join(',')} (#{scopes.keys.join(', ')})" if unknown.any? && ids.nil?
 
     ids ||= groups.flat_map { |g| scopes.fetch(g).call.pluck(:granblue_id) }.uniq
-    abort "no weapons selected" if ids.empty?
+    abort 'no weapons selected' if ids.empty?
 
-    summary = WeaponSkills::Build::Runner.new(mode: ENV["write"] == "true" ? "write" : "shadow", ids: ids,
+    summary = WeaponSkills::Build::Runner.new(mode: ENV['write'] == 'true' ? 'write' : 'shadow', ids: ids,
                                               all: true).call
     exit(1) if summary.failed.positive?
   end

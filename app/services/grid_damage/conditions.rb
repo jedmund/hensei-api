@@ -16,50 +16,50 @@ module GridDamage
     # applies on a critical hit and the panel lists it only at Critical 100% (czpldM and
     # SMBKDB show it there; mBaLHl at 50% and xblyJu at 96% don't).
     def crit_gated?(condition)
-      condition.to_h["type"] == "critical_capped"
+      condition.to_h['type'] == 'critical_capped'
     end
 
     def met?(condition, state: {}, composition: {}, weapon: nil, grid_weapon: nil)
       return true if condition.blank?
 
-      gte = condition["gte"]
-      case condition["type"]
-      when "count_basis_gte"
+      gte = condition['gte']
+      case condition['type']
+      when 'count_basis_gte'
         return false unless GridComposition.valid_count_condition?(condition)
 
-        GridComposition.count_for_basis(condition["basis"], weapon: weapon, composition: composition) >= gte
-      when "same_id_count"      then composition.fetch(:id_counts, {}).fetch(weapon&.granblue_id, 0) >= gte
-      when "skill_type_count"   then composition[:skill_type_count].to_i >= gte
-      when "foe_debuff_count"   then state[:debuff_count].to_i >= gte
-      when "mc_crit_rate"       then state[:mc_crit_rate].to_i >= gte
-      when "skill_level"        then weapon&.max_skill_level.to_i >= gte
-      when "weapon_level"       then weapon&.max_level.to_i >= gte
+        GridComposition.count_for_basis(condition['basis'], weapon: weapon, composition: composition) >= gte
+      when 'same_id_count'      then composition.fetch(:id_counts, {}).fetch(weapon&.granblue_id, 0) >= gte
+      when 'skill_type_count'   then composition[:skill_type_count].to_i >= gte
+      when 'foe_debuff_count'   then state[:debuff_count].to_i >= gte
+      when 'mc_crit_rate'       then state[:mc_crit_rate].to_i >= gte
+      when 'skill_level'        then weapon&.max_skill_level.to_i >= gte
+      when 'weapon_level'       then weapon&.max_level.to_i >= gte
       # key-skill upgrades tied to the copy's transcendence (α Pendulum's lvl-240 DA/TA)
-      when "transcendence_step" then grid_weapon && grid_weapon.transcendence_step.to_i >= gte
+      when 'transcendence_step' then grid_weapon && grid_weapon.transcendence_step.to_i >= gte
       # key-skill values that scale with the COPY's skill level (telumas: Inferno 25→30 at SL20)
-      when "copy_skill_level"
+      when 'copy_skill_level'
         grid_weapon && weapon &&
           WeaponContributions.skill_level_for(weapon, grid_weapon) >= gte
       # Preemptive/Betrayal-family skills apply through the end of the named turn.
       # Missing turn state means the calculator's default panel state: turn 1.
-      when "turn_lte" then state.fetch(:turn, 1).to_i <= condition["lte"].to_i
+      when 'turn_lte' then state.fetch(:turn, 1).to_i <= condition['lte'].to_i
       # Ultima base skills / gauph stat keys boost "<weapon>-specialty allies" — on the
       # panel (the MC's view) they show only when the MC's job wields this weapon's type
       # (K4UydX: Rising Force hides Baculum Rubell and Gauph Strength on an Ultima Staff).
-      when "weapon_specialty"
+      when 'weapon_specialty'
         specialty = GridComposition::PROFICIENCY_NAME[weapon&.proficiency]
         specialty.present? && Array(composition[:mc_specialties]).include?(specialty)
       # epic weapons' "when all equipped weapons are different" (Absolute Equality)
-      when "all_weapons_unique"
+      when 'all_weapons_unique'
         counts = composition.fetch(:id_counts, {})
         counts.any? && counts.values.all? { |n| n <= 1 }
-      when "foe_element"        then state[:foe_element].to_s == condition["is"].to_s
-      when "foe_status"         then Array(state[:foe_statuses]).include?(condition["status"])
-      when "arcarum"            then !state[:arcarum].nil? && (!!state[:arcarum] == (condition["eq"] == true))
+      when 'foe_element'        then state[:foe_element].to_s == condition['is'].to_s
+      when 'foe_status'         then Array(state[:foe_statuses]).include?(condition['status'])
+      when 'arcarum'            then !state[:arcarum].nil? && (!!state[:arcarum] == (condition['eq'] == true))
       # Met here; the panel gates it on the grid's Critical total, which only exists once
       # every contribution is aggregated (Calculator#drop_uncapped_crit_gated).
-      when "critical_capped" then true
-      when "boost_level"
+      when 'critical_capped' then true
+      when 'boost_level'
         # self-referential: needs the per-frame enhancement totals, supplied by the
         # calculator's 2nd pass via state[:enhancements] (false in the 1st pass).
         enh = state[:enhancements] || {}

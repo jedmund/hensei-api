@@ -422,7 +422,7 @@ namespace :granblue do
 
       jp_display = has_jp_raw.nil? ? 'n/a' : "#{has_jp_raw}/#{total}"
 
-      puts ""
+      puts ''
       puts "#{model.name} (#{total} total):"
       puts "  wiki_raw  (EN template text): #{has_en_raw}/#{total}" \
            "#{'  <-- MISSING' if has_en_raw < total}"
@@ -433,7 +433,7 @@ namespace :granblue do
 
       next unless has_jp_raw && has_jp_raw < total && has_ja.positive?
 
-      puts ""
+      puts ''
       puts "  To fetch missing JP wiki HTML for #{has_ja - has_jp_raw} records:"
       puts "    rake granblue:download_jp_wiki model=#{model.name.downcase}"
     end

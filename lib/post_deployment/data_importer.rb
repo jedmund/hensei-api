@@ -59,7 +59,7 @@ module PostDeployment
       force_text = @force ? ' (Force mode)' : ''
 
       if @verbose
-        log_header("#{mode_text}#{force_text}: #{filename}", "-")
+        log_header("#{mode_text}#{force_text}: #{filename}", '-')
         puts "\n"
       end
 
@@ -138,7 +138,7 @@ module PostDeployment
     def print_summary
       return if @processed_files.empty?
 
-      log_header("Processed files:")
+      log_header('Processed files:')
       puts "\n"
       @processed_files.each { |file| log_step "  • #{file}" }
     end

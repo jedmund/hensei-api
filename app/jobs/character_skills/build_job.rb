@@ -27,9 +27,9 @@ module CharacterSkills
     end
 
     def self.mode_for(character)
-      return "write" if CharacterSkills.build_mode == "write"
+      return 'write' if CharacterSkills.build_mode == 'write'
 
-      CharacterSkill.exists?(character_id: character.id) ? "shadow" : "write"
+      CharacterSkill.exists?(character_id: character.id) ? 'shadow' : 'write'
     end
 
     private
@@ -39,7 +39,7 @@ module CharacterSkills
       log = StringIO.new
       summary = Build::Runner.new(mode: mode, characters: [character], io: log).call
       Rails.logger.info "[CHARACTER_SKILLS] #{character.granblue_id} (#{mode}): #{log.string.strip.lines.last&.strip}"
-      log.string.lines.each { |line| Rails.logger.info "[CHARACTER_SKILLS]   #{line.strip}" } if mode == "shadow"
+      log.string.lines.each { |line| Rails.logger.info "[CHARACTER_SKILLS]   #{line.strip}" } if mode == 'shadow'
       summary
     end
   end

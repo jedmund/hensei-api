@@ -37,8 +37,8 @@ module WeaponSkills
                 registry: Rows::Registry.from_database)
       Context.new(
         store: store, overlay: overlay, view: Granblue::CurationSnapshot::View.new(overlay), registry: registry,
-        ops: overlay.entries("ops").group_by { |op| op["weapon"].to_s },
-        overrides: overlay.entries("versions").to_h { |e| [[e["weapon"].to_s, e["skill"].to_s, e["ordinal"].to_i], e] }
+        ops: overlay.entries('ops').group_by { |op| op['weapon'].to_s },
+        overrides: overlay.entries('versions').to_h { |e| [[e['weapon'].to_s, e['skill'].to_s, e['ordinal'].to_i], e] }
       )
     end
 
@@ -48,7 +48,7 @@ module WeaponSkills
         Structure.call(weapon, store: context.store)
       end
       versions = StructuralOps.apply(weapon.granblue_id, versions, context.ops_for(weapon.granblue_id))
-      wiki_raw = stored_body(context.store, "wiki_raw", weapon.wiki_en).to_s
+      wiki_raw = stored_body(context.store, 'wiki_raw', weapon.wiki_en).to_s
       notes = notes_for(context.store, weapon)
 
       built = versions.sort_by(&:identity).map do |version|
@@ -75,15 +75,15 @@ module WeaponSkills
       registry = context.registry
       resolved = with(version,
                       skill_modifier: resolved_modifier(override, tier(version.skill_modifier, version, registry)),
-                      skill_series: override["series_override"].presence || derived_series,
-                      skill_size: override["size_override"].presence || version.skill_size)
+                      skill_series: override['series_override'].presence || derived_series,
+                      skill_size: override['size_override'].presence || version.skill_size)
 
       result = Rows.compile(resolved, text: text, registry: registry, curation: context.view, notes: notes)
       filled = result.version
-      filled = with(filled, skill_modifier: tier(filled.skill_modifier, filled, registry)) if override["modifier_override"].blank?
+      filled = with(filled, skill_modifier: tier(filled.skill_modifier, filled, registry)) if override['modifier_override'].blank?
       # Where the overlay overrides the classification, the stored derived columns are what
       # the family backfill gives without the override, as the extractor stored them.
-      derived = if override.slice("modifier_override", "size_override").values.any?(&:present?)
+      derived = if override.slice('modifier_override', 'size_override').values.any?(&:present?)
                   unpinned = unpinned_backfill(with(version, skill_series: derived_series), text, registry)
                   with(unpinned, skill_modifier: tier(unpinned.skill_modifier, unpinned, registry))
                 else
@@ -101,7 +101,7 @@ module WeaponSkills
     # A skill named "… II" takes its family's II tier when the canonical data has one
     # (Voltage II: 8% per weapon against Voltage's 4%, Template:Weapon Skills/Voltage).
     def tier(modifier, version, registry)
-      return modifier if modifier.blank? || modifier.end_with?(" II") || !version.skill_name_en.to_s.end_with?(" II")
+      return modifier if modifier.blank? || modifier.end_with?(' II') || !version.skill_name_en.to_s.end_with?(' II')
 
       tiered = "#{modifier} II"
       registry.canonical_family?(tiered) ? tiered : modifier
@@ -116,8 +116,8 @@ module WeaponSkills
 
     # WeaponSkillVersion#resolved_modifier, from the overlay instead of the row.
     def resolved_modifier(override, derived)
-      pinned = override["modifier_override"]
-      return nil if pinned == "none"
+      pinned = override['modifier_override']
+      return nil if pinned == 'none'
 
       pinned.presence || derived
     end
@@ -141,7 +141,7 @@ module WeaponSkills
 
     # Gameplay Notes from the weapon's stored expansion, for every weapon that has one.
     def notes_for(store, weapon)
-      expanded = stored_body(store, "expanded", weapon.wiki_en)
+      expanded = stored_body(store, 'expanded', weapon.wiki_en)
       expanded && Rows::GameplayNotes.parse(expanded)
     end
 

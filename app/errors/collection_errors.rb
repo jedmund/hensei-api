@@ -33,7 +33,7 @@ module CollectionErrors
   # Raised when trying to add a duplicate character to collection
   class DuplicateCharacter < CollectionError
     def initialize(character_id = nil)
-      message = character_id ? "Character #{character_id} already exists in your collection" : "Character already exists in your collection"
+      message = character_id ? "Character #{character_id} already exists in your collection" : 'Character already exists in your collection'
       super(message, http_status: :conflict)
     end
   end
@@ -41,7 +41,7 @@ module CollectionErrors
   # Raised when trying to add a duplicate job accessory to collection
   class DuplicateJobAccessory < CollectionError
     def initialize(accessory_id = nil)
-      message = accessory_id ? "Job accessory #{accessory_id} already exists in your collection" : "Job accessory already exists in your collection"
+      message = accessory_id ? "Job accessory #{accessory_id} already exists in your collection" : 'Job accessory already exists in your collection'
       super(message, http_status: :conflict)
     end
   end

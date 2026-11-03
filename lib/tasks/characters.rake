@@ -103,7 +103,7 @@ namespace :characters do
     end
 
     puts "Updated: #{updated}, Skipped: #{skipped}"
-    puts "(TEST MODE - no changes made)" if test_mode
+    puts '(TEST MODE - no changes made)' if test_mode
   end
   desc 'Export characters to CSV for season/series mapping'
   task export_for_mapping: :environment do
@@ -136,7 +136,7 @@ namespace :characters do
   task :import_season_series, [:csv_path] => :environment do |_t, args|
     csv_path = args[:csv_path]
     unless csv_path && File.exist?(csv_path)
-      puts "Usage: bundle exec rake characters:import_season_series[path/to/curated.csv]"
+      puts 'Usage: bundle exec rake characters:import_season_series[path/to/curated.csv]'
       puts "Error: CSV file not found at #{csv_path}"
       exit 1
     end
@@ -181,6 +181,6 @@ namespace :characters do
 
     puts "Updated: #{updated}, Skipped: #{skipped}, Errors: #{errors.count}"
     errors.each { |e| puts "  - #{e}" } if errors.any?
-    puts "(TEST MODE - no changes made)" if test_mode
+    puts '(TEST MODE - no changes made)' if test_mode
   end
 end

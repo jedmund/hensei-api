@@ -13,17 +13,17 @@ module Granblue
     class GameplayNotesParser
       # Prose phrases AND table `data-label`s → boost_type. One map, reused for both.
       LABEL_TO_BOOST = {
-        "ex might" => "atk", "omega might" => "atk", "might" => "atk", "atk" => "atk",
-        "e. atk" => "e_atk", "e.atk" => "e_atk", "elemental atk" => "e_atk",
-        "stamina" => "stamina", "enmity" => "enmity",
-        "da rate" => "da", "da" => "da", "double attack" => "da", "double attack rate" => "da",
-        "ta rate" => "ta", "ta" => "ta", "triple attack" => "ta", "triple attack rate" => "ta",
-        "na dmg cap" => "na_dmg_cap", "normal attack damage cap" => "na_dmg_cap",
-        "critical" => "critical", "critical hit rate" => "critical",
-        "c.a. dmg" => "ca_dmg", "c.a. specs" => "ca_dmg", "charge attack dmg" => "ca_dmg",
-        "c.a. dmg cap" => "ca_dmg_cap", "dmg cap" => "dmg_cap", "damage cap" => "dmg_cap",
-        "skill dmg cap" => "skill_dmg_cap", "hp" => "hp", "def" => "def",
-        "dmg amp" => "dmg_amp", "crit amp" => "crit_amp"
+        'ex might' => 'atk', 'omega might' => 'atk', 'might' => 'atk', 'atk' => 'atk',
+        'e. atk' => 'e_atk', 'e.atk' => 'e_atk', 'elemental atk' => 'e_atk',
+        'stamina' => 'stamina', 'enmity' => 'enmity',
+        'da rate' => 'da', 'da' => 'da', 'double attack' => 'da', 'double attack rate' => 'da',
+        'ta rate' => 'ta', 'ta' => 'ta', 'triple attack' => 'ta', 'triple attack rate' => 'ta',
+        'na dmg cap' => 'na_dmg_cap', 'normal attack damage cap' => 'na_dmg_cap',
+        'critical' => 'critical', 'critical hit rate' => 'critical',
+        'c.a. dmg' => 'ca_dmg', 'c.a. specs' => 'ca_dmg', 'charge attack dmg' => 'ca_dmg',
+        'c.a. dmg cap' => 'ca_dmg_cap', 'dmg cap' => 'dmg_cap', 'damage cap' => 'dmg_cap',
+        'skill dmg cap' => 'skill_dmg_cap', 'hp' => 'hp', 'def' => 'def',
+        'dmg amp' => 'dmg_amp', 'crit amp' => 'crit_amp'
       }.freeze
 
       # Skill modifiers whose EX ATK occupies the secondary "(Sp.)" multiplier slot (EX Might Sp.)
@@ -59,7 +59,7 @@ module Granblue
       def self.per_count_clauses(skill, body)
         body.scan(/(\d+(?:\.\d+)?)%\s*boost to\s*(.+?)\s*\(Max:\s*(\d+(?:\.\d+)?)%\).*?per\s*(?:\[\[[^\]|]*\|)?([A-Za-z][A-Za-z .]*?)\b/im).filter_map do |val, stat, max, unit| # rubocop:disable Layout/LineLength
           bt = boost_for(stat) or next
-          bt = "ex_atk_sp" if bt == "atk" && SP_ATK_MODIFIERS.any? { |re| skill =~ re }
+          bt = 'ex_atk_sp' if bt == 'atk' && SP_ATK_MODIFIERS.any? { |re| skill =~ re }
           { boost_type: bt, scaling: :per_count, value: val.to_f, max: max.to_f,
             count_unit: unit.strip.downcase, shared_cap: shared_cap_of(body) }
         end
@@ -89,7 +89,7 @@ module Granblue
         table = body[/\{\|.*?\|\}/m] or return []
         return [] unless /per Turn/i.match?(table)
 
-        bt = boost_for(table.scan(/data-label="([^"]+)"/).flatten.first.to_s) || "atk"
+        bt = boost_for(table.scan(/data-label="([^"]+)"/).flatten.first.to_s) || 'atk'
         rows = data_rows(table).select { |c| c.first.to_s =~ /\A\d+\z/ } # Skill Level rows
         by_level = rows.to_h { |c| [c.first.to_i, pct(c[1])] }.compact
         return [] if by_level.empty?
@@ -132,30 +132,30 @@ module Granblue
       # (series inferred from the ATK label: EX Might → ex, Omega Might → omega, Might → normal).
       # "Amplify <target> DMG by N%" targets → amp boost keys.
       AMPLIFY_TARGETS = [
-        [/normal attack|n\.?a\.?/i, "na_amp"],
-        [/c\.?a\.?|charge attack/i, "ca_amp"],
-        [/skill/i, "skill_amp"]
+        [/normal attack|n\.?a\.?/i, 'na_amp'],
+        [/c\.?a\.?|charge attack/i, 'ca_amp'],
+        [/skill/i, 'skill_amp']
       ].freeze
 
       def self.inline_boosts(text)
         labeled = text.to_s
                       # {{atkmod|ATK|m=ex}} → "EX Might" (carries the boost AND the frame)
-                      .gsub(/\{\{\s*atkmod\s*\|[^|}]*\|?\s*m\s*=\s*ex[^}]*\}\}/i, " EX Might ")
-                      .gsub(/\{\{\s*atkmod\s*\|[^|}]*\|?\s*m\s*=\s*omega[^}]*\}\}/i, " Omega Might ")
-                      .gsub(/\{\{\s*atkmod\s*\|[^}]*\}\}/i, " Might ")
+                      .gsub(/\{\{\s*atkmod\s*\|[^|}]*\|?\s*m\s*=\s*ex[^}]*\}\}/i, ' EX Might ')
+                      .gsub(/\{\{\s*atkmod\s*\|[^|}]*\|?\s*m\s*=\s*omega[^}]*\}\}/i, ' Omega Might ')
+                      .gsub(/\{\{\s*atkmod\s*\|[^}]*\}\}/i, ' Might ')
                       # {{tt|Amplify|'''Stacking:''' Special}} → "Amplify(Sp.)" — the tooltip marks
                       # the panel's second-stack "(Sp.)" instance (e.g. Extremity's N.A. Amp (Sp.)).
                       .gsub(/\{\{\s*tt\s*\|\s*([^|}]+?)\s*\|[^}]*Special[^}]*\}\}/i, ' \1(Sp.) ')
                       .gsub(/\{\{\s*tt\s*\|\s*([^|}]+?)\s*\|[^}]*\}\}/i, ' \1 ')
                       .gsub(%r{<span[^>]*data-label="([^"]+)"[^>]*>(?:\s*</span>)?}i, ' \1 ')
-                      .gsub(/<[^>]+>/, " ")
+                      .gsub(/<[^>]+>/, ' ')
         boosts = labeled.scan(%r{(\d+(?:\.\d+)?)%\s*boost to\s*([A-Za-z.][A-Za-z. ]*?)(?=\s*\d|,|\.|/|\z)}).filter_map do |value, stat|
           bt = boost_for(stat) or next
 
           series = case stat.downcase
-                   when /\bex\b/ then "ex"
-                   when /omega/ then "omega"
-                   when /\bmight\b/ then "normal"
+                   when /\bex\b/ then 'ex'
+                   when /omega/ then 'omega'
+                   when /\bmight\b/ then 'normal'
                    end
           { boost_type: bt, value: value.to_f, series: series }
         end
@@ -165,43 +165,43 @@ module Granblue
       # "Amplify normal attack DMG by 10%" ((Sp.)-stacked or not) → amp boost entries.
       def self.amplify_boosts(labeled)
         labeled.scan(/Amplify(\(Sp\.\))?\s+([A-Za-z. ]+?)\s+by\s+(\d+(?:\.\d+)?)%/i).filter_map do |sp, target, value|
-          base = AMPLIFY_TARGETS.find { |re, _| target =~ re }&.last || "dmg_amp"
+          base = AMPLIFY_TARGETS.find { |re, _| target =~ re }&.last || 'dmg_amp'
           { boost_type: sp ? "#{base}_sp" : base, value: value.to_f, series: nil }
         end
       end
 
       def self.boost_for(text)
-        key = clean(text).downcase.sub(/\s*boost.*$/, "").strip
-        LABEL_TO_BOOST[key] || LABEL_TO_BOOST[key.sub(/^all allies'?\s*/, "")]
+        key = clean(text).downcase.sub(/\s*boost.*$/, '').strip
+        LABEL_TO_BOOST[key] || LABEL_TO_BOOST[key.sub(/^all allies'?\s*/, '')]
       end
 
       def self.frame_of(body)
-        body[/Multiplier:[^.<]*?\b(Normal|EX|Omega|Od)\b/i, 1]&.downcase&.sub("od", "odious")
+        body[/Multiplier:[^.<]*?\b(Normal|EX|Omega|Od)\b/i, 1]&.downcase&.sub('od', 'odious')
       end
 
       # Who the section's boosts reach: the notes say so when it isn't only the weapon's
       # element ("Affects allies of any element.": Voltage, Grand Epic, the Ultimate
       # specialty skills).
       def self.applies_to_of(body)
-        /allies of any element/i.match?(body) ? "all_allies" : "element_allies"
+        /allies of any element/i.match?(body) ? 'all_allies' : 'element_allies'
       end
 
       def self.shared_cap_of(body)
         return nil unless /share the same cap/i.match?(body)
 
-        names = body.scan(/''([A-Za-z .]+?)''/).flatten.map { |n| n.strip.downcase.gsub(/[^a-z]+/, "_") }
-        names.reject(&:empty?).uniq.join("_").presence
+        names = body.scan(/''([A-Za-z .]+?)''/).flatten.map { |n| n.strip.downcase.gsub(/[^a-z]+/, '_') }
+        names.reject(&:empty?).uniq.join('_').presence
       end
 
       def self.pct(cell)
-        return nil if cell.nil? || cell.strip == "-"
+        return nil if cell.nil? || cell.strip == '-'
 
         cell[/\d+(?:\.\d+)?/]&.to_f
       end
 
       def self.clean(html)
-        html.to_s.gsub(/<[^>]+>/, "").gsub(/\[\[[^\]|]*\|?([^\]]*)\]\]/, '\1')
-            .gsub(%r{<ref[^>]*>.*?</ref>}m, "").gsub(/'''|''|[{}!]/, "").gsub(/\s+/, " ").strip
+        html.to_s.gsub(/<[^>]+>/, '').gsub(/\[\[[^\]|]*\|?([^\]]*)\]\]/, '\1')
+            .gsub(%r{<ref[^>]*>.*?</ref>}m, '').gsub(/'''|''|[{}!]/, '').gsub(/\s+/, ' ').strip
       end
 
       private_class_method :parse_section, :per_count_clauses, :specialty_clauses, :progression_clauses, :tier_clauses, :data_rows, :boost_for,

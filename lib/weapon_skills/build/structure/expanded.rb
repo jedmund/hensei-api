@@ -14,7 +14,7 @@ module WeaponSkills
                     |a\ (gate)\ to\ the\ summits
                     |(?:locked|sealed)\ within\ (ultima)/xi
         ROW = %r{<td class="skill-name"[^>]*>(.*?)</td>.*?<td class="skill-desc"[^>]*>(.*?)</td>}m
-        FRAME = { "normal" => "normal", "ex" => "ex", "omega" => "omega", "od" => "odious" }.freeze
+        FRAME = { 'normal' => 'normal', 'ex' => 'ex', 'omega' => 'omega', 'od' => 'odious' }.freeze
 
         module_function
 
@@ -35,7 +35,7 @@ module WeaponSkills
 
             desc_html = match[2]
             frame = desc_html[/Multiplier:[^.]*?\b(Normal|EX|Omega|Od)\b/i, 1]&.downcase
-            stripped = desc_html.gsub(/'*Multiplier:'*\s*(?:\[\[[^\]]*\]\]|[\w .-]+?)(?=[,.]|<|\z)/i, " ")
+            stripped = desc_html.gsub(/'*Multiplier:'*\s*(?:\[\[[^\]]*\]\]|[\w .-]+?)(?=[,.]|<|\z)/i, ' ')
             desc = clean(stripped)
             next if desc.blank?
 
@@ -45,7 +45,7 @@ module WeaponSkills
             end
 
             out[name] = { name: name, description: desc, series: FRAME[frame],
-                          key_type: alternate ? (key_type || "key") : key_type }
+                          key_type: alternate ? (key_type || 'key') : key_type }
           end
           out.values
         end
@@ -54,15 +54,15 @@ module WeaponSkills
           s = html.dup
           # Status icons expand to [[File:…|25px|link=X]] plus a hidden tooltip span; keeping
           # either garbles the text ("25px|link=BurnedBurnedHP is lowered…").
-          s.gsub!(%r{<span class="hr"></span>}i, "")
-          s.gsub!(%r{<span class="tooltiptext">.*?</span>}im, "")
-          s.gsub!(/\[\[(?:File|Image):[^\]]*\]\]/i, "")
-          s.gsub!(%r{<br\s*/?>}i, " / ")
+          s.gsub!(%r{<span class="hr"></span>}i, '')
+          s.gsub!(%r{<span class="tooltiptext">.*?</span>}im, '')
+          s.gsub!(/\[\[(?:File|Image):[^\]]*\]\]/i, '')
+          s.gsub!(%r{<br\s*/?>}i, ' / ')
           s.gsub!(/\[\[[^\]|]*\|([^\]]*)\]\]/, '\1')
           s.gsub!(/\[\[([^\]]*)\]\]/, '\1')
-          s.gsub!(/<[^>]+>/, "")
-          s.gsub!(/'''|''/, "")
-          s.gsub(/\s+/, " ").strip
+          s.gsub!(/<[^>]+>/, '')
+          s.gsub!(/'''|''/, '')
+          s.gsub(/\s+/, ' ').strip
         end
 
         def main_hand_only_description?(description)

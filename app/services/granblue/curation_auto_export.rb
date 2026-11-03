@@ -22,7 +22,7 @@ module Granblue
     module_function
 
     def enabled?
-      Rails.env.development? && ENV["CURATION_AUTO_EXPORT"] != "0"
+      Rails.env.development? && ENV['CURATION_AUTO_EXPORT'] != '0'
     end
 
     def mark_dirty!
@@ -40,7 +40,7 @@ module Granblue
       return unless enabled?
 
       drift = CurationSnapshot.drift
-      export!(drift) if drift.values_at("missing", "changed").any?(&:present?)
+      export!(drift) if drift.values_at('missing', 'changed').any?(&:present?)
     end
 
     def rake_bulk_task?(task_names)
@@ -54,10 +54,10 @@ module Granblue
     # exporting then would drop them from git.
     def export!(drift = CurationSnapshot.drift)
       LOCK.synchronize do
-        if drift["unapplied"].any?
+        if drift['unapplied'].any?
           Rails.logger.warn "[curation] not exporting: #{drift['unapplied'].size} snapshot rows are missing " \
-                            "from this database. Run bin/rails granblue:sync_weapon_skill_curation " \
-                            "(or remove them from data/weapon_skill_curation/ if you deleted them on purpose)."
+                            'from this database. Run bin/rails granblue:sync_weapon_skill_curation ' \
+                            '(or remove them from data/weapon_skill_curation/ if you deleted them on purpose).'
           return false
         end
 

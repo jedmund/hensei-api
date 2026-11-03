@@ -27,17 +27,17 @@ module GridDamage
       identity = identity_frame(weapon)
       return identity if identity
 
-      version.resolved_series.presence || "normal"
+      version.resolved_series.presence || 'normal'
     end
 
     def identity_frame(weapon)
       case weapon.weapon_series&.slug
-      when "dark-opus"
-        weapon.name_en.to_s.include?("Renunciation") ? "omega" : "normal"
-      when "draconic", "draconic-providence"
-        "ex"
-      when "bahamut"
-        "normal"
+      when 'dark-opus'
+        weapon.name_en.to_s.include?('Renunciation') ? 'omega' : 'normal'
+      when 'draconic', 'draconic-providence'
+        'ex'
+      when 'bahamut'
+        'normal'
       end
     end
   end

@@ -253,7 +253,7 @@ module Granblue
         %w[Fire Rock Shadow Ice Gale Silver Azure Amber Cloud Frost Light Terra]
       ).freeze
       PREEMPTIVE_BLADE_TAILS = Set.new(
-        ["Frost Blade", "Light Blade", "Shadow Blade", "Terra Blade"]
+        ['Frost Blade', 'Light Blade', 'Shadow Blade', 'Terra Blade']
       ).freeze
 
       # Modifiers that appear with element word suffixes (e.g. "Clawed Shadow" → "Clawed").

@@ -31,9 +31,9 @@ module WeaponSkills
     end
 
     def self.mode_for(weapon)
-      return "write" if WeaponSkills.build_mode == "write"
+      return 'write' if WeaponSkills.build_mode == 'write'
 
-      WeaponSkill.exists?(weapon_granblue_id: weapon.granblue_id) ? "shadow" : "write"
+      WeaponSkill.exists?(weapon_granblue_id: weapon.granblue_id) ? 'shadow' : 'write'
     end
 
     private
@@ -55,7 +55,7 @@ module WeaponSkills
       log = StringIO.new
       summary = Build::Runner.new(mode: mode, ids: [weapon.granblue_id], io: log, lock_wait: 0).call
       Rails.logger.info "[WEAPON_SKILLS] #{weapon.granblue_id} (#{mode}): #{log.string.strip.lines.last&.strip}"
-      log.string.lines.each { |line| Rails.logger.info "[WEAPON_SKILLS]   #{line.strip}" } if mode == "shadow"
+      log.string.lines.each { |line| Rails.logger.info "[WEAPON_SKILLS]   #{line.strip}" } if mode == 'shadow'
       summary
     end
   end

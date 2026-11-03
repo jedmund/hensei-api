@@ -10,7 +10,7 @@ module CharacterSkills
   # diff, roll back; never fails a deploy) or "write" (stale characters are rebuilt).
   # Read here and nowhere else.
   def self.build_mode
-    mode = ENV.fetch("CHARACTER_SKILL_BUILD", "off").to_s.strip.downcase
-    BUILD_MODES.include?(mode) ? mode : "off"
+    mode = ENV.fetch('CHARACTER_SKILL_BUILD', 'off').to_s.strip.downcase
+    BUILD_MODES.include?(mode) ? mode : 'off'
   end
 end

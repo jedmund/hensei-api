@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require Rails.root.join("lib/granblue/parsers/weapon_skill_parser")
+require Rails.root.join('lib/granblue/parsers/weapon_skill_parser')
 
 module Granblue
   module Extractors
@@ -29,7 +29,7 @@ module Granblue
         fields = parse_fields(wikitext)
         records = []
 
-        [["", "main"], ["sub", "sub"]].each do |prefix, slot|
+        [['', 'main'], ['sub', 'sub']].each do |prefix, slot|
           BASE_TIER.each do |n, uncap|
             txt = fields["#{prefix}aura#{n}"]
             rec = build(txt, slot: slot, uncap_level: uncap, transcendence_stage: 0,
@@ -91,7 +91,7 @@ module Granblue
         elsif clause =~ /boost to\s+(.+?)\s*\(max:\s*(\d+(?:\.\d+)?)%\)/i
           phrase = Regexp.last_match(1)
           value = Regexp.last_match(2).to_f
-          condition = "variable"
+          condition = 'variable'
         else
           phrase = clause
         end
@@ -111,42 +111,42 @@ module Granblue
 
       def classify(phrase, series:, summon_element:)
         p = phrase.downcase
-        if p.include?("weapon skill")
+        if p.include?('weapon skill')
           # Odious summons boost "Taboo <X>'s weapon skills" — the Odious frame, not Optimus.
-          return ["odious_frame", nil] if p.include?("taboo") || series == "odious"
-          return ["omega_frame", nil] if OMEGA_WORDS.any? { |w| p.include?(w) } || series == "magna"
-          return ["normal_frame", nil]
+          return ['odious_frame', nil] if p.include?('taboo') || series == 'odious'
+          return ['omega_frame', nil] if OMEGA_WORDS.any? { |w| p.include?(w) } || series == 'magna'
+          return ['normal_frame', nil]
         end
-        return ["normal_atk", nil] if p.include?("normal atk")
-        return ["omega_atk", nil] if p.include?("omega atk")
-        return ["multiattack", nil] if p.include?("multiattack")
+        return ['normal_atk', nil] if p.include?('normal atk')
+        return ['omega_atk', nil] if p.include?('omega atk')
+        return ['multiattack', nil] if p.include?('multiattack')
         # ATK boosts: the wiki writes "[element] Elemental ATK", "[element] ATK", or
         # "[element] Elemental attack" (varied phrasing) — all feed the Elemental
         # category. Guard against "charge attack" (CA) and "attack critical" (crit).
         # Element-less generic "ATK" is an ATK-up buff (target "atk"; flagged for panel
         # validation).
-        attack_ish = (p =~ /\b(atk|attack)\b/) && !p.include?("charge attack") && !p.include?("critical")
-        if attack_ish || p.include?("elemental atk")
+        attack_ish = (p =~ /\b(atk|attack)\b/) && !p.include?('charge attack') && !p.include?('critical')
+        if attack_ish || p.include?('elemental atk')
           el = elements_in(p)
-          return ["elemental_atk", el || summon_element] if el || p.include?("elemental")
+          return ['elemental_atk', el || summon_element] if el || p.include?('elemental')
 
-          return ["atk", nil]
+          return ['atk', nil]
         end
 
-        ["other", nil]
+        ['other', nil]
       end
 
       # "Dark and Earth" -> "dark,earth"; "all" -> "all"; else nil.
       def elements_in(phrase)
-        return "all" if /\ball\b/.match?(phrase)
+        return 'all' if /\ball\b/.match?(phrase)
         found = ELEMENTS.select { |e| phrase.include?(e) }
-        found.any? ? found.join(",") : nil
+        found.any? ? found.join(',') : nil
       end
 
       def detect_condition(text)
         t = text.downcase
-        return "main_summon" if t.include?("main summon")
-        return "per_weapon_group" if t.include?("weapon group")
+        return 'main_summon' if t.include?('main summon')
+        return 'per_weapon_group' if t.include?('weapon group')
 
         nil
       end

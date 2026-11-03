@@ -3,7 +3,7 @@ FactoryBot.define do
     # 29… is no real id range, so specs can use real ids without clashing
     sequence(:granblue_id) { |n| "29#{n.to_s.rjust(8, '0')}" }
     sequence(:name_en) { |n| "Test Summon #{n}" }
-    name_jp { "テスト召喚石" }
+    name_jp { 'テスト召喚石' }
     rarity { 3 } # SSR
     element { 1 } # Fire
 

@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require "rails_helper"
-require "rake"
+require 'rails_helper'
+require 'rake'
 
-RSpec.describe "granblue:build_weapon_skills" do
+RSpec.describe 'granblue:build_weapon_skills' do
   let(:runner) { instance_double(WeaponSkills::Build::Runner, call: WeaponSkills::Build::Runner::Summary.new(failed: 0)) }
 
   before(:all) do
-    Rails.application.load_tasks unless Rake::Task.task_defined?("granblue:build_weapon_skills")
+    Rails.application.load_tasks unless Rake::Task.task_defined?('granblue:build_weapon_skills')
   end
 
   around do |example|
@@ -25,29 +25,29 @@ RSpec.describe "granblue:build_weapon_skills" do
   end
 
   def invoke
-    Rake::Task["granblue:build_weapon_skills"].reenable
-    Rake::Task["granblue:build_weapon_skills"].invoke
+    Rake::Task['granblue:build_weapon_skills'].reenable
+    Rake::Task['granblue:build_weapon_skills'].invoke
   end
 
-  it "defaults to stale weapons in shadow mode while the build is off" do
+  it 'defaults to stale weapons in shadow mode while the build is off' do
     invoke
-    expect(WeaponSkills::Build::Runner).to have_received(:new).with(mode: "shadow", ids: nil, series: nil, all: false)
+    expect(WeaponSkills::Build::Runner).to have_received(:new).with(mode: 'shadow', ids: nil, series: nil, all: false)
   end
 
-  it "defaults to write mode when WEAPON_SKILL_BUILD=write" do
-    ENV["WEAPON_SKILL_BUILD"] = "write"
+  it 'defaults to write mode when WEAPON_SKILL_BUILD=write' do
+    ENV['WEAPON_SKILL_BUILD'] = 'write'
     invoke
-    expect(WeaponSkills::Build::Runner).to have_received(:new).with(hash_including(mode: "write"))
+    expect(WeaponSkills::Build::Runner).to have_received(:new).with(hash_including(mode: 'write'))
   end
 
-  it "passes ids=, series=, all= and mode=" do
-    ENV.update("ids" => "1040000001, 1040000002", "series" => "celestial", "all" => "true", "mode" => "write")
+  it 'passes ids=, series=, all= and mode=' do
+    ENV.update('ids' => '1040000001, 1040000002', 'series' => 'celestial', 'all' => 'true', 'mode' => 'write')
     invoke
     expect(WeaponSkills::Build::Runner).to have_received(:new)
-      .with(mode: "write", ids: %w[1040000001 1040000002], series: %w[celestial], all: true)
+      .with(mode: 'write', ids: %w[1040000001 1040000002], series: %w[celestial], all: true)
   end
 
-  it "exits nonzero when a weapon failed" do
+  it 'exits nonzero when a weapon failed' do
     allow(runner).to receive(:call).and_return(WeaponSkills::Build::Runner::Summary.new(failed: 1))
     expect { invoke }.to raise_error(SystemExit) { |e| expect(e.status).to eq(1) }
   end

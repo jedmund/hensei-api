@@ -16,8 +16,8 @@ module WeaponSkills
       #                expansion to compile it from
       #   unknown      everything else; the task fails on these
       class Comparison
-        CLASSIFICATIONS_PATH = Rails.root.join("data/weapon_skill_parity/compare_rows_classifications.json")
-        REPORT_PATH = Rails.root.join("data/weapon_skill_parity/compare_rows_last.json")
+        CLASSIFICATIONS_PATH = Rails.root.join('data/weapon_skill_parity/compare_rows_classifications.json')
+        REPORT_PATH = Rails.root.join('data/weapon_skill_parity/compare_rows_last.json')
         NOTES_KINDS = %w[per_grid_count specialty_scaled].freeze
         DATUM_COLUMNS = DATUM_DEFAULTS.keys.map(&:to_s).freeze
         EFFECT_COLUMNS = EFFECT_DEFAULTS.keys.map(&:to_s).freeze
@@ -61,12 +61,12 @@ module WeaponSkills
           self
         end
 
-        def unknown = @differences.select { |d| d["class"] == "unknown" }
+        def unknown = @differences.select { |d| d['class'] == 'unknown' }
 
         def report
-          { "catalogue" => WeaponSkills::CatalogueDump.restored_tag,
-            "counts" => @counts.sort.to_h,
-            "differences" => @differences.sort_by { |d| d["key"] } }
+          { 'catalogue' => WeaponSkills::CatalogueDump.restored_tag,
+            'counts' => @counts.sort.to_h,
+            'differences' => @differences.sort_by { |d| d['key'] } }
         end
 
         def write(path = REPORT_PATH)
@@ -91,7 +91,7 @@ module WeaponSkills
         def version_scope(weapon_ids)
           WeaponSkillVersion.joins(:weapon_skill).where(weapon_skills: { weapon_granblue_id: weapon_ids })
                             .includes(:skill, :weapon_skill)
-                            .order("weapon_skills.weapon_granblue_id", "weapon_skills.position", :ordinal)
+                            .order('weapon_skills.weapon_granblue_id', 'weapon_skills.position', :ordinal)
         end
 
         # The version as the extractor saw it after its own step 1: resolved classification,
@@ -144,35 +144,35 @@ module WeaponSkills
               next
             end
 
-            change = if mine.nil? then { "missing" => theirs }
-                     elsif theirs.nil? then { "added" => mine }
-                     else { "fields" => mine.keys.reject { |k| mine[k] == theirs[k] }.to_h { |k| [k, [theirs[k], mine[k]]] } }
+            change = if mine.nil? then { 'missing' => theirs }
+                     elsif theirs.nil? then { 'added' => mine }
+                     else { 'fields' => mine.keys.reject { |k| mine[k] == theirs[k] }.to_h { |k| [k, [theirs[k], mine[k]]] } }
                      end
-            key = (version.identity + [version.skill_name_en, *rk.first(2), JSON.generate(rk.last)]).join("|")
+            key = (version.identity + [version.skill_name_en, *rk.first(2), JSON.generate(rk.last)]).join('|')
             klass = classify(key, record, rk, mine || theirs, notes_compiled)
             @counts[:"diff_#{klass}"] += 1
-            @differences << { "key" => key, "class" => klass, "reason" => @classifications.dig(key, "reason") }
+            @differences << { 'key' => key, 'class' => klass, 'reason' => @classifications.dig(key, 'reason') }
                             .compact.merge(change)
           end
         end
 
         def classify(key, record, row_key, attrs, notes_compiled)
-          return @classifications.dig(key, "class") if @classifications.key?(key)
-          return "notes" if !notes_compiled && row_key.first == "effect" && NOTES_KINDS.include?(attrs["scaling_kind"])
-          if row_key.first == "datum" &&
+          return @classifications.dig(key, 'class') if @classifications.key?(key)
+          return 'notes' if !notes_compiled && row_key.first == 'effect' && NOTES_KINDS.include?(attrs['scaling_kind'])
+          if row_key.first == 'datum' &&
              [record.modifier_override, record.series_override, record.size_override].any?(&:present?)
-            return "override"
+            return 'override'
           end
 
-          "unknown"
+          'unknown'
         end
 
         # Row key: the tables' uniqueness scope (modifier is always the skill name).
         def row_key(kind, attrs)
           if kind == :datum
-            ["datum", attrs["boost_type"], [attrs["series"], attrs["size"]]]
+            ['datum', attrs['boost_type'], [attrs['series'], attrs['size']]]
           else
-            ["effect", attrs["boost_type"], [attrs["scaling_kind"], attrs["condition"]]]
+            ['effect', attrs['boost_type'], [attrs['scaling_kind'], attrs['condition']]]
           end
         end
 

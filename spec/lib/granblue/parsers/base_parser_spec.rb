@@ -45,7 +45,7 @@ RSpec.describe Granblue::Parsers::BaseParser do
     end
 
     it 'skips template values that match placeholder pattern' do
-      text = "|name = {{{name|}}}"
+      text = '|name = {{{name|}}}'
       result = parser.send(:parse_string, text)
       expect(result).not_to have_key('name')
     end

@@ -95,7 +95,7 @@ module Granblue
         loop do
           chunk = @s.scan(quote == "'" ? /[^'\\\n]+/ : /[^"\\\n]+/)
           out << chunk if chunk
-          if @s.scan("\\")
+          if @s.scan('\\')
             char = @s.getch or error('an escape')
             out << ESCAPES.fetch(char, char)
           elsif @s.scan(quote == "'" ? /'/ : /"/)

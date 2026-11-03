@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :raid do
     association :group, factory: :raid_group
     sequence(:name_en) { |n| "Test Raid #{n}" }
-    name_jp { "テストレイド" }
+    name_jp { 'テストレイド' }
     sequence(:slug) { |n| "test-raid-#{n}" }
     element { 1 } # Fire (Fire=1, Water=2, Earth=3, Wind=4, Light=5, Dark=6)
     player_count { 18 }

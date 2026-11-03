@@ -27,7 +27,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
     # --- HTML comment stripping ---
 
     context 'with HTML comments' do
-      let(:input) { "Might II<!-- wiki note -->" }
+      let(:input) { 'Might II<!-- wiki note -->' }
 
       it 'strips comment and parses normally' do
         expect(result[:modifier]).to eq('Might')

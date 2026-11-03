@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :job_skill do
     association :job
     sequence(:name_en) { |n| "Test Skill #{n}" }
-    name_jp { "テストスキル" }
+    name_jp { 'テストスキル' }
     sequence(:slug) { |n| "test-skill-#{n}" }
     color { 1 }
     main { false }

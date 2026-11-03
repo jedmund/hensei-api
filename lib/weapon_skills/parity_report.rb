@@ -11,10 +11,10 @@ module WeaponSkills
     end
 
     def print
-      changed, missing, added, keys = @diff.values_at("changed", "missing", "added", "keys")
-      weapons = (changed.map { |c| c["key"] } + missing + added).map { |k| k.split("|").first }.uniq
+      changed, missing, added, keys = @diff.values_at('changed', 'missing', 'added', 'keys')
+      weapons = (changed.map { |c| c['key'] } + missing + added).map { |k| k.split('|').first }.uniq
       if ParitySnapshot.empty_diff?(@diff)
-        @io.puts "PARITY: no differences"
+        @io.puts 'PARITY: no differences'
         return
       end
 
@@ -31,19 +31,19 @@ module WeaponSkills
 
     def lines
       series = series_by_weapon
-      out = @diff["missing"].map { |k| [series[k.split("|").first], "  - #{k}"] }
-      out += @diff["added"].map { |k| [series[k.split("|").first], "  + #{k}"] }
-      out + @diff["changed"].flat_map do |c|
-        c["fields"].map do |field, (before, after)|
-          [series[c["key"].split("|").first], "  ~ #{c['key']} #{field}: #{short(before)} -> #{short(after)}"]
+      out = @diff['missing'].map { |k| [series[k.split('|').first], "  - #{k}"] }
+      out += @diff['added'].map { |k| [series[k.split('|').first], "  + #{k}"] }
+      out + @diff['changed'].flat_map do |c|
+        c['fields'].map do |field, (before, after)|
+          [series[c['key'].split('|').first], "  ~ #{c['key']} #{field}: #{short(before)} -> #{short(after)}"]
         end
       end
     end
 
     def series_by_weapon
-      return Hash.new("all") unless @group == "series"
+      return Hash.new('all') unless @group == 'series'
 
-      Weapon.includes(:weapon_series).to_h { |w| [w.granblue_id, w.weapon_series&.slug || "(none)"] }
+      Weapon.includes(:weapon_series).to_h { |w| [w.granblue_id, w.weapon_series&.slug || '(none)'] }
     end
 
     def short(value) = JSON.generate(value).truncate(160)

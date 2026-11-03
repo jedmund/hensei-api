@@ -9,7 +9,7 @@ module SummonAuras
   # roll back; never fails a deploy) or "write" (stale summons are rebuilt). Read here and
   # nowhere else.
   def self.build_mode
-    mode = ENV.fetch("SUMMON_AURA_BUILD", "off").to_s.strip.downcase
-    BUILD_MODES.include?(mode) ? mode : "off"
+    mode = ENV.fetch('SUMMON_AURA_BUILD', 'off').to_s.strip.downcase
+    BUILD_MODES.include?(mode) ? mode : 'off'
   end
 end

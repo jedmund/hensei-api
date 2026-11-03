@@ -30,7 +30,7 @@ module Api
           @characters = @characters.by_series(array_param(:series)) if params[:series]
           if params[:search].present?
             q = "%#{ActiveRecord::Base.sanitize_sql_like(params[:search])}%"
-            @characters = @characters.where("characters.name_en ILIKE :q OR characters.name_jp ILIKE :q", q: q)
+            @characters = @characters.where('characters.name_en ILIKE :q OR characters.name_jp ILIKE :q', q: q)
           end
 
           lang = current_user&.language || 'en'
@@ -215,13 +215,13 @@ module Api
       def set_target_user
         @target_user = User.find(params[:user_id])
       rescue ActiveRecord::RecordNotFound
-        render json: { error: "User not found" }, status: :not_found
+        render json: { error: 'User not found' }, status: :not_found
       end
 
       def check_collection_access
         return if @target_user.nil? # Already handled by set_target_user
         unless @target_user.collection_viewable_by?(current_user)
-          render json: { error: "You do not have permission to view this collection" }, status: :forbidden
+          render json: { error: 'You do not have permission to view this collection' }, status: :forbidden
         end
       end
 

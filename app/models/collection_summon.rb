@@ -22,7 +22,7 @@ class CollectionSummon < ApplicationRecord
   scope :transcended, -> { where('transcendence_step > 0') }
   scope :max_uncapped, -> { where(uncap_level: 5) }
   scope :by_name, ->(query) {
-    joins(:summon).where("summons.name_en ILIKE :q OR summons.name_jp ILIKE :q", q: "%#{sanitize_sql_like(query)}%")
+    joins(:summon).where('summons.name_en ILIKE :q OR summons.name_jp ILIKE :q', q: "%#{sanitize_sql_like(query)}%")
   }
 
   scope :sorted_by, ->(sort_key, locale = 'en') {
@@ -72,7 +72,7 @@ class CollectionSummon < ApplicationRecord
 
     # Some summons might not support transcendence
     if summon.present? && !summon.transcendence
-      errors.add(:transcendence_step, "not available for this summon")
+      errors.add(:transcendence_step, 'not available for this summon')
     end
   end
 

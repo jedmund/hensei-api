@@ -38,10 +38,10 @@ module Granblue
       # Transform raw summon data into standardized format
       # @return [Array<Hash>] Array of transformed summon data
       def transform
-        Rails.logger.info "[TRANSFORM] Starting SummonTransformer#transform"
+        Rails.logger.info '[TRANSFORM] Starting SummonTransformer#transform'
 
         unless data.is_a?(Hash)
-          Rails.logger.error "[TRANSFORM] Invalid summon data structure"
+          Rails.logger.error '[TRANSFORM] Invalid summon data structure'
           Rails.logger.error "[TRANSFORM] Data class: #{data.class}"
           return []
         end
@@ -58,7 +58,7 @@ module Granblue
 
           master, param = get_master_param(summon_data)
           unless master && param
-            Rails.logger.debug "[TRANSFORM] Skipping summon - missing master or param data"
+            Rails.logger.debug '[TRANSFORM] Skipping summon - missing master or param data'
             next
           end
 

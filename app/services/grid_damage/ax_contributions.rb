@@ -32,13 +32,13 @@ module GridDamage
     HP_ANCHORS = [100, 75, 50, 25, 0].freeze
     # Supplemental AX skills are levels 1-5 with fixed damage values.
     SUPP_DISPLAY = {
-      "ca_supp" => { 1 => 10_000.0, 2 => 15_000.0, 3 => 20_000.0, 4 => 25_000.0, 5 => 30_000.0 },
-      "skill_supp" => { 1 => 1000.0, 2 => 1500.0, 3 => 2000.0, 4 => 2500.0, 5 => 3000.0 }
+      'ca_supp' => { 1 => 10_000.0, 2 => 15_000.0, 3 => 20_000.0, 4 => 25_000.0, 5 => 30_000.0 },
+      'skill_supp' => { 1 => 1000.0, 2 => 1500.0, 3 => 2000.0, 4 => 2500.0, 5 => 3000.0 }
     }.freeze
 
     def for_party(party, state: {})
       hp = Scaling.panel_hp(state.fetch(:hp_percent, 100))
-      mods = WeaponStatModifier.where(category: "ax").index_by(&:id)
+      mods = WeaponStatModifier.where(category: 'ax').index_by(&:id)
       party.weapons.flat_map do |gw|
         [[gw.ax_modifier1_id, gw.ax_strength1], [gw.ax_modifier2_id, gw.ax_strength2]].filter_map do |mod_id, strength|
           mod = mods[mod_id] or next
@@ -49,7 +49,7 @@ module GridDamage
           shown = shown.to_i if shown == shown.round
           # a multiattack augment lands on BOTH rate lines at full strength
           # (HDbPnu: one ax_multiattack 2.5 shows DA 2.5 and TA 2.5)
-          keys = mod.stat == "multiattack" ? %w[da_ax ta_ax] : ["#{mod.stat}_ax"]
+          keys = mod.stat == 'multiattack' ? %w[da_ax ta_ax] : ["#{mod.stat}_ax"]
           keys.map do |key|
             Aggregator::Contribution.new(
               boost_type: key, series: nil, value: value,
@@ -76,7 +76,7 @@ module GridDamage
 
     def display_value(mod, strength, hp_pct)
       if %w[stamina enmity].include?(mod.stat)
-        table = mod.stat == "stamina" ? STAMINA_AX : ENMITY_AX
+        table = mod.stat == 'stamina' ? STAMINA_AX : ENMITY_AX
         return hp_scaled(table[strength.to_i.clamp(1, 3)], hp_pct)
       end
       return SUPP_DISPLAY.fetch(mod.stat).fetch(strength.to_i, strength) if SUPP_DISPLAY.key?(mod.stat)

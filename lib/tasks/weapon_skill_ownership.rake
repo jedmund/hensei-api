@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 namespace :granblue do
-  desc "Audit ownership boundaries across weapon_skill_data/effects/boost_types JSON. Exits nonzero on errors."
+  desc 'Audit ownership boundaries across weapon_skill_data/effects/boost_types JSON. Exits nonzero on errors.'
   task audit_weapon_skill_ownership: :environment do
     result = Granblue::WeaponSkillDataOwnershipAuditor.run
 
@@ -19,7 +19,7 @@ namespace :granblue do
     end
 
     db_null_errors.each do |effect|
-      puts "[ERROR] unclassified_db_null_effect: Canonical DB effect has nil value without an allowed null classification."
+      puts '[ERROR] unclassified_db_null_effect: Canonical DB effect has nil value without an allowed null classification.'
       puts "  #{{
         modifier: effect.modifier,
         boost_type: effect.boost_type,

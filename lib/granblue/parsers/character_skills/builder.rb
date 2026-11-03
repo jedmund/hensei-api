@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require Rails.root.join("lib/granblue/extractors/character_grid_effect_extractor")
+require Rails.root.join('lib/granblue/extractors/character_grid_effect_extractor')
 
 module Granblue
   module Parsers
@@ -287,7 +287,7 @@ subtitle: subtitle }
 
         def effects_for(slot, description, key)
           effects = effect_parser.parse(description, game_details: game_details(key))
-          return effects unless slot.dig(:attrs, :kind) == "support"
+          return effects unless slot.dig(:attrs, :kind) == 'support'
 
           element = Extractors::CharacterGridEffectExtractor::CHARACTER_ELEMENT_BY_ID[character.element]
           return effects if element.blank?

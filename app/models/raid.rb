@@ -36,7 +36,7 @@ class Raid < ApplicationRecord
   scope :by_extra, ->(extra) {
     if extra.present?
       joins(:group).where(
-        "COALESCE(raids.extra, raid_groups.extra) = ?", ActiveModel::Type::Boolean.new.cast(extra)
+        'COALESCE(raids.extra, raid_groups.extra) = ?', ActiveModel::Type::Boolean.new.cast(extra)
       )
     end
   }

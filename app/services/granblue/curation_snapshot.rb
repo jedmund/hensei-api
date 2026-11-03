@@ -22,9 +22,9 @@ module Granblue
   # The v1 single file (data/weapon_skill_curation.json) is still read while it exists;
   # export and granblue:split_weapon_skill_curation replace it.
   class CurationSnapshot
-    DIR = Rails.root.join("data/weapon_skill_curation")
-    PENDING_DIR = DIR.join("pending")
-    LEGACY_PATH = Rails.root.join("data/weapon_skill_curation.json")
+    DIR = Rails.root.join('data/weapon_skill_curation')
+    PENDING_DIR = DIR.join('pending')
+    LEGACY_PATH = Rails.root.join('data/weapon_skill_curation.json')
     EFFECT_COLUMNS = %w[modifier boost_type series scaling_kind value value_unit per_copy_cap total_cap
                         shared_cap_group cap_formula count_basis count_cap condition target_instance depends_on
                         aura_boostable seraphic_affected stacking applies_to battle_interaction notes key_slug
@@ -46,8 +46,8 @@ module Granblue
     end
 
     def self.export(dir: DIR, legacy_path: LEGACY_PATH)
-      ops = load(dir: dir, legacy_path: legacy_path).entries("ops")
-      Layout.new(dir).write(new.payload.merge("ops" => ops))
+      ops = load(dir: dir, legacy_path: legacy_path).entries('ops')
+      Layout.new(dir).write(new.payload.merge('ops' => ops))
       FileUtils.rm_f(legacy_path)
     end
 
@@ -68,13 +68,13 @@ module Granblue
     def self.split(dir: DIR, legacy_path: LEGACY_PATH, pending_dir: PENDING_DIR, log: $stdout)
       sections = load(dir: dir, legacy_path: legacy_path).to_h
       Overlay.fold(sections, Overlay.load(dir: pending_dir).to_h).each do |conflict|
-        kept, dropped = conflict.values_at("kept", "dropped")
+        kept, dropped = conflict.values_at('kept', 'dropped')
         log.puts "split: #{describe(kept)}: kept #{kept.except('reason').to_json}, " \
                  "dropped #{dropped.except('reason').to_json}"
       end
       docs = Layout.new(dir).write(sections)
       FileUtils.rm_f(legacy_path)
-      Dir.glob(File.join(pending_dir.to_s, "*.json")).each { |path| FileUtils.rm_f(path) }
+      Dir.glob(File.join(pending_dir.to_s, '*.json')).each { |path| FileUtils.rm_f(path) }
       docs.transform_values { |doc| Overlay::SECTIONS.sum { |section| doc[section].size } }
     end
 
@@ -86,19 +86,19 @@ module Granblue
     # A version reference (weapon granblue_id, skill name, ordinal) → the version. The
     # ordinal decides only between same-named versions on one weapon.
     def self.find_version(ref)
-      return nil unless ref["weapon"]
+      return nil unless ref['weapon']
 
       scope = WeaponSkillVersion.joins(:skill, :weapon_skill)
-                                .where(weapon_skills: { weapon_granblue_id: ref["weapon"] }, skills: { name_en: ref["skill"] })
-      scope.size > 1 ? scope.find_by(ordinal: ref["ordinal"]) : scope.first
+                                .where(weapon_skills: { weapon_granblue_id: ref['weapon'] }, skills: { name_en: ref['skill'] })
+      scope.size > 1 ? scope.find_by(ordinal: ref['ordinal']) : scope.first
     end
 
     # Curation in this database, by section (no ops: those live only in the files).
     def payload
       {
-        "versions" => versions_payload,
-        "effects" => rows_payload(WeaponSkillEffect, EFFECT_COLUMNS),
-        "data" => rows_payload(WeaponSkillDatum, DATUM_COLUMNS)
+        'versions' => versions_payload,
+        'effects' => rows_payload(WeaponSkillEffect, EFFECT_COLUMNS),
+        'data' => rows_payload(WeaponSkillDatum, DATUM_COLUMNS)
       }
     end
 
@@ -106,10 +106,10 @@ module Granblue
       @report = Report.new(created: 0, updated: 0, skipped_newer: 0, suppressed: 0, unmatched: [],
                            ops_applied: 0, ops_satisfied: 0, ops_skipped: 0)
       ActiveRecord::Base.transaction do
-        apply_ops(Array(overlay["ops"]))
-        Array(overlay["versions"]).each { |row| sync_version(row) }
-        Array(overlay["effects"]).each { |row| sync_row(WeaponSkillEffect, row, effect_identity(row)) }
-        Array(overlay["data"]).each { |row| sync_row(WeaponSkillDatum, row, datum_identity(row)) }
+        apply_ops(Array(overlay['ops']))
+        Array(overlay['versions']).each { |row| sync_version(row) }
+        Array(overlay['effects']).each { |row| sync_row(WeaponSkillEffect, row, effect_identity(row)) }
+        Array(overlay['data']).each { |row| sync_row(WeaponSkillDatum, row, datum_identity(row)) }
       end
       log_report(log)
       @report
@@ -117,24 +117,24 @@ module Granblue
 
     def drift(overlay)
       current = payload
-      out = { "missing" => [], "changed" => [], "unapplied" => [] }
+      out = { 'missing' => [], 'changed' => [], 'unapplied' => [] }
       ROW_SECTIONS.each do |section|
         mine = current[section].index_by { |row| Overlay.identity(section, row) }
         theirs = Array(overlay[section]).index_by { |row| Overlay.identity(section, row) }
         mine.each do |key, row|
-          if !theirs.key?(key) then out["missing"] << row
-          elsif comparable(theirs[key]) != comparable(row) then out["changed"] << row
+          if !theirs.key?(key) then out['missing'] << row
+          elsif comparable(theirs[key]) != comparable(row) then out['changed'] << row
           end
         end
-        theirs.each { |key, row| out["unapplied"] << row unless mine.key?(key) }
+        theirs.each { |key, row| out['unapplied'] << row unless mine.key?(key) }
       end
       ops = Ops.new
-      out["unapplied"].concat(Array(overlay["ops"]).reject { |op| ops.satisfied?(op) })
+      out['unapplied'].concat(Array(overlay['ops']).reject { |op| ops.satisfied?(op) })
       out
     end
 
     def self.describe(entry)
-      [entry["op"], entry["weapon"], entry["skill"], entry["modifier"], entry["boost_type"]].compact.join(" / ")
+      [entry['op'], entry['weapon'], entry['skill'], entry['modifier'], entry['boost_type']].compact.join(' / ')
     end
 
     private
@@ -145,7 +145,7 @@ module Granblue
       WeaponSkillVersion.includes(:skill, :weapon_skill).where.not(overrides_edited_at: nil).map do |v|
         overrides = serialize(v, OVERRIDE_COLUMNS)
         # A stamped version with every override cleared is still curation ("no overrides").
-        overrides = { "suppressed_boosts" => [] } if overrides.empty?
+        overrides = { 'suppressed_boosts' => [] } if overrides.empty?
         version_ref(v).merge(overrides).merge(stamp(v.overrides_edited_at))
       end
     end
@@ -160,14 +160,14 @@ module Granblue
     end
 
     def version_ref(version)
-      { "weapon" => version.weapon_skill.weapon_granblue_id, "skill" => version.skill.name_en,
-        "ordinal" => version.ordinal }
+      { 'weapon' => version.weapon_skill.weapon_granblue_id, 'skill' => version.skill.name_en,
+        'ordinal' => version.ordinal }
     end
 
     def serialize(record, columns)
       columns.each_with_object({}) do |column, out|
         value = record[column]
-        next if value.nil? || value == [] || (value == {} && column != "condition")
+        next if value.nil? || value == [] || (value == {} && column != 'condition')
         next if value == false && FALSE_BY_DEFAULT.include?(column)
 
         out[column] = value.is_a?(BigDecimal) ? value.to_f : value
@@ -175,14 +175,14 @@ module Granblue
     end
 
     def stamp(time)
-      { "edited_at" => time.utc.iso8601 }
+      { 'edited_at' => time.utc.iso8601 }
     end
 
     # ---- sync -----------------------------------------------------------------
 
     def apply_ops(ops)
       applier = Ops.new
-      ops.each_with_index.sort_by { |op, i| [Overlay::OP_ORDER.index(op["op"]), i] }.each do |op, _|
+      ops.each_with_index.sort_by { |op, i| [Overlay::OP_ORDER.index(op['op']), i] }.each do |op, _|
         case applier.apply(op)
         when :applied then @report.ops_applied += 1
         when :satisfied then @report.ops_satisfied += 1
@@ -194,13 +194,13 @@ module Granblue
 
     def sync_version(row)
       version = self.class.find_version(row) or return @report.unmatched << row
-      edited_at = Time.iso8601(row["edited_at"])
+      edited_at = Time.iso8601(row['edited_at'])
       if version.overrides_edited_at && version.overrides_edited_at.to_i >= edited_at.to_i
         @report.skipped_newer += 1
       else
         attrs = OVERRIDE_COLUMNS.index_with { |c| row[c] }
-        attrs["suppressed_boosts"] ||= []
-        save_overrides!(version, attrs.merge("overrides_edited_at" => edited_at))
+        attrs['suppressed_boosts'] ||= []
+        save_overrides!(version, attrs.merge('overrides_edited_at' => edited_at))
         @report.updated += 1
       end
       remove_suppressed(version)
@@ -232,19 +232,19 @@ module Granblue
       return @report.unmatched << row unless identity
 
       columns = model == WeaponSkillEffect ? EFFECT_COLUMNS : DATUM_COLUMNS
-      edited_at = Time.iso8601(row["edited_at"])
+      edited_at = Time.iso8601(row['edited_at'])
       attrs = columns.index_with { |c| row[c] }
-      attrs["condition"] ||= {} if model == WeaponSkillEffect
-      attrs["depends_on"] ||= [] if model == WeaponSkillEffect
+      attrs['condition'] ||= {} if model == WeaponSkillEffect
+      attrs['depends_on'] ||= [] if model == WeaponSkillEffect
       FALSE_BY_DEFAULT.each { |c| attrs[c] ||= false if columns.include?(c) }
       record = model.find_by(identity)
       if record.nil?
-        model.create!(attrs.compact.merge(identity).merge("manually_edited_at" => edited_at))
+        model.create!(attrs.compact.merge(identity).merge('manually_edited_at' => edited_at))
         @report.created += 1
       elsif record.manually_edited_at && record.manually_edited_at.to_i >= edited_at.to_i
         @report.skipped_newer += 1
       else
-        record.update!(attrs.merge("manually_edited_at" => edited_at))
+        record.update!(attrs.merge('manually_edited_at' => edited_at))
         @report.updated += 1
       end
     end
@@ -253,21 +253,21 @@ module Granblue
       version_id = version_id_for(row)
       return nil if version_id == :unmatched
 
-      { "weapon_skill_version_id" => version_id, "modifier" => row["modifier"], "boost_type" => row["boost_type"],
-        "key_slug" => row["key_slug"], "condition" => row["condition"] || {} }
+      { 'weapon_skill_version_id' => version_id, 'modifier' => row['modifier'], 'boost_type' => row['boost_type'],
+        'key_slug' => row['key_slug'], 'condition' => row['condition'] || {} }
     end
 
     def datum_identity(row)
       version_id = version_id_for(row)
       return nil if version_id == :unmatched
 
-      { "weapon_skill_version_id" => version_id, "modifier" => row["modifier"], "boost_type" => row["boost_type"],
-        "series" => row["series"], "size" => row["size"] }
+      { 'weapon_skill_version_id' => version_id, 'modifier' => row['modifier'], 'boost_type' => row['boost_type'],
+        'series' => row['series'], 'size' => row['size'] }
     end
 
     def version_id_for(row)
-      return :unmatched if row["weapon"].nil? && row["skill"] # never fall back to a canonical row
-      return nil unless row["weapon"]
+      return :unmatched if row['weapon'].nil? && row['skill'] # never fall back to a canonical row
+      return nil unless row['weapon']
 
       self.class.find_version(row)&.id || :unmatched
     end
@@ -284,7 +284,7 @@ module Granblue
 
     # Stamps only order edits; a row whose values match is in sync.
     def comparable(row)
-      row.except("edited_at").transform_values { |v| v.is_a?(Integer) ? v.to_f : v }
+      row.except('edited_at').transform_values { |v| v.is_a?(Integer) ? v.to_f : v }
     end
   end
 end

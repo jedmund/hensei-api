@@ -25,8 +25,8 @@ module CharacterSkills
 
     class Renderer < WeaponSkills::WikiMarkup::Renderer
       SKILL_TEMPLATES = {
-        "characterskill" => "ability", "characterskill2" => "ability",
-        "charactersupportskill" => "support", "charactersupportskill2" => "support"
+        'characterskill' => 'ability', 'characterskill2' => 'ability',
+        'charactersupportskill' => 'support', 'charactersupportskill2' => 'support'
       }.freeze
 
       STATUS_RAW = /\A\{\{status\|([^|}]+)/i
@@ -44,11 +44,11 @@ module CharacterSkills
         name = text_of(parts.first).strip.downcase
         positional, named = split_args(parts.drop(1))
         case name
-        when "status" then status(positional, named)
+        when 'status' then status(positional, named)
         when *SKILL_TEMPLATES.keys then skill_reference(SKILL_TEMPLATES[name], positional, named)
-        when "chainburst" then chain_burst(positional)
-        when "petrified" then [segment("Petrified")]
-        when "revitalize", "refresh" then healing(name.capitalize, named)
+        when 'chainburst' then chain_burst(positional)
+        when 'petrified' then [segment('Petrified')]
+        when 'revitalize', 'refresh' then healing(name.capitalize, named)
         else super
         end
       end
@@ -72,15 +72,15 @@ module CharacterSkills
       def normalize(name) = name.to_s.squish.downcase
 
       def skill_reference(kind, positional, named)
-        page = text_of(named["page"] || positional[0]).strip
-        position = text_of(named["no"] || positional[1]).strip.to_i
+        page = text_of(named['page'] || positional[0]).strip
+        position = text_of(named['no'] || positional[1]).strip.to_i
         name = @skill_name&.call(kind, page, position) if position.positive?
         name ||= fallback_skill_name(kind, page, position)
         [segment(name).merge(skill: true)]
       end
 
       def fallback_skill_name(kind, page, position)
-        label = kind == "support" ? "support skill" : "skill"
+        label = kind == 'support' ? 'support skill' : 'skill'
         label = "#{label} #{position}" if position.positive?
         page.present? ? "#{page}'s #{label}" : label.capitalize
       end
@@ -92,9 +92,9 @@ module CharacterSkills
       end
 
       def healing(label, named)
-        amount = tooltip_text(named["a"])
-        cap = tooltip_text(named["cap"])
-        with_tooltip([segment(label)], [amount, cap && "Healing cap: #{cap}"].compact.join(" · ").presence)
+        amount = tooltip_text(named['a'])
+        cap = tooltip_text(named['cap'])
+        with_tooltip([segment(label)], [amount, cap && "Healing cap: #{cap}"].compact.join(' · ').presence)
       end
     end
   end

@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 namespace :mentions do
-  desc "Backfill entity mention data in party descriptions (proficiency, style_swap, series, season)"
+  desc 'Backfill entity mention data in party descriptions (proficiency, style_swap, series, season)'
   task backfill: :environment do
     updated = 0
     skipped = 0
     errors = 0
 
     # Only parties with descriptions containing mentions
-    parties = Party.where("description LIKE ?", '%"type":"mention"%')
+    parties = Party.where('description LIKE ?', '%"type":"mention"%')
     total = parties.count
     puts "Found #{total} parties with mentions"
 

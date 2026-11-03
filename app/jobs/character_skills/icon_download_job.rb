@@ -10,7 +10,7 @@ module CharacterSkills
 
     THROTTLE = 0.2
 
-    def perform(stems, storage: "s3")
+    def perform(stems, storage: 's3')
       counts = Hash.new(0)
       Array(stems).uniq.each do |stem|
         result = Granblue::Downloaders::AbilityIconDownloader.new(stem, storage: storage.to_sym, logger: Rails.logger).download

@@ -31,7 +31,7 @@ RSpec.describe 'Api::V1::FeaturedParties', type: :request do
       expect(json_response['featured_parties'].map { |p| p['id'] }).to eq([eventless.id, first.id, second.id])
     end
 
-    it "filters by party_id to show where a team is featured" do
+    it 'filters by party_id to show where a team is featured' do
       get '/api/v1/featured_parties', params: { party_id: first.party_id }, headers: editor_headers
       expect(json_response['featured_parties'].map { |p| p['id'] }).to eq([first.id])
     end

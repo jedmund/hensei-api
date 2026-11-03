@@ -1,18 +1,18 @@
 FactoryBot.define do
   factory :user do
     email { Faker::Internet.email }
-    password { "password" }
-    password_confirmation { "password" }
+    password { 'password' }
+    password_confirmation { 'password' }
     sequence(:username) { |n| "user#{n}" }
     granblue_id { Faker::Number.number(digits: 4) }
     wiki_profile { nil }
     youtube { nil }
-    picture { "gran" }
-    language { ["en", "ja"].sample }
+    picture { 'gran' }
+    language { ['en', 'ja'].sample }
     private { Faker::Boolean.boolean }
-    element { ["water", "fire", "wind", "earth", "light", "dark"].sample }
+    element { ['water', 'fire', 'wind', 'earth', 'light', 'dark'].sample }
     gender { Faker::Number.between(from: 0, to: 1) }
-    theme { ["system", "dark", "light"].sample }
+    theme { ['system', 'dark', 'light'].sample }
     role { Faker::Number.between(from: 1, to: 3) }
   end
 end

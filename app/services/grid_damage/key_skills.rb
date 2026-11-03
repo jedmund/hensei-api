@@ -59,9 +59,9 @@ module GridDamage
 
     def frame_for(effect, weapon, grid_weapon)
       case effect.frame_rule
-      when "weapon_identity"
-        weapon.name_en.to_s.include?("Renunciation") ? "omega" : "normal"
-      when "teluma"
+      when 'weapon_identity'
+        weapon.name_en.to_s.include?('Renunciation') ? 'omega' : 'normal'
+      when 'teluma'
         teluma_frame(grid_weapon)
       else
         effect.series # "none": EX ATK keeps its series; non-frame boost_types ignore it
@@ -71,10 +71,10 @@ module GridDamage
     # Draconic Six Dragons' Radiance: Omega Teluma → omega, Optimus Teluma → normal.
     def teluma_frame(grid_weapon)
       slugs = equipped_key_slugs(grid_weapon)
-      return "omega" if slugs.include?("teluma-omega")
-      return "normal" if slugs.include?("teluma-optimus")
+      return 'omega' if slugs.include?('teluma-omega')
+      return 'normal' if slugs.include?('teluma-optimus')
 
-      "normal"
+      'normal'
     end
 
     private_class_method :effects_by_slug, :equipped_keys, :equipped_key_slugs, :frame_for, :teluma_frame

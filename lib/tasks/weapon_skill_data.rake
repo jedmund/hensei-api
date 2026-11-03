@@ -3,14 +3,14 @@
 namespace :granblue do
   # Source of truth: the checked-in wiki templates. Override with dir=<path>.
   def wiki_source_dir
-    ENV["dir"] ? Pathname.new(ENV["dir"]) : Rails.root.join("..", "docs", "damage", "wiki-source")
+    ENV['dir'] ? Pathname.new(ENV['dir']) : Rails.root.join('..', 'docs', 'damage', 'wiki-source')
   end
 
-  desc "Extract weapon_skill_data from wiki-source templates -> data/weapon_skill_data.json"
+  desc 'Extract weapon_skill_data from wiki-source templates -> data/weapon_skill_data.json'
   task extract_weapon_skill_data: :environment do
-    require Rails.root.join("lib/granblue/extractors/weapon_skill_data_extractor")
-    skill_dir = wiki_source_dir.join("weapon-skill-types")
-    wpn_dir   = wiki_source_dir.join("wpnskill-templates")
+    require Rails.root.join('lib/granblue/extractors/weapon_skill_data_extractor')
+    skill_dir = wiki_source_dir.join('weapon-skill-types')
+    wpn_dir   = wiki_source_dir.join('wpnskill-templates')
     ex = Granblue::Extractors::WeaponSkillDataExtractor.new
 
     # Skills whose wiki table the standard SL-column parser can't read (e.g. Abandon's
@@ -20,8 +20,8 @@ namespace :granblue do
     effect_owned = Granblue::Extractors::FamilyTemplateImporter::EFFECT_OWNED_FAMILIES
 
     gen = []
-    Dir[skill_dir.join("*.wikitext")].each do |f|
-      name = File.basename(f, ".wikitext").tr("_", " ")
+    Dir[skill_dir.join('*.wikitext')].each do |f|
+      name = File.basename(f, '.wikitext').tr('_', ' ')
       next if manual.include?(name)
 
       text = File.read(f)
@@ -36,29 +36,29 @@ namespace :granblue do
     gen.reject! { |row| effect_owned.include?(row[:modifier]) }
     gen_modifiers = gen.map { |r| r[:modifier] }.uniq | effect_owned
 
-    file = Rails.root.join("data", "weapon_skill_data.json")
+    file = Rails.root.join('data', 'weapon_skill_data.json')
     existing = JSON.parse(File.read(file))
     # per-modifier authority: gen replaces all rows for the modifiers it covers;
     # rows for not-yet-covered modifiers are kept as-is.
-    kept = existing.reject { |r| gen_modifiers.include?(r["modifier"]) }
+    kept = existing.reject { |r| gen_modifiers.include?(r['modifier']) }
     merged = (kept + gen.map { |r| r.transform_keys(&:to_s) })
-             .sort_by { |r| [r["modifier"].to_s, r["boost_type"].to_s, r["series"].to_s, r["size"].to_s] }
+             .sort_by { |r| [r['modifier'].to_s, r['boost_type'].to_s, r['series'].to_s, r['size'].to_s] }
 
     File.write(file, "#{JSON.pretty_generate(merged)}\n")
     puts "Generated #{gen.size} rows / #{gen_modifiers.size} modifiers; kept #{kept.size} existing " \
          "(#{existing.size - kept.size} replaced); total #{merged.size}."
   end
 
-  desc "SEED weapon_skill_data from data/weapon_skill_data.json. The DB is the source of truth: " \
-       "refuses non-empty tables unless SEED=1, and never touches manually-edited rows."
+  desc 'SEED weapon_skill_data from data/weapon_skill_data.json. The DB is the source of truth: ' \
+       'refuses non-empty tables unless SEED=1, and never touches manually-edited rows.'
   task load_weapon_skill_data: :environment do
-    if WeaponSkillDatum.exists? && ENV["SEED"] != "1"
-      abort "weapon_skill_data is not empty — the DB is the source of truth. " \
-            "Pass SEED=1 to sync from the JSON snapshot anyway (manually-edited rows are preserved)."
+    if WeaponSkillDatum.exists? && ENV['SEED'] != '1'
+      abort 'weapon_skill_data is not empty — the DB is the source of truth. ' \
+            'Pass SEED=1 to sync from the JSON snapshot anyway (manually-edited rows are preserved).'
     end
 
-    records = JSON.parse(File.read(Rails.root.join("data", "weapon_skill_data.json")))
-    keys = records.to_set { |r| [r["modifier"], r["boost_type"], r["series"], r["size"]] }
+    records = JSON.parse(File.read(Rails.root.join('data', 'weapon_skill_data.json')))
+    keys = records.to_set { |r| [r['modifier'], r['boost_type'], r['series'], r['size']] }
 
     cols = %w[formula_type sl1 sl10 sl15 sl20 sl25 coefficient max_value aura_boostable]
     skipped_manual = 0
@@ -67,7 +67,7 @@ namespace :granblue do
       # matched and overwritten (or claimed) by the snapshot.
       d = WeaponSkillDatum.find_or_initialize_by(
         weapon_skill_version_id: nil,
-        modifier: r["modifier"], boost_type: r["boost_type"], series: r["series"], size: r["size"]
+        modifier: r['modifier'], boost_type: r['boost_type'], series: r['series'], size: r['size']
       )
       if d.persisted? && d.manually_edited_at.present?
         skipped_manual += 1
@@ -82,22 +82,22 @@ namespace :granblue do
     puts "Loaded #{records.size} rows (#{skipped_manual} manually-edited skipped); pruned #{pruned.size}; total #{WeaponSkillDatum.count}."
   end
 
-  desc "Export weapon_skill_data from the DB -> data/weapon_skill_data.json (committable snapshot)"
+  desc 'Export weapon_skill_data from the DB -> data/weapon_skill_data.json (committable snapshot)'
   task export_weapon_skill_data: :environment do
     cols = %w[modifier boost_type series size formula_type sl1 sl10 sl15 sl20 sl25 coefficient max_value aura_boostable]
     rows = WeaponSkillDatum.where(weapon_skill_version_id: nil).map do |d|
       cols.index_with { |c| d[c].is_a?(BigDecimal) ? d[c].to_f : d[c] }
     end
-    rows.sort_by! { |r| [r["modifier"].to_s, r["boost_type"].to_s, r["series"].to_s, r["size"].to_s] }
-    File.write(Rails.root.join("data", "weapon_skill_data.json"), "#{JSON.pretty_generate(rows)}\n")
+    rows.sort_by! { |r| [r['modifier'].to_s, r['boost_type'].to_s, r['series'].to_s, r['size'].to_s] }
+    File.write(Rails.root.join('data', 'weapon_skill_data.json'), "#{JSON.pretty_generate(rows)}\n")
     manual = WeaponSkillDatum.where.not(manually_edited_at: nil).count
     puts "Exported #{rows.size} canonical rows (#{manual} carry manual edits); version-linked rows are regenerated by reparse, not exported."
   end
 
   desc "Grid-resolution proof: select each grid weapon's active skill version and resolve it to data/effects. party=<shortcode> for one party, else aggregate over all grid weapons." # rubocop:disable Layout/LineLength
   task weapon_skill_resolution: :environment do
-    scope = if ENV["party"]
-              p = Party.find_by!(shortcode: ENV["party"])
+    scope = if ENV['party']
+              p = Party.find_by!(shortcode: ENV['party'])
               p.grid_weapons.includes(weapon: { weapon_skills: { weapon_skill_versions: :skill } })
             else
               GridWeapon.includes(weapon: { weapon_skills: { weapon_skill_versions: :skill } })
@@ -131,7 +131,7 @@ namespace :granblue do
   desc "Validate each weapon skill version's derived size against its description's stated keyword"
   task validate_weapon_skill_sizes: :environment do
     re = /\b(unworldly|massive|big|medium|small)\b/i
-    norm = ->(x) { x.to_s == "big_ii" ? "big" : x.to_s } # the description says "Big" for big_ii
+    norm = ->(x) { x.to_s == 'big_ii' ? 'big' : x.to_s } # the description says "Big" for big_ii
     total = 0
     ok = 0
     mismatch = Hash.new(0)

@@ -20,9 +20,9 @@ module Granblue
       #   - dynamic buff-on-action (stackable status gained on an action/hit)
       #   - pure nukes / charge-bar-only / cooldown effects with no passive grid contribution
       SKIP_PATTERNS = {
-        "key_placeholder" => /empowered by a chosen (teluma|pendulum|chain)|a gate to the summits|locked within ultima|granted power with an anklet/i,
-        "dynamic_buff"    => /gain \{\{status|allies gain .*\bupon\b|\bstack(able|ing)\b.*upon/i,
-        "nuke_only"       => /\bdeals? .*% .*(dmg|damage) to (all|random|a) foe|plain damage/i
+        'key_placeholder' => /empowered by a chosen (teluma|pendulum|chain)|a gate to the summits|locked within ultima|granted power with an anklet/i,
+        'dynamic_buff'    => /gain \{\{status|allies gain .*\bupon\b|\bstack(able|ing)\b.*upon/i,
+        'nuke_only'       => /\bdeals? .*% .*(dmg|damage) to (all|random|a) foe|plain damage/i
       }.freeze
 
       # A leading EVENT trigger makes everything after it a battle proc (nuke, heal,
@@ -72,67 +72,67 @@ module Granblue
         [/critical hit (?:dmg|damage) cap/i, nil],
         [/(?:charge attack|c\.?a\.?) specs/i,               %w[ca_dmg ca_dmg_cap]],
         [/chain ?burst specs/i,                             %w[cb_dmg cb_dmg_cap]],
-        [/skill (?:dmg|damage) cap/i,                        "skill_dmg_cap"],
-        [/(?:normal attack|n\.?a\.?) (?:dmg|damage) cap/i,   "na_dmg_cap"],
+        [/skill (?:dmg|damage) cap/i,                        'skill_dmg_cap'],
+        [/(?:normal attack|n\.?a\.?) (?:dmg|damage) cap/i,   'na_dmg_cap'],
         # the special C.A. cap is its own panel line (Sp. C.A. Cap), apart from the C.A. DMG
         # Cap (Blazing Chain III, the Ascendancy skills); before the plain C.A. cap phrase
-        [/special (?:charge attack|c\.?a\.?) (?:dmg|damage) cap/i, "sp_ca_cap"],
-        [/(?:charge attack|c\.?a\.?) (?:dmg|damage) cap/i,   "ca_dmg_cap"],
-        [/chain ?burst (?:dmg|damage) cap/i,                 "cb_dmg_cap"],
-        [/healing cap|boost to healing/i,                    "heal_cap"],
-        [/(?:dmg|damage) cap/i,                              "dmg_cap"],
+        [/special (?:charge attack|c\.?a\.?) (?:dmg|damage) cap/i, 'sp_ca_cap'],
+        [/(?:charge attack|c\.?a\.?) (?:dmg|damage) cap/i,   'ca_dmg_cap'],
+        [/chain ?burst (?:dmg|damage) cap/i,                 'cb_dmg_cap'],
+        [/healing cap|boost to healing/i,                    'heal_cap'],
+        [/(?:dmg|damage) cap/i,                              'dmg_cap'],
         # chain amplification is its own boost; consuming "chain" keeps it off the C.B. DMG line.
         # "chain burst" names only chain bursts; a plain "chain" ("amplify chain damage by 50%")
         # covers full chains too: the panel shows it on C.B. Amp. and FC Amp. (0ZA6Ak, Blazing
         # Chain III)
-        [/amplif\w*(?:\s+\S+){0,3}?\s+chain burst\b|\bchain burst (?:dmg|damage) (?:is )?amplif\w*/i, "cb_amp"],
+        [/amplif\w*(?:\s+\S+){0,3}?\s+chain burst\b|\bchain burst (?:dmg|damage) (?:is )?amplif\w*/i, 'cb_amp'],
         [/amplif\w*(?:\s+\S+){0,3}?\s+chain\b|\bchain (?:dmg|damage) (?:is )?amplif\w*/i, %w[cb_amp fc_amp]],
-        [/amplif\w*.*(?:normal attack|n\.?a\.?)|(?:normal attack|n\.?a\.?).*amplif/i, "na_amp"],
+        [/amplif\w*.*(?:normal attack|n\.?a\.?)|(?:normal attack|n\.?a\.?).*amplif/i, 'na_amp'],
         # a C.A. amplification shows on the plain C.A. Amp. line (0ZA6Ak, Sephirath Eparc II);
         # C.A. Amp. (Sp.) comes from the canonical ≥280 sources, not from description text
-        [/amplif\w*.*(?:charge attack|c\.?a\.?)|(?:charge attack|c\.?a\.?).*amplif/i, "ca_amp"],
-        [/amplif\w*.*skill|skill.*amplif/i, "skill_amp_sp"],
-        [/amplif\w*.*elemental|elemental .*amplif|amplify elemental|amplif\w*.*against .*foes/i, "elem_amplify"],
-        [/amplif/i,                                          "dmg_amp"],
-        [/supplement.*(?:charge attack|c\.?a\.?)/i,          "ca_supp"],
-        [/supplement.*skill/i,                               "skill_dmg_supp"],
-        [/supplement.*(?:normal attack|n\.?a\.?)/i,          "na_supp"],
-        [/supplement/i,                                      "dmg_supp"],
-        [/skill (?:dmg|damage)/i,                            "skill_dmg"],
+        [/amplif\w*.*(?:charge attack|c\.?a\.?)|(?:charge attack|c\.?a\.?).*amplif/i, 'ca_amp'],
+        [/amplif\w*.*skill|skill.*amplif/i, 'skill_amp_sp'],
+        [/amplif\w*.*elemental|elemental .*amplif|amplify elemental|amplif\w*.*against .*foes/i, 'elem_amplify'],
+        [/amplif/i,                                          'dmg_amp'],
+        [/supplement.*(?:charge attack|c\.?a\.?)/i,          'ca_supp'],
+        [/supplement.*skill/i,                               'skill_dmg_supp'],
+        [/supplement.*(?:normal attack|n\.?a\.?)/i,          'na_supp'],
+        [/supplement/i,                                      'dmg_supp'],
+        [/skill (?:dmg|damage)/i,                            'skill_dmg'],
         # Destruction (Destroyer weapons) is a damage TYPE, not an element — keep it off the
         # elemental "Bonus Water DMG" line. Must precede the generic bonus patterns.
-        [/(?:bonus )?destruction.*?(?:charge attack|c\.?a\.?).*?(?:dmg|damage)/i, "bonus_des_ca"],
-        [/(?:bonus )?destruction.*?(?:dmg|damage)/i,         "bonus_des_dmg"],
-        [/bonus.*(?:charge attack|c\.?a\.?)/i,               "bonus_ca"],
+        [/(?:bonus )?destruction.*?(?:charge attack|c\.?a\.?).*?(?:dmg|damage)/i, 'bonus_des_ca'],
+        [/(?:bonus )?destruction.*?(?:dmg|damage)/i,         'bonus_des_dmg'],
+        [/bonus.*(?:charge attack|c\.?a\.?)/i,               'bonus_ca'],
         # Single-attack-only bonus DMG (Hraesvelgr's Einar) is its own mechanic — it does NOT
         # appear on the panel's elemental "Bonus DMG" line (5JPIJg: panel shows only the
         # always-on Deathstrike bonus). Must precede the generic elemental bonus pattern.
-        [/bonus.*(?:dmg|damage).*single attacks?|single attacks?.*bonus.*(?:dmg|damage)/i, "bonus_elem_dmg_single"],
+        [/bonus.*(?:dmg|damage).*single attacks?|single attacks?.*bonus.*(?:dmg|damage)/i, 'bonus_elem_dmg_single'],
         # Likewise triple-attack-only bonus DMG (Sol Remnant's Astral Blow II): X53WHq's panel
         # has no Bonus Fire DMG line with it equipped.
-        [/bonus.*(?:dmg|damage).*triple attacks?|triple attacks?.*bonus.*(?:dmg|damage)/i, "bonus_elem_dmg_ta"],
-        [/bonus.*(?:dmg|damage)/i, "bonus_elem_dmg"],
-        [/hit to (?:multiattack|double attack|triple attack)/i, "multiattack"], # → −DA (guarantee)
+        [/bonus.*(?:dmg|damage).*triple attacks?|triple attacks?.*bonus.*(?:dmg|damage)/i, 'bonus_elem_dmg_ta'],
+        [/bonus.*(?:dmg|damage)/i, 'bonus_elem_dmg'],
+        [/hit to (?:multiattack|double attack|triple attack)/i, 'multiattack'], # → −DA (guarantee)
         [/multiattack rate/i, %w[da ta]], # +DA and +TA
-        [/double attack rate|\bda rate\b/i,                  "da"],
-        [/triple attack rate|\bta rate\b/i,                  "ta"],
-        [/critical/i,                                        "critical"],
-        [/counter/i,                                         "counter_dmg"],
-        [/gain shield|\bshield\b/i,                          "shield"],
-        [/debuff res/i,                                      "debuff_res"],
+        [/double attack rate|\bda rate\b/i,                  'da'],
+        [/triple attack rate|\bta rate\b/i,                  'ta'],
+        [/critical/i,                                        'critical'],
+        [/counter/i,                                         'counter_dmg'],
+        [/gain shield|\bshield\b/i,                          'shield'],
+        [/debuff res/i,                                      'debuff_res'],
         # "30% boost to Fire allies' charge bar gain" (Blazing Chain); the panel counts the MC's
         # own charge bar gain too (WpPucd: Dainsleif's Strategist's Temperament adds 7)
         [/boost\ to\ (?:(?:\w+\ )?allies'|MC's)\ charge\ bar\ gain|boost\ to\ charge\ bar\ gain
-          |charge\ bar\ gain\ (?:boost|up)|hit\ to\ .*charge\ bar\ gain/xi, "charge_gain"],
-        [/(?:dmg|damage) (?:cut|reduc)|reduced (?:dmg|damage) taken|lessen .*(?:dmg|damage)/i, "elem_reduc"],
-        [/chain ?burst (?:dmg|damage)/i,                     "cb_dmg"],
-        [/(?:charge attack|c\.?a\.?) (?:dmg|damage)/i,       "ca_dmg"],
-        [/ignore .*\bdef/i,                                  "def_ignore"],
-        [/% cut to .*max hp|cut to .*max hp|% cut to/i,      "hp_cut"],
-        [/take (?:dmg|damage) worth .*? of max hp|take (?:dmg|damage) worth|(?:dmg|damage) worth \d+% of max hp/i, "hp_dmg"],
-        [/\bdef(?:ense)?\b/i,                                "def"],
-        [/max hp|\bhp\b/i,                                   "hp"],
-        [/\batk\b/i,                                         "atk"]
+          |charge\ bar\ gain\ (?:boost|up)|hit\ to\ .*charge\ bar\ gain/xi, 'charge_gain'],
+        [/(?:dmg|damage) (?:cut|reduc)|reduced (?:dmg|damage) taken|lessen .*(?:dmg|damage)/i, 'elem_reduc'],
+        [/chain ?burst (?:dmg|damage)/i,                     'cb_dmg'],
+        [/(?:charge attack|c\.?a\.?) (?:dmg|damage)/i,       'ca_dmg'],
+        [/ignore .*\bdef/i,                                  'def_ignore'],
+        [/% cut to .*max hp|cut to .*max hp|% cut to/i,      'hp_cut'],
+        [/take (?:dmg|damage) worth .*? of max hp|take (?:dmg|damage) worth|(?:dmg|damage) worth \d+% of max hp/i, 'hp_dmg'],
+        [/\bdef(?:ense)?\b/i,                                'def'],
+        [/max hp|\bhp\b/i,                                   'hp'],
+        [/\batk\b/i,                                         'atk']
       ].freeze
 
       AURA_TO_SERIES = WeaponSkillParser::AURA_TO_SERIES
@@ -145,26 +145,26 @@ module Granblue
         # frame ("25% boost to Taboo Allowater's weapon skills", XZq7xW's "Water Taboo" line)
         if name =~ /\b(Optimus|Omega|Odious) Exalto\b/i
           ex = "#{Regexp.last_match(1).downcase}_exalto"
-          series = { "omega_exalto" => "omega", "odious_exalto" => "odious" }.fetch(ex, "normal")
+          series = { 'omega_exalto' => 'omega', 'odious_exalto' => 'odious' }.fetch(ex, 'normal')
           return blank_result.merge(clauses: [{ boost_type: ex, value: value_for(desc, ex), size: nil,
-                                                series: series, formula_type: "flat", condition: nil }])
+                                                series: series, formula_type: 'flat', condition: nil }])
         end
 
-        body = desc.sub(/\Awhen main weapon[^:]*:/i, "").sub(/\A[^:]*\(mc only\)[^:]*:/i, "")
+        body = desc.sub(/\Awhen main weapon[^:]*:/i, '').sub(/\A[^:]*\(mc only\)[^:]*:/i, '')
         # parenthetical proc blocks ("(For every 3 skills used: … allies gain 10%…)")
         # describe triggered effects, not passive boosts
-        body = body.gsub(/\((?:for every|when|upon|at the end|at battle start)[^()]*(?:\([^()]*\)[^()]*)*\)/i, "")
+        body = body.gsub(/\((?:for every|when|upon|at the end|at battle start)[^()]*(?:\([^()]*\)[^()]*)*\)/i, '')
         # a C.A. supplement with no "by N" is worth its damage cap ("supplement C.A. damage
         # (Damage cap: 400,000)", Blazing Chain); it stops being a proc ceiling below
         body = body.gsub(/(supplement (?:charge attack|c\.?a\.?) (?:dmg|damage))\s*\(\s*damage cap:\s*~?([\d,]+)\s*\)/i,
                          '\\1 by \\2')
         # a proc's damage ceiling ("300% Earth damage … (Damage cap: ~400,000)") isn't
         # a DMG Cap boost
-        body = body.gsub(/\(\s*(?:damage|healing) cap:[^()]*\)/i, "")
+        body = body.gsub(/\(\s*(?:damage|healing) cap:[^()]*\)/i, '')
         if body.match?(EVENT_TRIGGER)
           return { main_hand_only: desc.match?(/when main weapon/i),
                    mc_only: desc.match?(/\(mc only\)/i),
-                   skip: "triggered_effect", clauses: [] }
+                   skip: 'triggered_effect', clauses: [] }
         end
 
         series0 = series_for(desc, name)
@@ -184,19 +184,19 @@ module Granblue
           next if frag.match?(PROC_CLAUSE)
 
           # Bloodshed's "take DMG worth 20% of max HP" IS its value (HP DMG)
-          frag = frag.gsub(HP_REFERENCE, " ") unless frag.match?(/take (?:dmg|damage) worth/i)
+          frag = frag.gsub(HP_REFERENCE, ' ') unless frag.match?(/take (?:dmg|damage) worth/i)
 
           size = frag[SIZE_KEYWORD, 1]&.downcase || last_size
           last_size = size if frag.match?(SIZE_KEYWORD)
           boosts_for(frag).each do |boost, formula|
-            boost = "od_dmg_amp" if boost == "dmg_amp" && series0 == "odious"
+            boost = 'od_dmg_amp' if boost == 'dmg_amp' && series0 == 'odious'
             value = value_for(frag, boost)
             # "X% hit to <boost>" and "X% cut to <boost>" are demerits — Ereshkigal's
             # "200% hit to charge bar gain" shows -200%, Zion's Tyranny II's "10% cut
             # to max HP" shows on HP Cut as -10; "hit to multiattack rate" pushes the
             # DA rate down/negative (the freed rate becomes triple attacks).
             value = -value if value && frag.match?(/\b(?:hit|cut) to\b/i)
-            boost = "da" if boost == "multiattack"
+            boost = 'da' if boost == 'multiattack'
             clauses << {
               boost_type: boost, value: value, size: (size unless explicit?(frag)),
               series: series0, formula_type: formula,
@@ -248,18 +248,18 @@ module Granblue
       def self.boosts_for(frag)
         scaling = scaling_for(frag)
         boosts = boost_consume(frag)
-        return boosts.map { |b| [b, "flat"] } unless scaling
+        return boosts.map { |b| [b, 'flat'] } unless scaling
 
-        (boosts - ["hp"]).map { |b| scale_boost(b, scaling) }
+        (boosts - ['hp']).map { |b| scale_boost(b, scaling) }
       end
 
       def self.scale_boost(boost, scaling)
-        return %w[enmity enmity] if boost == "atk" && scaling == :low_hp
-        return %w[stamina stamina] if boost == "atk" && scaling == :high_hp
-        return %w[e_atk_prog progression] if boost == "atk" && scaling == :turns
-        return %w[def garrison] if boost == "def" && scaling == :low_hp
+        return %w[enmity enmity] if boost == 'atk' && scaling == :low_hp
+        return %w[stamina stamina] if boost == 'atk' && scaling == :high_hp
+        return %w[e_atk_prog progression] if boost == 'atk' && scaling == :turns
+        return %w[def garrison] if boost == 'def' && scaling == :low_hp
 
-        [boost, "flat"]
+        [boost, 'flat']
       end
 
       def self.scaling_for(frag)
@@ -277,7 +277,7 @@ module Granblue
           next unless rest&.match?(re)
 
           found.concat(Array(key))
-          rest = rest.sub(re, " ")
+          rest = rest.sub(re, ' ')
         end
         found.uniq
       end
@@ -290,9 +290,9 @@ module Granblue
       # asides never carry the value — they hold conditions ("(Boost to specs when …
       # 280% or above)") and caps ("(Max: 45%)") whose numbers must not be read as it.
       def self.value_for(frag, boost)
-        frag = frag.gsub(/\([^)]*\)/, "")
+        frag = frag.gsub(/\([^)]*\)/, '')
         if %w[dmg_supp na_supp ca_supp skill_dmg_supp].include?(boost) && (m = frag[/by\s+([\d,]+)/i, 1])
-          return m.delete(",").to_f
+          return m.delete(',').to_f
         end
         (m = frag[/(\d+(?:\.\d+)?)\s*%/, 1]) ? m.to_f : nil
       end
@@ -304,9 +304,9 @@ module Granblue
         text = "#{name} #{desc}"
         # Odious skills are NAMED "Taboo <element>'s …"; match Taboo in the NAME only — the word
         # also appears in ≥280 condition prose ("…wind Taboo… weapon skills") on EX skills.
-        return "odious" if name.to_s.match?(/\btaboo\b/i)
-        return "omega" if text.match?(/\bomega modifier\b/i)
-        return "ex" if text.match?(/\bex modifier\b/i)
+        return 'odious' if name.to_s.match?(/\btaboo\b/i)
+        return 'omega' if text.match?(/\bomega modifier\b/i)
+        return 'ex' if text.match?(/\bex modifier\b/i)
 
         parsed = name.present? ? WeaponSkillParser.parse(name) : {}
         return parsed[:series] if parsed[:series] # core element aura-word → normal/omega/ex/odious
@@ -315,18 +315,18 @@ module Granblue
         # "Tyranny", "Celere" on Optimus grid weapons, element templated away) is Normal.
         # Everything else — flavor names ("Psycho's Might"), non-core auras (Ultima, Militis,
         # Astral, …), and flat/unknown modifiers — is NOT aura-boosted ⇒ EX.
-        return "normal" if parsed[:aura].nil? && WeaponSkillParser::BOOSTABLE_MODIFIERS.include?(parsed[:modifier])
+        return 'normal' if parsed[:aura].nil? && WeaponSkillParser::BOOSTABLE_MODIFIERS.include?(parsed[:modifier])
 
-        "ex"
+        'ex'
       end
 
       # Light structured condition from common phrasings (extended as needed).
       def self.condition_for(frag)
         if frag.match?(/all weapon groups/i)
           return {
-            "type" => "count_basis_gte",
-            "basis" => "distinct_weapon_types",
-            "gte" => GridDamage::GridComposition::ALL_WEAPON_TYPE_COUNT
+            'type' => 'count_basis_gte',
+            'basis' => 'distinct_weapon_types',
+            'gte' => GridDamage::GridComposition::ALL_WEAPON_TYPE_COUNT
           }
         end
 
@@ -334,18 +334,18 @@ module Granblue
       end
 
       def self.clean(text)
-        return "" if text.blank?
+        return '' if text.blank?
 
         s = text.dup
-        s.gsub!(%r{<ref[^>]*>.*?</ref>}m, "")
-        s.gsub!(%r{<ref[^>]*/>}, "")
+        s.gsub!(%r{<ref[^>]*>.*?</ref>}m, '')
+        s.gsub!(%r{<ref[^>]*/>}, '')
         s.gsub!(/\{\{tt\|([^|}]+)\|[^}]*\}\}/i, '\1') # {{tt|text|tooltip}} → text
         s.gsub!(/\{\{status\|([^|}]+)[^}]*\}\}/i, '\1')
-        s.gsub!(/\{\{[^{}]*\}\}/m, "")
-        s.gsub!(/'''|''/, "")
-        s.gsub!(%r{<br\s*/?>}i, " / ") # clause separator in tiered skills — keep it, don't blank it
-        s.gsub!(/<[^>]+>/, " ")
-        s.gsub(/\s+/, " ").strip
+        s.gsub!(/\{\{[^{}]*\}\}/m, '')
+        s.gsub!(/'''|''/, '')
+        s.gsub!(%r{<br\s*/?>}i, ' / ') # clause separator in tiered skills — keep it, don't blank it
+        s.gsub!(/<[^>]+>/, ' ')
+        s.gsub(/\s+/, ' ').strip
       end
 
       def self.blank_result

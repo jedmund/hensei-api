@@ -109,7 +109,7 @@ namespace :granblue do
         end
       end
 
-      logger.info "Job image download completed!"
+      logger.info 'Job image download completed!'
     end
   end
 end

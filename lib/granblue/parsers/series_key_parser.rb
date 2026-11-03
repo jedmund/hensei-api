@@ -44,13 +44,13 @@ module Granblue
 
       def self.clean(str)
         str.gsub(/\{\{\s*itm\s*\|\s*([^|}]+)[^}]*\}\}/, '\1') # {{itm|Name|…}} → Name
-           .gsub(%r{<ref[^>]*/>}, "")          # self-closing <ref …/> first, so the next
-           .gsub(%r{<ref[^>]*>.*?</ref>}m, "") # paired <ref>…</ref> can't span across it
-           .gsub(/\{\{[^{}]*\}\}/, "")
+           .gsub(%r{<ref[^>]*/>}, '')          # self-closing <ref …/> first, so the next
+           .gsub(%r{<ref[^>]*>.*?</ref>}m, '') # paired <ref>…</ref> can't span across it
+           .gsub(/\{\{[^{}]*\}\}/, '')
            .gsub(/\[\[[^\]|]*\|?([^\]]*)\]\]/, '\1')
-           .gsub(/<[^>]+>/, "")
-           .gsub(/'''|''/, "")
-           .gsub(/\s+/, " ").strip
+           .gsub(/<[^>]+>/, '')
+           .gsub(/'''|''/, '')
+           .gsub(/\s+/, ' ').strip
       end
 
       private_class_method :rows, :skill_text, :boost_level_effect, :clean

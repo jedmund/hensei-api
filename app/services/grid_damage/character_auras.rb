@@ -21,10 +21,10 @@ module GridDamage
           next unless version
 
           version.skill_effects.each do |e|
-            next unless e.effect_weapon_skill_boost? && [element, "all"].include?(e.element)
+            next unless e.effect_weapon_skill_boost? && [element, 'all'].include?(e.element)
 
-            totals[:optimus] += e.amount.to_f if e.frame == "normal"
-            totals[:omega]   += e.amount.to_f if e.frame == "omega"
+            totals[:optimus] += e.amount.to_f if e.frame == 'normal'
+            totals[:omega]   += e.amount.to_f if e.frame == 'omega'
           end
         end
       end

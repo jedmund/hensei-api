@@ -228,7 +228,7 @@ module Api
         # Check if either position is restricted
         if restricted_summon_position?(source.position) || restricted_summon_position?(target.position)
           return render_unprocessable_entity_response(
-            Api::V1::InvalidPositionError.new("Cannot swap summons in restricted positions")
+            Api::V1::InvalidPositionError.new('Cannot swap summons in restricted positions')
           )
         end
 

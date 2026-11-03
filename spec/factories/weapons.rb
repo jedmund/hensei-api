@@ -4,7 +4,7 @@ FactoryBot.define do
     # with the fixed ids specs write (granblue_id is unique).
     sequence(:granblue_id) { |n| "1090#{n.to_s.rjust(6, '0')}" }
     sequence(:name_en) { |n| "Test Weapon #{n}" }
-    name_jp { "テスト武器" }
+    name_jp { 'テスト武器' }
     rarity { 3 } # SSR
     element { 1 } # Fire
     proficiency { 1 } # Sabre

@@ -24,12 +24,12 @@ module Granblue
       end
 
       def apply(entry)
-        case entry["op"]
-        when "remove_version" then remove_version(entry)
-        when "add_version" then add_version(entry)
-        when "gate" then set_fields(entry, gate_attrs(entry))
-        when "description" then description(entry)
-        when "remove_row" then remove_row(entry)
+        case entry['op']
+        when 'remove_version' then remove_version(entry)
+        when 'add_version' then add_version(entry)
+        when 'gate' then set_fields(entry, gate_attrs(entry))
+        when 'description' then description(entry)
+        when 'remove_row' then remove_row(entry)
         else raise ArgumentError, "unknown curation op #{entry['op']}"
         end
       end
@@ -37,13 +37,13 @@ module Granblue
       # Whether the database already reflects the op (the drift check's "unapplied").
       def satisfied?(entry)
         version = CurationSnapshot.find_version(entry)
-        case entry["op"]
-        when "remove_version" then version.nil?
-        when "add_version" then !version.nil?
-        when "gate" then !version.nil? && matches?(version, gate_attrs(entry))
-        when "description"
+        case entry['op']
+        when 'remove_version' then version.nil?
+        when 'add_version' then !version.nil?
+        when 'gate' then !version.nil? && matches?(version, gate_attrs(entry))
+        when 'description'
           !@description_columns || (!version.nil? && matches?(version, entry.slice(*DESCRIPTION_FIELDS)))
-        when "remove_row" then (scope = curated_rows(entry)).nil? || !scope.exists?
+        when 'remove_row' then (scope = curated_rows(entry)).nil? || !scope.exists?
         end
       end
 
@@ -51,7 +51,7 @@ module Granblue
 
       def remove_version(entry)
         version = CurationSnapshot.find_version(entry)
-        return WeaponSkill.exists?(weapon_granblue_id: entry["weapon"]) ? :satisfied : :unmatched unless version
+        return WeaponSkill.exists?(weapon_granblue_id: entry['weapon']) ? :satisfied : :unmatched unless version
 
         slot = version.weapon_skill
         WeaponSkillEffect.where(weapon_skill_version_id: version.id).delete_all
@@ -72,34 +72,34 @@ module Granblue
       # #datum_identity), or nil when it names a version this database doesn't have.
       def curated_rows(entry)
         version_id = nil
-        if entry["weapon"]
+        if entry['weapon']
           version = CurationSnapshot.find_version(entry) or return nil
           version_id = version.id
         end
-        identity = { weapon_skill_version_id: version_id, modifier: entry["modifier"], boost_type: entry["boost_type"] }
-        model, keys = if entry["section"] == "effects"
-                        [WeaponSkillEffect, { key_slug: entry["key_slug"], condition: entry["condition"] || {} }]
+        identity = { weapon_skill_version_id: version_id, modifier: entry['modifier'], boost_type: entry['boost_type'] }
+        model, keys = if entry['section'] == 'effects'
+                        [WeaponSkillEffect, { key_slug: entry['key_slug'], condition: entry['condition'] || {} }]
                       else
-                        [WeaponSkillDatum, { series: entry["series"], size: entry["size"] }]
+                        [WeaponSkillDatum, { series: entry['series'], size: entry['size'] }]
                       end
         model.where(identity.merge(keys)).where.not(manually_edited_at: nil)
       end
 
       def add_version(entry)
         return :satisfied if CurationSnapshot.find_version(entry)
-        return :unmatched unless Weapon.exists?(granblue_id: entry["weapon"])
+        return :unmatched unless Weapon.exists?(granblue_id: entry['weapon'])
 
-        slot = WeaponSkill.find_by(weapon_granblue_id: entry["weapon"], position: entry["position"])
-        return :unmatched if slot&.weapon_skill_versions&.exists?(ordinal: entry["ordinal"]) # another skill holds that tier
+        slot = WeaponSkill.find_by(weapon_granblue_id: entry['weapon'], position: entry['position'])
+        return :unmatched if slot&.weapon_skill_versions&.exists?(ordinal: entry['ordinal']) # another skill holds that tier
 
-        slot ||= WeaponSkill.create!(weapon_granblue_id: entry["weapon"], position: entry["position"])
+        slot ||= WeaponSkill.create!(weapon_granblue_id: entry['weapon'], position: entry['position'])
         WeaponSkillVersion.create!(new_version_attrs(entry).merge(weapon_skill: slot, skill: skill_for(entry)))
         :applied
       end
 
       def new_version_attrs(entry)
-        attrs = { ordinal: entry["ordinal"], unlock_level: entry["unlock_level"], min_uncap: entry["min_uncap"],
-                  transcendence_stage: entry["transcendence_stage"] || 0 }.merge(classification(entry))
+        attrs = { ordinal: entry['ordinal'], unlock_level: entry['unlock_level'], min_uncap: entry['min_uncap'],
+                  transcendence_stage: entry['transcendence_stage'] || 0 }.merge(classification(entry))
         attrs.merge!(entry.slice(*DESCRIPTION_FIELDS).symbolize_keys) if @description_columns
         attrs
       end
@@ -107,19 +107,19 @@ module Granblue
       # The derived classification the importers give a new version; the overlay's
       # version overrides correct it like any other.
       def classification(entry)
-        parsed = Granblue::Parsers::WeaponSkillParser.parse(entry["skill"])
-        modifier = parsed[:modifier]&.sub(/:\s*(Fire|Water|Earth|Wind|Light|Dark)\z/, "")
+        parsed = Granblue::Parsers::WeaponSkillParser.parse(entry['skill'])
+        modifier = parsed[:modifier]&.sub(/:\s*(Fire|Water|Earth|Wind|Light|Dark)\z/, '')
         modifier = nil unless WeaponSkillVersion::VALID_MODIFIERS.include?(modifier)
-        series = Granblue::Parsers::WeaponSkillDescriptionParser.series_for(entry["description_en"], entry["skill"])
+        series = Granblue::Parsers::WeaponSkillDescriptionParser.series_for(entry['description_en'], entry['skill'])
         { skill_modifier: modifier, skill_series: series.presence, skill_size: parsed[:size].presence }
       end
 
       # Skills are shared by name; a new name gets the op's Japanese name and text.
       def skill_for(entry)
-        skill = Skill.find_or_initialize_by(name_en: entry["skill"], skill_type: :weapon)
+        skill = Skill.find_or_initialize_by(name_en: entry['skill'], skill_type: :weapon)
         return skill if skill.persisted?
 
-        skill.update!(name_jp: entry["skill_jp"], description_en: entry["description_en"], description_jp: entry["description_jp"])
+        skill.update!(name_jp: entry['skill_jp'], description_en: entry['description_en'], description_jp: entry['description_jp'])
         skill
       end
 
@@ -131,7 +131,7 @@ module Granblue
 
       def gate_attrs(entry)
         attrs = entry.slice(*GATE_FIELDS)
-        attrs["transcendence_stage"] ||= 0 if attrs.key?("transcendence_stage") # the column is not null
+        attrs['transcendence_stage'] ||= 0 if attrs.key?('transcendence_stage') # the column is not null
         attrs
       end
 
@@ -140,7 +140,7 @@ module Granblue
         return :satisfied if matches?(version, attrs)
 
         # update_columns: skip callbacks and the curation stamp; ops carry no database stamp.
-        version.update_columns(attrs.merge("updated_at" => Time.current))
+        version.update_columns(attrs.merge('updated_at' => Time.current))
         :applied
       end
 

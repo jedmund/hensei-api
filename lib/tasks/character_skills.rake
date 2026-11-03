@@ -52,18 +52,18 @@ namespace :granblue do
   end
 
   desc "Clean characters' stored game payloads down to character data (for a database where the copy " \
-       "migration ran before it did that). Counts only; idempotent; queues no builds."
+       'migration ran before it did that). Counts only; idempotent; queues no builds.'
   task sanitize_character_sources: :environment do
     ActiveRecord::Base.logger = nil
     CharacterSkills::SourceSanitizer.new.call
   end
 
-  desc "Build character skills from the stored sources (CharacterSkills::Build::Runner). " \
-       "mode=shadow (default unless CHARACTER_SKILL_BUILD=write) builds in a rolled-back transaction and prints " \
-       "the differences; mode=write keeps the result. Builds only characters whose fingerprint changed unless " \
-       "all=true; ids=GRANBLUE_ID,... narrows the run (both styles); icons=false skips queueing icon downloads " \
-       "(e.g. on a local copy). A write waits for a running build (up to 5 minutes, then aborts). " \
-       "Exits nonzero if any character failed."
+  desc 'Build character skills from the stored sources (CharacterSkills::Build::Runner). ' \
+       'mode=shadow (default unless CHARACTER_SKILL_BUILD=write) builds in a rolled-back transaction and prints ' \
+       'the differences; mode=write keeps the result. Builds only characters whose fingerprint changed unless ' \
+       'all=true; ids=GRANBLUE_ID,... narrows the run (both styles); icons=false skips queueing icon downloads ' \
+       '(e.g. on a local copy). A write waits for a running build (up to 5 minutes, then aborts). ' \
+       'Exits nonzero if any character failed.'
   task build_character_skills: :environment do
     ActiveRecord::Base.logger = nil
     mode = ENV['mode'].presence || (CharacterSkills.build_mode == 'write' ? 'write' : 'shadow')

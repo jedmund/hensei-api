@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "rails_helper"
+require 'rails_helper'
 
 RSpec.describe Granblue::Parsers::SeriesKeyParser do
   # A trimmed Dark Opus-style key table: an explicit-value pendulum whose Skill prose follows a
@@ -26,13 +26,13 @@ RSpec.describe Granblue::Parsers::SeriesKeyParser do
     result = described_class.parse(wikitext)
 
     expect(result).to contain_exactly(
-      a_hash_including(name: "β Pendulum", skill_text: "50% boost to skill DMG cap"),
-      a_hash_including(name: "Pendulum of Strength",
+      a_hash_including(name: 'β Pendulum', skill_text: '50% boost to skill DMG cap'),
+      a_hash_including(name: 'Pendulum of Strength',
                        skill_text: "Big boost to weapon element allies' ATK based on how high HP is.")
     )
   end
 
-  it "ignores non-key tables" do
+  it 'ignores non-key tables' do
     expect(described_class.parse("{|\n! Foo !! Bar\n|-\n| a || b\n|}")).to be_empty
   end
 end

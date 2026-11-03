@@ -267,15 +267,15 @@ namespace :deploy do
   def display_configuration(options)
     log_header('Configuration', '-')
     puts "\n"
-    display_status("Test mode", options[:test_mode])
-    display_status("Verbose output", options[:verbose])
-    display_status("Process all", options[:force])
+    display_status('Test mode', options[:test_mode])
+    display_status('Verbose output', options[:verbose])
+    display_status('Process all', options[:force])
     puts "Storage mode:\t#{options[:storage]}"
     puts "\n"
   end
 
   def display_status(label, enabled)
-    status = enabled ? "✅ Enabled" : "❌ Disabled"
+    status = enabled ? '✅ Enabled' : '❌ Disabled'
     puts "#{label}:\t#{status}"
   end
 

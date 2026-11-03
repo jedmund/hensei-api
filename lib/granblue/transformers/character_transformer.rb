@@ -24,11 +24,11 @@ module Granblue
       #   @option character [Integer] :transcend Character's transcendence phase level
       def transform
         # Log start of transformation process
-        Rails.logger.info "[TRANSFORM] Starting CharacterTransformer#transform"
+        Rails.logger.info '[TRANSFORM] Starting CharacterTransformer#transform'
 
         # Validate that the input data is a Hash
         unless data.is_a?(Hash)
-          Rails.logger.error "[TRANSFORM] Invalid character data structure"
+          Rails.logger.error '[TRANSFORM] Invalid character data structure'
           return []
         end
 
@@ -55,7 +55,7 @@ module Granblue
           # Add perpetuity ring status if present
           if param['has_npcaugment_constant']
             character[:ringed] = true
-            Rails.logger.debug "[TRANSFORM] Character is ringed"
+            Rails.logger.debug '[TRANSFORM] Character is ringed'
           end
 
           # Add transcendence level if present (stored as 'phase' in raw data)

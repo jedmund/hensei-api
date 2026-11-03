@@ -13,7 +13,7 @@ module WeaponSkills
         # parser reads its section as plain "atk" per same weapon type: a second boost that
         # double-counts. No database row came from it today (its pages are inline, so a reparse
         # never expanded them), so skipping it keeps parity. See #546.
-        CANONICAL_NOTES_FAMILIES = ["Staff Resonance", "Grand Epic"].freeze
+        CANONICAL_NOTES_FAMILIES = ['Staff Resonance', 'Grand Epic'].freeze
         # The notes-owned scaling kinds: the description pass leaves these alone (its purge
         # spares them), so they survive it. A notes "static" row does not.
         KEPT_KINDS = %w[per_grid_count specialty_scaled].freeze
@@ -54,16 +54,16 @@ module WeaponSkills
         # text ("Affects allies of any element"); a per-count boost depends on the grid count,
         # as the canonical per_grid_count rows do.
         def effect(name, info, clause)
-          base = { modifier: name, boost_type: clause[:boost_type], series: info[:frame], value_unit: "percent",
-                   applies_to: info[:applies_to] || "element_allies", stacking: "additive" }
+          base = { modifier: name, boost_type: clause[:boost_type], series: info[:frame], value_unit: 'percent',
+                   applies_to: info[:applies_to] || 'element_allies', stacking: 'additive' }
           case clause[:scaling]
           when :per_count
-            base.merge(scaling_kind: "per_grid_count", value: clause[:value], count_basis: "same_weapon_type",
-                       total_cap: clause[:max], shared_cap_group: clause[:shared_cap], depends_on: ["grid_count"])
+            base.merge(scaling_kind: 'per_grid_count', value: clause[:value], count_basis: 'same_weapon_type',
+                       total_cap: clause[:max], shared_cap_group: clause[:shared_cap], depends_on: ['grid_count'])
           when :per_specialty
-            base.merge(scaling_kind: "specialty_scaled", condition: { "specialties" => clause[:by_specialty] })
+            base.merge(scaling_kind: 'specialty_scaled', condition: { 'specialties' => clause[:by_specialty] })
           when :flat
-            base.merge(scaling_kind: "static", value: clause[:value])
+            base.merge(scaling_kind: 'static', value: clause[:value])
           end
         end
       end

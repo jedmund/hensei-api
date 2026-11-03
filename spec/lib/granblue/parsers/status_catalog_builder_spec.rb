@@ -123,7 +123,7 @@ RSpec.describe Granblue::Parsers::StatusCatalogBuilder do
 
     it 'finds existing rows by key: tabs, newlines and non-ASCII case' do
       existing = [Status.create!(name_en: "DEF\tUp", category: 'buff'), Status.create!(name_en: 'ÄRGER UP', category: 'buff')]
-      character('One', "Gain {{status|DEF Up}} and {{status|Ärger Up}}.")
+      character('One', 'Gain {{status|DEF Up}} and {{status|Ärger Up}}.')
       expect(described_class.build_all).to include(created: 0, failed: 0)
       expect(Status.pluck(:id)).to match_array(existing.map(&:id))
     end
@@ -187,7 +187,7 @@ RSpec.describe Granblue::Parsers::StatusCatalogBuilder do
       expect(Status.order(:name_en).pluck(:name_en, :category)).to eq([%w[Misfiled debuff], ['Shared Buff', 'buff']])
     end
 
-    it "takes the usual category from its effects, and marks a status whose effects split as mixed" do
+    it 'takes the usual category from its effects, and marks a status whose effects split as mixed' do
       Granblue::Parsers::StatusList.use(<<~LUA)
         local debuffs = { ['Hostility Boosted'] = { status = '1463' } }
         return { buffs = {}, debuffs = debuffs, effects = {}, aliases = {} }
@@ -226,7 +226,7 @@ RSpec.describe Granblue::Parsers::StatusCatalogBuilder do
       expect(effect.reload.status.name_en).to eq('Blinded')
     end
 
-    it "refreshes a status no text mentions from the list" do
+    it 'refreshes a status no text mentions from the list' do
       Granblue::Parsers::StatusList.use(File.read(Rails.root.join('spec/fixtures/wiki/status_list_extract.lua')))
       orphan = Status.create!(name_en: 'Accuracy Lowered', category: 'buff')
       character('One', 'Gain {{status|Veil}}.')
@@ -263,7 +263,7 @@ RSpec.describe Granblue::Parsers::StatusCatalogBuilder do
   end
 
   describe '.build_all with style data' do
-    it "reads characters whose game data names its style" do
+    it 'reads characters whose game data names its style' do
       put_source(character('Styled', 'Inflict {{status|Burned}} on a foe.'), :game_raw_en, { 'style' => 1 })
       described_class.build_all
       expect(Status.pluck(:name_en)).to eq(['Burned'])

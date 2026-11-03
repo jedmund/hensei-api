@@ -65,7 +65,7 @@ class DownloadWeaponImagesJob < ApplicationJob
       storage: :s3
     )
 
-    Rails.logger.info "[DownloadWeaponImages] Calling service.download..."
+    Rails.logger.info '[DownloadWeaponImages] Calling service.download...'
     result = service.download
     Rails.logger.info "[DownloadWeaponImages] Service returned: success=#{result.success?}, " \
                       "total=#{result.total}, error=#{result.error}"

@@ -24,13 +24,13 @@ namespace :granblue do
   task fetch_weapon_sources: :environment do
     ActiveRecord::Base.logger = nil
     store = WeaponSkills::SourceStore
-    ids = ENV["ids"].presence&.split(",")&.map(&:strip)
-    stale_days = ENV["stale_days"].presence&.to_f
-    kind = ENV["kind"].presence
+    ids = ENV['ids'].presence&.split(',')&.map(&:strip)
+    stale_days = ENV['stale_days'].presence&.to_f
+    kind = ENV['kind'].presence
     abort "unknown kind=#{kind} (#{store::KINDS.join(', ')})" if kind && !store::KINDS.include?(kind)
 
     cutoff = stale_days&.days&.ago
-    fetcher = store::Fetcher.new(delay: Granblue::WikiThrottle.clamp(ENV["delay"].presence, warn: method(:puts)), log: ->(line) { puts line })
+    fetcher = store::Fetcher.new(delay: Granblue::WikiThrottle.clamp(ENV['delay'].presence, warn: method(:puts)), log: ->(line) { puts line })
     fresh = lambda do |scope|
       scope = scope.where(fetched_at: cutoff..) if cutoff
       scope
@@ -39,11 +39,11 @@ namespace :granblue do
 
     weapon_kinds = kind ? [kind] & store::Fetcher::WEAPON_KINDS : store::Fetcher::WEAPON_KINDS
     if weapon_kinds.any?
-      weapons = Weapon.where.not(wiki_en: [nil, ""]).order(:granblue_id)
+      weapons = Weapon.where.not(wiki_en: [nil, '']).order(:granblue_id)
       if ids
         weapons = weapons.where(granblue_id: ids)
       else
-        marker = weapon_kinds.include?("wiki_raw") ? "wiki_raw" : weapon_kinds.first
+        marker = weapon_kinds.include?('wiki_raw') ? 'wiki_raw' : weapon_kinds.first
         done = fresh.call(WeaponSource.where(kind: marker).where.not(weapon_id: nil))
         weapons = weapons.where.not(id: done.select(:weapon_id))
       end
@@ -58,17 +58,17 @@ namespace :granblue do
       end
     end
 
-    if ids.nil? && (kind.nil? || kind == "family_template")
+    if ids.nil? && (kind.nil? || kind == 'family_template')
       names = Granblue::Extractors::FamilyTemplateImporter::NAV_FAMILIES
-      have = fresh.call(WeaponSource.where(kind: "family_template", weapon_id: nil)).pluck(:key).to_set
+      have = fresh.call(WeaponSource.where(kind: 'family_template', weapon_id: nil)).pluck(:key).to_set
       todo = names.reject { |n| have.include?(Granblue::Extractors::FamilyTemplateImporter.template_title(n)) }
       puts "Fetching #{todo.size} family templates…"
       todo.each { |name| fetcher.fetch_family_template(name) }
     end
 
-    if ids.nil? && (kind.nil? || kind == "wiki_raw")
+    if ids.nil? && (kind.nil? || kind == 'wiki_raw')
       pages = Granblue::Extractors::KeySkillExtractor::SERIES_PAGES
-      have = fresh.call(WeaponSource.where(kind: "wiki_raw", weapon_id: nil)).pluck(:key).to_set
+      have = fresh.call(WeaponSource.where(kind: 'wiki_raw', weapon_id: nil)).pluck(:key).to_set
       todo = pages.reject { |p| have.include?(p) }
       puts "Fetching #{todo.size} key series pages…"
       todo.each { |page| fetcher.fetch_series_page(page) }
@@ -93,7 +93,7 @@ namespace :granblue do
   DESC
   task export_weapon_sources: :environment do
     ActiveRecord::Base.logger = nil
-    path = ENV.fetch("file", "tmp/weapon_sources.jsonl.gz")
+    path = ENV.fetch('file', 'tmp/weapon_sources.jsonl.gz')
     count = WeaponSkills::SourceStore::Transfer.export(path)
     puts "Exported #{count} sources to #{path} (#{(File.size(path) / 1024.0 / 1024).round(1)} MB)"
   end
@@ -111,7 +111,7 @@ namespace :granblue do
   task import_weapon_sources: :environment do
     ActiveRecord::Base.logger = nil
     transfer = WeaponSkills::SourceStore::Transfer
-    header, rows = transfer.read(ENV.fetch("file", "tmp/weapon_sources.jsonl.gz"))
+    header, rows = transfer.read(ENV.fetch('file', 'tmp/weapon_sources.jsonl.gz'))
     plan = transfer.plan(rows)
     puts "File: #{rows.size} sources, exported #{header['exported_at']}"
     puts "Database: #{ActiveRecord::Base.connection_db_config.database} " \
@@ -122,11 +122,11 @@ namespace :granblue do
     plan.problems.first(20).each { |p| puts "  - #{p}" }
     puts "  … #{plan.problems.size - 20} more" if plan.problems.size > 20
 
-    if ENV["write"] == "true"
+    if ENV['write'] == 'true'
       Weapon.without_skill_build { transfer.apply(plan) }
       puts "Written. stored sources now: #{WeaponSource.group(:kind).count.sort.map { |k, v| "#{k}=#{v}" }.join(', ')}"
     else
-      puts "Dry run; nothing written. Add write=true to apply."
+      puts 'Dry run; nothing written. Add write=true to apply.'
     end
   end
 
@@ -141,7 +141,7 @@ namespace :granblue do
   DESC
   task check_weapon_sources: :environment do
     ActiveRecord::Base.logger = nil
-    delay = Granblue::WikiThrottle.clamp(ENV["delay"].presence, warn: method(:puts))
+    delay = Granblue::WikiThrottle.clamp(ENV['delay'].presence, warn: method(:puts))
     fetcher = WeaponSkills::SourceStore::Fetcher.new(delay: delay, log: ->(l) { puts l })
     freshness = WeaponSkills::SourceStore::Freshness.new(fetcher: fetcher)
     result = freshness.check
@@ -153,8 +153,8 @@ namespace :granblue do
     puts "No longer on the wiki: #{result.missing.size}" if result.missing.any?
     result.missing.first(30).each { |t| puts "  - #{t}" }
 
-    if ENV["refetch"] == "true" && result.stale?
-      puts "Refetching…"
+    if ENV['refetch'] == 'true' && result.stale?
+      puts 'Refetching…'
       stats = Weapon.without_skill_build { freshness.refetch(result, log: ->(l) { puts l }) }
       puts "Requests: #{stats['requests']}; failures: #{fetcher.failures.size}"
       fetcher.failures.each { |f| puts "  - #{f[:kind]} #{f[:key]} (weapon #{f[:weapon]}): #{f[:error]}" }

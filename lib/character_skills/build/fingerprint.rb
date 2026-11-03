@@ -31,7 +31,7 @@ module CharacterSkills
       SOURCES = (REQUIRED_SOURCES + OPTIONAL_SOURCES).freeze
       # Columns besides the sources that change the Builder's output (D15).
       ATTRIBUTES = %w[granblue_id element style_swap].freeze
-      NONE = "-"
+      NONE = '-'
 
       # One instance per run: the statuses and icons digests are computed once, after the
       # status catalogue has been refreshed.
@@ -44,7 +44,7 @@ module CharacterSkills
       # any source body.
       def for_relation(relation)
         rows = relation.pluck(:id, *ATTRIBUTES)
-        shas = Source.where(owner_type: Character.polymorphic_name, owner_id: rows.map(&:first), kind: SOURCES, key: "")
+        shas = Source.where(owner_type: Character.polymorphic_name, owner_id: rows.map(&:first), kind: SOURCES, key: '')
                      .pluck(:owner_id, :kind, :sha256)
                      .each_with_object(Hash.new { |h, k| h[k] = {} }) { |(id, kind, sha), by_id| by_id[id][kind] = sha }
         rows.to_h do |id, *values|
@@ -56,7 +56,7 @@ module CharacterSkills
       def statuses_digest
         @statuses_digest ||= Digest::SHA256.hexdigest(
           Status.pluck(:id, :name_en, :category, :game_status_id, :variant_kind).sort_by { |id, *| id.to_s }
-                .map { |row| row.join(":") }.join("\n")
+                .map { |row| row.join(':') }.join("\n")
         )
       end
 

@@ -188,9 +188,9 @@ module Granblue
 
         if missing_columns.any?
           details = [
-            "Missing required columns:",
+            'Missing required columns:',
             missing_columns.map { |col| "  • #{col}" },
-            "",
+            '',
             "Affected model: #{model_class.name}"
           ].flatten.join("\n")
 
@@ -221,9 +221,9 @@ module Granblue
 
         if missing_columns.any?
           details = [
-            "Missing required values for update:",
+            'Missing required values for update:',
             missing_columns.map { |col| "  • #{col}" },
-            "",
+            '',
             "Affected model: #{model_class.name}"
           ].flatten.join("\n")
 
@@ -254,9 +254,9 @@ module Granblue
           if e.message.include?('violates not-null constraint')
             column = e.message.match(/column "([^"]+)"/)[1]
             details = [
-              "Database constraint violation:",
+              'Database constraint violation:',
               "  • Column '#{column}' cannot be null",
-              "",
+              '',
               "Affected model: #{model_class.name}"
             ].join("\n")
 
@@ -315,7 +315,7 @@ module Granblue
       def log_test_update(record, attributes)
         update_attributes = attributes.compact
         @logger&.log_step("\nUpdate #{model_class.name} #{record.granblue_id}:")
-        @logger&.log_verbose("Current values:")
+        @logger&.log_verbose('Current values:')
         @logger&.log_verbose(format_attributes(record.attributes.symbolize_keys))
         @logger&.log_verbose("\nNew values:")
         @logger&.log_verbose(format_attributes(update_attributes))
@@ -443,10 +443,10 @@ module Granblue
       # @return [String] Formatted error message
       def format_validation_error(error)
         [
-          "Validation failed:",
+          'Validation failed:',
           error.record.errors.full_messages.map { |msg| "  • #{msg}" },
-          "",
-          "Record attributes:",
+          '',
+          'Record attributes:',
           format_attributes(error.record.attributes.symbolize_keys)
         ].flatten.join("\n")
       end
@@ -458,8 +458,8 @@ module Granblue
         if @verbose && error.respond_to?(:backtrace)
           [
             error.message,
-            "",
-            "Backtrace:",
+            '',
+            'Backtrace:',
             error.backtrace.take(3).map { |line| "  #{line}" }
           ].flatten.join("\n")
         else

@@ -6,7 +6,7 @@ module Processors
   class DummyBaseProcessor < BaseProcessor
     # A dummy implementation of process.
     def process
-      "processed"
+      'processed'
     end
 
     # Expose the protected log method as public for testing.
@@ -24,20 +24,20 @@ RSpec.describe Processors::DummyBaseProcessor, type: :model do
 
   describe '#process' do
     it 'returns the dummy processed value' do
-      expect(processor.process).to eq("processed")
+      expect(processor.process).to eq('processed')
     end
   end
 
   describe '#public_log' do
     it 'logs a message containing the processor class name' do
-      message = "Test log message"
-      expect(Rails.logger).to receive(:info).with(a_string_including("DummyBaseProcessor", message))
+      message = 'Test log message'
+      expect(Rails.logger).to receive(:info).with(a_string_including('DummyBaseProcessor', message))
       processor.public_log(message)
     end
 
     it 'formats log with bracket-wrapped class name' do
       expect(Rails.logger).to receive(:info).with(/\[.*DummyBaseProcessor.*\]/)
-      processor.public_log("any message")
+      processor.public_log('any message')
     end
   end
 
@@ -46,7 +46,7 @@ RSpec.describe Processors::DummyBaseProcessor, type: :model do
       party = create(:party)
       data = { 'key' => 'value' }
       proc = described_class.new(party, data)
-      expect(proc.process).to eq("processed")
+      expect(proc.process).to eq('processed')
     end
   end
 end
