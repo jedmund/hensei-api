@@ -214,31 +214,6 @@ RSpec.describe GridWeapon, type: :model do
     end
   end
 
-  describe '#key_slot_unlocked?' do
-    let(:ultima) { WeaponSeries.find_by(slug: 'ultima') || create(:weapon_series, slug: 'ultima') }
-    let(:slots) { [0, 1, 2].map { |slot| build(:weapon_key, slot: slot) } }
-
-    def unlocked(weapon, uncap_level)
-      copy = build(:grid_weapon, weapon: weapon, uncap_level: uncap_level)
-      slots.map { |key| copy.key_slot_unlocked?(key) }
-    end
-
-    it 'opens Gate of Omnipotence only on a 5★ Ultima weapon' do
-      weapon = build(:weapon, weapon_series: ultima, ulb: true)
-
-      expect(unlocked(weapon, 4)).to eq([true, true, false])
-      expect(unlocked(weapon, 5)).to eq([true, true, true])
-    end
-
-    it 'gives Atma weapons only the standard Gauph slot' do
-      expect(unlocked(build(:weapon, weapon_series: ultima, ulb: false), 3)).to eq([true, false, false])
-    end
-
-    it 'leaves other series unrestricted' do
-      expect(unlocked(build(:weapon, :opus), 3)).to eq([true, true, true])
-    end
-  end
-
   describe '#blueprint' do
     it 'returns the GridWeaponBlueprint constant' do
       expect(grid_weapon.blueprint).to eq(GridWeaponBlueprint)

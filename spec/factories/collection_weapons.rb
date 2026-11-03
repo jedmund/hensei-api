@@ -59,6 +59,7 @@ FactoryBot.define do
 
     # Trait for weapon with keys
     trait :with_keys do
+      uncap_level { 5 } # Opus pendulum/chain slots open at 4★/5★ (WeaponKeySlots)
       after(:build) do |collection_weapon|
         # Use an Opus weapon since it supports keys
         collection_weapon.weapon = FactoryBot.create(:weapon, :opus)

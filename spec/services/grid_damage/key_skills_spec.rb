@@ -44,8 +44,9 @@ RSpec.describe GridDamage::KeySkills do
     series.update!(has_weapon_keys: true, summon_boosted: false)
     key = compatible_key(series, slug: 'gauph-tria', slot: 2)
     weapon = create(:weapon, :transcendable, weapon_series: series)
-    grid_weapon = create(:grid_weapon, party: party, weapon: weapon, position: 0, uncap_level: 4,
-                                       weapon_key3: key)
+    grid_weapon = create(:grid_weapon, party: party, weapon: weapon, position: 0, uncap_level: 4)
+    # A row saved before WeaponKeySlots rejected it
+    grid_weapon.update_columns(weapon_key3_id: key.id)
     WeaponSkillEffect.where(key_slug: key.slug).delete_all
     WeaponSkillEffect.create!(
       key_slug: key.slug, modifier: 'Gauph Key Tria', boost_type: 'elem_amplify', series: 'ex',
@@ -55,7 +56,7 @@ RSpec.describe GridDamage::KeySkills do
 
     expect(described_class.contributions(party, composition: {})).to be_empty
 
-    grid_weapon.update!(uncap_level: 5)
+    grid_weapon.update_columns(uncap_level: 5)
     expect(described_class.contributions(party, composition: {}).sole)
       .to have_attributes(boost_type: 'elem_amplify', value: 25.0)
   end

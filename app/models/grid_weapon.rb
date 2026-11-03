@@ -24,6 +24,7 @@ class GridWeapon < ApplicationRecord
   include WeaponCapabilityResolution
   include AxSkillValidation
   include SolomonisSealable
+  include WeaponKeySlots
 
   # Allowed extra positions (9, 10, 11 are the "extra" grid slots)
   EXTRA_POSITIONS = [9, 10, 11].freeze
@@ -256,24 +257,6 @@ class GridWeapon < ApplicationRecord
   # @return [Array<WeaponKey>] the non-nil weapon keys.
   def weapon_keys
     [weapon_key1, weapon_key2, weapon_key3].compact
-  end
-
-  ##
-  # Whether the game opens this key's slot on this copy (gbf.wiki Ultima Weapons).
-  # Soulless Passage (slot 1) exists only on Ultima weapons, not their Atma first stage
-  # (the level-100 weapons without a ULB); Gate of Omnipotence (slot 2) only on level-200
-  # (5★) copies. Other key series aren't modeled and stay unlocked.
-  #
-  # @param key [WeaponKey]
-  # @return [Boolean]
-  def key_slot_unlocked?(key)
-    return true unless weapon&.weapon_series&.slug == 'ultima'
-
-    case key.slot
-    when 1 then weapon.ulb == true
-    when 2 then weapon.ulb == true && uncap_level.to_i >= 5
-    else true
-    end
   end
 
   ##

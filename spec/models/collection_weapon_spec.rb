@@ -131,7 +131,7 @@ RSpec.describe CollectionWeapon, type: :model do
       context 'when weapon_key4 is set on Opus weapon' do
         it 'is valid' do
           key = create(:weapon_key, :opus_key)
-          collection_weapon = build(:collection_weapon, weapon: opus_weapon, weapon_key4: key)
+          collection_weapon = build(:collection_weapon, weapon: opus_weapon, uncap_level: 5, weapon_key4: key)
           expect(collection_weapon).to be_valid
         end
       end
