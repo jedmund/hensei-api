@@ -38,7 +38,7 @@ module WeaponSkills
       Context.new(
         store: store, overlay: overlay, view: Granblue::CurationSnapshot::View.new(overlay), registry: registry,
         ops: overlay.entries('ops').group_by { |op| op['weapon'].to_s },
-        overrides: overlay.entries('versions').to_h { |e| [[e['weapon'].to_s, e['skill'].to_s, e['ordinal'].to_i], e] }
+        overrides: overlay.entries('versions').index_by { |e| [e['weapon'].to_s, e['skill'].to_s, e['ordinal'].to_i] }
       )
     end
 

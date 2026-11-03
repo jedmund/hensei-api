@@ -267,7 +267,7 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
 
   describe '#process_weapon_keys' do
     let(:deck_data) do
-      file_path = Rails.root.join('spec', 'fixtures', 'deck_sample2.json')
+      file_path = Rails.root.join("spec/fixtures/deck_sample2.json")
       JSON.parse(File.read(file_path))
     end
 
@@ -304,7 +304,7 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
   describe 'AX skills survive collection sync' do
     # Weapon 10 in deck_sample2 is Celeste Zaghnal Omega with augment_skill_info skill_id=1589 (ax_atk)
     let(:deck_data) do
-      file_path = Rails.root.join('spec', 'fixtures', 'deck_sample2.json')
+      file_path = Rails.root.join("spec/fixtures/deck_sample2.json")
       JSON.parse(File.read(file_path))
     end
 
@@ -447,7 +447,7 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
 
   describe 'processing a complete canonical deck' do
     let(:deck_data) do
-      file_path = Rails.root.join('spec', 'fixtures', 'deck_sample2.json')
+      file_path = Rails.root.join("spec/fixtures/deck_sample2.json")
       JSON.parse(File.read(file_path))
     end
 

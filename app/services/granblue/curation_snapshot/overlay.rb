@@ -141,7 +141,7 @@ module Granblue
       # A row that a remove_row op deletes would come straight back from the rows section.
       def removed_row_errors
         removed = entries('ops').select { |op| op['op'] == 'remove_row' }
-                                .to_h { |op| [[op['section']] + self.class.identity(op['section'], op), op] }
+                                .index_by { |op| [op['section']] + self.class.identity(op['section'], op) }
         WeaponSkills::OverlaySchema::ROW_OP_SECTIONS.flat_map do |section|
           entries(section).filter_map do |entry|
             next unless removed.key?([section] + self.class.identity(section, entry))

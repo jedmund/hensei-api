@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe 'Ultima key effect data' do
   let(:effects) do
-    payload = JSON.parse(File.read(Rails.root.join('data', 'weapon_skill_effects.json')))
+    payload = JSON.parse(File.read(Rails.root.join("data/weapon_skill_effects.json")))
     payload.fetch('effects')
   end
 

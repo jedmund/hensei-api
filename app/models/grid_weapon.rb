@@ -28,7 +28,7 @@ class GridWeapon < ApplicationRecord
   # Allowed extra positions (9, 10, 11 are the "extra" grid slots)
   EXTRA_POSITIONS = [9, 10, 11].freeze
 
-  belongs_to :weapon, foreign_key: :weapon_id, primary_key: :id
+  belongs_to :weapon, primary_key: :id
 
   belongs_to :party,
              inverse_of: :weapons
@@ -37,10 +37,10 @@ class GridWeapon < ApplicationRecord
   has_many :substitutions, as: :grid, dependent: :destroy
   has_many :substitute_of, class_name: 'Substitution', as: :substitute_grid, dependent: :destroy
 
-  belongs_to :weapon_key1, class_name: 'WeaponKey', foreign_key: :weapon_key1_id, optional: true
-  belongs_to :weapon_key2, class_name: 'WeaponKey', foreign_key: :weapon_key2_id, optional: true
-  belongs_to :weapon_key3, class_name: 'WeaponKey', foreign_key: :weapon_key3_id, optional: true
-  belongs_to :weapon_key4, class_name: 'WeaponKey', foreign_key: :weapon_key4_id, optional: true
+  belongs_to :weapon_key1, class_name: 'WeaponKey', optional: true
+  belongs_to :weapon_key2, class_name: 'WeaponKey', optional: true
+  belongs_to :weapon_key3, class_name: 'WeaponKey', optional: true
+  belongs_to :weapon_key4, class_name: 'WeaponKey', optional: true
 
   belongs_to :awakening, optional: true
   belongs_to :collection_weapon, optional: true

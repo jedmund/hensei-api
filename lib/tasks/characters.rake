@@ -99,7 +99,7 @@ namespace :characters do
   end
   desc 'Export characters to CSV for season/series mapping'
   task export_for_mapping: :environment do
-    output_path = ENV['OUTPUT'] || Rails.root.join('export', 'characters_for_mapping.csv')
+    output_path = ENV['OUTPUT'] || Rails.root.join("export/characters_for_mapping.csv")
     FileUtils.mkdir_p(File.dirname(output_path))
 
     headers = %w[id granblue_id name_en name_jp rarity element season series gacha_available]

@@ -20,7 +20,7 @@ class GridCharacter < ApplicationRecord
   ROLE_CAP = 3
 
   # Associations
-  belongs_to :character, foreign_key: :character_id, primary_key: :id
+  belongs_to :character, primary_key: :id
   belongs_to :awakening, optional: true
   belongs_to :party,
              inverse_of: :characters

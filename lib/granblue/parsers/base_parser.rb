@@ -136,7 +136,7 @@ module Granblue
       end
 
       def parse_date(date_str)
-        Date.parse(date_str) unless date_str.blank?
+        Date.parse(date_str) if date_str.present?
       end
     end
   end

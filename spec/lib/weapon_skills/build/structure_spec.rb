@@ -24,7 +24,7 @@ RSpec.describe WeaponSkills::Build::Structure do
   end
 
   def versions(granblue_id, **)
-    compile(granblue_id, **)[1].to_h { |v| [[v.position, v.ordinal], v] }
+    compile(granblue_id, **)[1].index_by { |v| [v.position, v.ordinal] }
   end
 
   def gate(version) = [version.unlock_level, version.min_uncap, version.transcendence_stage]

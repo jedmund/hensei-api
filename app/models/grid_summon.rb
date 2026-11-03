@@ -15,7 +15,7 @@ class GridSummon < ApplicationRecord
 
   # The support (friend) summon's position.
   FRIEND_POSITION = 6
-  belongs_to :summon, foreign_key: :summon_id, primary_key: :id
+  belongs_to :summon, primary_key: :id
 
   belongs_to :party,
              inverse_of: :summons

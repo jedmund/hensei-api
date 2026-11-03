@@ -6,7 +6,7 @@ class Raid < ApplicationRecord
   # Lowercase words joined by single hyphens, e.g. "lucilius-hard".
   SLUG_FORMAT = /\A[a-z0-9]+(?:-[a-z0-9]+)*\z/
 
-  belongs_to :group, class_name: 'RaidGroup', foreign_key: :group_id
+  belongs_to :group, class_name: 'RaidGroup'
 
   has_many :event_raids, dependent: :destroy
   has_many :events, through: :event_raids

@@ -262,7 +262,7 @@ module Api
       def build_conditions
         params = request.params
 
-        unless params['recency'].blank?
+        if params['recency'].present?
           start_time = (DateTime.current - params['recency'].to_i.seconds)
                          .to_datetime.beginning_of_day
         end
@@ -274,9 +274,9 @@ module Api
 
         {}.tap do |hash|
           # Basic filters
-          hash[:element] = params['element'].to_i unless params['element'].blank?
-          hash[:raid] = params['raid'] unless params['raid'].blank?
-          hash[:created_at] = start_time..DateTime.current unless params['recency'].blank?
+          hash[:element] = params['element'].to_i if params['element'].present?
+          hash[:raid] = params['raid'] if params['raid'].present?
+          hash[:created_at] = start_time..DateTime.current if params['recency'].present?
 
           # Advanced filters: Team parameters
           unless params['full_auto'].blank? || params['full_auto'].to_i == -1

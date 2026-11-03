@@ -18,10 +18,10 @@ namespace :granblue do
       size = args[:size]
 
       # Include character model
-      Dir.glob("#{Rails.root}/app/models/summon.rb").each { |file| require file }
+      Dir.glob("#{Rails.root.join("app/models/summon.rb")}").each { |file| require file }
 
       # Set up filepath
-      dir = "#{Rails.root}/export/"
+      dir = "#{Rails.root.join("export/")}"
       filename = "#{dir}/summon-#{size}.txt"
       FileUtils.mkdir(dir) unless Dir.exist?(dir)
 

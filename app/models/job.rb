@@ -33,7 +33,6 @@ class Job < ApplicationRecord
                   }
 
   belongs_to :base_job,
-             foreign_key: 'base_job_id',
              class_name: 'Job',
              optional: true
 

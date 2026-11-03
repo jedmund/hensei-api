@@ -81,7 +81,7 @@ module Granblue
       # @param size [String] Image size variant (ignored)
       # @return [String] Local directory path
       def download_path(size)
-        "#{Rails.root}/download/#{object_type}"
+        "#{Rails.root.join("download/#{object_type}")}"
       end
 
       # Gets base URL for job skill assets

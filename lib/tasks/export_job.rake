@@ -21,10 +21,10 @@ namespace :granblue do
     # job-icon
     def write_urls(size)
       # Include model
-      Dir.glob("#{Rails.root}/app/models/job.rb").each { |file| require file }
+      Dir.glob("#{Rails.root.join("app/models/job.rb")}").each { |file| require file }
 
       # Set up filepath
-      dir = "#{Rails.root}/export/"
+      dir = "#{Rails.root.join("export/")}"
       filename = "#{dir}job-#{size}.txt"
       FileUtils.mkdir(dir) unless Dir.exist?(dir)
 

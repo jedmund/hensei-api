@@ -78,6 +78,6 @@ class IconStorage
   end
 
   def local_path(key)
-    Rails.root.join('public', key)
+    Rails.public_path.join(key)
   end
 end
