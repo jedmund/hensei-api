@@ -1,0 +1,115 @@
+{
+  "_synthetic": "HAND-WRITTEN edge cases in the real event_history column shape (see event_history.json for real data). Not real gbf.wiki rows.",
+  "cargoquery": [
+    {
+      "title": {
+        "unique key": "syn-unmapped",
+        "name": "Proving Grounds",
+        "type": "",
+        "grp": "Proving Grounds",
+        "enname": "Proving Grounds",
+        "jpname": "",
+        "wiki page": "",
+        "time known": "yes",
+        "time start": "",
+        "time end": "",
+        "utc start": "1796119200",
+        "utc end": "1796723940",
+        "jst start": "0",
+        "jst end": "",
+        "enimage": "",
+        "jpimage": "",
+        "unf element": "",
+        "element": "plasma"
+      }
+    },
+    {
+      "title": {
+        "unique key": "syn-mismatch",
+        "name": "Unite and Fight",
+        "type": "",
+        "grp": "Unite and Fight",
+        "enname": "Unite and Fight",
+        "jpname": "",
+        "wiki page": "",
+        "time known": "yes",
+        "time start": "",
+        "time end": "",
+        "utc start": "1796896800",
+        "utc end": "1797519540",
+        "jst start": "",
+        "jst end": "",
+        "enimage": " ;Banner A.png;Banner B.png",
+        "jpimage": "",
+        "unf element": "water",
+        "element": "fire"
+      }
+    },
+    {
+      "title": {
+        "unique key": "syn-unknown-time",
+        "name": "Mystery Missions",
+        "type": "",
+        "grp": "",
+        "enname": "",
+        "jpname": "",
+        "wiki page": "",
+        "time known": "no",
+        "time start": "",
+        "time end": "",
+        "utc start": "1797710400",
+        "utc end": "1798660740",
+        "jst start": "",
+        "jst end": "",
+        "enimage": "",
+        "jpimage": "",
+        "unf element": "",
+        "element": ""
+      }
+    },
+    {
+      "title": {
+        "unique key": "syn-nameless",
+        "name": "",
+        "type": "",
+        "grp": "",
+        "enname": "",
+        "jpname": "",
+        "wiki page": "",
+        "time known": "yes",
+        "time start": "",
+        "time end": "",
+        "utc start": "1796050800",
+        "utc end": "1796137200",
+        "jst start": "",
+        "jst end": "",
+        "enimage": "",
+        "jpimage": "",
+        "unf element": "",
+        "element": ""
+      }
+    },
+    {
+      "title": {
+        "unique key": "syn-no-epoch",
+        "name": "Undated Event",
+        "type": "",
+        "grp": "",
+        "enname": "Undated Event",
+        "jpname": "",
+        "wiki page": "",
+        "time known": "yes",
+        "time start": "2026-12-01 19:00 JST",
+        "time end": "",
+        "utc start": "",
+        "utc end": "",
+        "jst start": "",
+        "jst end": "",
+        "enimage": "",
+        "jpimage": "",
+        "unf element": "",
+        "element": ""
+      }
+    }
+  ]
+}
