@@ -26,17 +26,16 @@ module Granblue
         job = Job.find_by(granblue_id: @id)
         return unless job
 
-        download_variants(job, selected_size)
+        download_variants(selected_size)
       end
 
       private
 
       # Downloads all variants of a job's images
       #
-      # @param job [Job] Job model instance to download images for
       # @param selected_size [String] The size to download. If nil, downloads all sizes.
       # @return [void]
-      def download_variants(job, selected_size = nil)
+      def download_variants(selected_size = nil)
         log_info "-> #{@id}" if @verbose
         return if @test_mode
 
@@ -103,20 +102,6 @@ module Granblue
         log_info "\t404 returned\t#{url}"
       end
 
-      # Builds URL for wide images
-      #
-      # @param size [String] Image size variant
-      # @return [String] Complete URL for downloading the image
-      def build_job_url(size)
-        case size
-        when 'wide'
-          # Wide images always download both male and female variants
-          nil # Will be handled by download_wide_variants
-        when 'zoom'
-          nil # Handled by build_zoom_url
-        end
-      end
-
       # Downloads wide variants for both genders
       #
       # @param is_last [Boolean] Whether wide is the last size being processed
@@ -160,7 +145,7 @@ module Granblue
       # @param size [String] Image size variant
       # @return [String] Directory name in game asset URL structure
       # @note Jobs only have wide and zoom formats, handled with custom URLs
-      def directory_for_size(size)
+      def directory_for_size(_size)
         nil # Jobs don't use the standard directory structure
       end
     end
