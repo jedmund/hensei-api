@@ -14,7 +14,7 @@ RSpec.describe ArtifactSkill, type: :model do
 
     it 'validates uniqueness of modifier within skill_group' do
       # Create with unique modifier, then try to create duplicate
-      existing = create(:artifact_skill, skill_group: :group_i, modifier: 5000)
+      create(:artifact_skill, skill_group: :group_i, modifier: 5000)
       duplicate = build(:artifact_skill, skill_group: :group_i, modifier: 5000)
       expect(duplicate).not_to be_valid
       expect(duplicate.errors[:modifier]).to include('has already been taken')

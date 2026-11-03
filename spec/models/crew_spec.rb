@@ -15,7 +15,7 @@ RSpec.describe Crew, type: :model do
 
     context 'granblue_crew_id uniqueness' do
       it 'validates uniqueness' do
-        crew1 = create(:crew, granblue_crew_id: 'ABC123')
+        create(:crew, granblue_crew_id: 'ABC123')
         crew2 = build(:crew, granblue_crew_id: 'ABC123')
         expect(crew2).not_to be_valid
         expect(crew2.errors[:granblue_crew_id]).to include('has already been taken')
