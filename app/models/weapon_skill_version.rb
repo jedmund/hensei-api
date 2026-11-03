@@ -95,8 +95,13 @@ class WeaponSkillVersion < ApplicationRecord
   # Conditional/fixed grid mechanics for this version (Pact, Charge, Voltage, …), as a
   # relation. A skill-specific value the family row can't express (Voltage II's 8% per
   # copy against Voltage's 4%) is a curated row, so it beats the family.
+  #
+  # A family data row for this version's own explicit series replaces the family's generic
+  # effect of the same boost (Odious Pact: a level table in place of Hollowsky's flat
+  # 50,000), so the two never both apply.
   def weapon_skill_effects
     family = resolved_modifier.present? ? WeaponSkillEffect.for_skill(modifier: resolved_modifier).base_effects.to_a : []
+    family = family.reject { |e| series_specific_boosts.include?(e.boost_type) } if family.any?
     WeaponSkillEffect.where(id: resolve_by_boost_type(family, linked_rows(WeaponSkillEffect)).map(&:id))
   end
 
@@ -132,6 +137,15 @@ class WeaponSkillVersion < ApplicationRecord
   end
 
   private
+
+  # Boost types this version's family defines in its own explicit series (odious, …).
+  def series_specific_boosts
+    series = resolved_series
+    return Set.new unless WeaponSkillDatum::EXPLICIT_SERIES.include?(series)
+
+    compatible = WeaponSkillDatum::SERIES_FALLBACK.fetch(series, [series])
+    WeaponSkillDatum.canonical.where(modifier: resolved_modifier, series: compatible).pluck(:boost_type).to_set
+  end
 
   # An unsaved version has no linked rows (where(weapon_skill_version_id: nil) would be
   # every canonical row).

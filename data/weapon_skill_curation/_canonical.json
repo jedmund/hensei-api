@@ -984,6 +984,19 @@
       "aura_boostable": true,
       "provenance": "user report (h6sAVJ): Small Odious Stamina coefficient 79.1; not on the wiki",
       "edited_at": "2026-11-03T20:05:04Z"
+    },
+    {
+      "modifier": "Pact",
+      "boost_type": "dmg_supp",
+      "series": "odious",
+      "size": "big",
+      "formula_type": "flat",
+      "sl1": 4700.0,
+      "sl10": 6500.0,
+      "sl15": 7000.0,
+      "aura_boostable": true,
+      "provenance": "Stored expanded page (Fiendspear of Mortality Verboten), Taboo Allowater's Pact table: 4,700 / 6,500 / 7,000 at SL1/10/15, Taboo-boosted; every Odious Pact (Fiendspear, Fienddagger, Fiendclaw). h6sAVJ: 7,000 x 4.85 + Snowfall's Pact 50,000 = 83,950 in game. Hollowsky's EX Pact keeps its flat 50,000 effect",
+      "edited_at": "2026-11-03T21:52:49Z"
     }
   ],
   "ops": [
