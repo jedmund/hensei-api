@@ -91,7 +91,6 @@ module Processors
 
         cs.update!(updates)
         Rails.logger.info "[SUMMON] Updated collection summon #{cs.id} from game data: #{updates}"
-
     end
 
     ##

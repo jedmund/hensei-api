@@ -124,6 +124,5 @@ class GridArtifact < ApplicationRecord
     return if char_proficiencies.include?(prof_value)
 
       errors.add(:artifact, "proficiency must match one of the character's proficiencies")
-
   end
 end

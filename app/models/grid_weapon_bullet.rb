@@ -19,7 +19,6 @@ class GridWeaponBullet < ApplicationRecord
     return if position.present? && position >= 0 && position <= max_position
 
       errors.add(:position, "must be between 0 and #{max_position}")
-
   end
 
   def bullet_type_matches_slot
@@ -29,6 +28,5 @@ class GridWeaponBullet < ApplicationRecord
     return if bullet.bullet_type == expected_type
 
       errors.add(:bullet, "type must match the slot type at position #{position}")
-
   end
 end

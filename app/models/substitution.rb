@@ -18,7 +18,6 @@ class Substitution < ApplicationRecord
     return if grid_type == substitute_grid_type
 
       errors.add(:substitute_grid_type, 'must match grid type')
-
   end
 
   def no_self_substitution
@@ -27,6 +26,5 @@ class Substitution < ApplicationRecord
     return unless grid_type == substitute_grid_type && grid_id == substitute_grid_id
 
       errors.add(:substitute_grid, 'cannot reference itself')
-
   end
 end

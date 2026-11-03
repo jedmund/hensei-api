@@ -280,7 +280,6 @@ module Api
         return if @target_user.collection_viewable_by?(current_user)
 
           render json: { error: 'You do not have permission to view this collection' }, status: :forbidden
-
       end
 
       def set_collection_summon_for_read

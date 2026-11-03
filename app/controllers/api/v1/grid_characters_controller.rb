@@ -561,7 +561,6 @@ module Api
         return if @incoming_character
 
           render_unprocessable_entity_response(Api::V1::NoCharacterProvidedError.new)
-
       end
 
       ##

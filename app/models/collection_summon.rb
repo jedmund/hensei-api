@@ -72,7 +72,6 @@ class CollectionSummon < ApplicationRecord
     return unless summon.present? && !summon.transcendence
 
       errors.add(:transcendence_step, 'not available for this summon')
-
   end
 
   ##

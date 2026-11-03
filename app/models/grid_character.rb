@@ -218,7 +218,6 @@ class GridCharacter < ApplicationRecord
       return if r2[:strength].to_f == (r1[:strength].to_f / 2)
 
         errors.add(:over_mastery, 'over mastery attack and hp values do not match')
-
   end
 
   ##

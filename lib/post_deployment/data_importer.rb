@@ -28,7 +28,6 @@ module PostDeployment
       return unless @processed_files.any?
 
         print_summary
-
     end
 
     private

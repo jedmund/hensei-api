@@ -67,7 +67,6 @@ class WeaponImportService
                  .where.not(game_id: game_ids)
 
     apply_filter_scope(scope)
-
   end
 
   ##

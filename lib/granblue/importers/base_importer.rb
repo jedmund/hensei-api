@@ -170,7 +170,6 @@ module Granblue
             attributes: update_attributes,
             operation: :update
           }
-
       end
 
       # Validate that all required attributes are present
@@ -198,7 +197,6 @@ module Granblue
             file_name: File.basename(@file_path),
             details: details
           )
-
       end
 
       # Validate attributes for an update
@@ -232,7 +230,6 @@ module Granblue
             file_name: File.basename(@file_path),
             details: details
           )
-
       end
 
       # Validate a record can be saved
