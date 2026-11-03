@@ -159,9 +159,10 @@ class GridSummon < ApplicationRecord
     return unless summon&.limit
 
     party.summons.find do |grid_summon|
-      return unless grid_summon.id
+      # Skip records that aren't persisted yet
+      next false unless grid_summon.id
 
-      grid_summon if summon.id == grid_summon.summon.id
+      summon.id == grid_summon.summon.id
     end
   end
 
