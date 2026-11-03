@@ -64,9 +64,7 @@ module Api
         if party_params[:collection_source_user_id].present?
           source_user = User.find_by(id: party_params[:collection_source_user_id])
           return render_not_found_response('user') if source_user.nil?
-          unless source_user == current_user || source_user.collection_viewable_by?(current_user)
-            return render_forbidden_response('Collection is not accessible')
-          end
+          return render_forbidden_response('Collection is not accessible') unless source_user == current_user || source_user.collection_viewable_by?(current_user)
         end
 
         if party_params && party_params[:raid_id].present? && (raid = Raid.find_by(id: party_params[:raid_id]))
@@ -107,9 +105,7 @@ module Api
 
           if @party.collection_source_user_id.present?
             source_user = @party.collection_source_user
-            if source_user && source_user != current_user && source_user.collection_viewable_by?(current_user)
-              options[:source_collection] = fetch_collection_for(@party, source_user)
-            end
+            options[:source_collection] = fetch_collection_for(@party, source_user) if source_user && source_user != current_user && source_user.collection_viewable_by?(current_user)
           end
 
           render json: PartyBlueprint.render(@party, **options)
@@ -461,7 +457,7 @@ module Api
         arcarum = ActiveModel::Type::Boolean.new.cast(params[:arcarum]) || false
         foe = params[:foe_element].presence&.downcase
         # "null" is a real foe element (element-less foes) — advantaged effects turn off.
-        foe = nil unless foe == "null" || GridDamage::Calculator::ELEMENT_WORD.value?(foe)
+        foe = nil unless foe == 'null' || GridDamage::Calculator::ELEMENT_WORD.value?(foe)
         foe ||= GridDamage::Calculator::ADVANTAGED_FOE[GridDamage::ElementScope.panel_element(@party)]
         { hp_percent: hp, ally_max_hp: ally_max_hp, turn: turn, foe_element: foe, arcarum: arcarum }.compact
       end
@@ -686,27 +682,27 @@ module Api
 
         {
           characters: if char_gids.any?
-  user.collection_characters.joins(:character)
-      .includes({ character: :character_series_records }, :awakening)
-      .where(characters: { granblue_id: char_gids })
-else
-  []
-end,
+                        user.collection_characters.joins(:character)
+                            .includes({ character: :character_series_records }, :awakening)
+                            .where(characters: { granblue_id: char_gids })
+                      else
+                        []
+                      end,
           weapons: if weap_gids.any?
-  user.collection_weapons.joins(:weapon)
-      .includes({ weapon: %i[weapon_series weapon_series_variant] }, :awakening, :weapon_key1, :weapon_key2, :weapon_key3, :weapon_key4,
-                :ax_modifier1, :ax_modifier2, :befoulment_modifier, { collection_weapon_bullets: :bullet })
-      .where(weapons: { granblue_id: weap_gids })
-else
-  []
-end,
+                     user.collection_weapons.joins(:weapon)
+                         .includes({ weapon: %i[weapon_series weapon_series_variant] }, :awakening, :weapon_key1, :weapon_key2, :weapon_key3, :weapon_key4,
+                                   :ax_modifier1, :ax_modifier2, :befoulment_modifier, { collection_weapon_bullets: :bullet })
+                         .where(weapons: { granblue_id: weap_gids })
+                   else
+                     []
+                   end,
           summons: if summ_gids.any?
-  user.collection_summons.joins(:summon)
-      .includes(summon: :summon_series)
-      .where(summons: { granblue_id: summ_gids })
-else
-  []
-end
+                     user.collection_summons.joins(:summon)
+                         .includes(summon: :summon_series)
+                         .where(summons: { granblue_id: summ_gids })
+                   else
+                     []
+                   end
         }
       end
 

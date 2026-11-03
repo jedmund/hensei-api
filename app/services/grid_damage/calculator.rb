@@ -11,37 +11,37 @@ module GridDamage
     ELEMENT_WORD = GranblueEnums::ELEMENT_ENUM.invert.transform_values(&:to_s).freeze
     # What each grid element is strong against — the default foe, and the element named
     # by the panel's reduction line ("Wind Reduc." on a fire grid).
-    ADVANTAGED_FOE = { "fire" => "wind", "water" => "fire", "earth" => "water",
-                       "wind" => "earth", "light" => "dark", "dark" => "light" }.freeze
+    ADVANTAGED_FOE = { 'fire' => 'wind', 'water' => 'fire', 'earth' => 'water',
+                       'wind' => 'earth', 'light' => 'dark', 'dark' => 'light' }.freeze
     BOOST_LEVEL_THRESHOLD = 280.0
     # Confirmed weapon-skill display caps (gbf.wiki/Weapon_Skills#Weapon_Skill_Caps). The panel
     # shows a boost orange once it reaches its cap. A "100% hit to multiattack" penalty (−100 DA)
     # can still push the post-cap DA negative.
-    RATE_CAPS = { "da" => 75.0, "ta" => 75.0, "critical" => 100.0,
-                  "dmg_cap" => 20.0, "dmg_cap_sp" => 20.0, "na_dmg_cap" => 20.0,
-                  "ca_dmg_cap" => 100.0, "skill_dmg_cap" => 100.0, "heal_cap" => 100.0,
-                  "ex_atk_sp" => 80.0, "crit_amp" => 20.0,
+    RATE_CAPS = { 'da' => 75.0, 'ta' => 75.0, 'critical' => 100.0,
+                  'dmg_cap' => 20.0, 'dmg_cap_sp' => 20.0, 'na_dmg_cap' => 20.0,
+                  'ca_dmg_cap' => 100.0, 'skill_dmg_cap' => 100.0, 'heal_cap' => 100.0,
+                  'ex_atk_sp' => 80.0, 'crit_amp' => 20.0,
                   # SRiNSO/R1ckYi/HoEE8b panels (2026-07-06): orange at the values below.
-                  "elem_reduc" => 30.0, "fire_reduc" => 30.0, "water_reduc" => 30.0,
-                  "earth_reduc" => 30.0, "wind_reduc" => 30.0,
-                  "light_reduc" => 30.0, "dark_reduc" => 30.0,
-                  "na_amp" => 30.0, "na_amp_sp" => 20.0,
-                  "bonus_elem_dmg" => 50.0,
-                  "skill_cap_sp" => 60.0, "skill_amp_sp" => 20.0,
-                  "dmg_supp" => 100_000.0, "na_supp" => 100_000.0,
-                  "skill_dmg_supp" => 200_000.0,
+                  'elem_reduc' => 30.0, 'fire_reduc' => 30.0, 'water_reduc' => 30.0,
+                  'earth_reduc' => 30.0, 'wind_reduc' => 30.0,
+                  'light_reduc' => 30.0, 'dark_reduc' => 30.0,
+                  'na_amp' => 30.0, 'na_amp_sp' => 20.0,
+                  'bonus_elem_dmg' => 50.0,
+                  'skill_cap_sp' => 60.0, 'skill_amp_sp' => 20.0,
+                  'dmg_supp' => 100_000.0, 'na_supp' => 100_000.0,
+                  'skill_dmg_supp' => 200_000.0,
                   # K4UydX: C.A. Amp. (Sp.) orange at 20; Exalto lines orange at their
                   # enhancement contribution caps.
-                  "ca_amp_sp" => 20.0, "optimus_exalto" => 90.0, "omega_exalto" => 100.0,
+                  'ca_amp_sp' => 20.0, 'optimus_exalto' => 90.0, 'omega_exalto' => 100.0,
                   # SPhnLB: Debuff Res. orange at 30; qBOvon: Charge Gain orange at 50,
                   # C.A. Supp. orange at 1,000,000
-                  "debuff_res" => 30.0, "charge_gain" => 50.0, "ca_supp" => 1_000_000.0,
+                  'debuff_res' => 30.0, 'charge_gain' => 50.0, 'ca_supp' => 1_000_000.0,
                   # 0ZA6Ak: C.B. DMG orange at 120
-                  "cb_dmg" => 120.0,
+                  'cb_dmg' => 120.0,
                   # Elemental ATK from weapon skills and awakenings tops out at 40% (user report, 0umD8e)
-                  "e_atk" => 40.0,
+                  'e_atk' => 40.0,
                   # gbf.wiki/AX_Skills: utility AX boosts cap across the whole grid.
-                  "exp_ax" => 30.0, "rupie_ax" => 50.0 }.freeze
+                  'exp_ax' => 30.0, 'rupie_ax' => 50.0 }.freeze
 
     # The summon-aura/Exalto "Weapon Skill Enhancement" amplifies EVERY boost an
     # aura-boosted skill grants — caps, amps, and supplementals included (K4UydX: Terra's
@@ -84,7 +84,7 @@ module GridDamage
     # Hoarfrost's Stratagem show 18% at Critical 100% (ZCoUJT) and nothing at 45%
     # (F0MD7j); g0gpOT shows it at 100% too.
     def drop_unrealized_crit_amp(agg)
-      agg.delete("crit_amp") unless agg["critical"]&.capped
+      agg.delete('crit_amp') unless agg['critical']&.capped
       agg
     end
 
@@ -92,7 +92,7 @@ module GridDamage
     # and DMG Cap (Sp.)) count only at Critical 100%. They don't feed Critical, so dropping
     # them and aggregating again can't change the cap they were gated on.
     def drop_uncapped_crit_gated(agg, contributions)
-      return [agg, contributions] if agg["critical"]&.capped
+      return [agg, contributions] if agg['critical']&.capped
 
       kept = contributions.reject(&:crit_gated)
       return [agg, contributions] if kept.size == contributions.size
@@ -105,21 +105,21 @@ module GridDamage
     # Overskills (gbf.wiki/Overskills): over-cap excess converts into derived lines.
     # Panel-exact on all goldens — 9JtcHY: Critical raw 145.6 → Crit. DMG 22.8; DMG Cap
     # raw 31 → Pen. 5.5; dAV5ds raw 24 → 2; 5JPIJg raw 42 → 11.
-    OVERSKILL_CAPS = { "crit_dmg" => 100.0, "dmg_cap_pen" => 20.0, "added_hit" => 100.0,
-                       "added_hp" => 100.0 }.freeze
+    OVERSKILL_CAPS = { 'crit_dmg' => 100.0, 'dmg_cap_pen' => 20.0, 'added_hit' => 100.0,
+                       'added_hp' => 100.0 }.freeze
 
     def add_overskills(agg)
-      crit_excess = excess(agg, "critical")
+      crit_excess = excess(agg, 'critical')
       crit = crit_excess >= 2 ? crit_excess * 0.5 : 0.0 # 2% minimum excess to activate
-      cap_excess = excess(agg, "dmg_cap") + excess(agg, "dmg_cap_sp")
+      cap_excess = excess(agg, 'dmg_cap') + excess(agg, 'dmg_cap_sp')
       pen = cap_excess >= 2 ? cap_excess * 0.5 : 0.0
-      hit = (excess(agg, "da") * 0.4) + (excess(agg, "ta") * 0.6)
+      hit = (excess(agg, 'da') * 0.4) + (excess(agg, 'ta') * 0.6)
       # HP over its 400% grid cap converts at 5% (SPhnLB: (494.6-400) x 0.05 = 4.73 exact)
-      hp = (excess(agg, "hp") * 0.05).round(4) # float noise: 494.4999 raw must give 4.73, not 4.72
+      hp = (excess(agg, 'hp') * 0.05).round(4) # float noise: 494.4999 raw must give 4.73, not 4.72
 
-      overskill_sources = { "crit_dmg" => %w[critical], "dmg_cap_pen" => %w[dmg_cap dmg_cap_sp],
-                            "added_hit" => %w[da ta], "added_hp" => %w[hp] }
-      { "crit_dmg" => crit, "dmg_cap_pen" => pen, "added_hit" => hit, "added_hp" => hp }.each do |key, value|
+      overskill_sources = { 'crit_dmg' => %w[critical], 'dmg_cap_pen' => %w[dmg_cap dmg_cap_sp],
+                            'added_hit' => %w[da ta], 'added_hp' => %w[hp] }
+      { 'crit_dmg' => crit, 'dmg_cap_pen' => pen, 'added_hit' => hit, 'added_hp' => hp }.each do |key, value|
         next unless value.positive?
 
         cap = OVERSKILL_CAPS.fetch(key)
@@ -174,13 +174,13 @@ module GridDamage
       # characters. Astral weapons were once modeled with +20, but their in-game skills
       # are an EX ATK boost and Astral Echo only, and wOF5LS's 460% header is exact
       # without it (Innocent Love equipped).
-      elemental = agg["elemental_enhance"]&.total.to_f
+      elemental = agg['elemental_enhance']&.total.to_f
       {
-        optimus: auras[:optimus] + [(agg["optimus_exalto"]&.total || 0).to_f, 90].min + elemental,
-        omega: auras[:omega] + [(agg["omega_exalto"]&.total || 0).to_f, 100].min,
+        optimus: auras[:optimus] + [(agg['optimus_exalto']&.total || 0).to_f, 90].min + elemental,
+        omega: auras[:omega] + [(agg['omega_exalto']&.total || 0).to_f, 100].min,
         # Odious summons' auras (scaled by exorcision, SummonAuras) plus Odious Exalto,
         # which adds flat like the other Exalto skills (XZq7xW: 385 = 180 + 180 + 25)
-        taboo: auras[:taboo] + (agg["odious_exalto"]&.total || 0).to_f
+        taboo: auras[:taboo] + (agg['odious_exalto']&.total || 0).to_f
       }
     end
 
@@ -203,8 +203,8 @@ module GridDamage
     # Exalto; EX/odious-without-Taboo unaffected) BEFORE aggregating, so per-series sums (ATK)
     # and additive sums (crit/DA/TA) are both correctly amplified.
     def amplify_contributions(contributions, enh)
-      factor = { "normal" => 1 + (enh[:optimus].to_f / 100), "omega" => 1 + (enh[:omega].to_f / 100),
-                 "ex" => 1.0, "odious" => 1 + (enh[:taboo].to_f / 100) }
+      factor = { 'normal' => 1 + (enh[:optimus].to_f / 100), 'omega' => 1 + (enh[:omega].to_f / 100),
+                 'ex' => 1.0, 'odious' => 1 + (enh[:taboo].to_f / 100) }
       non_amplified = non_amplified_boosts
       contributions.map do |c|
         next c if c.amplifiable == false # flat sources (weapon awakenings, AX) aren't enhanced
