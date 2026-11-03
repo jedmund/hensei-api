@@ -2,7 +2,9 @@
 
 require 'csv'
 
-namespace :characters do
+# Name-based season/series inference for characters:auto_populate. A module
+# keeps the constants and helpers off Object.
+module CharacterNameInference
   # Known character lists for series detection
   ETERNALS = %w[Seofon Tweyen Threo Feower Fif Seox Niyon Eahta Tien Anre].freeze
   EVOKERS = ['Maria Theresa', 'Caim', 'Lobelia', 'Alanaan', 'Fraux', 'Katzelia', 'Haaselia', 'Nier', 'Estarriola', 'Geisenborger'].freeze
@@ -69,7 +71,9 @@ namespace :characters do
     # If any series is non-gachable, the character is not gachable
     (series & non_gachable).empty?
   end
+end
 
+namespace :characters do
   desc 'Auto-populate season/series from character names'
   task auto_populate: :environment do
     test_mode = ENV['TEST'] == 'true'
@@ -77,9 +81,9 @@ namespace :characters do
     skipped = 0
 
     Character.find_each do |character|
-      season = infer_season(character.name_en)
-      series = infer_series(character.name_en)
-      gacha_available = infer_gacha_available?(series)
+      season = CharacterNameInference.infer_season(character.name_en)
+      series = CharacterNameInference.infer_series(character.name_en)
+      gacha_available = CharacterNameInference.infer_gacha_available?(series)
 
       if test_mode
         puts "#{character.name_en}:"
