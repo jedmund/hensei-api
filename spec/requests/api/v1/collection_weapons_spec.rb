@@ -330,6 +330,15 @@ RSpec.describe 'Collection Weapons API', type: :request do
       }
     end
 
+    it 'drops an imported skill level when the uncap changes without one' do
+      collection_weapon.update!(skill_level: 10)
+      put "/api/v1/collection/weapons/#{collection_weapon.id}",
+          params: { collection_weapon: { uncap_level: 4 } }.to_json, headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(collection_weapon.reload.skill_level).to be_nil
+    end
+
     it 'updates the collection weapon' do
       # Just update uncap level, as transcendence and weapon keys may not be supported
       simple_update = {

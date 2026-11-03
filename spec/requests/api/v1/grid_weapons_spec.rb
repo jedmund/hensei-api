@@ -211,6 +211,25 @@ RSpec.describe 'GridWeapons API', type: :request do
       expect(response.parsed_body['grid_weapon']).to include('mainhand' => false, 'uncap_level' => 4)
     end
 
+    # UzykIA: an imported 3★ SL10 copy raised to 4★ kept SL10, so its Stamina never moved
+    it 'drops an imported skill level when the uncap changes without one' do
+      grid_weapon.update!(skill_level: 10)
+      put "/api/v1/grid_weapons/#{grid_weapon.id}", params: { weapon: { uncap_level: 4 } }.to_json, headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(grid_weapon.reload.skill_level).to be_nil
+    end
+
+    it 'keeps a skill level sent with the uncap, and one an unrelated edit leaves alone' do
+      grid_weapon.update!(skill_level: 10)
+      put "/api/v1/grid_weapons/#{grid_weapon.id}",
+          params: { weapon: { uncap_level: 4, skill_level: 12 } }.to_json, headers: headers
+      expect(grid_weapon.reload.skill_level).to eq(12)
+
+      put "/api/v1/grid_weapons/#{grid_weapon.id}", params: { weapon: { mainhand: false } }.to_json, headers: headers
+      expect(grid_weapon.reload.skill_level).to eq(12)
+    end
+
     it 'accepts a cleared awakening with a null level' do
       params = { weapon: { awakening_id: nil, awakening_level: nil } }
       put "/api/v1/grid_weapons/#{grid_weapon.id}", params: params.to_json, headers: headers
@@ -244,6 +263,14 @@ RSpec.describe 'GridWeapons API', type: :request do
           transcendence_step: 0
         }
       }
+    end
+
+    it "drops an imported skill level the new uncap doesn't describe" do
+      grid_weapon.update!(skill_level: 10)
+      post '/api/v1/grid_weapons/update_uncap', params: update_uncap_params.to_json, headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(grid_weapon.reload.skill_level).to be_nil
     end
 
     it 'caps the uncap level at 5' do

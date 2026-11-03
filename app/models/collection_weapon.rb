@@ -1,4 +1,5 @@
 class CollectionWeapon < ApplicationRecord
+  include ImportedSkillLevel
   include WeaponCapabilityResolution
   include AxSkillValidation
   include WeaponKeySlots
