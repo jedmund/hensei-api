@@ -226,7 +226,7 @@ RSpec.describe 'User identities', :social_auth, type: :request do
       it "refuses to remove the account's last way to log in" do
         delete '/api/v1/users/me/identities/discord', headers: headers
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(response.parsed_body).to eq('error' => 'last_login_method')
         expect(user.user_identities.count).to eq(1)
       end

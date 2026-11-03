@@ -38,7 +38,7 @@ RSpec.describe 'Api::V1::Crews', type: :request do
         expect do
           post '/api/v1/crews', params: { crew: { name: '' } }, headers: auth_headers
         end.not_to change(Crew, :count)
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
 
@@ -50,7 +50,7 @@ RSpec.describe 'Api::V1::Crews', type: :request do
 
       it 'returns error' do
         post '/api/v1/crews', params: valid_params, headers: auth_headers
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         json = response.parsed_body
         expect(json['code']).to eq('already_in_crew')
       end
@@ -213,7 +213,7 @@ RSpec.describe 'Api::V1::Crews', type: :request do
 
       it 'returns error' do
         post '/api/v1/crew/leave', headers: auth_headers
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         json = response.parsed_body
         expect(json['code']).to eq('captain_cannot_leave')
       end
@@ -222,7 +222,7 @@ RSpec.describe 'Api::V1::Crews', type: :request do
     context 'when not in a crew' do
       it 'returns error' do
         post '/api/v1/crew/leave', headers: auth_headers
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         json = response.parsed_body
         expect(json['code']).to eq('not_in_crew')
       end

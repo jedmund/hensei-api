@@ -111,7 +111,7 @@ RSpec.describe 'Api::V1::Jobs', type: :request do
 
     it 'rejects an invalid job with 422' do
       put "/api/v1/jobs/#{job.id}", params: { row: 'ex', granblue_id: '12' }.to_json, headers: editor_headers
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     it 'rejects update by regular user' do

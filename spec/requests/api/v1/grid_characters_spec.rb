@@ -110,7 +110,7 @@ RSpec.describe 'GridCharacters API', type: :request do
 
         put "/api/v1/grid_characters/#{grid_character.id}", params: update_params.to_json, headers: headers
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it 'filters out-of-range full_auto_skills slots' do
@@ -240,7 +240,7 @@ RSpec.describe 'GridCharacters API', type: :request do
 
       it 'returns unprocessable entity status with error messages' do
         post '/api/v1/grid_characters', params: invalid_params.to_json, headers: headers
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         json_response = response.parsed_body
         expect(json_response).to have_key('errors')
         # Verify that the error message on uncap_level includes a specific phrase.
@@ -299,7 +299,7 @@ RSpec.describe 'GridCharacters API', type: :request do
 
       it 'returns unprocessable entity status with error details' do
         put "/api/v1/grid_characters/#{grid_character.id}", params: invalid_update_params.to_json, headers: headers
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         json_response = response.parsed_body
         expect(json_response).to have_key('errors')
         expect(json_response['errors']['uncap_level'].to_s).to include('is not a number')
@@ -660,7 +660,7 @@ RSpec.describe 'GridCharacters API', type: :request do
           params: { character: { role_ids: [role_a.id, role_b.id, role_c.id, role_d.id] } }.to_json,
           headers: headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     it 'clears assignments when role_ids is empty' do

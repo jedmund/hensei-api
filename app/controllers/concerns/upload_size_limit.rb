@@ -22,6 +22,6 @@ module UploadSizeLimit
   def reject_oversized_upload(max_bytes)
     return if request.content_length.to_i <= max_bytes
 
-    render json: { error: "Request body exceeds #{max_bytes / 1024}KB" }, status: :payload_too_large
+    render json: { error: "Request body exceeds #{max_bytes / 1024}KB" }, status: :content_too_large
   end
 end

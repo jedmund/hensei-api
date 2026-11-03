@@ -49,7 +49,7 @@ module Api
 
         render json: PhantomPlayerBlueprint.render(phantoms, root: :phantom_players), status: :created
       rescue ActiveRecord::RecordInvalid => e
-        render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
+        render json: { errors: e.record.errors.full_messages }, status: :unprocessable_content
       end
 
       # PUT /crews/:crew_id/phantom_players/:id

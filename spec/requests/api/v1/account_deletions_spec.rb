@@ -43,7 +43,7 @@ RSpec.describe 'Account deletion', type: :request do
     it 'refuses the wrong password' do
       request_deletion('wrong')
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(response.parsed_body).to eq('error' => 'invalid_password')
       expect(user.reload.deletion_scheduled_at).to be_nil
       expect(Doorkeeper::AccessToken.exists?(access_token.id)).to be(true)
@@ -54,7 +54,7 @@ RSpec.describe 'Account deletion', type: :request do
 
       request_deletion('')
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(response.parsed_body).to eq('error' => 'password_required')
       expect(user.reload.deletion_scheduled_at).to be_nil
     end

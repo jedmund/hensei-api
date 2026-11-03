@@ -56,7 +56,7 @@ RSpec.describe 'Social signup and the password banner', :social_auth, type: :req
       it 'requires an email' do
         expect { signup(signup_ticket: ticket, user: { username: 'newplayer' }) }.not_to change(User, :count)
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(response.parsed_body['error']).to eq('Validation failed')
         expect(response.parsed_body['messages']).to include(a_string_matching(/Email/))
       end
@@ -85,7 +85,7 @@ RSpec.describe 'Social signup and the password banner', :social_auth, type: :req
       create(:user, username: 'taken')
       signup(signup_ticket: ticket, user: { username: 'taken' })
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(response.parsed_body).to include('error' => 'Validation failed',
                                               'messages' => include('Username has already been taken'))
     end
@@ -147,7 +147,7 @@ RSpec.describe 'Social signup and the password banner', :social_auth, type: :req
     it 'still requires a password' do
       signup(user: { email: 'pw@example.com', username: 'pwuser' })
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(response.parsed_body['messages']).to include("Password can't be blank")
     end
   end

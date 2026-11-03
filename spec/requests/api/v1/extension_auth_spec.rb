@@ -69,7 +69,7 @@ RSpec.describe 'Extension auth', type: :request do
       it "rejects #{description}" do
         create_code(body)
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(response.parsed_body).to eq('error' => 'invalid_request')
         expect(ExtensionAuthCode.count).to eq(0)
       end

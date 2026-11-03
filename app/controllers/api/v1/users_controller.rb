@@ -38,7 +38,7 @@ module Api
         unless user.save
           Rails.logger.error "[Registration] Validation failed: #{user.errors.full_messages.join(', ')}"
           return render json: { error: 'Validation failed', messages: user.errors.full_messages },
-                        status: :unprocessable_entity
+                        status: :unprocessable_content
         end
 
         token = Doorkeeper::AccessToken.create!(
@@ -179,7 +179,7 @@ module Api
       def deposit_edit_keys
         entries = params.require(:edit_keys).map { |e| e.permit(:shortcode, :edit_key) }
 
-        return render json: { error: 'Too many edit keys (max 100)' }, status: :unprocessable_entity if entries.size > 100
+        return render json: { error: 'Too many edit keys (max 100)' }, status: :unprocessable_content if entries.size > 100
 
         entries.each do |entry|
           current_user.user_edit_keys.find_or_create_by(edit_key: entry[:edit_key]) do |uek|
@@ -204,7 +204,7 @@ module Api
         signup = SocialAuth::Signup.new(ticket, username: attrs[:username], email: attrs[:email])
         unless signup.call
           return render json: { error: 'Validation failed', messages: signup.user.errors.full_messages },
-                        status: :unprocessable_entity
+                        status: :unprocessable_content
         end
 
         send_verification_email(signup.user) unless signup.user.email_verified?

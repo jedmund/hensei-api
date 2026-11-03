@@ -76,7 +76,7 @@ RSpec.describe 'Artifact Skills API', type: :request do
     it 'returns error for invalid slot' do
       get '/api/v1/artifact_skills/for_slot/5'
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       json = response.parsed_body
       expect(json['error']).to include('Slot must be between 1 and 4')
     end
@@ -84,7 +84,7 @@ RSpec.describe 'Artifact Skills API', type: :request do
     it 'returns error for slot 0' do
       get '/api/v1/artifact_skills/for_slot/0'
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
   end
 
@@ -129,7 +129,7 @@ RSpec.describe 'Artifact Skills API', type: :request do
       patch path, params: { polarity: 'neutral', base_values: [1, 'two'], growth: 'fast' }.to_json,
                   headers: editor_headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(response.parsed_body['errors'].keys).to include('polarity', 'base_values', 'growth')
       expect(skill.reload.name_en).to eq('ATK')
     end

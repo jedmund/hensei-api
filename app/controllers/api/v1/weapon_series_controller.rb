@@ -49,7 +49,7 @@ module Api
           render json: ErrorBlueprint.render(nil, error: {
                                                message: 'Cannot delete series with associated weapons',
                                                code: 'has_dependencies'
-                                             }), status: :unprocessable_entity
+                                             }), status: :unprocessable_content
         else
           @weapon_series.destroy!
           head :no_content

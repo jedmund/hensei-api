@@ -47,7 +47,7 @@ RSpec.describe 'Entity reparse endpoints', type: :request do
 
       post "/api/v1/summons/#{summon.id}/reparse", headers: editor_headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(response.parsed_body['error']).to match(/made no auras/)
       expect(SummonAura.exists?(kept.id)).to be(true)
     end
@@ -60,7 +60,7 @@ RSpec.describe 'Entity reparse endpoints', type: :request do
     it 'fails cleanly without stored wikitext' do
       summon.update!(wiki_raw: nil)
       post "/api/v1/summons/#{summon.id}/reparse", headers: editor_headers
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(response.parsed_body['error']).to match(/wikitext/i)
     end
   end
@@ -104,7 +104,7 @@ RSpec.describe 'Entity reparse endpoints', type: :request do
 
       post "/api/v1/weapons/#{weapon.id}/reparse", headers: editor_headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(response.parsed_body['error']).to match(/stored wiki source/i)
       expect(WeaponSkill.where(weapon_granblue_id: weapon.granblue_id).count).to eq(1)
     end
@@ -130,7 +130,7 @@ RSpec.describe 'Entity reparse endpoints', type: :request do
 
     it 'fails cleanly without stored wikitext' do
       post "/api/v1/characters/#{character.id}/reparse", headers: editor_headers
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     context 'with stored wikitext' do
@@ -176,7 +176,7 @@ RSpec.describe 'Entity reparse endpoints', type: :request do
         put_source(character, :wiki_raw, '#REDIRECT [[Somewhere]]')
 
         post "/api/v1/characters/#{character.id}/reparse", headers: editor_headers
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(response.parsed_body['error']).to include('the build made no skills; kept its existing skills')
         expect(version_ids).to eq(ids)
       end

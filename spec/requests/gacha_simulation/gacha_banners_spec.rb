@@ -39,7 +39,7 @@ RSpec.describe 'Gacha banner rates', type: :request do
       post '/api/v1/gacha/banners', params: 'not json', headers: headers
       expect(response).to have_http_status(:bad_request)
       post '/api/v1/gacha/banners', params: { banner: {} }.to_json, headers: headers
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
   end
 
@@ -77,11 +77,11 @@ RSpec.describe 'Gacha banner rates', type: :request do
 
     it 'refuses custom rate-ups and reports a missing banner' do
       post '/api/v1/gacha/simulations', params: { mode: 'current', draws: '10' }, as: :json
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       GachaSimulation::BannerImport.call(gacha_banner_payload)
       post '/api/v1/gacha/simulations',
            params: { mode: 'current', draws: '10', rateups: [{ identity: items.first['identity'], percent: '1' }] }, as: :json
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
   end
 end

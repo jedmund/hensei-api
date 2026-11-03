@@ -52,7 +52,7 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
               params: { position: 2 }.to_json,
               headers: headers
 
-          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response).to have_http_status(:unprocessable_content)
           expect(response.body).to include('occupied')
         end
 
@@ -61,7 +61,7 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
               params: { position: 20 }.to_json,
               headers: headers
 
-          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response).to have_http_status(:unprocessable_content)
           expect(response.body).to include('Invalid position')
         end
       end
@@ -141,7 +141,7 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
             params: { position: 8 }.to_json,
             headers: headers
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(response.body).to include('Invalid position')
       end
     end
@@ -186,7 +186,7 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
             params: { position: -1 }.to_json, # Main summon position
             headers: headers
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(response.body).to include('restricted position')
       end
 
@@ -195,7 +195,7 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
             params: { position: 6 }.to_json, # Friend summon position
             headers: headers
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(response.body).to include('restricted position')
       end
     end
@@ -223,7 +223,7 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
              params: { source_id: summon1.id, target_id: restricted_summon.id }.to_json,
              headers: headers
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(response.body).to include('restricted')
       end
     end
@@ -270,7 +270,7 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
              params: { operations: operations }.to_json,
              headers: headers
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(response.body).to include('unknown operation type')
 
         # Ensure no operations were applied
@@ -311,7 +311,7 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
                headers: headers
         end.not_to change { weapon.reload.position }
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
   end

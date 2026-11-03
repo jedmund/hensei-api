@@ -124,13 +124,13 @@ RSpec.describe 'Api::V1::GwEvents', type: :request do
           post '/api/v1/gw_events', params: { gw_event: valid_params[:gw_event].except(:event_number) },
                                     headers: admin_headers
         end.not_to change(Event, :count)
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it 'rejects a malformed date' do
         post '/api/v1/gw_events', params: { gw_event: valid_params[:gw_event].merge(start_date: 'soon') },
                                   headers: admin_headers
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it 'clears the cached Home feed' do
@@ -143,7 +143,7 @@ RSpec.describe 'Api::V1::GwEvents', type: :request do
         expect do
           post '/api/v1/gw_events', params: { gw_event: { element: '' } }, headers: admin_headers
         end.not_to change(Event.unite_and_fight, :count)
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
 

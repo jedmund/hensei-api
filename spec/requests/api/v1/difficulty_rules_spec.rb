@@ -51,13 +51,13 @@ RSpec.describe 'Difficulty rule drafts', type: :request do
   it 'leaves the previous draft intact after an invalid edit' do
     id = create_draft
     put "/api/v1/difficulty_rules/#{id}", params: { difficulty_rule: { params: {} } }, headers: headers, as: :json
-    expect(response).to have_http_status(:unprocessable_entity)
+    expect(response).to have_http_status(:unprocessable_content)
     expect(DifficultyDraft.find(id).attributes_payload['params']).to eq('min_uncap_level' => 5)
   end
 
   it 'rejects an invalid creation' do
     post '/api/v1/difficulty_rules', params: { difficulty_rule: attributes.merge(params: {}) }, headers: headers, as: :json
-    expect(response).to have_http_status(:unprocessable_entity)
+    expect(response).to have_http_status(:unprocessable_content)
     expect(DifficultyDraft.for_user(editor)).to be_empty
   end
 

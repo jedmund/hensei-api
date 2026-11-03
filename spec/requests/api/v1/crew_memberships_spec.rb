@@ -106,7 +106,7 @@ RSpec.describe 'Api::V1::CrewMemberships', type: :request do
         delete "/api/v1/crews/#{crew.id}/memberships/#{captain_membership.id}",
                headers: auth_headers
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         json = response.parsed_body
         expect(json['code']).to eq('cannot_remove_captain')
       end
@@ -156,7 +156,7 @@ RSpec.describe 'Api::V1::CrewMemberships', type: :request do
         post "/api/v1/crews/#{crew.id}/memberships/#{target_membership.id}/promote",
              headers: auth_headers
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         json = response.parsed_body
         expect(json['code']).to eq('vice_captain_limit')
       end
@@ -165,7 +165,7 @@ RSpec.describe 'Api::V1::CrewMemberships', type: :request do
         post "/api/v1/crews/#{crew.id}/memberships/#{captain_membership.id}/promote",
              headers: auth_headers
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         json = response.parsed_body
         expect(json['code']).to eq('cannot_remove_captain')
       end
@@ -203,7 +203,7 @@ RSpec.describe 'Api::V1::CrewMemberships', type: :request do
         post "/api/v1/crews/#{crew.id}/memberships/#{captain_membership.id}/demote",
              headers: auth_headers
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         json = response.parsed_body
         expect(json['code']).to eq('cannot_demote_captain')
       end

@@ -82,7 +82,7 @@ RSpec.describe 'API auth hardening', type: :request do
       put "/api/v1/parties/#{party.id}",
           params: { party: { description: bad_doc.to_json } }.to_json,
           headers: auth_headers(token)
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(party.reload.description).to eq(original)
     end
 
@@ -93,7 +93,7 @@ RSpec.describe 'API auth hardening', type: :request do
       put "/api/v1/grid_weapons/#{grid_weapon.id}",
           params: { weapon: { description: bad_doc } }.to_json,
           headers: auth_headers(token)
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(grid_weapon.reload.description).to be_nil
     end
   end

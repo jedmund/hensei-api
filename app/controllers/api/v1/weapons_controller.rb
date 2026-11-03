@@ -91,7 +91,7 @@ module Api
         # Validate transformation for weapons (none, 02, 03)
         valid_transformations = [nil, '', '02', '03']
         if transformation.present? && !valid_transformations.include?(transformation)
-          return render json: { error: 'Invalid transformation. Must be one of: 02, 03 (or empty for base)' }, status: :unprocessable_entity
+          return render json: { error: 'Invalid transformation. Must be one of: 02, 03 (or empty for base)' }, status: :unprocessable_content
         end
 
         # Build variant ID - weapons don't have suffix for base
@@ -133,7 +133,7 @@ module Api
         # Element variant ids become image filenames; rows saved before they
         # were validated are refused here rather than in the job
         unless Weapon.valid_element_variant_ids?(@weapon.element_variant_ids)
-          return render json: { error: 'Weapon has invalid element variant ids' }, status: :unprocessable_entity
+          return render json: { error: 'Weapon has invalid element variant ids' }, status: :unprocessable_content
         end
 
         Rails.logger.info "[WEAPONS] Enqueueing download_images for #{@weapon.id} " \
@@ -203,7 +203,7 @@ module Api
         wiki_data = params[:wiki_data] || {}
 
         unless wiki_pages.is_a?(Array) && wiki_pages.any?
-          return render json: { error: 'wiki_pages must be a non-empty array' }, status: :unprocessable_entity
+          return render json: { error: 'wiki_pages must be a non-empty array' }, status: :unprocessable_content
         end
 
         # Limit to 10 pages
@@ -220,7 +220,7 @@ module Api
       # Fetches the weapon's wiki sources into the stored sources, then rebuilds its skills from
       # them (the weapon-skill build).
       def fetch_wiki
-        return render json: { error: 'No wiki page configured for this weapon' }, status: :unprocessable_entity unless @weapon.wiki_en.present?
+        return render json: { error: 'No wiki page configured for this weapon' }, status: :unprocessable_content unless @weapon.wiki_en.present?
 
         begin
           # The reparse below builds the weapon; the save mustn't queue a second build.
@@ -250,7 +250,7 @@ module Api
         render json: WeaponBlueprint.render(@weapon.reload, view: :full, source_dates: true)
       rescue Granblue::WikiFetcher::MissingPageError, Granblue::EntityReparser::MissingWikiRawError,
              WeaponSkills::BuildLock::Busy => e
-        render json: { error: e.message }, status: :unprocessable_entity
+        render json: { error: e.message }, status: :unprocessable_content
       rescue Granblue::WikiError => e
         render json: { error: "Failed to fetch wiki data: #{e.message}" }, status: :bad_gateway
       rescue StandardError => e

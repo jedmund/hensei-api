@@ -79,9 +79,9 @@ RSpec.describe 'Admin character roles collection', type: :request do
 
     it 'rejects an unknown sort or field' do
       fetch(sort: 'icon_key')
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       fetch(fields: 'secret')
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
   end
 

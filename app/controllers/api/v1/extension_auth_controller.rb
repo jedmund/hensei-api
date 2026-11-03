@@ -23,7 +23,7 @@ module Api
       def create_code
         challenge = params[:code_challenge]
         unless ExtensionAuthCode.valid_challenge?(challenge, params[:code_challenge_method])
-          return render json: { error: 'invalid_request' }, status: :unprocessable_entity
+          return render json: { error: 'invalid_request' }, status: :unprocessable_content
         end
 
         code = ExtensionAuthCode.issue(current_user, code_challenge: challenge)

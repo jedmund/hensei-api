@@ -162,7 +162,7 @@ RSpec.describe 'POST /api/v1/import/wiki', type: :request do
     it 'rejects bodies over 64 KB before parsing' do
       import('x' * (64.kilobytes + 1))
 
-      expect(response).to have_http_status(:payload_too_large)
+      expect(response).to have_http_status(:content_too_large)
       expect(response.parsed_body).to eq('error' => 'payload_too_large')
     end
 

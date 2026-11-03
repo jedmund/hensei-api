@@ -78,7 +78,7 @@ RSpec.describe 'Api::V1::CrewInvitations', type: :request do
              params: { user_id: user.id },
              headers: auth_headers
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         json = response.parsed_body
         expect(json['code']).to eq('cannot_invite_self')
       end
@@ -91,7 +91,7 @@ RSpec.describe 'Api::V1::CrewInvitations', type: :request do
              params: { user_id: invitee.id },
              headers: auth_headers
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         json = response.parsed_body
         expect(json['code']).to eq('already_in_crew')
       end
@@ -158,7 +158,7 @@ RSpec.describe 'Api::V1::CrewInvitations', type: :request do
                params: { user_id: invitee.id, phantom_player_id: other_phantom.id },
                headers: auth_headers
 
-          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response).to have_http_status(:unprocessable_content)
         end
       end
     end

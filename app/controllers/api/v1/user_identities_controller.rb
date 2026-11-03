@@ -32,7 +32,7 @@ module Api
           if identity.nil?
             render_not_found_response('identity')
           elsif last_login_method?(identity)
-            render json: { error: 'last_login_method' }, status: :unprocessable_entity
+            render json: { error: 'last_login_method' }, status: :unprocessable_content
           else
             identity.destroy!
             head :no_content

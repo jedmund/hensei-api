@@ -40,7 +40,7 @@ module AdminCollection
     class_attribute :admin_collection_definition, instance_writer: false
 
     rescue_from InvalidQuery do |e|
-      render json: { error: e.message }, status: :unprocessable_entity
+      render json: { error: e.message }, status: :unprocessable_content
     end
   end
 

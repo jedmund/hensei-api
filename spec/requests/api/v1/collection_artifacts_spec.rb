@@ -191,7 +191,7 @@ RSpec.describe 'Collection Artifacts API', type: :request do
         post '/api/v1/collection/artifacts', params: invalid_attributes.to_json, headers: headers
       end.not_to change(CollectionArtifact, :count)
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       json = response.parsed_body
       expect(json['errors'].to_s).to include('cannot have the same modifier')
     end

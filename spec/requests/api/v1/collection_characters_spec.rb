@@ -306,7 +306,7 @@ RSpec.describe 'Collection Characters API', type: :request do
         post '/api/v1/collection/characters', params: invalid_attributes.to_json, headers: headers
       end.not_to change(CollectionCharacter, :count)
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       json = response.parsed_body
       expect(json['errors'].to_s).to include('must be a character awakening')
     end
@@ -320,7 +320,7 @@ RSpec.describe 'Collection Characters API', type: :request do
         post '/api/v1/collection/characters', params: invalid_attributes.to_json, headers: headers
       end.not_to change(CollectionCharacter, :count)
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       json = response.parsed_body
       expect(json['errors'].to_s).to include('requires uncap level 5')
     end
@@ -370,7 +370,7 @@ RSpec.describe 'Collection Characters API', type: :request do
       put "/api/v1/collection/characters/#{collection_character.id}",
           params: invalid_attributes.to_json, headers: headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       json = response.parsed_body
       expect(json['errors'].to_s).to include('Ring 1 must have both modifier and strength')
     end

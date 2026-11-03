@@ -112,12 +112,12 @@ RSpec.describe 'Admin summons collection', type: :request do
 
     it 'rejects series that match nothing' do
       body = fetch(filter: { series: 'magna,no-such-series' })
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(body['error']).to eq('unknown series: no-such-series')
 
       missing = SecureRandom.uuid
       body = fetch(filter: { series: missing })
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(body['error']).to eq("unknown series: #{missing}")
     end
 
@@ -201,7 +201,7 @@ RSpec.describe 'Admin summons collection', type: :request do
     }.each do |label, params|
       it "returns 422 for #{label}" do
         body = fetch(params)
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(body['error']).to be_a(String)
       end
     end

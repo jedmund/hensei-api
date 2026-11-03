@@ -55,7 +55,7 @@ RSpec.describe 'Api::V1::Awakenings', type: :request do
     it 'rejects an object type awakenings do not apply to' do
       put "/api/v1/awakenings/#{awakening.id}", params: { awakening: { object_type: 'Summon' } },
                                                 headers: editor_headers, as: :json
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(awakening.reload.object_type).to eq('Weapon')
     end
 
@@ -86,7 +86,7 @@ RSpec.describe 'Api::V1::Awakenings', type: :request do
     it 'rejects bytes that are not a PNG' do
       post url, params: { image: Base64.strict_encode64('hello world') }, headers: editor_headers, as: :json
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(response.parsed_body['error']).to eq('Image must be a PNG')
       expect(IconStorage).not_to have_received(:put)
     end
@@ -94,7 +94,7 @@ RSpec.describe 'Api::V1::Awakenings', type: :request do
     it 'rejects a JPEG for a weapon awakening' do
       post url, params: { image: Base64.strict_encode64(jpeg_of('50x50')) }, headers: editor_headers, as: :json
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(IconStorage).not_to have_received(:put)
     end
 
@@ -113,7 +113,7 @@ RSpec.describe 'Api::V1::Awakenings', type: :request do
       it 'rejects a PNG' do
         post url, params: { image: Base64.strict_encode64(png_of('50x50')) }, headers: editor_headers, as: :json
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(IconStorage).not_to have_received(:put)
       end
     end
@@ -121,14 +121,14 @@ RSpec.describe 'Api::V1::Awakenings', type: :request do
     it 'rejects an image larger than an icon' do
       post url, params: { image: Base64.strict_encode64(png_of('200x200')) }, headers: editor_headers, as: :json
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(response.parsed_body['error']).to match(/128x128 or smaller/)
     end
 
     it 'rejects a missing image' do
       post url, params: {}, headers: editor_headers, as: :json
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(IconStorage).not_to have_received(:put)
     end
 
@@ -136,7 +136,7 @@ RSpec.describe 'Api::V1::Awakenings', type: :request do
       post url, params: 'x' * (Api::V1::AwakeningsController::UPLOAD_REQUEST_MAX_BYTES + 1),
                 headers: editor_headers.merge('Content-Type' => 'application/json')
 
-      expect(response).to have_http_status(:payload_too_large)
+      expect(response).to have_http_status(:content_too_large)
       expect(IconStorage).not_to have_received(:put)
     end
 
@@ -144,7 +144,7 @@ RSpec.describe 'Api::V1::Awakenings', type: :request do
       awakening.update_column(:slug, '../weapon-upload')
       post url, params: { image: CommunitySpecHelpers::PNG_BASE64 }, headers: editor_headers, as: :json
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(IconStorage).not_to have_received(:put)
     end
 
@@ -169,7 +169,7 @@ RSpec.describe 'Api::V1::Awakenings', type: :request do
            params: { awakening: { name_en: 'Bad', slug: 'weapon/atk', object_type: 'Weapon', order: 1 } },
            headers: editor_headers, as: :json
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     it 'rejects a slug change to one that is not path-safe' do
@@ -177,7 +177,7 @@ RSpec.describe 'Api::V1::Awakenings', type: :request do
       put "/api/v1/awakenings/#{awakening.id}", params: { awakening: { slug: 'Weapon Def' } },
                                                 headers: editor_headers, as: :json
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(awakening.reload.slug).to eq('weapon-upload-def')
     end
   end

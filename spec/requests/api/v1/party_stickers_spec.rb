@@ -51,13 +51,13 @@ RSpec.describe 'Api::V1::PartyStickers', type: :request do
     it 'returns 422 for an unlisted party' do
       party.update!(visibility: 2)
       put "/api/v1/parties/#{party.id}/sticker", params: { sticker: 'cleared' }, headers: headers
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     it 'returns 422 for a private party' do
       party.update!(visibility: 3)
       put "/api/v1/parties/#{party.id}/sticker", params: { sticker: 'cleared' }, headers: headers
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(PartySticker.count).to eq(0)
     end
 
@@ -71,12 +71,12 @@ RSpec.describe 'Api::V1::PartyStickers', type: :request do
     it 'returns 422 for an inactive sticker' do
       create(:sticker, :inactive, slug: 'retired')
       put "/api/v1/parties/#{party.id}/sticker", params: { sticker: 'retired' }, headers: headers
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     it 'returns 422 for an unknown sticker' do
       put "/api/v1/parties/#{party.id}/sticker", params: { sticker: 'nope' }, headers: headers
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     it 'returns 404 for an unknown party or a shortcode' do
@@ -128,7 +128,7 @@ RSpec.describe 'Api::V1::PartyStickers', type: :request do
         put "/api/v1/parties/#{party.id}/sticker",
             params: { sticker: 'cleared', placement: { x: 'left', y: 10, rotation: 4 } }, headers: headers
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(PartySticker.find_by(user: giver, party: party)).to have_attributes(x: 0.25, y: 30.0, rotation: -8.5)
       end
 

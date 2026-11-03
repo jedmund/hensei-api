@@ -9,7 +9,7 @@ module Api
       before_action :computation_limit, only: %i[simulations until_result odds]
       around_action :measure_gacha
       rescue_from GachaSimulation::ValidationError do |error|
-        render json: { error: error.message }, status: :unprocessable_entity
+        render json: { error: error.message }, status: :unprocessable_content
       end
       rescue_from GachaSimulation::Unavailable do |error|
         response.set_header('Retry-After', '60')

@@ -116,7 +116,7 @@ RSpec.describe 'Admin raids collection', type: :request do
 
     it 'rejects a group that is not a UUID' do
       fetch(filter: { group: 'omega' })
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
   end
 

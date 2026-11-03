@@ -64,7 +64,7 @@ module Api
       end
 
       def render_error(code, message)
-        render json: { error: code, message: message }, status: :unprocessable_entity
+        render json: { error: code, message: message }, status: :unprocessable_content
       end
     end
   end

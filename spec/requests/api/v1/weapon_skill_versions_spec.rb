@@ -64,7 +64,7 @@ RSpec.describe 'PATCH /api/v1/weapon_skill_versions/:id', type: :request do
   it 'rejects override values the derived columns would not accept' do
     patch_version(version, { series_override: 'bogus', modifier_override: 'Not A Family' })
 
-    expect(response).to have_http_status(:unprocessable_entity)
+    expect(response).to have_http_status(:unprocessable_content)
     expect(version.reload.series_override).to be_nil
   end
 

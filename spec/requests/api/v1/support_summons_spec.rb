@@ -110,7 +110,7 @@ RSpec.describe 'Support Summons API', type: :request do
            params: { support_summon: { collection_summon_id: foreign_cs.id, section: 'fire', position: 0 } }.to_json,
            headers: headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     it 'rejects an out-of-range position' do
@@ -118,7 +118,7 @@ RSpec.describe 'Support Summons API', type: :request do
       post '/api/v1/support_summons',
            params: { support_summon: { collection_summon_id: cs.id, section: 'fire', position: 3 } }.to_json,
            headers: headers
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
   end
 
@@ -198,7 +198,7 @@ RSpec.describe 'Support Summons API', type: :request do
            ] }.to_json,
            headers: headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(response.parsed_body['errors'].first['error']).to include('Unknown GBF section')
     end
 

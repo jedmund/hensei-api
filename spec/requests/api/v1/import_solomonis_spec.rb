@@ -294,7 +294,7 @@ RSpec.describe 'ImportController Evoking Solomonis runs', type: :request do
       payload = body.deep_merge('solomonis' => { 'report' => report.merge('padding' => 'x' * 1.megabyte) })
 
       expect { import(payload) }.not_to change(Party, :count)
-      expect(response).to have_http_status(:payload_too_large)
+      expect(response).to have_http_status(:content_too_large)
     end
 
     it 'requires a signed-in user' do

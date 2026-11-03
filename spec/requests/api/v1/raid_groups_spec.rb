@@ -128,7 +128,7 @@ RSpec.describe 'Api::V1::RaidGroups', type: :request do
       expect do
         delete "/api/v1/raid_groups/#{group.id}", headers: editor_headers
       end.not_to change(RaidGroup, :count)
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(response.parsed_body['error']['code']).to eq('has_dependencies')
     end
 

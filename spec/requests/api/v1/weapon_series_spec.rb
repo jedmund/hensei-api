@@ -115,7 +115,7 @@ RSpec.describe 'Api::V1::WeaponSeries', type: :request do
       series = create(:weapon_series)
       create(:weapon, weapon_series: series)
       delete "/api/v1/weapon_series/#{series.id}", headers: editor_headers
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(response.parsed_body['error']['code']).to eq('has_dependencies')
     end
 

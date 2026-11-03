@@ -135,7 +135,7 @@ RSpec.describe 'Password Resets API', type: :request do
         password: 'short', password_confirmation: 'short'
       }.to_json, headers: headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     it 'rejects mismatched password confirmation' do
@@ -144,7 +144,7 @@ RSpec.describe 'Password Resets API', type: :request do
         password: 'newpassword', password_confirmation: 'different'
       }.to_json, headers: headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
   end
 end

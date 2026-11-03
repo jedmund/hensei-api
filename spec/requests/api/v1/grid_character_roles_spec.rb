@@ -68,14 +68,14 @@ RSpec.describe 'GridCharacterRoles API', type: :request do
         post '/api/v1/grid_character_roles',
              params: { name_jp: 'ディフェンダー' },
              headers: editor_headers, as: :json
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it 'rejects a negative or fractional sort_order' do
         [-1, 1.5].each do |sort_order|
           post '/api/v1/grid_character_roles',
                params: valid_params.merge(sort_order: sort_order), headers: editor_headers, as: :json
-          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response).to have_http_status(:unprocessable_content)
         end
       end
 
@@ -116,7 +116,7 @@ RSpec.describe 'GridCharacterRoles API', type: :request do
 
     it 'rejects a blank name' do
       put "/api/v1/grid_character_roles/#{role.id}", params: { name_en: '' }, headers: editor_headers, as: :json
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(role.reload.name_en).to eq('Old')
     end
 
@@ -174,7 +174,7 @@ RSpec.describe 'GridCharacterRoles API', type: :request do
 
     it 'returns 422 when roles array missing' do
       post '/api/v1/grid_character_roles/reorder', params: {}, headers: editor_headers, as: :json
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     it 'returns 422 with the missing ids and rolls back when a role id is unknown' do
@@ -185,7 +185,7 @@ RSpec.describe 'GridCharacterRoles API', type: :request do
            params: { roles: [{ id: role1.id, sort_order: 9 }, { id: bogus, sort_order: 1 }] },
            headers: editor_headers, as: :json
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       body = JSON.parse(response.body)
       expect(body['ids']).to include(bogus)
 
@@ -213,7 +213,7 @@ RSpec.describe 'GridCharacterRoles API', type: :request do
            params: { roles: [{ id: role1.id, sort_order: 5 }, { id: role2.id, sort_order: -1 }] },
            headers: editor_headers, as: :json
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect([role1.reload.sort_order, role2.reload.sort_order]).to eq([1, 2])
     end
   end
@@ -256,7 +256,7 @@ RSpec.describe 'GridCharacterRoles API', type: :request do
       post "/api/v1/grid_character_roles/#{role.id}/upload_icon",
            params: { image: Base64.strict_encode64('hello world'), filename: 'icon.png' },
            headers: editor_headers, as: :json
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     it 'rejects an oversized icon (>128x128)' do
@@ -276,7 +276,7 @@ RSpec.describe 'GridCharacterRoles API', type: :request do
            params: { image: Base64.strict_encode64(oversize_png), filename: 'icon.png' },
            headers: editor_headers, as: :json
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(JSON.parse(response.body)['error']).to match(/128x128 or smaller/)
     end
 
@@ -287,7 +287,7 @@ RSpec.describe 'GridCharacterRoles API', type: :request do
            params: { image: Base64.strict_encode64(padded), filename: 'icon.png' },
            headers: editor_headers, as: :json
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(JSON.parse(response.body)['error']).to match(/256KB or smaller/)
       expect(role.reload.icon_key).to be_nil
     end
@@ -297,7 +297,7 @@ RSpec.describe 'GridCharacterRoles API', type: :request do
            params: 'x' * (Api::V1::GridCharacterRolesController::UPLOAD_REQUEST_MAX_BYTES + 1),
            headers: editor_headers.merge('Content-Type' => 'application/json')
 
-      expect(response).to have_http_status(:payload_too_large)
+      expect(response).to have_http_status(:content_too_large)
       expect(role.reload.icon_key).to be_nil
     end
 

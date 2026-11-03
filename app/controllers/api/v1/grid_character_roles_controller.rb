@@ -58,14 +58,14 @@ module Api
         head :no_content
       rescue ActiveRecord::InvalidForeignKey
         render json: { error: 'Cannot delete a role that is in use. Reassign affected items first.' },
-               status: :unprocessable_entity
+               status: :unprocessable_content
       end
 
       # POST /grid_character_roles/reorder
       # Body: { roles: [{ id: <uuid>, sort_order: <int> }, ...] }
       def reorder
         entries = params[:roles]
-        return render json: { error: 'roles array required' }, status: :unprocessable_entity if entries.blank?
+        return render json: { error: 'roles array required' }, status: :unprocessable_content if entries.blank?
 
         # Validate the whole batch before opening the transaction so a bad id in
         # entry N doesn't roll back the N-1 successful updates and leave the
@@ -75,7 +75,7 @@ module Api
         missing = requested_ids - known_ids
         unless missing.empty?
           return render json: { error: 'unknown role ids', ids: missing },
-                        status: :unprocessable_entity
+                        status: :unprocessable_content
         end
 
         GridCharacterRole.transaction do
@@ -91,11 +91,11 @@ module Api
       # Body: { image: <base64-png>, filename: <string> }
       def upload_icon
         image_data = params[:image]
-        return render json: { error: 'No image data provided' }, status: :unprocessable_entity if image_data.blank?
+        return render json: { error: 'No image data provided' }, status: :unprocessable_content if image_data.blank?
 
         decoded = Base64.decode64(image_data)
         result = IconUploadValidator.call(decoded, max_dimension: ICON_MAX_DIMENSION, max_bytes: ICON_MAX_BYTES)
-        return render json: { error: result.error }, status: :unprocessable_entity unless result.valid?
+        return render json: { error: result.error }, status: :unprocessable_content unless result.valid?
 
         s3_key = "#{ICON_S3_PREFIX}/#{@role.id}.png"
         aws = AwsService.new

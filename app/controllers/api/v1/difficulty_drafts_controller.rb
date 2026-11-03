@@ -38,7 +38,7 @@ module Api
         )
         render json: serialize(draft), status: :created
       rescue ArgumentError => e
-        render json: { error: e.message }, status: :unprocessable_entity
+        render json: { error: e.message }, status: :unprocessable_content
       end
 
       def destroy
@@ -63,7 +63,7 @@ module Api
         @workspace.attach_image!(draft, image_data: params[:image], filename: params[:filename])
         render json: serialize(draft.reload)
       rescue ArgumentError, PartyDifficulty::DraftWorkspace::ImageValidationError => e
-        render json: { error: e.message }, status: :unprocessable_entity
+        render json: { error: e.message }, status: :unprocessable_content
       end
 
       def commit
@@ -87,7 +87,7 @@ module Api
         render json: {
           error: 'invalid_coverage',
           messages: e.messages
-        }, status: :unprocessable_entity
+        }, status: :unprocessable_content
       end
 
       private

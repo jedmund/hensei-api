@@ -282,7 +282,7 @@ RSpec.describe 'Substitutions API', type: :request do
 
       post '/api/v1/substitutions', params: params.to_json, headers: headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
   end
 
@@ -308,7 +308,7 @@ RSpec.describe 'Substitutions API', type: :request do
         post '/api/v1/substitutions', params: add_params.to_json, headers: headers
       end.not_to change(Substitution, :count)
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(JSON.parse(response.body)['error']).to match(/already a substitute/i)
     end
   end
@@ -330,7 +330,7 @@ RSpec.describe 'Substitutions API', type: :request do
         post '/api/v1/substitutions', params: params.to_json, headers: headers
       end.not_to change(Substitution, :count)
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(JSON.parse(response.body)['error']).to match(/unknown item_id/i)
     end
   end
@@ -345,7 +345,7 @@ RSpec.describe 'Substitutions API', type: :request do
           params: { substitution: { party_id: party.id } }.to_json,
           headers: headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(substitution.reload.position).to eq(0)
     end
   end
@@ -456,7 +456,7 @@ RSpec.describe 'Substitutions API', type: :request do
         post '/api/v1/substitutions', params: params.to_json, headers: headers
       end.not_to change(Substitution, :count)
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
   end
 
@@ -571,7 +571,7 @@ RSpec.describe 'Substitutions API', type: :request do
 
       post '/api/v1/substitutions/reorder', params: params.to_json, headers: headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(s_a.reload.position).to eq(0)
       expect(s_b.reload.position).to eq(1)
     end
@@ -588,7 +588,7 @@ RSpec.describe 'Substitutions API', type: :request do
 
       post '/api/v1/substitutions/reorder', params: params.to_json, headers: headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     it 'rejects positions outside [0, 10)' do
@@ -603,7 +603,7 @@ RSpec.describe 'Substitutions API', type: :request do
 
       post '/api/v1/substitutions/reorder', params: params.to_json, headers: headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(s_a.reload.position).to eq(0)
     end
 
@@ -618,7 +618,7 @@ RSpec.describe 'Substitutions API', type: :request do
 
       post '/api/v1/substitutions/reorder', params: params.to_json, headers: headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(s_a.reload.position).to eq(0)
       expect(s_b.reload.position).to eq(1)
     end
@@ -638,7 +638,7 @@ RSpec.describe 'Substitutions API', type: :request do
 
       post '/api/v1/substitutions/reorder', params: params.to_json, headers: headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     it 'returns 404 when any id belongs to another party' do
@@ -675,7 +675,7 @@ RSpec.describe 'Substitutions API', type: :request do
 
       post '/api/v1/substitutions/reorder', params: params.to_json, headers: headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     it 'requires the substitutions array' do
@@ -683,7 +683,7 @@ RSpec.describe 'Substitutions API', type: :request do
            params: { party_id: party.id }.to_json,
            headers: headers
 
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
   end
 end

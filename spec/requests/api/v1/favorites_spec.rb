@@ -92,7 +92,7 @@ RSpec.describe 'Api::V1::Favorites', type: :request do
              params: { favorite: { party_id: party.id } }.to_json,
              headers: auth_headers
       end.not_to change(Favorite, :count)
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(response.parsed_body['code']).to eq('favorite_already_exists')
     end
 

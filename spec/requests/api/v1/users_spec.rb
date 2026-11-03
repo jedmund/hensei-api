@@ -193,7 +193,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
       put "/api/v1/users/#{user.id}",
           params: { user: { description: 'a' * 141 } }.to_json,
           headers: auth_headers
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(response.parsed_body['errors']).to include('description')
     end
 

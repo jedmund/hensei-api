@@ -14,7 +14,7 @@ module ImageDownloadOptions
     allowed = allow_all ? ['all', *sizes] : sizes
     return size if allowed.include?(size)
 
-    render json: { error: "Invalid size. Must be one of: #{allowed.join(', ')}" }, status: :unprocessable_entity
+    render json: { error: "Invalid size. Must be one of: #{allowed.join(', ')}" }, status: :unprocessable_content
     nil
   end
 end

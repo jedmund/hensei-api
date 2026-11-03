@@ -49,7 +49,7 @@ RSpec.describe 'Api::V1::Bullets', type: :request do
       post '/api/v1/bullets',
            params: valid_params.merge(granblue_id: '201', slug: 'Rapid Bullet', bullet_type: 9, atk: -5).to_json,
            headers: editor_headers
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(response.parsed_body['errors'].keys).to include('granblue_id', 'slug', 'bullet_type', 'atk')
     end
 
@@ -95,7 +95,7 @@ RSpec.describe 'Api::V1::Bullets', type: :request do
       grid_weapon = create(:grid_weapon)
       GridWeaponBullet.insert!({ grid_weapon_id: grid_weapon.id, bullet_id: bullet.id, position: 0 })
       delete "/api/v1/bullets/#{bullet.granblue_id}", headers: editor_headers
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(response.parsed_body['error']).to include('cannot be deleted')
       expect(Bullet.exists?(bullet.id)).to be(true)
     end

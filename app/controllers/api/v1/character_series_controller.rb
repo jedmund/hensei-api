@@ -46,7 +46,7 @@ module Api
           render json: ErrorBlueprint.render(nil, error: {
                                                message: 'Cannot delete series with associated characters',
                                                code: 'has_dependencies'
-                                             }), status: :unprocessable_entity
+                                             }), status: :unprocessable_content
         else
           @character_series.destroy!
           head :no_content

@@ -309,13 +309,13 @@ RSpec.describe 'ImportController Evoking Solomonis parties', type: :request do
       deck['padding'] = 'x' * 1.megabyte
 
       expect { import }.not_to change(Party, :count)
-      expect(response).to have_http_status(:payload_too_large)
+      expect(response).to have_http_status(:content_too_large)
     end
 
     it 'checks the size before parsing the body' do
       post '/api/v1/import', params: 'x' * (1.megabyte + 1), headers: headers
 
-      expect(response).to have_http_status(:payload_too_large)
+      expect(response).to have_http_status(:content_too_large)
     end
 
     it 'requires a signed-in user' do

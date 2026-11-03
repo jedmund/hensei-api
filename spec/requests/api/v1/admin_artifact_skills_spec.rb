@@ -95,7 +95,7 @@ RSpec.describe 'Admin artifact skills collection', type: :request do
 
     it 'rejects a score category given by name' do
       fetch(filter: { score_category: 'attack' })
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
   end
 

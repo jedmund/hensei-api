@@ -83,7 +83,7 @@ RSpec.describe 'Admin job skills collection', type: :request do
 
     it 'rejects a malformed job id' do
       fetch(filter: { job: 'berserker' })
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
   end
 
