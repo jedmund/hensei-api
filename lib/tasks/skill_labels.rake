@@ -46,6 +46,7 @@ namespace :granblue do
       'debuff-res' => '02_icon_debuff_res.png',
       'added-hp' => '06_icon_hp.png', # overskill (teal) HP
       'turn-dmg' => '03_icon_turn_dmg.png', # Insignia's end-of-turn self-damage
+      'hp-dmg' => '03_icon_hp_dmg.png', # Bloodshed's HP DMG
       # Befoulment "Hit" lines
       'bf-atk' => '05_icon_atk_down.png',
       'bf-debuff' => '05_icon_debuff_suc_down.png',
@@ -79,6 +80,8 @@ namespace :granblue do
     frames = %w[optimus omega]
     %w[fire water earth wind light dark].each do |el|
       frames.each { |frame| manual["#{el}-#{frame}"] = "01_icon_#{el}#{frame}.png" }
+      # Odious Exalto's "Water Taboo" (the game's files say "evil", as its skill icons do)
+      manual["#{el}-taboo"] = "01_icon_#{el}evil.png"
       # elemental Bonus C.A. DMG badges ("Bonus Earth C.A.")
       manual["bonus-#{el}-ca"] = "01_icon_#{el}_special_skill_concurrent_attack.png"
     end
