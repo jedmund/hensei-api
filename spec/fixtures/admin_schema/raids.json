@@ -114,7 +114,8 @@
     "quest_id": "scalar",
     "extra": "scalar",
     "player_count": "scalar",
-    "released_at": "scalar"
+    "released_at": "scalar",
+    "trackable": "scalar"
   },
   "enums": {
     "element": {

@@ -13,7 +13,7 @@ module Api
           }
         end
 
-        fields :slug, :level, :element, :player_count, :enemy_id, :summon_id, :quest_id, :released_at
+        fields :slug, :level, :element, :player_count, :enemy_id, :summon_id, :quest_id, :released_at, :trackable
 
         # For places that already show the group (Home's tabs, the raid picker);
         # null when the raid has none, so its name is used
