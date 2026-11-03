@@ -125,7 +125,8 @@ RSpec.describe GridDamage::Calculator do
       describe_skill(-1, "Big boost to fire allies' ATK")
     end
 
-    it "leaves out skills that boost another element's allies but keeps their demerits" do
+    # 6C5bN9: the in-game panel shows no Turn DMG for the Earth Insignia copies.
+    it "leaves out another element's skills, demerits included" do
       create(:weapon_skill_boost_type, key: "turn_dmg")
       add_weapon(modifier: "Insignia", series: "normal", position: 0, weapon_element: earth,
                  boosts: { "atk" => 18.0, "turn_dmg" => 5.0 })
@@ -134,7 +135,16 @@ RSpec.describe GridDamage::Calculator do
       result = described_class.boost_list(party, state: state)
 
       expect(result["atk"].by_series["normal"]).to eq(40.0) # the fire Might alone, amplified
-      expect(result["turn_dmg"].total).to eq(5.0) # a demerit: per copy, never amplified
+      expect(result).not_to have_key("turn_dmg")
+    end
+
+    it "keeps an on-element skill's turn damage at its per-copy value" do
+      create(:weapon_skill_boost_type, key: "turn_dmg")
+      add_weapon(modifier: "Insignia", series: "normal", position: 0,
+                 boosts: { "atk" => 18.0, "turn_dmg" => 5.0 })
+      describe_skill(0, "Big boost to fire allies' ATK / Take 5% damage every turn.")
+
+      expect(described_class.boost_list(party, state: state)["turn_dmg"].total).to eq(5.0) # never amplified
     end
 
     it "keeps skills that affect allies of any element" do

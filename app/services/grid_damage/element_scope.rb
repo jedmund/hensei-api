@@ -21,10 +21,9 @@ module GridDamage
     # which belong to one element, so they scope like an element-named skill.
     ELEMENT_BOUND_BOOSTS = %w[optimus_exalto omega_exalto odious_exalto].freeze
 
-    # Demerits fall on the wielder's grid whatever the boost clause names ("Big boost
-    # to earth allies' ATK / Take 5% damage every turn"). The panel lists them for any
-    # element.
-    UNSCOPED_BOOSTS = %w[turn_dmg hp_dmg hp_cut].freeze
+    # A skill's demerit falls on the same allies as its boost: "土属性キャラの攻撃力上昇(大)/
+    # 毎ターンダメージを受ける" carries the Earth subject into the turn damage, and a Fire
+    # MC's panel shows no Turn DMG for three Earth Lifetree's Insignia (6C5bN9).
 
     # Weapon awakenings that boost only allies of the weapon's element
     # (gbf.wiki/Weapon_Awakening: "Weapon Awakening in this series only affect allies
@@ -61,7 +60,7 @@ module GridDamage
 
     # Whether one boost of a skill reaches an MC of panel_element.
     def applies?(version:, boost_type:, grid_weapon:, panel_element:)
-      return true if panel_element.nil? || UNSCOPED_BOOSTS.include?(boost_type)
+      return true if panel_element.nil?
       return true unless ELEMENT_BOUND_BOOSTS.include?(boost_type) || scoped_skill?(version)
 
       # Early gacha weapons carry skills for another element than their own (Ascalon's
