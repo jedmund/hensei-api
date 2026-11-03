@@ -28,13 +28,11 @@ module PostDeployment
 
     def rebuild_indices
       searchable_models.each do |model_name|
-        
           model = model_name.constantize
           rebuild_index_for(model)
         rescue NameError => e
           log_error("Could not load model: #{model_name}")
           log_error(e.message) if @verbose
-        
       end
     end
 

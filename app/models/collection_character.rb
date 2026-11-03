@@ -12,7 +12,7 @@ class CollectionCharacter < ApplicationRecord
   before_save :add_default_awakening
 
   validates :character_id, uniqueness: { scope: :user_id,
-    message: 'already exists in your collection' }
+                                         message: 'already exists in your collection' }
   validates :uncap_level, inclusion: { in: 0..6 }
   validates :transcendence_step, inclusion: { in: 0..5 }
   validates :awakening_level, inclusion: { in: 1..10 }
@@ -91,20 +91,23 @@ class CollectionCharacter < ApplicationRecord
     return unless awakening.present?
 
     return if awakening.object_type == 'Character'
+
       errors.add(:awakening, 'must be a character awakening')
-    
+
   end
 
   def validate_awakening_level
     return unless awakening_level.present? && awakening_level > 1 && awakening_id.blank?
+
       errors.add(:awakening_level, 'cannot be set without an awakening')
-    
+
   end
 
   def validate_transcendence_requirements
     return unless transcendence_step.present? && transcendence_step > 0 && uncap_level < 5
+
       errors.add(:transcendence_step, "requires uncap level 5 (current: #{uncap_level})")
-    
+
   end
 
   def add_default_awakening

@@ -92,7 +92,7 @@ module GridDamage
         effect.value&.to_f
       when 'conditional_flat', 'bonus_dmg'
         met = Conditions.met?(effect.condition, state: state, composition: composition,
-                              weapon: weapon, grid_weapon: grid_weapon)
+                                                weapon: weapon, grid_weapon: grid_weapon)
         met ? effect.value&.to_f : nil
       when 'per_grid_count'
         per_grid_count(effect, weapon: weapon, composition: composition)
@@ -111,7 +111,7 @@ module GridDamage
         hp_linear_value(effect, state: state, missing: true)
       when 'weapon_skill_curve'
         weapon_skill_curve(effect, weapon: weapon, grid_weapon: grid_weapon, state: state,
-                           composition: composition, levels: levels)
+                                   composition: composition, levels: levels)
       when 'supplemental_cap'
         supplemental_cap(effect, state: state)
       when 'ally_max_hp_scaled'

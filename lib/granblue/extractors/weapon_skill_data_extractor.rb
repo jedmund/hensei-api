@@ -29,6 +29,7 @@ module Granblue
         t = title.downcase
         return 'taboo' if t.include?('taboo')
         return 'sephira' if t.include?('sephira')
+
         has_normal = t.include?('normal aura') || t =~ /\bnormal\b/
         has_omega  = t.include?('omega aura')  || t =~ /\bomega\b/
         return 'normal_omega' if has_normal && has_omega
@@ -36,6 +37,7 @@ module Granblue
         return 'omega' if has_omega
         return 'ex' if /\bex\b/.match?(t)
         return 'normal' if has_normal
+
         nil
       end
 
@@ -74,6 +76,7 @@ module Granblue
         body.split("\n|").each do |chunk|
           k, v = chunk.split('=', 2)
           next unless v
+
           params[k.strip.to_sym] = v.strip
         end
         params
@@ -112,6 +115,7 @@ module Granblue
         cells = row.split("\n").flat_map { |ln| ln.start_with?('!') ? ln.sub(/^!/, '').split('!!') : [] }
         cells.each do |cell|
           next unless cell.include?('aura}}') || cell =~ /\b(Normal|Omega|Odious|EX|Taboo)\b/i
+
           span = cell[/colspan="?(\d+)"?/, 1]&.to_i || 1
           label = cell.include?('|') ? cell.split('|', 2).last : cell
           series = self.class.series_for_title(label) or next
@@ -128,6 +132,7 @@ module Granblue
           rows_raw = split_rows(tbl)
           series = table_series(tbl, box_boosts)
           next unless series
+
           header = rows_raw.find { |r| r.include?('Skill Level') } or next
           sl_levels, has_max = parse_header(header)
           if sl_levels.empty? # transposed table (SL in rows), e.g. Strike
@@ -140,6 +145,7 @@ module Granblue
           current_size = nil
           rows_raw.each do |r|
             next if r.include?('Skill Level') || r.include?('wsmod-title')
+
             raw_size = row_size(r)               # nil for Shape B / rowspanned size
             current_size = raw_size if raw_size  # carry a rowspanned size (e.g. Bloodrage)
             size = raw_size || current_size
@@ -168,8 +174,10 @@ module Granblue
               next
             elsif boosts.empty? && plain_names.any?
               next if side_table_metric?(plain_names)
+
               boosts = plain_names.filter_map { |l| boost_key(l) }
             end
+
             boosts = box_boosts.filter_map { |l| boost_key(l) } if boosts.empty?
             boosts.uniq.each do |boost|
               out << base_row(modifier, boost, series, size, aura).merge(
@@ -192,6 +200,7 @@ module Granblue
         data = {} # sl level => [value per boost]
         rows_raw.each do |r|
           next if r.equal?(header) || r.include?('Skill Level')
+
           head_cell = r.split("\n").find { |ln| ln.start_with?('!') } or next
           lvl = cell_content(head_cell.sub(/^!\s*/, ''))[/\d+/]&.to_i or next
           vals = row_values(r).map { |v| parse_num(v) }
@@ -230,6 +239,7 @@ module Granblue
         return 'ex' if joined.include?('EX ')
         return 'omega' if joined.include?('Omega ')
         return 'odious' if joined.include?('Od ')
+
         'normal'
       end
 
@@ -239,6 +249,7 @@ module Granblue
 
       def formula_for(modifier, boost)
         return 'garrison' if modifier == 'Garrison'
+
         FORMULA_BY_BOOST.fetch(boost, 'flat')
       end
 
@@ -273,6 +284,7 @@ module Granblue
       def row_size(r) # rubocop:disable Naming/MethodParameterName
         r.split("\n").each do |ln|
           next unless ln.start_with?('!')
+
           s = normalize_size(cell_content(ln.sub(/^!\s*/, '')))
           return s if s
         end
@@ -291,8 +303,10 @@ module Granblue
         r.split("\n").filter_map do |ln|
           next unless ln.start_with?('!')
           next if /WeaponSkillIconLink|\[\[File:/.match?(ln)
+
           c = cell_content(ln.sub(/^!\s*/, ''))
           next if c.empty? || normalize_size(c) || c =~ /Skill Level/i || c =~ /\AIcons?\z/i
+
           c
         end
       end
@@ -303,6 +317,7 @@ module Granblue
         r.split("\n").each do |ln|
           next unless ln.start_with?('|')
           next if ln.start_with?('|-', '|}')
+
           ln.sub(/^\|/, '').split('||').each { |c| vals << cell_content(c) }
         end
         vals
@@ -312,8 +327,10 @@ module Granblue
         name = label.strip
         key = lookup_key(name)
         return key if key
+
         SERIES_PREFIXES.each do |p|
           next unless name.start_with?(p)
+
           key = lookup_key(name[p.length..].strip)
           return key if key
         end
@@ -365,6 +382,7 @@ module Granblue
 
       def expand_cells(row, drop_first: false)
         return [] unless row
+
         cells = row.split("\n").flat_map do |ln|
           if ln.start_with?('!')
             ln.sub(/^!/, '').split('!!')
@@ -380,8 +398,10 @@ module Granblue
 
       def parse_num(s) # rubocop:disable Naming/MethodParameterName
         return nil if s.nil?
+
         t = s.to_s.gsub(/[%,\s]/, '')
         return nil if t.empty? || t == '-'
+
         begin
           Float(t)
         rescue StandardError

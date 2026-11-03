@@ -49,7 +49,7 @@ class GridCharacter < ApplicationRecord
   validates :uncap_level, presence: true, numericality: { only_integer: true }
   validates :description, rich_text_description: true, if: :description_changed?
   validates :transcendence_step, numericality: { only_integer: true }, allow_nil: true
-  
+
   validate :validate_awakening_level, on: :update, unless: :is_substitute?
   validate :transcendence, unless: :is_substitute?
   validate :validate_over_mastery_values, on: :update, unless: :is_substitute?
@@ -125,6 +125,7 @@ class GridCharacter < ApplicationRecord
   # @return [void]
   def transcendence
     return if transcendence_step.nil?
+
     errors.add(:transcendence_step, 'transcendence step too low') if transcendence_step.negative?
   end
 
@@ -215,9 +216,9 @@ class GridCharacter < ApplicationRecord
     return unless r1[:modifier].present? || r2[:modifier].present?
       # Ensure that ring2's strength equals exactly half of ring1's strength.
       return if r2[:strength].to_f == (r1[:strength].to_f / 2)
+
         errors.add(:over_mastery, 'over mastery attack and hp values do not match')
-      
-    
+
   end
 
   ##

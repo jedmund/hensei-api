@@ -248,7 +248,7 @@ RSpec.describe 'Api::V1::Playlists', type: :request do
       expect do
         delete "/api/v1/playlists/#{playlist.id}", headers: auth_headers
       end.to change(Playlist, :count).by(-1)
-        .and change(PlaylistParty, :count).by(-2)
+                                     .and change(PlaylistParty, :count).by(-2)
 
       expect(response).to have_http_status(:no_content)
     end

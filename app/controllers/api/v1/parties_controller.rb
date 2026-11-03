@@ -78,8 +78,8 @@ module Api
         party.last_updated = Time.current
         if party.save
           render json: PartyBlueprint.render(load_full_party(party.id), view: :created, root: :party,
-                                                                         current_user: current_user,
-                                                                         admin_mode: admin_mode),
+                                                                        current_user: current_user,
+                                                                        admin_mode: admin_mode),
                  status: :created
         else
           render_party_errors(party)
@@ -131,8 +131,8 @@ module Api
         @party.last_updated = Time.current
         if @party.save
           render json: PartyBlueprint.render(load_full_party(@party.id), view: :full, root: :party,
-                                                                          current_user: current_user,
-                                                                          admin_mode: admin_mode)
+                                                                         current_user: current_user,
+                                                                         admin_mode: admin_mode)
         else
           render_party_errors(@party)
         end
@@ -326,6 +326,7 @@ module Api
       def sync_all
         @party = Party.find_by(id: params[:id])
         return render_not_found_response('party') unless @party
+
         authorize_party!
         return if performed?
 
@@ -686,23 +687,23 @@ module Api
         {
           characters: if char_gids.any?
   user.collection_characters.joins(:character)
-            .includes({ character: :character_series_records }, :awakening)
-            .where(characters: { granblue_id: char_gids })
+      .includes({ character: :character_series_records }, :awakening)
+      .where(characters: { granblue_id: char_gids })
 else
   []
 end,
           weapons: if weap_gids.any?
   user.collection_weapons.joins(:weapon)
-            .includes({ weapon: %i[weapon_series weapon_series_variant] }, :awakening, :weapon_key1, :weapon_key2, :weapon_key3, :weapon_key4,
-                      :ax_modifier1, :ax_modifier2, :befoulment_modifier, { collection_weapon_bullets: :bullet })
-            .where(weapons: { granblue_id: weap_gids })
+      .includes({ weapon: %i[weapon_series weapon_series_variant] }, :awakening, :weapon_key1, :weapon_key2, :weapon_key3, :weapon_key4,
+                :ax_modifier1, :ax_modifier2, :befoulment_modifier, { collection_weapon_bullets: :bullet })
+      .where(weapons: { granblue_id: weap_gids })
 else
   []
 end,
           summons: if summ_gids.any?
   user.collection_summons.joins(:summon)
-            .includes(summon: :summon_series)
-            .where(summons: { granblue_id: summ_gids })
+      .includes(summon: :summon_series)
+      .where(summons: { granblue_id: summ_gids })
 else
   []
 end

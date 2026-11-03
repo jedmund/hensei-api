@@ -28,8 +28,8 @@ module GachaSimulation
 
     def compile
       Catalogue.deep_freeze({ 'fingerprint' => @snapshot['fingerprint'], 'catalogue_loaded_at' => @snapshot['loaded_at'],
-        'config' => @config, 'banner' => @banner&.info, 'ordinary' => distribution(false),
-        'guaranteed' => distribution(true) })
+                              'config' => @config, 'banner' => @banner&.info, 'ordinary' => distribution(false),
+                              'guaranteed' => distribution(true) })
     end
 
     private

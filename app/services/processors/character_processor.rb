@@ -44,7 +44,6 @@ module Processors
 
       grid_characters = process_characters(characters_data)
       grid_characters.each do |grid_character|
-        
           grid_character.save!
           if grid_character.collection_character.present?
             update_collection_from_game(grid_character)
@@ -57,9 +56,7 @@ module Processors
           end
         rescue ActiveRecord::RecordInvalid => e
           Rails.logger.error "[CHARACTER] Failed to create GridCharacter: #{e.record.errors.full_messages.join(', ')}"
-        
       end
-
     rescue StandardError => e
       raise e
     end

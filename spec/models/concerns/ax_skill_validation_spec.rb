@@ -76,8 +76,8 @@ RSpec.describe AxSkillValidation do
       ax_group: 'extended', base_min: 1, base_max: 5, secondary_min: 1, secondary_max: 5
     )
     item = build(:collection_weapon, weapon: weapon,
-                 ax_modifier1: primary, ax_strength1: 3.5,
-                 ax_modifier2: xeno_secondary, ax_strength2: 5)
+                                     ax_modifier1: primary, ax_strength1: 3.5,
+                                     ax_modifier2: xeno_secondary, ax_strength2: 5)
 
     expect(item).to be_valid
   end
@@ -97,8 +97,8 @@ RSpec.describe AxSkillValidation do
     it 'allows an EXP roll on a primal weapon and rejects a second AX slot' do
       secondary = create(:weapon_stat_modifier, :ax_ca_dmg)
       item = build(:collection_weapon, weapon: primal_weapon,
-                   ax_modifier1: exp, ax_strength1: 10,
-                   ax_modifier2: secondary, ax_strength2: 4)
+                                       ax_modifier1: exp, ax_strength1: 10,
+                                       ax_modifier2: secondary, ax_strength2: 4)
 
       expect(item).not_to be_valid
       expect(item.errors[:ax_modifier2]).to include('is not available with a utility AX skill')

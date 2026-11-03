@@ -163,4 +163,3 @@ RSpec.describe Granblue::Parsers::Wiki do
     end
   end
 end
-

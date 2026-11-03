@@ -228,7 +228,6 @@ namespace :deploy do
       # Execute the deployment tasks
       manager = PostDeployment::Manager.new(options)
       manager.run
-
     rescue StandardError => e
       display_error(e)
       exit 1

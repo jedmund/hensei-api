@@ -21,8 +21,8 @@ module Granblue
       #   - pure nukes / charge-bar-only / cooldown effects with no passive grid contribution
       SKIP_PATTERNS = {
         'key_placeholder' => /empowered by a chosen (teluma|pendulum|chain)|a gate to the summits|locked within ultima|granted power with an anklet/i,
-        'dynamic_buff'    => /gain \{\{status|allies gain .*\bupon\b|\bstack(able|ing)\b.*upon/i,
-        'nuke_only'       => /\bdeals? .*% .*(dmg|damage) to (all|random|a) foe|plain damage/i
+        'dynamic_buff' => /gain \{\{status|allies gain .*\bupon\b|\bstack(able|ing)\b.*upon/i,
+        'nuke_only' => /\bdeals? .*% .*(dmg|damage) to (all|random|a) foe|plain damage/i
       }.freeze
 
       # A leading EVENT trigger makes everything after it a battle proc (nuke, heal,
@@ -266,6 +266,7 @@ module Granblue
         return :low_hp if frag.match?(/based on how low .*hp|the lower .*hp/i)
         return :high_hp if frag.match?(/based on how high .*hp|the higher .*hp/i)
         return :turns if frag.match?(/number of turns|each turn|every turn|per turn|turns? (?:passed|elapsed)/i)
+
         nil
       end
 
@@ -294,6 +295,7 @@ module Granblue
         if %w[dmg_supp na_supp ca_supp skill_dmg_supp].include?(boost) && (m = frag[/by\s+([\d,]+)/i, 1])
           return m.delete(',').to_f
         end
+
         (m = frag[/(\d+(?:\.\d+)?)\s*%/, 1]) ? m.to_f : nil
       end
 

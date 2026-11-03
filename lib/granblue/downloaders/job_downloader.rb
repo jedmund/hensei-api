@@ -143,7 +143,6 @@ module Granblue
         "https://media.skycompass.io/assets/customizes/jobs/1138x1138/#{@id}_#{gender}.png"
       end
 
-
       # Gets object type for file paths and storage keys
       # @return [String] Returns "job"
       def object_type

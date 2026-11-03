@@ -26,8 +26,9 @@ module PostDeployment
       end
 
       return unless @processed_files.any?
+
         print_summary
-      
+
     end
 
     private
@@ -116,6 +117,7 @@ module PostDeployment
 
     def already_imported?(filename)
       return false if @force
+
       DataVersion.imported?(filename)
     end
 
@@ -146,6 +148,7 @@ module PostDeployment
     def print_change_summary(action, changes)
       changes.each do |type, records|
         next if records.empty?
+
         log_step "  • #{action} #{records.size} #{type} #{records.size == 1 ? 'record' : 'records'}"
       end
     end

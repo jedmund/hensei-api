@@ -28,7 +28,7 @@ RSpec.describe 'Collection - check_updates', type: :request do
 
     it 'requires authentication' do
       post endpoint, params: { data: { 'list' => [] } }.to_json,
-           headers: { 'Content-Type' => 'application/json' }
+                     headers: { 'Content-Type' => 'application/json' }
 
       expect(response).to have_http_status(:unauthorized)
     end

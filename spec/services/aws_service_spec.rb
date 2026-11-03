@@ -14,11 +14,11 @@ RSpec.describe AwsService do
     context 'with Rails credentials (symbol keys)' do
       before do
         allow(Rails.application.credentials).to receive(:dig).with(:aws).and_return({
-          region: 'us-east-1',
-          access_key_id: 'AKIA_TEST',
-          secret_access_key: 'secret',
-          bucket_name: 'test-bucket'
-        })
+                                                                                      region: 'us-east-1',
+                                                                                      access_key_id: 'AKIA_TEST',
+                                                                                      secret_access_key: 'secret',
+                                                                                      bucket_name: 'test-bucket'
+                                                                                    })
       end
 
       it 'initializes successfully' do
@@ -29,9 +29,9 @@ RSpec.describe AwsService do
       it 'creates S3 client with credentials' do
         described_class.new
         expect(Aws::S3::Client).to have_received(:new).with(hash_including(
-          region: 'us-east-1',
-          access_key_id: 'AKIA_TEST'
-        ))
+                                                              region: 'us-east-1',
+                                                              access_key_id: 'AKIA_TEST'
+                                                            ))
       end
     end
 
@@ -39,11 +39,11 @@ RSpec.describe AwsService do
       before do
         allow(Rails.application.credentials).to receive(:dig).with(:aws).and_return(nil)
         allow(Rails.application.credentials).to receive(:dig).with('aws').and_return({
-          'region' => 'eu-west-1',
-          'access_key_id' => 'AKIA_STRING',
-          'secret_access_key' => 'secret2',
-          'bucket_name' => 'string-bucket'
-        })
+                                                                                       'region' => 'eu-west-1',
+                                                                                       'access_key_id' => 'AKIA_STRING',
+                                                                                       'secret_access_key' => 'secret2',
+                                                                                       'bucket_name' => 'string-bucket'
+                                                                                     })
       end
 
       it 'initializes with string key credentials' do
@@ -56,11 +56,11 @@ RSpec.describe AwsService do
       before do
         allow(Rails.application.credentials).to receive(:dig).and_return(nil)
         stub_const('ENV', ENV.to_h.merge(
-          'AWS_ACCESS_KEY_ID' => 'AKIA_ENV',
-          'AWS_SECRET_ACCESS_KEY' => 'env_secret',
-          'AWS_REGION' => 'ap-southeast-1',
-          'AWS_BUCKET_NAME' => 'env-bucket'
-        ))
+                            'AWS_ACCESS_KEY_ID' => 'AKIA_ENV',
+                            'AWS_SECRET_ACCESS_KEY' => 'env_secret',
+                            'AWS_REGION' => 'ap-southeast-1',
+                            'AWS_BUCKET_NAME' => 'env-bucket'
+                          ))
       end
 
       it 'initializes with env vars' do
@@ -111,8 +111,8 @@ RSpec.describe AwsService do
   describe '#upload_stream' do
     let(:service) do
       allow(Rails.application.credentials).to receive(:dig).with(:aws).and_return({
-        region: 'us-east-1', access_key_id: 'key', secret_access_key: 'secret', bucket_name: 'bucket'
-      })
+                                                                                    region: 'us-east-1', access_key_id: 'key', secret_access_key: 'secret', bucket_name: 'bucket'
+                                                                                  })
       described_class.new
     end
 
@@ -131,8 +131,8 @@ RSpec.describe AwsService do
   describe '#file_exists?' do
     let(:service) do
       allow(Rails.application.credentials).to receive(:dig).with(:aws).and_return({
-        region: 'us-east-1', access_key_id: 'key', secret_access_key: 'secret', bucket_name: 'bucket'
-      })
+                                                                                    region: 'us-east-1', access_key_id: 'key', secret_access_key: 'secret', bucket_name: 'bucket'
+                                                                                  })
       described_class.new
     end
 

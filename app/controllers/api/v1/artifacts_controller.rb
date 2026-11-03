@@ -78,7 +78,6 @@ module Api
       rescue ActiveRecord::RecordNotFound
         render_not_found_response('artifact')
       end
-
     end
   end
 end

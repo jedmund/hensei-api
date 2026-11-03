@@ -91,6 +91,7 @@ module Api
           if @collection_character.errors[:character_id].any? { |e| e.include?('already exists') }
             raise CollectionErrors::DuplicateCharacter.new(@collection_character.character_id)
           end
+
           render_validation_error_response(@collection_character)
         end
       end
@@ -217,8 +218,9 @@ module Api
       def check_collection_access
         return if @target_user.nil? # Already handled by set_target_user
         return if @target_user.collection_viewable_by?(current_user)
+
           render json: { error: 'You do not have permission to view this collection' }, status: :forbidden
-        
+
       end
 
       def set_collection_character_for_read
@@ -247,16 +249,16 @@ module Api
 
       def batch_character_params
         params.permit(collection_characters: [
-          :character_id, :uncap_level, :transcendence_step, :perpetuity,
+                        :character_id, :uncap_level, :transcendence_step, :perpetuity,
           :awakening_id, :awakening_level,
           {
-          ring1: %i[modifier strength],
-          ring2: %i[modifier strength],
-          ring3: %i[modifier strength],
-          ring4: %i[modifier strength],
-          earring: %i[modifier strength]
+            ring1: %i[modifier strength],
+            ring2: %i[modifier strength],
+            ring3: %i[modifier strength],
+            ring4: %i[modifier strength],
+            earring: %i[modifier strength]
           }
-        ])
+                      ])
       end
 
       def import_params

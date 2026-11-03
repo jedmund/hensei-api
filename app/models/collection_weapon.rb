@@ -112,8 +112,9 @@ class CollectionWeapon < ApplicationRecord
     # Check for duplicate slots
     slots = weapon_keys.map(&:slot)
     return unless slots.length != slots.uniq.length
+
       errors.add(:weapon_keys, 'cannot have multiple keys for the same slot')
-    
+
   end
 
   def validate_befoulment
@@ -137,22 +138,25 @@ class CollectionWeapon < ApplicationRecord
     return unless element.present? && weapon.present?
 
     return if weapon_element_changeable?
+
       errors.add(:element, 'can only be set on element-changeable weapons')
-    
+
   end
 
   def validate_awakening_compatibility
     return unless awakening.present?
 
     return if awakening.object_type == 'Weapon'
+
       errors.add(:awakening, 'must be a weapon awakening')
-    
+
   end
 
   def validate_awakening_level
     return unless awakening_level.present? && awakening_level > 1 && awakening_id.blank?
+
       errors.add(:awakening_level, 'cannot be set without an awakening')
-    
+
   end
 
   def validate_transcendence_requirements
@@ -162,8 +166,9 @@ class CollectionWeapon < ApplicationRecord
 
     # Some weapons might not support transcendence
     return unless weapon.present? && !weapon.transcendence
+
       errors.add(:transcendence_step, 'not available for this weapon') if transcendence_step > 0
-    
+
   end
 
   ##

@@ -41,7 +41,6 @@ module Processors
   class WeaponProcessor < BaseProcessor
     TRANSCENDENCE_LEVELS = [200, 210, 220, 230, 240, 250].freeze
 
-
     # KEY_MAPPING maps the raw key value (as a string) to a canonical range or value.
     # For example, in our test we want a raw key "10001" to be interpreted as any key whose
     # canonical granblue_id is between 697 and 706.
@@ -151,7 +150,6 @@ module Processors
       grid_weapons = process_weapons(weapons_data)
 
       grid_weapons.each do |grid_weapon|
-        
           grid_weapon.save!
           if grid_weapon.collection_weapon.present?
             update_collection_from_game(grid_weapon)
@@ -173,7 +171,6 @@ module Processors
           Rails.logger.error "[WEAPON] Failed to create GridWeapon: #{e.record.errors.full_messages.join(', ')}"
           add_warning('item_skipped', grid_weapon, grid_weapon.weapon)
           discard_unsaved(grid_weapon, :weapons)
-        
       end
     end
 

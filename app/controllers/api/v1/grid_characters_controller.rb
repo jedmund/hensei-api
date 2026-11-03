@@ -559,8 +559,9 @@ module Api
         @incoming_character = find_by_any_id(Character, character_id)
 
         return if @incoming_character
+
           render_unprocessable_entity_response(Api::V1::NoCharacterProvidedError.new)
-        
+
       end
 
       ##

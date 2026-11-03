@@ -15,8 +15,8 @@ RSpec.describe PostDeployment::TestModeTransaction do
 
     expect(transaction.committed_changes.length).to eq(2)
     expect(transaction.committed_changes.first).to eq({
-      model: 'Character', attributes: { name_en: 'Zeta' }, operation: :create
-    })
+                                                        model: 'Character', attributes: { name_en: 'Zeta' }, operation: :create
+                                                      })
   end
 
   it 'clears all changes on rollback' do

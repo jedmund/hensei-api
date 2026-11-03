@@ -2,21 +2,21 @@
 
 class PasswordResetMailer < ApplicationMailer
   ELEMENT_BUTTON_COLORS = {
-    'wind'  => '#1dc688',
-    'fire'  => '#ec5c5c',
+    'wind' => '#1dc688',
+    'fire' => '#ec5c5c',
     'water' => '#5cb7ec',
     'earth' => '#8e3c0b',
     'light' => '#c59c0c',
-    'dark'  => '#c65cec'
+    'dark' => '#c65cec'
   }.freeze
 
   ELEMENT_TEXT_COLORS = {
-    'wind'  => '#006a45',
-    'fire'  => '#6e0000',
+    'wind' => '#006a45',
+    'fire' => '#6e0000',
     'water' => '#00639c',
     'earth' => '#863504',
     'light' => '#715100',
-    'dark'  => '#560075'
+    'dark' => '#560075'
   }.freeze
 
   def reset_email(user, raw_token)

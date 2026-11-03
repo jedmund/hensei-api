@@ -115,8 +115,8 @@ module Api
 
         greater_than_max_uncap = summon_params[:uncap_level].to_i > max_level
         can_be_transcended = summon.transcendence &&
-          summon_params[:transcendence_step].present? &&
-          summon_params[:transcendence_step].to_i.positive?
+                             summon_params[:transcendence_step].present? &&
+                             summon_params[:transcendence_step].to_i.positive?
 
         new_uncap_level = greater_than_max_uncap || can_be_transcended ? max_level : summon_params[:uncap_level]
         new_transcendence_step = if summon.transcendence && summon_params[:transcendence_step].present?

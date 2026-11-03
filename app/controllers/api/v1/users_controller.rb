@@ -58,7 +58,7 @@ module Api
                                             email_verified: false
                                           },
                                           view: :token),
-                      status: :created
+               status: :created
       rescue StandardError => e
         Rails.logger.error "[Registration] Unexpected error: #{e.class}: #{e.message}"
         Rails.logger.error e.backtrace&.first(10)&.join("\n")
@@ -148,8 +148,7 @@ module Api
                                             root: 'profile',
                                             parties: parties,
                                             meta: { count: count, total_pages: (count.to_f / current_page_size).ceil, per_page: current_page_size },
-                                            current_user: current_user
-          )
+                                            current_user: current_user)
         end
       end
 
@@ -264,7 +263,7 @@ module Api
 
         if params['recency'].present?
           start_time = (DateTime.current - params['recency'].to_i.seconds)
-                         .to_datetime.beginning_of_day
+                       .to_datetime.beginning_of_day
         end
 
         min_characters_count = params['characters_count'].blank? ? DEFAULT_MIN_CHARACTERS : params['characters_count'].to_i

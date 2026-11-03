@@ -23,7 +23,7 @@ RSpec.describe 'Api::V1::Crews', type: :request do
         expect do
           post '/api/v1/crews', params: valid_params, headers: auth_headers
         end.to change(Crew, :count).by(1)
-          .and change(CrewMembership, :count).by(1)
+                                   .and change(CrewMembership, :count).by(1)
 
         expect(response).to have_http_status(:created)
         json = response.parsed_body

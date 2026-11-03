@@ -54,9 +54,9 @@ module Api
       def destroy
         if Party.where(raid_id: @raid.id).exists?
           render json: ErrorBlueprint.render(nil, error: {
-            message: 'Cannot delete raid with associated parties',
-            code: 'has_dependencies'
-          }), status: :unprocessable_entity
+                                               message: 'Cannot delete raid with associated parties',
+                                               code: 'has_dependencies'
+                                             }), status: :unprocessable_entity
         else
           @raid.destroy!
           head :no_content

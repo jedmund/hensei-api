@@ -222,12 +222,12 @@ module Api
 
       def batch_artifact_params
         params.permit(collection_artifacts: [
-          :artifact_id, :element, :proficiency, :level, :nickname, :reroll_slot,
+                        :artifact_id, :element, :proficiency, :level, :nickname, :reroll_slot,
           { skill1: %i[modifier quality level] },
           { skill2: %i[modifier quality level] },
           { skill3: %i[modifier quality level] },
           { skill4: %i[modifier quality level] }
-        ])
+                      ])
       end
 
       def import_params

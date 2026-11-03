@@ -141,7 +141,7 @@ module Api
       def render_party
         @party.mark_updated!
         render json: PartyBlueprint.render(load_full_party(@party.id), view: :full, root: :party,
-                                                                        current_user: current_user)
+                                                                       current_user: current_user)
       end
     end
   end

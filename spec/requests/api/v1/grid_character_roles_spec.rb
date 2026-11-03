@@ -147,7 +147,7 @@ RSpec.describe 'GridCharacterRoles API', type: :request do
       expect do
         delete "/api/v1/grid_character_roles/#{role.id}", headers: editor_headers
       end.to change(GridCharacterRole, :count).by(-1)
-                                            .and change(GridCharacterRoleAssignment, :count).by(-1)
+                                              .and change(GridCharacterRoleAssignment, :count).by(-1)
 
       expect(response).to have_http_status(:no_content)
     end

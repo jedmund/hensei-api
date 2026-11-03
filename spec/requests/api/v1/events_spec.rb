@@ -316,7 +316,7 @@ RSpec.describe 'Api::V1::Events', type: :request do
     it 'stores the Japanese banner under events/<id>.ja, next to the English one' do
       upload = Rack::Test::UploadedFile.new(StringIO.new(jpeg_bytes), 'image/jpeg', original_filename: 'b.jpg')
       post "/api/v1/events/#{event.id}/upload_image", params: { image: upload, language: 'ja' },
-                                                       headers: editor_headers
+                                                      headers: editor_headers
 
       expect(response).to have_http_status(:ok)
       expect(IconStorage).to have_received(:put)

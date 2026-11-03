@@ -47,9 +47,9 @@ module Api
       def destroy
         if @weapon_series.weapons.exists?
           render json: ErrorBlueprint.render(nil, error: {
-            message: 'Cannot delete series with associated weapons',
-            code: 'has_dependencies'
-          }), status: :unprocessable_entity
+                                               message: 'Cannot delete series with associated weapons',
+                                               code: 'has_dependencies'
+                                             }), status: :unprocessable_entity
         else
           @weapon_series.destroy!
           head :no_content

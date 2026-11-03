@@ -38,8 +38,9 @@ module Api
       def check_collection_access
         return if @target_user.nil?
         return if @target_user.collection_viewable_by?(current_user)
+
           render json: { error: 'You do not have permission to view this collection' }, status: :forbidden
-        
+
       end
     end
   end

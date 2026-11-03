@@ -358,7 +358,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
       invalid_attributes = {
         collection_weapon: {
           weapon_key1_id: weapon_key.id,
-          weapon_key2_id: weapon_key.id  # Same key twice
+          weapon_key2_id: weapon_key.id # Same key twice
         }
       }
 

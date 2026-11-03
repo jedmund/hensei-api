@@ -103,6 +103,7 @@ module PostDeployment
     def display_record_summary(label, records)
       records.each do |type, items|
         next if items.empty?
+
         count = items.size
         puts "\n#{type.capitalize}: #{count} #{label.downcase} #{count == 1 ? 'record' : 'records'}"
         items.each do |item|

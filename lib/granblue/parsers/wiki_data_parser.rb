@@ -324,6 +324,7 @@ module Granblue
           # If the extracted value contains nested templates, skip it
           return nil if extracted.include?('{{{')
           return nil if extracted.blank?
+
           value = extracted
         end
 

@@ -5,6 +5,7 @@ namespace :db do
   task backup: :environment do
     db_url = ENV['REMOTE_DB_URL'].presence || Rails.application.credentials.dig(:remote_db, :url)
     raise 'Please set REMOTE_DB_URL or add remote_db.url to credentials' if db_url.blank?
+
     uri = URI.parse(db_url)
 
     remote_host = uri.host

@@ -268,7 +268,7 @@ RSpec.describe Granblue::CurationSnapshot do
       kept = curate_effect(boost_type: 'atk')
       generated = curate_effect(manually_edited_at: nil, provenance: nil, scaling_kind: 'static')
       remove = op('remove_row', 'section' => 'effects', 'modifier' => 'Axe Voltage II', 'boost_type' => 'ex_atk_sp',
-                  'condition' => {})
+                                'condition' => {})
       write_overlay('s.json', 'ops' => [remove])
 
       expect(described_class.drift(**files)['unapplied']).to eq([remove])
@@ -294,7 +294,7 @@ RSpec.describe Granblue::CurationSnapshot do
       curate_effect
       described_class.export(**files)
       write_overlay('ops.json', 'ops' => [op('remove_row', 'section' => 'effects', 'modifier' => 'Axe Voltage II',
-                                             'boost_type' => 'ex_atk_sp', 'condition' => {})])
+                                                           'boost_type' => 'ex_atk_sp', 'condition' => {})])
 
       expect { sync }.to raise_error(described_class::Overlay::Invalid, /also removed by a remove_row op/)
     end

@@ -3,7 +3,7 @@ class CollectionJobAccessory < ApplicationRecord
   belongs_to :job_accessory
 
   validates :job_accessory_id, uniqueness: { scope: :user_id,
-    message: 'already exists in your collection' }
+                                             message: 'already exists in your collection' }
 
   scope :by_job, ->(job_id) { joins(:job_accessory).where(job_accessories: { job_id: job_id }) }
   scope :by_job_accessory, ->(job_accessory_id) { where(job_accessory_id: job_accessory_id) }

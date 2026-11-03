@@ -95,6 +95,7 @@ module Granblue
       # @return [Integer] Calculated transcendence level (1-5)
       def calculate_transcendence_level(level)
         return 1 unless level
+
         level = 1 + TRANSCENDENCE_LEVELS.count { |cutoff| level > cutoff }
         Rails.logger.debug "[TRANSFORM] Calculated transcendence level: #{level}"
         level

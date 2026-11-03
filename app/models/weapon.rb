@@ -328,14 +328,14 @@ class Weapon < ApplicationRecord
       visited = Set.new([granblue_id])
       while current
         break if visited.include?(current.granblue_id)
+
         chain.unshift(current)
         visited.add(current.granblue_id)
 
         break unless current.forged_from.present?
+
           current = Weapon.find_by(granblue_id: current.forged_from)
-        
-          
-        
+
       end
 
       # First element is the root

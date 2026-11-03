@@ -54,6 +54,7 @@ namespace :granblue do
     unresolved = Hash.new(0)
     scope.find_each do |gs|
       next unless gs.summon
+
       total += 1
       if aura_ids.include?(gs.summon.granblue_id) then resolved += 1
       else

@@ -183,7 +183,7 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
 
       it 'returns error for restricted position' do
         put "/api/v1/parties/#{party.id}/grid_summons/#{summon1.id}/position",
-            params: { position: -1 }.to_json,  # Main summon position
+            params: { position: -1 }.to_json, # Main summon position
             headers: headers
 
         expect(response).to have_http_status(:unprocessable_entity)
@@ -192,7 +192,7 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
 
       it 'returns error for friend summon position' do
         put "/api/v1/parties/#{party.id}/grid_summons/#{summon1.id}/position",
-            params: { position: 6 }.to_json,  # Friend summon position
+            params: { position: 6 }.to_json, # Friend summon position
             headers: headers
 
         expect(response).to have_http_status(:unprocessable_entity)
@@ -217,7 +217,7 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
       end
 
       it 'returns error when trying to swap with restricted position' do
-        restricted_summon = create(:grid_summon, party: party, position: -1)  # Main summon
+        restricted_summon = create(:grid_summon, party: party, position: -1) # Main summon
 
         post "/api/v1/parties/#{party.id}/grid_summons/swap",
              params: { source_id: summon1.id, target_id: restricted_summon.id }.to_json,
@@ -263,7 +263,7 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
       it 'validates all operations before executing' do
         operations = [
           { type: 'move', entity: 'weapon', id: weapon.id, position: 3 },
-          { type: 'invalid', entity: 'character', id: char1.id }  # Invalid operation
+          { type: 'invalid', entity: 'character', id: char1.id } # Invalid operation
         ]
 
         post "/api/v1/parties/#{party.id}/grid_update",
@@ -281,7 +281,7 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
         char3 = create(:grid_character, party: party, position: 2)
 
         operations = [
-          { type: 'move', entity: 'character', id: char2.id, position: 5 }  # Move to extra
+          { type: 'move', entity: 'character', id: char2.id, position: 5 } # Move to extra
         ]
 
         post "/api/v1/parties/#{party.id}/grid_update",

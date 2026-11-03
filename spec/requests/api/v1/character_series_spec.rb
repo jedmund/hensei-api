@@ -78,7 +78,7 @@ RSpec.describe 'Api::V1::CharacterSeries', type: :request do
 
     it 'rejects creation without auth' do
       post '/api/v1/character_series', params: valid_params.to_json,
-           headers: { 'Content-Type' => 'application/json' }
+                                       headers: { 'Content-Type' => 'application/json' }
       expect(response).to have_http_status(:unauthorized)
     end
   end

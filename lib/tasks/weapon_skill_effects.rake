@@ -35,6 +35,7 @@ namespace :granblue do
       updated += 1 if effect.persisted?
       cols.each do |c|
         next unless r.key?(c)
+
         effect[c] = r[c]
       end
       # apply schema defaults for omitted columns

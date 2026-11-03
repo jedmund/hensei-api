@@ -116,13 +116,14 @@ class GridArtifact < ApplicationRecord
     # Check proficiency compatibility
     # Use effective_proficiency to get the right value for both standard and quirk artifacts
     eff_prof = effective_proficiency
-    return unless eff_prof  # Skip if no proficiency available
+    return unless eff_prof # Skip if no proficiency available
 
     prof_value = Artifact.proficiencies[eff_prof]
     char_proficiencies = [char.proficiency1, char.proficiency2].compact
 
     return if char_proficiencies.include?(prof_value)
+
       errors.add(:artifact, "proficiency must match one of the character's proficiencies")
-    
+
   end
 end

@@ -50,7 +50,7 @@ RSpec.describe 'POST /api/v1/import/wiki', type: :request do
       expect(report['ambiguous'].sole.keys).to eq(%w[kind position title candidates])
       expect(report['ambiguous'].sole['candidates'].first.keys).to eq(%w[id granblueId name element])
       expect(report['warnings']).to eq([{ 'code' => 'unknown_key', 'detail' => 'opus slot 1',
-                                         'kind' => 'key', 'position' => 1, 'title' => '999999' }])
+                                          'kind' => 'key', 'position' => 1, 'title' => '999999' }])
     end
 
     it 'returns an empty report for an empty paste' do

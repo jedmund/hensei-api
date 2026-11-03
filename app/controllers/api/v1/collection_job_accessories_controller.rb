@@ -35,6 +35,7 @@ module Api
           if @collection_accessory.errors[:job_accessory_id].any? { |e| e.include?('already exists') }
             raise CollectionErrors::DuplicateJobAccessory.new(@collection_accessory.job_accessory_id)
           end
+
           render_validation_error_response(@collection_accessory)
         end
       end

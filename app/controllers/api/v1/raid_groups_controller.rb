@@ -48,9 +48,9 @@ module Api
       def destroy
         if @raid_group.raids.exists?
           render json: ErrorBlueprint.render(nil, error: {
-            message: 'Cannot delete group with associated raids',
-            code: 'has_dependencies'
-          }), status: :unprocessable_entity
+                                               message: 'Cannot delete group with associated raids',
+                                               code: 'has_dependencies'
+                                             }), status: :unprocessable_entity
         else
           @raid_group.destroy!
           head :no_content

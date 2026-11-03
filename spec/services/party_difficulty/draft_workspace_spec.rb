@@ -117,6 +117,7 @@ RSpec.describe PartyDifficulty::DraftWorkspace do
       rule_loads = 0
       subscriber = ActiveSupport::Notifications.subscribe('sql.active_record') do |_, _, _, _, payload|
         next if payload[:name] == 'SCHEMA' || payload[:cached]
+
         rule_loads += 1 if payload[:sql].include?('FROM "difficulty_rules"')
       end
       begin

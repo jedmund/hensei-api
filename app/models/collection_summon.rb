@@ -70,8 +70,9 @@ class CollectionSummon < ApplicationRecord
 
     # Some summons might not support transcendence
     return unless summon.present? && !summon.transcendence
+
       errors.add(:transcendence_step, 'not available for this summon')
-    
+
   end
 
   ##

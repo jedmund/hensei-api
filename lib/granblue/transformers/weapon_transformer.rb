@@ -172,6 +172,7 @@ module Granblue
       # @return [Integer] Calculated uncap level
       def calculate_uncap_level(level)
         return 0 unless level
+
         UNCAP_LEVELS.count { |cutoff| level.to_i > cutoff }
       end
 
@@ -180,6 +181,7 @@ module Granblue
       # @return [Integer] Calculated transcendence level
       def calculate_transcendence_level(level)
         return 1 unless level
+
         1 + TRANSCENDENCE_LEVELS.count { |cutoff| level.to_i > cutoff }
       end
     end

@@ -76,6 +76,7 @@ module Granblue
       # @return [void]
       def log_debug(message)
         return unless options[:debug]
+
         Rails.logger.debug "[TRANSFORM-DEBUG] #{self.class.name}: #{message}"
       end
     end

@@ -64,11 +64,10 @@ RSpec.describe GridArtifact, type: :model do
         artifact = create(:artifact, proficiency: :sabre)
 
         grid_artifact = build(:grid_artifact,
-          grid_character: grid_character,
-          artifact: artifact,
-          element: :water,
-          skill1: {}, skill2: {}, skill3: {}, skill4: {}
-        )
+                              grid_character: grid_character,
+                              artifact: artifact,
+                              element: :water,
+                              skill1: {}, skill2: {}, skill3: {}, skill4: {})
         expect(grid_artifact).not_to be_valid
         expect(grid_artifact.errors[:element]).to be_present
       end
@@ -80,11 +79,10 @@ RSpec.describe GridArtifact, type: :model do
         artifact = create(:artifact, proficiency: :sabre)
 
         grid_artifact = build(:grid_artifact,
-          grid_character: grid_character,
-          artifact: artifact,
-          element: :dark,
-          skill1: {}, skill2: {}, skill3: {}, skill4: {}
-        )
+                              grid_character: grid_character,
+                              artifact: artifact,
+                              element: :dark,
+                              skill1: {}, skill2: {}, skill3: {}, skill4: {})
         expect(grid_artifact).to be_valid
       end
     end
@@ -96,10 +94,9 @@ RSpec.describe GridArtifact, type: :model do
 
       it 'returns proficiency from base artifact' do
         grid_artifact = build(:grid_artifact,
-          artifact: artifact,
-          proficiency: nil,
-          skill1: {}, skill2: {}, skill3: {}, skill4: {}
-        )
+                              artifact: artifact,
+                              proficiency: nil,
+                              skill1: {}, skill2: {}, skill3: {}, skill4: {})
         expect(grid_artifact.effective_proficiency).to eq('spear')
       end
     end
@@ -109,11 +106,10 @@ RSpec.describe GridArtifact, type: :model do
 
       it 'returns proficiency from instance' do
         grid_artifact = build(:grid_artifact,
-          artifact: artifact,
-          proficiency: :melee,
-          level: 1,
-          skill1: {}, skill2: {}, skill3: {}, skill4: {}
-        )
+                              artifact: artifact,
+                              proficiency: :melee,
+                              level: 1,
+                              skill1: {}, skill2: {}, skill3: {}, skill4: {})
         expect(grid_artifact.effective_proficiency).to eq('melee')
       end
     end
@@ -123,9 +119,8 @@ RSpec.describe GridArtifact, type: :model do
     it 'belongs to a grid_character' do
       grid_character = create(:grid_character)
       grid_artifact = create(:grid_artifact,
-        grid_character: grid_character,
-        skill1: {}, skill2: {}, skill3: {}, skill4: {}
-      )
+                             grid_character: grid_character,
+                             skill1: {}, skill2: {}, skill3: {}, skill4: {})
       expect(grid_artifact.grid_character).to eq(grid_character)
     end
 

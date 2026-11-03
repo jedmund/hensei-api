@@ -2,7 +2,6 @@
 
 module Granblue
   module Parsers
-
     class ValidationErrorsSerializer
       attr_reader :record
 

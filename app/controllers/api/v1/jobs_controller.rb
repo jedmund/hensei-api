@@ -73,10 +73,10 @@ module Api
 
           # Remove extra subskills if necessary
           if old_job &&
-            %w[1 2 3].include?(old_job.row) &&
-            %w[4 5 ex2].include?(job.row) &&
-            @party.skill1 && @party.skill2 && @party.skill3 &&
-            @party.skill1.sub && @party.skill2.sub && @party.skill3.sub
+             %w[1 2 3].include?(old_job.row) &&
+             %w[4 5 ex2].include?(job.row) &&
+             @party.skill1 && @party.skill2 && @party.skill3 &&
+             @party.skill1.sub && @party.skill2.sub && @party.skill3.sub
             @party['skill3_id'] = nil
           end
         end

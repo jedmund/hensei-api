@@ -74,7 +74,7 @@ module Granblue
 
       def save!
         Source.put(nil, SOURCE_KIND, { 'rows' => @rows, 'queried' => @queried.to_a.sort }, key: SOURCE_KEY,
-                                                                                          fetched_at: Time.current)
+                                                                                           fetched_at: Time.current)
       end
     end
 

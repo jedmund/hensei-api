@@ -33,13 +33,13 @@ module Granblue
           BASE_TIER.each do |n, uncap|
             txt = fields["#{prefix}aura#{n}"]
             rec = build(txt, slot: slot, uncap_level: uncap, transcendence_stage: 0,
-                        series: series, summon_element: element, granblue_id: granblue_id)
+                             series: series, summon_element: element, granblue_id: granblue_id)
             records << rec if rec
           end
           (0..5).each do |n|
             txt = fields["#{prefix}aurat#{n}"]
             rec = build(txt, slot: slot, uncap_level: 5, transcendence_stage: n + 1,
-                        series: series, summon_element: element, granblue_id: granblue_id)
+                             series: series, summon_element: element, granblue_id: granblue_id)
             records << rec if rec
           end
         end
@@ -115,11 +115,13 @@ module Granblue
           # Odious summons boost "Taboo <X>'s weapon skills" — the Odious frame, not Optimus.
           return ['odious_frame', nil] if p.include?('taboo') || series == 'odious'
           return ['omega_frame', nil] if OMEGA_WORDS.any? { |w| p.include?(w) } || series == 'magna'
+
           return ['normal_frame', nil]
         end
         return ['normal_atk', nil] if p.include?('normal atk')
         return ['omega_atk', nil] if p.include?('omega atk')
         return ['multiattack', nil] if p.include?('multiattack')
+
         # ATK boosts: the wiki writes "[element] Elemental ATK", "[element] ATK", or
         # "[element] Elemental attack" (varied phrasing) — all feed the Elemental
         # category. Guard against "charge attack" (CA) and "attack critical" (crit).
@@ -139,6 +141,7 @@ module Granblue
       # "Dark and Earth" -> "dark,earth"; "all" -> "all"; else nil.
       def elements_in(phrase)
         return 'all' if /\ball\b/.match?(phrase)
+
         found = ELEMENTS.select { |e| phrase.include?(e) }
         found.any? ? found.join(',') : nil
       end

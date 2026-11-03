@@ -44,11 +44,11 @@ module Api
 
         @collection_weapons = @target_user.collection_weapons
                                           .includes({ weapon: %i[weapon_series weapon_series_variant] }, :awakening,
-                                                   :weapon_key1, :weapon_key2,
-                                                   :weapon_key3, :weapon_key4,
-                                                   :ax_modifier1, :ax_modifier2,
-                                                   :befoulment_modifier,
-                                                   { collection_weapon_bullets: :bullet })
+                                                    :weapon_key1, :weapon_key2,
+                                                    :weapon_key3, :weapon_key4,
+                                                    :ax_modifier1, :ax_modifier2,
+                                                    :befoulment_modifier,
+                                                    { collection_weapon_bullets: :bullet })
 
         # Apply filters (array_param splits comma-separated values for OR logic)
         @collection_weapons = @collection_weapons.by_weapon(params[:weapon_id]) if params[:weapon_id]
@@ -286,8 +286,9 @@ module Api
       def check_collection_access
         return if @target_user.nil? # Already handled by set_target_user
         return if @target_user.collection_viewable_by?(current_user)
+
           render json: { error: 'You do not have permission to view this collection' }, status: :forbidden
-        
+
       end
 
       def set_collection_weapon_for_read
@@ -315,13 +316,13 @@ module Api
 
       def batch_weapon_params
         params.permit(collection_weapons: %i[
-          weapon_id uncap_level transcendence_step
+                        weapon_id uncap_level transcendence_step
           weapon_key1_id weapon_key2_id weapon_key3_id weapon_key4_id
           awakening_id awakening_level
           ax_modifier1_id ax_strength1 ax_modifier2_id ax_strength2
           befoulment_modifier_id befoulment_strength befoulment_permeation exorcism_level skill_level
           element
-        ])
+                      ])
       end
 
       def import_params

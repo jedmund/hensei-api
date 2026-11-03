@@ -29,9 +29,9 @@ RSpec.describe GridDamage::AxContributions do
     primal_series = WeaponSeries.find_by(slug: 'primal') || create(:weapon_series, slug: 'primal')
     primal_series.update!(augment_type: :ax)
     exp = create(:weapon_stat_modifier, slug: 'ax_exp', name_en: 'EXP Gain', stat: 'exp',
-                                         ax_group: 'utility', base_min: 5, base_max: 10)
+                                        ax_group: 'utility', base_min: 5, base_max: 10)
     rupie = create(:weapon_stat_modifier, slug: 'ax_rupie', name_en: 'Rupie Gain', stat: 'rupie',
-                                           ax_group: 'utility', base_min: 10, base_max: 20)
+                                          ax_group: 'utility', base_min: 10, base_max: 20)
     4.times do |position|
       create(:grid_weapon, party: party, weapon: create(:weapon, weapon_series: primal_series), position: position,
                            ax_modifier1: exp, ax_strength1: 10)

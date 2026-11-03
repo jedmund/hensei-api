@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 #
 # This module contains shared constants used for querying and filtering Party resources.
 # It is included by controllers and concerns that require these configuration values.

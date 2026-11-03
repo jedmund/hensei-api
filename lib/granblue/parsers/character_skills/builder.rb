@@ -114,7 +114,7 @@ module Granblue
             role, min_uncap, transcendence_stage = InferenceRules.ougi_progression(key, wiki_params["#{key}_label"])
             slot[:versions] << build_version(
               key, slot, role: role, ordinal: next_ordinal(slot),
-              overrides: { min_uncap: min_uncap, transcendence_stage: transcendence_stage }
+                         overrides: { min_uncap: min_uncap, transcendence_stage: transcendence_stage }
             )
           end
 
@@ -173,7 +173,7 @@ module Granblue
             next if parent_position.blank? && subtitle.blank?
 
             { suffix: suffix, parent_position: parent_position, count: count, role: InferenceRules.group_role(title, subtitle), title: title,
-subtitle: subtitle }
+              subtitle: subtitle }
           end
 
           groups.uniq { |group| group[:suffix] }
@@ -187,11 +187,11 @@ subtitle: subtitle }
 
           version = build_version(
             base_key, slot, role: 'transform_alt', ordinal: next_ordinal(slot),
-            overrides: {
-              name_en: names.second,
-              trigger_type: InferenceRules.trigger_type_for_text(wiki_params["#{base_key}_effdesc"]),
-              trigger_value: InferenceRules.trigger_value_for_text(wiki_params["#{base_key}_effdesc"])
-            }
+                            overrides: {
+                              name_en: names.second,
+                              trigger_type: InferenceRules.trigger_type_for_text(wiki_params["#{base_key}_effdesc"]),
+                              trigger_value: InferenceRules.trigger_value_for_text(wiki_params["#{base_key}_effdesc"])
+                            }
           )
           add_link(base_version[:key], version[:key], 'transforms_to')
           version
@@ -223,14 +223,14 @@ subtitle: subtitle }
 
             built << build_version(
               base_key, slot, role: InferenceRules.enhanced_role(level), ordinal: next_ordinal(slot) + built.size,
-              overrides: {
-                **inline_base_overrides(base_key),
-                unlock_level: level,
-                enhance_levels: [level],
-                transcendence_stage: InferenceRules.transcendence_stage(level),
-                description_en: description.presence || base_version[:attrs][:description_en],
-                cooldown: cooldown.presence || base_version[:attrs][:cooldown]
-              }
+                              overrides: {
+                                **inline_base_overrides(base_key),
+                                unlock_level: level,
+                                enhance_levels: [level],
+                                transcendence_stage: InferenceRules.transcendence_stage(level),
+                                description_en: description.presence || base_version[:attrs][:description_en],
+                                cooldown: cooldown.presence || base_version[:attrs][:cooldown]
+                              }
             )
           end
         end

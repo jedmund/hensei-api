@@ -74,7 +74,6 @@ class Character < ApplicationRecord
     { slug: 'character-multi', name_en: 'Multiattack', name_jp: '連続攻撃', order: 3 }
   ].freeze
 
-
   # Validations
   before_validation :normalize_max_transcendence_stage
 

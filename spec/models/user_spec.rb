@@ -499,7 +499,7 @@ RSpec.describe User, type: :model do
 
     it 'requires minimum 8 characters' do
       user = User.new(username: 'testuser', email: 'test@example.com',
-                       password: 'short', password_confirmation: 'short')
+                      password: 'short', password_confirmation: 'short')
       expect(user).not_to be_valid
       expect(user.errors[:password].join).to match(/too short|minimum/)
     end

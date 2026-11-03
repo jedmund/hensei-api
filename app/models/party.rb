@@ -296,10 +296,10 @@ class Party < ApplicationRecord
 
   def self.rising_rank_sql(now)
     sanitize_sql_array([
-      'parties.participation_score * POWER(0.5, ' \
-      'GREATEST(EXTRACT(EPOCH FROM (? - parties.created_at)), 0) / ?) DESC',
+                         'parties.participation_score * POWER(0.5, ' \
+                         'GREATEST(EXTRACT(EPOCH FROM (? - parties.created_at)), 0) / ?) DESC',
       now, RISING_AGE_HALF_LIFE.to_i
-    ])
+                       ])
   end
 
   # ActiveRecord Validations

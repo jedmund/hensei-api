@@ -46,7 +46,7 @@ RSpec.describe Granblue::Extractors::KeySkillExtractor do
     it 'replaces extracted rows but keeps rows a curator edited' do
       WeaponSkillEffect.create!(key_effect('elem_amplify', 20))
       curated = WeaponSkillEffect.create!(key_effect('na_dmg_cap', 10, total_cap: 10, shared_cap_group: 'key_na_cap',
-                                                                         manually_edited_at: Time.current))
+                                                                       manually_edited_at: Time.current))
       stats = Hash.new(0)
 
       described_class.send(:persist, 'anklet-oblivion',

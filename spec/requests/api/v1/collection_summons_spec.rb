@@ -307,8 +307,8 @@ RSpec.describe 'Collection Summons API', type: :request do
     it 'returns error with invalid transcendence' do
       invalid_attributes = {
         collection_summon: {
-          uncap_level: 3,  # Keep it at 3
-          transcendence_step: 5  # Invalid: requires uncap level 5
+          uncap_level: 3, # Keep it at 3
+          transcendence_step: 5 # Invalid: requires uncap level 5
         }
       }
 

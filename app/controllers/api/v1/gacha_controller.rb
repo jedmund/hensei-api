@@ -91,6 +91,7 @@ module Api
 
       def prepare
         raise GachaSimulation::ValidationError, 'Rate-ups must be an array' if params.key?(:rateups) && !params[:rateups].is_a?(Array)
+
         input = params.permit(:mode, :season, :purchase, :banner, :draws, :seed, :target, :copies, :comparison,
                               rateups: %i[identity percent]).to_h
         config = GachaSimulation::Configuration.normalize(input)

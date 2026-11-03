@@ -152,6 +152,7 @@ module Granblue
         would_update = update_attributes.any? { |key, value| existing_record[key] != value }
 
         return unless would_update
+
           # Create a test record with existing data
           test_record = existing_record.dup
 
@@ -169,7 +170,7 @@ module Granblue
             attributes: update_attributes,
             operation: :update
           }
-        
+
       end
 
       # Validate that all required attributes are present
@@ -185,6 +186,7 @@ module Granblue
         end
 
         return unless missing_columns.any?
+
           details = [
             'Missing required columns:',
             missing_columns.map { |col| "  • #{col}" },
@@ -196,7 +198,7 @@ module Granblue
             file_name: File.basename(@file_path),
             details: details
           )
-        
+
       end
 
       # Validate attributes for an update
@@ -218,6 +220,7 @@ module Granblue
         end
 
         return unless missing_columns.any?
+
           details = [
             'Missing required values for update:',
             missing_columns.map { |col| "  • #{col}" },
@@ -229,7 +232,7 @@ module Granblue
             file_name: File.basename(@file_path),
             details: details
           )
-        
+
       end
 
       # Validate a record can be saved

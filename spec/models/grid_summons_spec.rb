@@ -283,11 +283,11 @@ RSpec.describe GridSummon, type: :model do
 
     let(:orphaned_gs) do
       create(:grid_summon, party: party, summon: summon, position: 0,
-             uncap_level: 3, transcendence_step: 0, orphaned: true)
+                           uncap_level: 3, transcendence_step: 0, orphaned: true)
     end
     let(:normal_gs) do
       create(:grid_summon, party: party, summon: summon, position: 1,
-             uncap_level: 3, transcendence_step: 0, orphaned: false)
+                           uncap_level: 3, transcendence_step: 0, orphaned: false)
     end
 
     describe '.orphaned' do
@@ -315,7 +315,7 @@ RSpec.describe GridSummon, type: :model do
 
     it 'sets orphaned to true and clears collection_summon_id' do
       gs = create(:grid_summon, party: party, summon: summon, position: 0,
-                  uncap_level: 3, transcendence_step: 0, orphaned: false)
+                                uncap_level: 3, transcendence_step: 0, orphaned: false)
       gs.mark_orphaned!
       gs.reload
       expect(gs.orphaned).to be true
@@ -329,14 +329,14 @@ RSpec.describe GridSummon, type: :model do
 
     it 'adds error when placing non-subaura summon in sub position' do
       gs = build(:grid_summon, party: party, summon: summon_without_subaura,
-                 position: 5, uncap_level: 3, transcendence_step: 0)
+                               position: 5, uncap_level: 3, transcendence_step: 0)
       gs.validate
       expect(gs.errors[:position]).to include('must have subaura for position')
     end
 
     it 'allows non-subaura summon in normal position' do
       gs = build(:grid_summon, party: party, summon: summon_without_subaura,
-                 position: 1, uncap_level: 3, transcendence_step: 0)
+                               position: 1, uncap_level: 3, transcendence_step: 0)
       gs.validate
       expect(gs.errors[:position]).to be_empty
     end

@@ -113,6 +113,7 @@ module WeaponSkills
             end
             key = key.strip
             return val.strip if matched || key == value
+
             default = val.strip if key == '#default'
           end
           default.to_s

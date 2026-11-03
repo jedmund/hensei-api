@@ -363,7 +363,7 @@ RSpec.describe 'Collection Characters API', type: :request do
     it 'returns error with invalid ring data' do
       invalid_attributes = {
         collection_character: {
-          ring1: { modifier: 1, strength: nil }  # Invalid: missing strength
+          ring1: { modifier: 1, strength: nil } # Invalid: missing strength
         }
       }
 

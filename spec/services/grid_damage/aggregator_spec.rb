@@ -16,8 +16,8 @@ RSpec.describe GridDamage::Aggregator do
   let(:boost_types) do
     {
       'atk' => Meta.new(stacking_rule: 'multiplicative_by_series', grid_cap: nil, cap_is_flat: false),
-      'da'  => Meta.new(stacking_rule: 'additive', grid_cap: nil, cap_is_flat: false),
-      'hp'  => Meta.new(stacking_rule: 'additive', grid_cap: 400.0, cap_is_flat: false),
+      'da' => Meta.new(stacking_rule: 'additive', grid_cap: nil, cap_is_flat: false),
+      'hp' => Meta.new(stacking_rule: 'additive', grid_cap: 400.0, cap_is_flat: false),
       'ca_supp' => Meta.new(stacking_rule: 'additive', grid_cap: 1_000_000.0, cap_is_flat: true),
       'elem_amplify' => Meta.new(stacking_rule: 'highest_only', grid_cap: nil, cap_is_flat: false)
     }
@@ -63,18 +63,18 @@ RSpec.describe GridDamage::Aggregator do
   describe 'effect stacking groups' do
     it 'keeps only the largest copy within one named effect family' do
       r = agg([
-        contrib(boost_type: 'da', value: 4, stacking_group: 'effect|da|Staff Resonance'),
+                contrib(boost_type: 'da', value: 4, stacking_group: 'effect|da|Staff Resonance'),
         contrib(boost_type: 'da', value: 6, stacking_group: 'effect|da|Staff Resonance')
-      ])['da']
+              ])['da']
 
       expect(r.total).to eq(6.0)
     end
 
     it 'still adds differently named families' do
       r = agg([
-        contrib(boost_type: 'da', value: 4, stacking_group: 'effect|da|One Resonance'),
+                contrib(boost_type: 'da', value: 4, stacking_group: 'effect|da|One Resonance'),
         contrib(boost_type: 'da', value: 6, stacking_group: 'effect|da|Another Resonance')
-      ])['da']
+              ])['da']
 
       expect(r.total).to eq(10.0)
     end
@@ -83,10 +83,10 @@ RSpec.describe GridDamage::Aggregator do
   describe 'multiplicative_by_series' do
     it 'keeps per-series subtotals (frames multiply later, not here)' do
       r = agg([
-        contrib(boost_type: 'atk', series: 'normal', value: 15),
+                contrib(boost_type: 'atk', series: 'normal', value: 15),
         contrib(boost_type: 'atk', series: 'normal', value: 18),
         contrib(boost_type: 'atk', series: 'omega', value: 20)
-      ])['atk']
+              ])['atk']
       expect(r.by_series).to eq('normal' => 33.0, 'omega' => 20.0)
       expect(r.capped).to be(false)
     end

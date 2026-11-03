@@ -142,7 +142,7 @@ RSpec.describe WikiImport::Importer do
       report = importer('job' => wiki['job'].merge('skills' => [other_main.name_en])).preview
 
       expect(report[:warnings]).to eq([{ code: 'skill_not_allowed', detail: 'WI Soldier', kind: 'skill',
-                                        position: 1, title: 'WI Other Main' }])
+                                         position: 1, title: 'WI Other Main' }])
     end
 
     it 'reports two entries in one position as a slot conflict' do
@@ -301,7 +301,7 @@ RSpec.describe WikiImport::Importer do
 
       expect(created.characters.first).to have_attributes(uncap_level: 5, transcendence_step: 0)
       expect(report[:warnings]).to eq([{ code: 'uncap_clamped', detail: 'character 0', kind: 'character',
-                                        position: 0, title: 'WI Tikoh' }])
+                                         position: 0, title: 'WI Tikoh' }])
     end
   end
 end

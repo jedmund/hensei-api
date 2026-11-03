@@ -38,7 +38,7 @@ namespace :events do
       end
 
       parsed = wiki_get.call(api, query: { action: 'parse', page: page, prop: 'wikitext', format: 'json',
-                                          formatversion: 2 })
+                                           formatversion: 2 })
       file = EventTopImage.file_name(parsed.parsed_response.dig('parse', 'wikitext'))
       unless parsed.code == 200 && file
         puts "#{series}: no header image on #{page} (HTTP #{parsed.code})"

@@ -17,8 +17,9 @@ class CollectionWeaponBullet < ApplicationRecord
 
     max_position = collection_weapon.weapon.bullet_slots.length - 1
     return if position.present? && position >= 0 && position <= max_position
+
       errors.add(:position, "must be between 0 and #{max_position}")
-    
+
   end
 
   def bullet_type_matches_slot
@@ -26,7 +27,8 @@ class CollectionWeaponBullet < ApplicationRecord
 
     expected_type = collection_weapon.weapon.bullet_slots[position]
     return if bullet.bullet_type == expected_type
+
       errors.add(:bullet, "type must match the slot type at position #{position}")
-    
+
   end
 end

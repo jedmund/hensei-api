@@ -32,6 +32,7 @@ module Api
         when 'Character'
           character = document.searchable
           next nil unless character
+
           [character.proficiency1, character.proficiency2].compact.presence
         when 'Weapon'
           document.searchable&.proficiency

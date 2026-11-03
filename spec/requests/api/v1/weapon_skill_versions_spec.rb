@@ -100,7 +100,7 @@ RSpec.describe 'PATCH /api/v1/weapon_skill_versions/:id', type: :request do
       # The build reads stored sources only.
       allow_any_instance_of(Granblue::Parsers::Wiki).to receive(:fetch).and_raise('no network in specs')
       WeaponSkills::SourceStore::Database.new.put('wiki_raw', weapon.wiki_en, wiki_raw, weapon_id: weapon.id,
-                                                                                      page_kind: 'inline')
+                                                                                        page_kind: 'inline')
     end
 
     it 'keeps the override after EntityReparser rewrites the derived columns' do

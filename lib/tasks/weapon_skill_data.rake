@@ -110,11 +110,14 @@ namespace :granblue do
     unresolved = []
     scope.find_each do |gw|
       next unless gw.weapon
+
       gw.weapon.weapon_skills.each do |ws|
         v = ws.active_version(uncap_level: gw.uncap_level.to_i, transcendence_step: gw.transcendence_step.to_i)
         next unless v
+
         total += 1
         next if v.skill_modifier.blank? # unique/unrecognized — no scaling expected
+
         standard += 1
         if v.weapon_skill_data.any? then resolved_data += 1
         elsif v.weapon_skill_effects.exists? then resolved_effects += 1
@@ -138,6 +141,7 @@ namespace :granblue do
     WeaponSkillVersion.where.not(skill_modifier: nil).includes(:skill).find_each do |v|
       ds = v.skill&.description_en.to_s[re, 1]&.downcase
       next unless ds
+
       total += 1
       if norm.call(v.skill_size) == ds
         ok += 1
