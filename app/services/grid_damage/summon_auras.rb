@@ -20,10 +20,10 @@ module GridDamage
         gid = gs.summon.granblue_id
         u = gs.uncap_level.to_i
         t = gs.transcendence_step.to_i
-        totals[:optimus]   += aura(gid, slot, "normal_frame", u, t)
-        totals[:omega]     += aura(gid, slot, "omega_frame", u, t)
+        totals[:optimus]   += aura(gid, slot, 'normal_frame', u, t)
+        totals[:omega]     += aura(gid, slot, 'omega_frame', u, t)
         totals[:taboo]     += taboo_aura(gid, slot, u, t, exo_fraction)
-        totals[:elemental] += aura(gid, slot, "elemental_atk", u, t, element: element)
+        totals[:elemental] += aura(gid, slot, 'elemental_atk', u, t, element: element)
       end
       totals
     end
@@ -40,7 +40,7 @@ module GridDamage
 
     def odious_exorcism_fraction(party, element)
       levels = party.weapons.filter_map do |gw|
-        next unless gw.weapon&.weapon_series&.slug == "odious"
+        next unless gw.weapon&.weapon_series&.slug == 'odious'
         next unless element.nil? || Calculator::ELEMENT_WORD[gw.weapon.element] == element
 
         [gw.exorcism_level.to_i, 1].max # weapons start at Exorcision Lvl 1
@@ -49,7 +49,7 @@ module GridDamage
     end
 
     def taboo_aura(granblue_id, slot, uncap, _transcendence_step, exo_fraction)
-      return 0.0 unless SummonAura.exists?(summon_granblue_id: granblue_id, slot: slot, target: "odious_frame")
+      return 0.0 unless SummonAura.exists?(summon_granblue_id: granblue_id, slot: slot, target: 'odious_frame')
 
       odious_aura(uncap, exo_fraction)
     end
@@ -65,14 +65,12 @@ module GridDamage
     # Light-weapon-skill sub aura applies from a regular sub slot. Summons whose frame
     # boost is main-only (The Moon) simply have no sub-slot rows.
     def slot_for(grid_summon)
-      grid_summon.main? || grid_summon.friend? ? "main" : "sub"
+      grid_summon.main? || grid_summon.friend? ? 'main' : 'sub'
     end
 
     def aura(granblue_id, slot, target, uncap, transcendence_step, element: nil)
       rows = SummonAura.where(summon_granblue_id: granblue_id, slot: slot, target: target).to_a
-      if element
-        rows = rows.select { |r| r.element.nil? || r.element == "all" || r.element.to_s.include?(element.to_s) }
-      end
+      rows = rows.select { |r| r.element.nil? || r.element == 'all' || r.element.to_s.include?(element.to_s) } if element
       best_value(rows, uncap: uncap, transcendence_step: transcendence_step)
     end
 

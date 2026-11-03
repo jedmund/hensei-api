@@ -19,7 +19,7 @@ class Playlist < ApplicationRecord
   YOUTUBE_REGEX = %r{\A(?:https?://)?(?:www\.)?(?:youtube\.com/watch\?v=|youtu\.be/)[\w-]+}
   validates :video_url, format: { with: YOUTUBE_REGEX, message: 'must be a valid YouTube URL' }, allow_blank: true
 
-  scope :visible_to, ->(viewer, owner) {
+  scope :visible_to, lambda { |viewer, owner|
     if viewer && viewer == owner
       all
     else

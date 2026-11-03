@@ -67,9 +67,9 @@ RSpec.describe 'Api::V1::Jobs', type: :request do
     end
 
     it 'creates a job as editor and returns it' do
-      expect {
+      expect do
         post '/api/v1/jobs', params: valid_params.to_json, headers: editor_headers
-      }.to change(Job, :count).by(1)
+      end.to change(Job, :count).by(1)
       expect(response).to have_http_status(:created)
 
       json = response.parsed_body

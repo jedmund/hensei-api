@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe Processors::SummonProcessor, type: :model do
   let(:party) { create(:party) }
   let(:deck_data) do
-    file_path = Rails.root.join('spec', 'fixtures', 'deck_sample.json')
+    file_path = Rails.root.join("spec/fixtures/deck_sample.json")
     JSON.parse(File.read(file_path))
   end
 
@@ -25,7 +25,8 @@ RSpec.describe Processors::SummonProcessor, type: :model do
   end
 
   context 'with invalid summon data' do
-    let(:deck_data) { "invalid data" }
+    let(:deck_data) { 'invalid data' }
+
     it 'does not create any GridSummon and logs an error containing "SUMMON"' do
       expect { subject.process }.not_to change(GridSummon, :count)
       begin
@@ -38,7 +39,7 @@ RSpec.describe Processors::SummonProcessor, type: :model do
 
   context 'with unknown summons in deck' do
     let(:deck_data) do
-      data = JSON.parse(File.read(Rails.root.join('spec', 'fixtures', 'deck_sample.json')))
+      data = JSON.parse(File.read(Rails.root.join("spec/fixtures/deck_sample.json")))
       data['deck']['pc']['summons']['1']['master']['id'] = '9999999999'
       data
     end
@@ -54,7 +55,7 @@ RSpec.describe Processors::SummonProcessor, type: :model do
 
   context 'with unknown friend summon' do
     let(:deck_data) do
-      data = JSON.parse(File.read(Rails.root.join('spec', 'fixtures', 'deck_sample.json')))
+      data = JSON.parse(File.read(Rails.root.join("spec/fixtures/deck_sample.json")))
       data['deck']['pc']['damage_info']['summon_name'] = 'Nonexistent Summon XYZ'
       data
     end
@@ -94,7 +95,7 @@ RSpec.describe Processors::SummonProcessor, type: :model do
 
     context 'when quick_user_summon_id is absent' do
       let(:deck_data) do
-        data = JSON.parse(File.read(Rails.root.join('spec', 'fixtures', 'deck_sample.json')))
+        data = JSON.parse(File.read(Rails.root.join("spec/fixtures/deck_sample.json")))
         data['deck']['pc'].delete('quick_user_summon_id')
         data
       end
@@ -132,9 +133,7 @@ RSpec.describe Processors::SummonProcessor, type: :model do
     end
   end
 
-  after(:each) do |example|
-    if example.exception
-      puts "\nDEBUG [SummonProcessor]: #{example.full_description} failed with error: #{example.exception.message}"
-    end
+  after do |example|
+    puts "\nDEBUG [SummonProcessor]: #{example.full_description} failed with error: #{example.exception.message}" if example.exception
   end
 end

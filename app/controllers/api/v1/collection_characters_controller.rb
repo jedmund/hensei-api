@@ -30,7 +30,7 @@ module Api
           @characters = @characters.by_series(array_param(:series)) if params[:series]
           if params[:search].present?
             q = "%#{ActiveRecord::Base.sanitize_sql_like(params[:search])}%"
-            @characters = @characters.where("characters.name_en ILIKE :q OR characters.name_jp ILIKE :q", q: q)
+            @characters = @characters.where('characters.name_en ILIKE :q OR characters.name_jp ILIKE :q', q: q)
           end
 
           lang = current_user&.language || 'en'
@@ -91,6 +91,7 @@ module Api
           if @collection_character.errors[:character_id].any? { |e| e.include?('already exists') }
             raise CollectionErrors::DuplicateCharacter.new(@collection_character.character_id)
           end
+
           render_validation_error_response(@collection_character)
         end
       end
@@ -169,9 +170,7 @@ module Api
       def import
         game_data = import_params[:data]
 
-        unless game_data.present?
-          return render json: { error: 'No data provided' }, status: :bad_request
-        end
+        return render json: { error: 'No data provided' }, status: :bad_request unless game_data.present?
 
         service = CharacterImportService.new(
           current_user,
@@ -202,9 +201,7 @@ module Api
       def check_updates
         game_data = import_params[:data]
 
-        unless game_data.present?
-          return render json: { error: 'No data provided' }, status: :bad_request
-        end
+        return render json: { error: 'No data provided' }, status: :bad_request unless game_data.present?
 
         service = CharacterImportService.new(current_user, game_data)
         render json: { updates: service.preview_updates }
@@ -215,14 +212,14 @@ module Api
       def set_target_user
         @target_user = User.find(params[:user_id])
       rescue ActiveRecord::RecordNotFound
-        render json: { error: "User not found" }, status: :not_found
+        render json: { error: 'User not found' }, status: :not_found
       end
 
       def check_collection_access
         return if @target_user.nil? # Already handled by set_target_user
-        unless @target_user.collection_viewable_by?(current_user)
-          render json: { error: "You do not have permission to view this collection" }, status: :forbidden
-        end
+        return if @target_user.collection_viewable_by?(current_user)
+
+          render json: { error: 'You do not have permission to view this collection' }, status: :forbidden
       end
 
       def set_collection_character_for_read
@@ -251,14 +248,16 @@ module Api
 
       def batch_character_params
         params.permit(collection_characters: [
-          :character_id, :uncap_level, :transcendence_step, :perpetuity,
+                        :character_id, :uncap_level, :transcendence_step, :perpetuity,
           :awakening_id, :awakening_level,
-          ring1: %i[modifier strength],
-          ring2: %i[modifier strength],
-          ring3: %i[modifier strength],
-          ring4: %i[modifier strength],
-          earring: %i[modifier strength]
-        ])
+          {
+            ring1: %i[modifier strength],
+            ring2: %i[modifier strength],
+            ring3: %i[modifier strength],
+            ring4: %i[modifier strength],
+            earring: %i[modifier strength]
+          }
+                      ])
       end
 
       def import_params

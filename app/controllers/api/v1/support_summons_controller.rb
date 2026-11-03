@@ -95,7 +95,7 @@ module Api
       end
 
       def import_params
-        params.permit(support_summons: [:gbf_section, :position, :granblue_id, :level])
+        params.permit(support_summons: %i[gbf_section position granblue_id level])
       end
     end
   end

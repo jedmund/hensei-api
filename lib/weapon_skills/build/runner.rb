@@ -35,21 +35,19 @@ module WeaponSkills
       #   write:  builds the stale weapons and raises if any failed.
       def self.deploy(mode: WeaponSkills.build_mode, io: $stdout)
         case mode
-        when "shadow"
+        when 'shadow'
           begin
-            new(mode: "shadow", diff_limit: 50, io: io).call
+            new(mode: 'shadow', diff_limit: 50, io: io).call
           rescue StandardError => e
             io.puts "build_weapon_skills (shadow) failed; the deploy continues: #{e.class}: #{e.message}"
             nil
           end
-        when "write"
+        when 'write'
           # A weapon that fails keeps its existing rows (its savepoint rolled back) and stays
           # stale, so the next deploy retries it. Failing the deploy here would leave the
           # other weapons written but the release blocked.
-          summary = new(mode: "write", io: io).call
-          if summary.failed.positive?
-            io.puts "build_weapon_skills (write): #{summary.failed} weapons failed and kept their existing rows"
-          end
+          summary = new(mode: 'write', io: io).call
+          io.puts "build_weapon_skills (write): #{summary.failed} weapons failed and kept their existing rows" if summary.failed.positive?
           summary
         end
       end
@@ -71,14 +69,14 @@ module WeaponSkills
       def call
         summary = nil
         ran = BuildLock.build(wait: @lock_wait) { summary = run }
-        raise BuildLock::Busy, "another weapon-skill build is running" unless ran
+        raise BuildLock::Busy, 'another weapon-skill build is running' unless ran
 
         summary
       end
 
       # Weapons in scope, ordered by granblue_id.
       def scope
-        relation = Weapon.where(id: WeaponSource.where(kind: "wiki_raw").where.not(weapon_id: nil).select(:weapon_id))
+        relation = Weapon.where(id: WeaponSource.where(kind: 'wiki_raw').where.not(weapon_id: nil).select(:weapon_id))
                          .or(Weapon.where(granblue_id: WeaponSkill.select(:weapon_granblue_id)))
         relation = relation.where(granblue_id: @ids) if @ids
         relation = relation.where(weapon_series_id: WeaponSeries.where(slug: @series).select(:id)) if @series
@@ -96,7 +94,7 @@ module WeaponSkills
         targets = stale_weapons
 
         Granblue::Parsers::Wiki.offline(store: @context.store) do
-          @mode == "write" ? write(targets) : shadow(targets)
+          @mode == 'write' ? write(targets) : shadow(targets)
         end
 
         @summary.seconds = Process.clock_gettime(Process::CLOCK_MONOTONIC) - started
@@ -147,9 +145,7 @@ module WeaponSkills
           # the surrounding (shadow) transaction usable.
           ActiveRecord::Base.transaction(requires_new: true) do
             @summary.counts.merge!(Writer.call(result, context: @context))
-            if store_fingerprints
-              weapon.update_columns(weapon_skill_build_fingerprint: fingerprint, weapon_skill_built_at: Time.current)
-            end
+            weapon.update_columns(weapon_skill_build_fingerprint: fingerprint, weapon_skill_built_at: Time.current) if store_fingerprints
           end
           @summary.warnings += result.warnings.size
           @summary.fallback_rows += result.rows.count { |row| Rows.fallback_row?(row) }
@@ -172,7 +168,7 @@ module WeaponSkills
       # ParityReport by series; with diff_limit, its summary line and the first N differences.
       def print_diff
         out = StringIO.new
-        ParityReport.new(@summary.diff, group: "series", io: out).print
+        ParityReport.new(@summary.diff, group: 'series', io: out).print
         lines = out.string.lines
         return @io.print(out.string) if @diff_limit.nil?
 
@@ -182,9 +178,9 @@ module WeaponSkills
           break if shown >= @diff_limit
 
           @io.print line
-          shown += 1 unless line.start_with?("==")
+          shown += 1 unless line.start_with?('==')
         end
-        total = lines.drop(1).count { |line| !line.start_with?("==") }
+        total = lines.drop(1).count { |line| !line.start_with?('==') }
         @io.puts "… #{total - shown} more differences not shown" if total > shown
       end
 

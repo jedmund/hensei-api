@@ -9,7 +9,7 @@ FactoryBot.define do
     after(:build) do |invitation, _evaluator|
       unless invitation.invited_by
         # Create an officer for the crew if one doesn't exist
-        officer = invitation.crew.crew_memberships.find_by(role: [:captain, :vice_captain], retired: false)&.user
+        officer = invitation.crew.crew_memberships.find_by(role: %i[captain vice_captain], retired: false)&.user
         unless officer
           officer = create(:user)
           create(:crew_membership, crew: invitation.crew, user: officer, role: :captain)

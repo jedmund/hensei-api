@@ -96,9 +96,9 @@ RSpec.describe 'Api::V1::GwEvents', type: :request do
 
     context 'as admin' do
       it 'creates a new event' do
-        expect {
+        expect do
           post '/api/v1/gw_events', params: valid_params, headers: admin_headers
-        }.to change(Event.unite_and_fight, :count).by(1)
+        end.to change(Event.unite_and_fight, :count).by(1)
 
         expect(response).to have_http_status(:created)
         expect(json_response['gw_event']['element']).to eq(Event.elements['Fire'])
@@ -120,10 +120,10 @@ RSpec.describe 'Api::V1::GwEvents', type: :request do
       end
 
       it 'requires an event number' do
-        expect {
+        expect do
           post '/api/v1/gw_events', params: { gw_event: valid_params[:gw_event].except(:event_number) },
                                     headers: admin_headers
-        }.not_to change(Event, :count)
+        end.not_to change(Event, :count)
         expect(response).to have_http_status(:unprocessable_entity)
       end
 
@@ -140,9 +140,9 @@ RSpec.describe 'Api::V1::GwEvents', type: :request do
       end
 
       it 'returns errors for invalid params' do
-        expect {
+        expect do
           post '/api/v1/gw_events', params: { gw_event: { element: '' } }, headers: admin_headers
-        }.not_to change(Event.unite_and_fight, :count)
+        end.not_to change(Event.unite_and_fight, :count)
         expect(response).to have_http_status(:unprocessable_entity)
       end
     end

@@ -6,9 +6,7 @@ RSpec.describe 'ClearCollectionArtifactRawDataAgain' do
   include ActiveJob::TestHelper
 
   let(:migration_class) do
-    unless defined?(ClearCollectionArtifactRawDataAgain)
-      require Rails.root.join('db/data/20261021180100_clear_collection_artifact_raw_data_again')
-    end
+    require Rails.root.join('db/data/20261021180100_clear_collection_artifact_raw_data_again') unless defined?(ClearCollectionArtifactRawDataAgain)
     ClearCollectionArtifactRawDataAgain
   end
 

@@ -181,7 +181,11 @@ module Granblue
       def ensure_directories_exist
         return unless store_locally?
 
-        sizes = self.class::SIZES rescue SIZES
+        sizes = begin
+                  self.class::SIZES
+                rescue StandardError
+                  SIZES
+                end
         sizes.each do |size|
           FileUtils.mkdir_p(download_path(size))
         end
@@ -203,7 +207,7 @@ module Granblue
       # @param size [String] Image size variant
       # @return [String] Local directory path
       def download_path(size)
-        "#{Rails.root}/download/#{object_type}-#{size}"
+        "#{Rails.root.join("download/#{object_type}-#{size}")}"
       end
 
       # S3 prefix for this object type. Defaults to the pluralized object_type
@@ -242,9 +246,7 @@ module Granblue
           content = file.read
           raise "Failed to read content from #{url}" unless content
 
-          File.open(filepath, 'wb') do |output|
-            output.write(content)
-          end
+          File.binwrite(filepath, content)
         end
         log_info "-> #{size}:\t#{url}..."
       rescue OpenURI::HTTPError

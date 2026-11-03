@@ -38,10 +38,10 @@ module Granblue
       # Transform raw summon data into standardized format
       # @return [Array<Hash>] Array of transformed summon data
       def transform
-        Rails.logger.info "[TRANSFORM] Starting SummonTransformer#transform"
+        Rails.logger.info '[TRANSFORM] Starting SummonTransformer#transform'
 
         unless data.is_a?(Hash)
-          Rails.logger.error "[TRANSFORM] Invalid summon data structure"
+          Rails.logger.error '[TRANSFORM] Invalid summon data structure'
           Rails.logger.error "[TRANSFORM] Data class: #{data.class}"
           return []
         end
@@ -58,7 +58,7 @@ module Granblue
 
           master, param = get_master_param(summon_data)
           unless master && param
-            Rails.logger.debug "[TRANSFORM] Skipping summon - missing master or param data"
+            Rails.logger.debug '[TRANSFORM] Skipping summon - missing master or param data'
             next
           end
 
@@ -74,14 +74,10 @@ module Granblue
           summon[:transcend] = calculate_transcendence_level(level)
 
           # Mark quick summon status if this summon matches quick_summon_id.
-          if @quick_summon_id && param['id'].to_s == @quick_summon_id.to_s
-            summon[:qs] = true
-          end
+          summon[:qs] = true if @quick_summon_id && param['id'].to_s == @quick_summon_id.to_s
 
           # Include subaura (sub_skill) information if present.
-          if summon_data['sub_skill'].is_a?(Hash) && summon_data['sub_skill']['name']
-            summon[:sub_aura] = summon_data['sub_skill']['name']
-          end
+          summon[:sub_aura] = summon_data['sub_skill']['name'] if summon_data['sub_skill'].is_a?(Hash) && summon_data['sub_skill']['name']
 
           # Place the summon in the proper 0-indexed slot.
           summons[key.to_i - 1] = summon
@@ -99,6 +95,7 @@ module Granblue
       # @return [Integer] Calculated transcendence level (1-5)
       def calculate_transcendence_level(level)
         return 1 unless level
+
         level = 1 + TRANSCENDENCE_LEVELS.count { |cutoff| level > cutoff }
         Rails.logger.debug "[TRANSFORM] Calculated transcendence level: #{level}"
         level

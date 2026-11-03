@@ -26,7 +26,7 @@ class PhantomPlayer < ApplicationRecord
 
   # Phantoms who were active during a date range (either still active, or retired after the end date)
   # Uses joined_at (editable) instead of created_at for historical accuracy
-  scope :active_during, ->(start_date, end_date) {
+  scope :active_during, lambda { |start_date, end_date|
     where('retired = false OR retired_at >= ?', start_date)
       .where('joined_at <= ?', end_date)
   }
@@ -98,8 +98,8 @@ class PhantomPlayer < ApplicationRecord
       phantom_player_id: nil
     )
 
-    if joined_at.present? && (membership.joined_at.nil? || joined_at < membership.joined_at)
+    return unless joined_at.present? && (membership.joined_at.nil? || joined_at < membership.joined_at)
+
       membership.update_columns(joined_at: joined_at)
-    end
   end
 end

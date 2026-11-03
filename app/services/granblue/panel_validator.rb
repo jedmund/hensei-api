@@ -50,9 +50,7 @@ module Granblue
 
         # capped:true = the game renders the line orange (at its display cap)
         ours_capped = result ? result.capped == true : false
-        unless ours_capped == line['capped']
-          mismatches << { label: "#{line.fetch('label')} capped", ours: ours_capped, expected: line['capped'] }
-        end
+        mismatches << { label: "#{line.fetch('label')} capped", ours: ours_capped, expected: line['capped'] } unless ours_capped == line['capped']
       end
       # Boosts the game does NOT show (e.g. a phantom overskill line) must stay absent.
       Array(@ref['absent']).each do |key|

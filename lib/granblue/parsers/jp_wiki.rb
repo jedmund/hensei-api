@@ -61,9 +61,7 @@ module Granblue
         case response.code
         when 200
           body = response.body
-          if runtime_error?(body)
-            raise WikiError.new(code: 200, message: 'Runtime error page returned', page: title)
-          end
+          raise WikiError.new(code: 200, message: 'Runtime error page returned', page: title) if runtime_error?(body)
 
           body
         when 404 then raise WikiError.new(code: 404, message: 'Page not found', page: title)

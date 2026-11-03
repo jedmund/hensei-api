@@ -199,7 +199,7 @@ RSpec.describe Granblue::Parsers::CharacterSkills::EffectParser do
       expect(effect).to include(status_id: 'jm', label: 'Guilty Break', category: 'debuff')
     end
 
-    it "gives none when the mention names the status itself, another spelling of it, or a numbered variant" do
+    it 'gives none when the mention names the status itself, another spelling of it, or a numbered variant' do
       effects = parser.parse('Inflict {{status|Jammed}}, {{status|DEF Down}}, {{status|DEF Down 2|t=2T}} and {{status|Aetherial Seal}}.')
       expect(effects.map { |e| e[:status_id] }).to eq(%w[jm dd dd as])
       expect(effects.pluck(:label)).to all(be_nil)

@@ -47,7 +47,7 @@ RSpec.describe 'Api::V1::Statuses', type: :request do
       get '/api/v1/statuses', params: { family: 'Paralyzed' }
 
       expect(response).to have_http_status(:ok)
-      expect(response.parsed_body['statuses'].pluck('id')).to match_array([paralyzed.id, second_paralyzed.id])
+      expect(response.parsed_body['statuses'].pluck('id')).to contain_exactly(paralyzed.id, second_paralyzed.id)
     end
   end
 

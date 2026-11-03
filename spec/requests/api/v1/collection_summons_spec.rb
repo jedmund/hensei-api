@@ -265,9 +265,9 @@ RSpec.describe 'Collection Summons API', type: :request do
         collection_summon: { uncap_level: 3, transcendence_step: 5 }
       )
 
-      expect {
+      expect do
         post '/api/v1/collection/summons', params: invalid_attributes.to_json, headers: headers
-      }.not_to change(CollectionSummon, :count)
+      end.not_to change(CollectionSummon, :count)
 
       expect(response).to have_http_status(:unprocessable_entity)
       json = response.parsed_body
@@ -307,8 +307,8 @@ RSpec.describe 'Collection Summons API', type: :request do
     it 'returns error with invalid transcendence' do
       invalid_attributes = {
         collection_summon: {
-          uncap_level: 3,  # Keep it at 3
-          transcendence_step: 5  # Invalid: requires uncap level 5
+          uncap_level: 3, # Keep it at 3
+          transcendence_step: 5 # Invalid: requires uncap level 5
         }
       }
 

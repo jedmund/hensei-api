@@ -4,9 +4,7 @@ require 'rails_helper'
 
 RSpec.describe 'LoadCharacterSkillIconSnapshot' do
   let(:migration_class) do
-    unless defined?(LoadCharacterSkillIconSnapshot)
-      require Rails.root.join('db/data/20261022110200_load_character_skill_icon_snapshot')
-    end
+    require Rails.root.join('db/data/20261022110200_load_character_skill_icon_snapshot') unless defined?(LoadCharacterSkillIconSnapshot)
     LoadCharacterSkillIconSnapshot
   end
 

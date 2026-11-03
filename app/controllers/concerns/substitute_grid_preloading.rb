@@ -50,8 +50,8 @@ module SubstituteGridPreloading
   # `owned` from the grid row, so the fk we look up is the one on the row.
   OWNERSHIP_BY_GRID = {
     GridCharacter => [CollectionCharacter, :character_id],
-    GridWeapon    => [CollectionWeapon, :weapon_id],
-    GridSummon    => [CollectionSummon, :summon_id]
+    GridWeapon => [CollectionWeapon, :weapon_id],
+    GridSummon => [CollectionSummon, :summon_id]
   }.freeze
   private_constant :OWNERSHIP_BY_GRID
 

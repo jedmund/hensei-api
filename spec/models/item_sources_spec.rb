@@ -82,7 +82,7 @@ RSpec.describe 'Weapon and Summon sources' do
       expect(WeaponSource.where(weapon_id: unnamed.id)).to be_empty
     end
 
-    it "retitles an untitled page on the next write, keeping one row" do
+    it 'retitles an untitled page on the next write, keeping one row' do
       untitled_page('{{Pasted}}')
 
       Weapon.find(weapon.id).update!(wiki_raw: '{{Edited}}')

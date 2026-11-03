@@ -2,9 +2,9 @@ require 'rails_helper'
 
 RSpec.describe SupportSummon, type: :model do
   describe 'associations' do
-    it { should belong_to(:user) }
-    it { should belong_to(:collection_summon) }
-    it { should have_one(:summon).through(:collection_summon) }
+    it { is_expected.to belong_to(:user) }
+    it { is_expected.to belong_to(:collection_summon) }
+    it { is_expected.to have_one(:summon).through(:collection_summon) }
   end
 
   describe 'enums' do

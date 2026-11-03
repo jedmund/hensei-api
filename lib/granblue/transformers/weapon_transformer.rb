@@ -30,11 +30,11 @@ module Granblue
       # @return [Array<Hash>] Array of transformed weapon data
       def transform
         # Log start of transformation process
-        Rails.logger.info "[TRANSFORM] Starting WeaponTransformer#transform"
+        Rails.logger.info '[TRANSFORM] Starting WeaponTransformer#transform'
 
         # Validate that the input data is a Hash
         unless data.is_a?(Hash)
-          Rails.logger.error "[TRANSFORM] Invalid weapon data structure"
+          Rails.logger.error '[TRANSFORM] Invalid weapon data structure'
           return []
         end
 
@@ -81,7 +81,7 @@ module Granblue
       # @param param [Hash] Parameter data containing weapon's current state
       # @return [Hash] Base weapon attributes including ID, name, uncap level, etc
       def transform_base_attributes(master, param)
-        Rails.logger.debug "[TRANSFORM] Processing base attributes for weapon"
+        Rails.logger.debug '[TRANSFORM] Processing base attributes for weapon'
 
         series = master['series_id'].to_i
         weapon = {
@@ -94,7 +94,7 @@ module Granblue
           element = master['attribute'].to_i - 1
           weapon[:attr] = element
           weapon[:id] = (master['id'].to_i - (element * 100)).to_s
-          Rails.logger.debug "[TRANSFORM] Multi-element weapon adjustments made"
+          Rails.logger.debug '[TRANSFORM] Multi-element weapon adjustments made'
         end
 
         # Calculate uncap level
@@ -119,7 +119,7 @@ module Granblue
       def transform_awakening(param)
         return {} unless param['arousal']&.[]('is_arousal_weapon')
 
-        Rails.logger.debug "[TRANSFORM] Processing weapon awakening"
+        Rails.logger.debug '[TRANSFORM] Processing weapon awakening'
         {
           awakening: {
             type: param['arousal']['form_name'],
@@ -135,7 +135,7 @@ module Granblue
         augments = param['augment_skill_info']
         return {} unless augments&.first&.any?
 
-        Rails.logger.debug "[TRANSFORM] Processing AX skills"
+        Rails.logger.debug '[TRANSFORM] Processing AX skills'
         ax = []
         augments.first.each_value do |augment|
           ax_skill = {
@@ -153,11 +153,11 @@ module Granblue
       # @param weapon_data [Hash] Full weapon data containing key information
       # @return [Hash] Array of weapon key IDs
       def transform_weapon_keys(weapon_data)
-        Rails.logger.debug "[TRANSFORM] Processing weapon keys"
+        Rails.logger.debug '[TRANSFORM] Processing weapon keys'
         keys = []
 
         # Add weapon keys if they exist
-        ['skill1', 'skill2', 'skill3'].each do |skill_key|
+        %w[skill1 skill2 skill3].each do |skill_key|
           if weapon_data[skill_key]&.[]('id')
             keys << weapon_data[skill_key]['id']
             Rails.logger.debug "[TRANSFORM] Added weapon key: #{weapon_data[skill_key]['id']}"
@@ -172,6 +172,7 @@ module Granblue
       # @return [Integer] Calculated uncap level
       def calculate_uncap_level(level)
         return 0 unless level
+
         UNCAP_LEVELS.count { |cutoff| level.to_i > cutoff }
       end
 
@@ -180,6 +181,7 @@ module Granblue
       # @return [Integer] Calculated transcendence level
       def calculate_transcendence_level(level)
         return 1 unless level
+
         1 + TRANSCENDENCE_LEVELS.count { |cutoff| level.to_i > cutoff }
       end
     end

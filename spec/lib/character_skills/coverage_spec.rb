@@ -29,9 +29,9 @@ RSpec.describe CharacterSkills::Coverage do
 
   before do
     put_icon_snapshot([
-      { granblue_id: '3030000004', style: 1, kind: 'ability', position: 1, ordinal: 1, name_en: 'Kept',
-        game_icon: '100_1' }
-    ])
+                        { granblue_id: '3030000004', style: 1, kind: 'ability', position: 1, ordinal: 1, name_en: 'Kept',
+                          game_icon: '100_1' }
+                      ])
 
     ability = create(:character_skill, character: complete, kind: :ability, position: 1)
     create(:character_skill_version, character_skill: ability, ordinal: 1, name_en: 'Strike', name_jp: 'ストライク', game_icon: '1_1')

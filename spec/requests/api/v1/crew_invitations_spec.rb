@@ -42,11 +42,11 @@ RSpec.describe 'Api::V1::CrewInvitations', type: :request do
 
     context 'as officer' do
       it 'creates an invitation by user_id' do
-        expect {
+        expect do
           post "/api/v1/crews/#{crew.id}/invitations",
                params: { user_id: invitee.id },
                headers: auth_headers
-        }.to change(CrewInvitation, :count).by(1)
+        end.to change(CrewInvitation, :count).by(1)
 
         expect(response).to have_http_status(:created)
         json = response.parsed_body
@@ -54,11 +54,11 @@ RSpec.describe 'Api::V1::CrewInvitations', type: :request do
       end
 
       it 'creates an invitation by username' do
-        expect {
+        expect do
           post "/api/v1/crews/#{crew.id}/invitations",
                params: { username: invitee.username },
                headers: auth_headers
-        }.to change(CrewInvitation, :count).by(1)
+        end.to change(CrewInvitation, :count).by(1)
 
         expect(response).to have_http_status(:created)
         json = response.parsed_body
@@ -116,11 +116,11 @@ RSpec.describe 'Api::V1::CrewInvitations', type: :request do
                        status: :pending,
                        expires_at: 1.day.ago)
 
-        expect {
+        expect do
           post "/api/v1/crews/#{crew.id}/invitations",
                params: { user_id: invitee.id },
                headers: auth_headers
-        }.to change(CrewInvitation, :count).by(1)
+        end.to change(CrewInvitation, :count).by(1)
 
         expect(response).to have_http_status(:created)
         expect(stale.reload.status).to eq('expired')
@@ -167,11 +167,11 @@ RSpec.describe 'Api::V1::CrewInvitations', type: :request do
       let!(:captain_membership) { create(:crew_membership, crew: crew, user: user, role: :vice_captain) }
 
       it 'can create invitations' do
-        expect {
+        expect do
           post "/api/v1/crews/#{crew.id}/invitations",
                params: { user_id: invitee.id },
                headers: auth_headers
-        }.to change(CrewInvitation, :count).by(1)
+        end.to change(CrewInvitation, :count).by(1)
 
         expect(response).to have_http_status(:created)
         json = response.parsed_body
@@ -183,11 +183,11 @@ RSpec.describe 'Api::V1::CrewInvitations', type: :request do
       let!(:captain_membership) { create(:crew_membership, crew: crew, user: user, role: :member) }
 
       it 'returns unauthorized' do
-        expect {
+        expect do
           post "/api/v1/crews/#{crew.id}/invitations",
                params: { user_id: invitee.id },
                headers: auth_headers
-        }.not_to change(CrewInvitation, :count)
+        end.not_to change(CrewInvitation, :count)
 
         expect(response).to have_http_status(:unauthorized)
       end

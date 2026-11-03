@@ -95,9 +95,9 @@ RSpec.describe 'Api::V1::Raids', type: :request do
     end
 
     it 'creates a raid as editor and returns it' do
-      expect {
+      expect do
         post '/api/v1/raids', params: valid_params.to_json, headers: editor_headers
-      }.to change(Raid, :count).by(1)
+      end.to change(Raid, :count).by(1)
       expect(response).to have_http_status(:created)
 
       json = response.parsed_body
@@ -107,9 +107,9 @@ RSpec.describe 'Api::V1::Raids', type: :request do
     end
 
     it 'rejects creation by regular user' do
-      expect {
+      expect do
         post '/api/v1/raids', params: valid_params.to_json, headers: user_headers
-      }.not_to change(Raid, :count)
+      end.not_to change(Raid, :count)
       expect(response).to have_http_status(:unauthorized)
     end
   end
@@ -161,9 +161,9 @@ RSpec.describe 'Api::V1::Raids', type: :request do
   describe 'DELETE /api/v1/raids/:id' do
     it 'deletes a raid without dependencies' do
       raid = create(:raid)
-      expect {
+      expect do
         delete "/api/v1/raids/#{raid.id}", headers: editor_headers
-      }.to change(Raid, :count).by(-1)
+      end.to change(Raid, :count).by(-1)
       expect(response).to have_http_status(:no_content)
     end
 
@@ -177,9 +177,9 @@ RSpec.describe 'Api::V1::Raids', type: :request do
 
     it 'rejects deletion by regular user' do
       raid = create(:raid)
-      expect {
+      expect do
         delete "/api/v1/raids/#{raid.id}", headers: user_headers
-      }.not_to change(Raid, :count)
+      end.not_to change(Raid, :count)
       expect(response).to have_http_status(:unauthorized)
     end
   end

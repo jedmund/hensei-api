@@ -23,13 +23,9 @@ module Granblue
         rows.each_with_index do |row, index|
           text = row.text
 
-          if text.include?('MinHP')
-            merge_stat(stats, :min_hp, :max_hp, :max_hp_flb, row_values(rows[index + 1]))
-          end
+          merge_stat(stats, :min_hp, :max_hp, :max_hp_flb, row_values(rows[index + 1])) if text.include?('MinHP')
 
-          if text.include?('MinATK')
-            merge_stat(stats, :min_atk, :max_atk, :max_atk_flb, row_values(rows[index + 1]))
-          end
+          merge_stat(stats, :min_atk, :max_atk, :max_atk_flb, row_values(rows[index + 1])) if text.include?('MinATK')
         end
 
         stats
@@ -264,16 +260,16 @@ module Granblue
 
       def format_row(entry)
         {
-          'Type'       => entry[:model],
-          'Name'       => entry[:name].to_s.slice(0, 40),
+          'Type' => entry[:model],
+          'Name' => entry[:name].to_s.slice(0, 40),
           'GranblueID' => entry[:granblue_id].to_s,
-          'min_hp'     => format_change(entry, :min_hp),
-          'min_atk'    => format_change(entry, :min_atk),
-          'max_hp'     => format_change(entry, :max_hp),
-          'max_atk'    => format_change(entry, :max_atk),
-          'Match'      => entry[:matches],
-          'Wiki'       => format_wiki_status(entry),
-          'Action'     => entry[:action].to_s
+          'min_hp' => format_change(entry, :min_hp),
+          'min_atk' => format_change(entry, :min_atk),
+          'max_hp' => format_change(entry, :max_hp),
+          'max_atk' => format_change(entry, :max_atk),
+          'Match' => entry[:matches],
+          'Wiki' => format_wiki_status(entry),
+          'Action' => entry[:action].to_s
         }
       end
 
@@ -422,7 +418,7 @@ namespace :granblue do
 
       jp_display = has_jp_raw.nil? ? 'n/a' : "#{has_jp_raw}/#{total}"
 
-      puts ""
+      puts ''
       puts "#{model.name} (#{total} total):"
       puts "  wiki_raw  (EN template text): #{has_en_raw}/#{total}" \
            "#{'  <-- MISSING' if has_en_raw < total}"
@@ -433,7 +429,7 @@ namespace :granblue do
 
       next unless has_jp_raw && has_jp_raw < total && has_ja.positive?
 
-      puts ""
+      puts ''
       puts "  To fetch missing JP wiki HTML for #{has_ja - has_jp_raw} records:"
       puts "    rake granblue:download_jp_wiki model=#{model.name.downcase}"
     end
@@ -470,19 +466,19 @@ namespace :granblue do
 
   def build_entry(model_name, record, matches)
     {
-      model:        model_name,
-      name:         record.name_en.presence || record.name_jp.presence || '(unnamed)',
-      granblue_id:  record.granblue_id,
-      min_hp:       record.min_hp,
-      min_atk:      record.min_atk,
-      max_hp:       record.max_hp,
-      max_atk:      record.max_atk,
-      matches:      matches.join('+'),
-      action:       '—',
-      has_en_raw:   record.wiki_raw.present?,
-      has_jp_raw:   record.respond_to?(:wiki_raw_jp) && record.wiki_raw_jp.present?,
+      model: model_name,
+      name: record.name_en.presence || record.name_jp.presence || '(unnamed)',
+      granblue_id: record.granblue_id,
+      min_hp: record.min_hp,
+      min_atk: record.min_atk,
+      max_hp: record.max_hp,
+      max_atk: record.max_atk,
+      matches: matches.join('+'),
+      action: '—',
+      has_en_raw: record.wiki_raw.present?,
+      has_jp_raw: record.respond_to?(:wiki_raw_jp) && record.wiki_raw_jp.present?,
       has_ja_title: record.respond_to?(:wiki_ja) && record.wiki_ja.present?,
-      jp_column:    record.respond_to?(:wiki_raw_jp)
+      jp_column: record.respond_to?(:wiki_raw_jp)
     }
   end
 end

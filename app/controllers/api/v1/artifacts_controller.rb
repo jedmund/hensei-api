@@ -29,11 +29,9 @@ module Api
       # @param force [Boolean] Optional - Force re-download even if exists
       def download_image
         size = params[:size]
-        force = params[:force] == true || params[:force] == 'true'
+        force = [true, 'true'].include?(params[:force])
 
-        unless %w[square wide].include?(size)
-          return render json: { error: "Invalid size. Must be 'square' or 'wide'" }, status: :bad_request
-        end
+        return render json: { error: "Invalid size. Must be 'square' or 'wide'" }, status: :bad_request unless %w[square wide].include?(size)
 
         service = ArtifactImageDownloadService.new(@artifact, force: force, size: size, storage: :s3)
         result = service.download
@@ -52,7 +50,7 @@ module Api
       # @param options.size [String] Optional - 'square', 'wide', or 'all' (default)
       def download_images
         options = params[:options] || {}
-        force = options[:force] == true || options[:force] == 'true'
+        force = [true, 'true'].include?(options[:force])
         size = validated_download_size(options[:size] || 'all',
                                        Granblue::Downloaders::ArtifactDownloader::SIZES, allow_all: true)
         return unless size
@@ -80,7 +78,6 @@ module Api
       rescue ActiveRecord::RecordNotFound
         render_not_found_response('artifact')
       end
-
     end
   end
 end

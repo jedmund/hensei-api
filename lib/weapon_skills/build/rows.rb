@@ -21,14 +21,14 @@ module WeaponSkills
       Row = WeaponSkills::BuildResult::Row
 
       SUPP_BOOSTS = %w[dmg_supp na_supp ca_supp skill_dmg_supp].freeze
-      FALLBACK_PROVENANCE = "fallback:"
+      FALLBACK_PROVENANCE = 'fallback:'
       # Appended to a fallback row's provenance when the curve crossed series (the Optimus
       # last resort, Registry#canonical_curve).
-      LAST_RESORT_MARKER = " (Optimus last resort)"
+      LAST_RESORT_MARKER = ' (Optimus last resort)'
 
       # Every value column, with the table defaults, so rows compare column for column.
       DATUM_DEFAULTS = {
-        modifier: nil, boost_type: nil, series: nil, size: nil, formula_type: "flat",
+        modifier: nil, boost_type: nil, series: nil, size: nil, formula_type: 'flat',
         sl1: nil, sl10: nil, sl15: nil, sl20: nil, sl25: nil, coefficient: nil, max_value: nil,
         aura_boostable: false
       }.freeze
@@ -36,7 +36,7 @@ module WeaponSkills
         modifier: nil, boost_type: nil, series: nil, scaling_kind: nil, value: nil, value_unit: nil,
         per_copy_cap: nil, total_cap: nil, shared_cap_group: nil, cap_formula: nil, count_basis: nil,
         count_cap: nil, condition: {}, target_instance: nil, depends_on: [], aura_boostable: false,
-        seraphic_affected: false, stacking: "additive", applies_to: "element_allies",
+        seraphic_affected: false, stacking: 'additive', applies_to: 'element_allies',
         battle_interaction: false, notes: nil, key_slug: nil, frame_rule: nil
       }.freeze
 
@@ -63,9 +63,9 @@ module WeaponSkills
         GameplayNotes.effects(version, notes, curation: curation).each do |attrs|
           next if described && !GameplayNotes::KEPT_KINDS.include?(attrs[:scaling_kind])
 
-          rows = add(rows, effect_row(version, attrs), warnings, source: "gameplay notes")
+          rows = add(rows, effect_row(version, attrs), warnings, source: 'gameplay notes')
         end
-        description_rows.each { |row| rows = add(rows, row, warnings, source: "description") }
+        description_rows.each { |row| rows = add(rows, row, warnings, source: 'description') }
         Result.new(version: version, rows: rows, warnings: warnings)
       end
 
@@ -86,7 +86,7 @@ module WeaponSkills
         return [version, []] if parsed[:clauses].empty?
 
         covered = covered_boost_types(version, registry, curation)
-        return [version, []] if covered.include?("*") # extraction fully suppressed
+        return [version, []] if covered.include?('*') # extraction fully suppressed
 
         rows = []
         parsed[:clauses].each do |clause|
@@ -102,7 +102,7 @@ module WeaponSkills
                 elsif clause[:value]
                   effect_row(version, effect_attributes(version, clause, parsed))
                 end
-          rows = add(rows, row, warnings, source: "description") if row
+          rows = add(rows, row, warnings, source: 'description') if row
         end
         [version, rows]
       end
@@ -111,7 +111,7 @@ module WeaponSkills
       # data and base effects, curated version-linked rows, and suppressed_boosts.
       def covered_boost_types(version, registry, curation)
         suppressed = curation.suppressed(version)
-        return Set["*"] if suppressed.include?("*")
+        return Set['*'] if suppressed.include?('*')
 
         modifier = version.skill_modifier
         covered = Set.new
@@ -131,7 +131,7 @@ module WeaponSkills
       def family_curve(version, clause, registry)
         return nil if version.skill_modifier.blank?
 
-        formula = clause[:formula_type] || "flat"
+        formula = clause[:formula_type] || 'flat'
         registry.for_skill(modifier: version.skill_modifier,
                            series: clause[:series] || version.skill_series,
                            size: clause[:size] || version.skill_size)
@@ -142,7 +142,7 @@ module WeaponSkills
       # provenance: "fallback:<modifier>/<series>", plus " (Optimus last resort)" when the
       # curve came from another series. Family-curve rows keep provenance nil.
       def datum_attributes(version, clause, registry)
-        formula = clause[:formula_type] || "flat"
+        formula = clause[:formula_type] || 'flat'
         curve = family_curve(version, clause, registry)
         fallback = curve.nil?
         series = clause[:series] || version.skill_series
@@ -169,10 +169,10 @@ module WeaponSkills
 
       def effect_attributes(version, clause, parsed)
         { modifier: version.skill_name_en, boost_type: clause[:boost_type], series: clause[:series],
-          scaling_kind: clause[:condition] ? "conditional_flat" : "static", value: clause[:value],
-          value_unit: SUPP_BOOSTS.include?(clause[:boost_type]) ? "flat" : "percent",
+          scaling_kind: clause[:condition] ? 'conditional_flat' : 'static', value: clause[:value],
+          value_unit: SUPP_BOOSTS.include?(clause[:boost_type]) ? 'flat' : 'percent',
           condition: clause[:condition] || {},
-          applies_to: parsed[:mc_only] ? "mc_only" : "element_allies", stacking: "additive" }
+          applies_to: parsed[:mc_only] ? 'mc_only' : 'element_allies', stacking: 'additive' }
       end
 
       def datum_row(version, attrs)

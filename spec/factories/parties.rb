@@ -17,7 +17,7 @@ FactoryBot.define do
     chain_count { 0 }
     turn_count { 0 }
     visibility { 1 }
-    # Note: Shortcode and edit_key will be auto-generated via before_create callbacks.
+    # NOTE: Shortcode and edit_key will be auto-generated via before_create callbacks.
 
     # Enough weapons and summons to meet the Gallery's quality bar
     # (Party.quality). Sets the counters only; no grid items are created.

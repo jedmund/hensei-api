@@ -19,9 +19,9 @@ module Granblue
       # @param image_id [String] The image ID to download from game server
       # @param slug [String] The slug to use for storage filename
       # @param options [Hash] Additional options passed to BaseDownloader
-      def initialize(image_id, slug:, **options)
+      def initialize(image_id, slug:, **)
         @slug = slug
-        super(image_id, **options)
+        super(image_id, **)
       end
 
       # Downloads the icon image for a job skill
@@ -81,7 +81,7 @@ module Granblue
       # @param size [String] Image size variant (ignored)
       # @return [String] Local directory path
       def download_path(size)
-        "#{Rails.root}/download/#{object_type}"
+        "#{Rails.root.join("download/#{object_type}")}"
       end
 
       # Gets base URL for job skill assets

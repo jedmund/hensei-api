@@ -9,14 +9,14 @@ module GridDamage
     module_function
 
     STAT_KEYS = {
-      "atk" => %w[atk_hit],
-      "da_ta" => %w[da_hit ta_hit],
-      "ability_dmg" => %w[skill_dmg_hit],
-      "ca_dmg" => %w[ca_dmg_hit],
-      "hp" => %w[hp_hit],
-      "def" => %w[def_hit],
-      "debuff_success" => %w[debuff_hit],
-      "dot" => %w[turn_dmg_hit]
+      'atk' => %w[atk_hit],
+      'da_ta' => %w[da_hit ta_hit],
+      'ability_dmg' => %w[skill_dmg_hit],
+      'ca_dmg' => %w[ca_dmg_hit],
+      'hp' => %w[hp_hit],
+      'def' => %w[def_hit],
+      'debuff_success' => %w[debuff_hit],
+      'dot' => %w[turn_dmg_hit]
     }.freeze
 
     def for_party(party)

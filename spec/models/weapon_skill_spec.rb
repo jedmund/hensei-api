@@ -10,6 +10,7 @@ RSpec.describe WeaponSkill, type: :model do
 
   describe 'validations' do
     let(:weapon) { create(:weapon) }
+
     subject { build(:weapon_skill, weapon: weapon, position: 0) }
 
     it { is_expected.to validate_presence_of(:weapon_granblue_id) }

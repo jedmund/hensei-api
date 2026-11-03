@@ -57,8 +57,8 @@ class ProfanityValidator < ActiveModel::EachValidator
       return
     end
 
-    if check_reserved && self.class.reserved_list.include?(normalized)
+    return unless check_reserved && self.class.reserved_list.include?(normalized)
+
       record.errors.add(attribute, options[:message] || :reserved)
-    end
   end
 end

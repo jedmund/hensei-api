@@ -423,9 +423,7 @@ module WikiImport
       about = { kind: 'accessory', position: 0, title: name }
       return add_warning('unknown_accessory', name, **about) if rows.empty?
 
-      if @job&.accessory && @job.accessory_type.to_i.positive?
-        @accessory = rows.find { |row| row.accessory_type == @job.accessory_type }
-      end
+      @accessory = rows.find { |row| row.accessory_type == @job.accessory_type } if @job&.accessory && @job.accessory_type.to_i.positive?
       return add_warning('accessory_not_allowed', @job&.name_en || 'no class', **about) unless @accessory
 
       @report[:matched] << { kind: 'accessory', position: 0, title: name, item: named_json(@accessory) }

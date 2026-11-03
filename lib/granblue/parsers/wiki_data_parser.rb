@@ -95,23 +95,17 @@ module Granblue
       def self.parse_character_uncap(data)
         suggestions = {}
 
-        if data['max_evo'].present?
-          suggestions.merge!(character_uncap_classification(data['uncap_type'], data['max_evo'].to_i))
-        end
+        suggestions.merge!(character_uncap_classification(data['uncap_type'], data['max_evo'].to_i)) if data['max_evo'].present?
 
         if suggestions[:special]
           # Current story-character pages use max_evo=5 and 5star_date for
           # their second blue star. Also accept the older 6star_date shape.
           final_uncap_date = data['6star_date'].presence || data['5star_date'].presence
           suggestions[:ulb_date] = parse_date(final_uncap_date) if suggestions[:ulb] && final_uncap_date
-          if data['6star_date'].present? && data['5star_date'].present?
-            suggestions[:flb_date] = parse_date(data['5star_date'])
-          end
+          suggestions[:flb_date] = parse_date(data['5star_date']) if data['6star_date'].present? && data['5star_date'].present?
         else
           suggestions[:flb_date] = parse_date(data['5star_date']) if data['5star_date'].present?
-          if data['6star_date'].present?
-            suggestions[:transcendence_date] = parse_date(data['6star_date'])
-          end
+          suggestions[:transcendence_date] = parse_date(data['6star_date']) if data['6star_date'].present?
         end
 
         suggestions
@@ -301,13 +295,11 @@ module Granblue
         value = value.to_s.strip
 
         # Handle MediaWiki template syntax {{{link_gamewith|VALUE}}}
-        if value =~ /\{\{\{link_gamewith\|(\d+)\}\}\}/
-          return $1
-        end
+        return ::Regexp.last_match(1) if value =~ /\{\{\{link_gamewith\|(\d+)\}\}\}/
 
         # If it's a full URL, extract the ID
-        if value =~ /gamewith\.jp\/article\/show\/(\d+)/
-          $1
+        if value =~ %r{gamewith\.jp/article/show/(\d+)}
+          ::Regexp.last_match(1)
         # If it's already just a numeric ID, return it
         elsif value =~ /^\d+$/
           value
@@ -328,10 +320,11 @@ module Granblue
         # Handle MediaWiki template syntax {{{link_kamigame|VALUE}}}
         # This may contain nested templates like {{{jpname|}}}
         if value =~ /\{\{\{link_kamigame\|([^}]*)\}\}\}/
-          extracted = $1
+          extracted = ::Regexp.last_match(1)
           # If the extracted value contains nested templates, skip it
           return nil if extracted.include?('{{{')
           return nil if extracted.blank?
+
           value = extracted
         end
 
@@ -343,19 +336,13 @@ module Granblue
           case entity_type
           when :character
             # https://kamigame.jp/グラブル/キャラクター/SSR水着リッチ.html -> SSR水着リッチ
-            if decoded =~ /キャラクター\/([^\/]+)\.html$/
-              $1
-            end
+            ::Regexp.last_match(1) if decoded =~ %r{キャラクター/([^/]+)\.html$}
           when :weapon
             # https://kamigame.jp/グラブル/武器/SSR/ブラインド.html -> ブラインド
-            if decoded =~ /武器\/(?:SSR|SR|R)\/([^\/]+)\.html$/
-              $1
-            end
+            ::Regexp.last_match(1) if decoded =~ %r{武器/(?:SSR|SR|R)/([^/]+)\.html$}
           when :summon
             # https://kamigame.jp/グラブル/召喚石/SSR/アグニス.html -> SSR/アグニス
-            if decoded =~ /召喚石\/((?:SSR|SR|R)\/[^\/]+)\.html$/
-              $1
-            end
+            ::Regexp.last_match(1) if decoded =~ %r{召喚石/((?:SSR|SR|R)/[^/]+)\.html$}
           end
         else
           # Assume it's already just the slug value
@@ -450,9 +437,7 @@ module Granblue
 
         tokens = obtain.split(',').map(&:strip)
         # Classic III-only imports must not restore ordinary availability.
-        unless tokens.include?('classic3') && !tokens.include?('premium')
-          promotions.push(1, 4, 5)
-        end
+        promotions.push(1, 4, 5) unless tokens.include?('classic3') && !tokens.include?('premium')
 
         # Add Classic pools only if explicitly mentioned
         promotions << 2 if tokens.include?('classic')

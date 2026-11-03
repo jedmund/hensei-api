@@ -33,24 +33,24 @@ module WeaponSkills
         def parse_seq(text, pos, stop)
           i = pos
           parts = [[]]
-          buf = +""
+          buf = +''
           flush = lambda do
             parts.last << buf.dup unless buf.empty?
             buf.clear
           end
           while i < text.length
-            if text[i, 3] == "{{{"
+            if text[i, 3] == '{{{'
               flush.call
-              sub, i = parse_seq(text, i + 3, "}}}")
+              sub, i = parse_seq(text, i + 3, '}}}')
               parts.last << [:param, sub]
-            elsif text[i, 2] == "{{"
+            elsif text[i, 2] == '{{'
               flush.call
-              sub, i = parse_seq(text, i + 2, "}}")
+              sub, i = parse_seq(text, i + 2, '}}')
               parts.last << [:call, sub]
             elsif stop && text[i, stop.length] == stop
               flush.call
               return [parts, i + stop.length]
-            elsif stop && text[i] == "|"
+            elsif stop && text[i] == '|'
               flush.call
               parts << []
               i += 1
@@ -81,18 +81,18 @@ module WeaponSkills
 
         def call(parts, args, vars)
           head = render(parts.first, args, vars)
-          fn, rest = head.strip.split(":", 2)
+          fn, rest = head.strip.split(':', 2)
           rest = rest.to_s.strip
-          arg = ->(n) { parts[n] ? render(parts[n], args, vars).strip : "" }
+          arg = ->(n) { parts[n] ? render(parts[n], args, vars).strip : '' }
           case fn.to_s.strip.downcase
-          when "#vardefine"
+          when '#vardefine'
             vars[rest] = arg.call(1)
-            ""
-          when "#vardefineecho" then vars[rest] = arg.call(1)
-          when "#var" then vars.fetch(rest, "")
-          when "#if" then rest.empty? ? arg.call(2) : arg.call(1)
-          when "#ifeq" then rest == arg.call(1) ? arg.call(2) : arg.call(3)
-          when "#switch" then switch(rest, parts[1..], args, vars)
+            ''
+          when '#vardefineecho' then vars[rest] = arg.call(1)
+          when '#var' then vars.fetch(rest, '')
+          when '#if' then rest.empty? ? arg.call(2) : arg.call(1)
+          when '#ifeq' then rest == arg.call(1) ? arg.call(2) : arg.call(3)
+          when '#switch' then switch(rest, parts[1..], args, vars)
           else "{{#{parts.map { |p| render(p, args, vars) }.join('|')}}}"
           end
         end
@@ -104,7 +104,7 @@ module WeaponSkills
           matched = false
           cases.each_with_index do |c, idx|
             text = render(c, args, vars)
-            key, val = text.split("=", 2)
+            key, val = text.split('=', 2)
             if val.nil?
               key = key.strip
               matched ||= key == value
@@ -113,7 +113,8 @@ module WeaponSkills
             end
             key = key.strip
             return val.strip if matched || key == value
-            default = val.strip if key == "#default"
+
+            default = val.strip if key == '#default'
           end
           default.to_s
         end

@@ -40,10 +40,10 @@ RSpec.describe SupportSummonImportService do
 
     it 'maps GBF section indices to section enums' do
       service = described_class.new(user, [
-        { 'gbf_section' => 1, 'position' => 0, 'granblue_id' => fire_summon.granblue_id, 'level' => 250 },
+                                      { 'gbf_section' => 1, 'position' => 0, 'granblue_id' => fire_summon.granblue_id, 'level' => 250 },
         { 'gbf_section' => 2, 'position' => 0, 'granblue_id' => water_summon.granblue_id, 'level' => 200 },
         { 'gbf_section' => 0, 'position' => 0, 'granblue_id' => misc_summon.granblue_id, 'level' => 100 }
-      ])
+                                    ])
 
       result = service.import
 
@@ -68,8 +68,8 @@ RSpec.describe SupportSummonImportService do
       expect(user.collection_summons.count).to eq(0)
 
       result = described_class.new(user, [
-        { 'gbf_section' => 1, 'position' => 0, 'granblue_id' => fire_summon.granblue_id, 'level' => 100 }
-      ]).import
+                                     { 'gbf_section' => 1, 'position' => 0, 'granblue_id' => fire_summon.granblue_id, 'level' => 100 }
+                                   ]).import
 
       expect(result.success?).to be(true)
       expect(user.collection_summons.count).to eq(1)
@@ -83,8 +83,8 @@ RSpec.describe SupportSummonImportService do
       transcendable = create(:summon, :transcendable)
 
       described_class.new(user, [
-        { 'gbf_section' => 1, 'position' => 0, 'granblue_id' => transcendable.granblue_id, 'level' => 235 }
-      ]).import
+                            { 'gbf_section' => 1, 'position' => 0, 'granblue_id' => transcendable.granblue_id, 'level' => 235 }
+                          ]).import
 
       cs = user.collection_summons.find_by(summon_id: transcendable.id)
       expect(cs.uncap_level).to eq(6)
@@ -96,8 +96,8 @@ RSpec.describe SupportSummonImportService do
       non_trans = create(:summon, transcendence: false)
 
       result = described_class.new(user, [
-        { 'gbf_section' => 1, 'position' => 0, 'granblue_id' => non_trans.granblue_id, 'level' => 250 }
-      ]).import
+                                     { 'gbf_section' => 1, 'position' => 0, 'granblue_id' => non_trans.granblue_id, 'level' => 250 }
+                                   ]).import
 
       expect(result.success?).to be(true)
       cs = user.collection_summons.find_by(summon_id: non_trans.id)
@@ -108,8 +108,8 @@ RSpec.describe SupportSummonImportService do
       existing = create(:collection_summon, user: user, summon: fire_summon, uncap_level: 5, transcendence_step: 0)
 
       described_class.new(user, [
-        { 'gbf_section' => 1, 'position' => 0, 'granblue_id' => fire_summon.granblue_id, 'level' => 100 }
-      ]).import
+                            { 'gbf_section' => 1, 'position' => 0, 'granblue_id' => fire_summon.granblue_id, 'level' => 100 }
+                          ]).import
 
       existing.reload
       expect(existing.uncap_level).to eq(5)
@@ -123,8 +123,8 @@ RSpec.describe SupportSummonImportService do
       old_support = create(:support_summon, user: user, collection_summon: existing_cs, section: :water, position: 2)
 
       result = described_class.new(user, [
-        { 'gbf_section' => 1, 'position' => 0, 'granblue_id' => fire_summon.granblue_id, 'level' => 100 }
-      ]).import
+                                     { 'gbf_section' => 1, 'position' => 0, 'granblue_id' => fire_summon.granblue_id, 'level' => 100 }
+                                   ]).import
 
       expect(result.success?).to be(true)
       expect(SupportSummon.find_by(id: old_support.id)).to be_nil
@@ -136,9 +136,9 @@ RSpec.describe SupportSummonImportService do
       old_support = create(:support_summon, user: user, collection_summon: existing_cs, section: :water, position: 0)
 
       result = described_class.new(user, [
-        { 'gbf_section' => 1, 'position' => 0, 'granblue_id' => fire_summon.granblue_id, 'level' => 100 },
+                                     { 'gbf_section' => 1, 'position' => 0, 'granblue_id' => fire_summon.granblue_id, 'level' => 100 },
         { 'gbf_section' => 99, 'position' => 0, 'granblue_id' => water_summon.granblue_id, 'level' => 100 } # bad section
-      ]).import
+                                   ]).import
 
       expect(result.success?).to be(false)
       expect(result.errors.first[:error]).to include('Unknown GBF section')
@@ -148,8 +148,8 @@ RSpec.describe SupportSummonImportService do
 
     it 'reports an error when a granblue_id does not match any summon' do
       result = described_class.new(user, [
-        { 'gbf_section' => 1, 'position' => 0, 'granblue_id' => 'not-a-real-id', 'level' => 100 }
-      ]).import
+                                     { 'gbf_section' => 1, 'position' => 0, 'granblue_id' => 'not-a-real-id', 'level' => 100 }
+                                   ]).import
 
       expect(result.success?).to be(false)
       expect(result.errors.first[:error]).to eq('Summon not found')

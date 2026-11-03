@@ -54,12 +54,12 @@ module Api
         render json: {
           gw_event: GwEventBlueprint.render_as_hash(event),
           crew_gw_participation: participation ? CrewGwParticipationBlueprint.render_as_hash(participation, view: :with_individual_scores, current_user: current_user) : nil,
-          members_during_event: members_during_event.map { |m|
+          members_during_event: members_during_event.map do |m|
             CrewMembershipBlueprint.render_as_hash(m, view: :with_user).merge(active_during_event: active_during_ids.include?(m.id))
-          },
-          phantom_players: phantom_players.map { |p|
+          end,
+          phantom_players: phantom_players.map do |p|
             PhantomPlayerBlueprint.render_as_hash(p).merge(active_during_event: active_phantom_ids.include?(p.id))
-          }
+          end
         }
       end
 

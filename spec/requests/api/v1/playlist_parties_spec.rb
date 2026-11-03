@@ -17,11 +17,11 @@ RSpec.describe 'Api::V1::PlaylistParties', type: :request do
 
   describe 'POST /api/v1/playlists/:playlist_id/parties' do
     it 'adds a party to the playlist' do
-      expect {
+      expect do
         post "/api/v1/playlists/#{playlist.id}/parties",
              params: { party_id: party.id }.to_json,
              headers: auth_headers
-      }.to change(PlaylistParty, :count).by(1)
+      end.to change(PlaylistParty, :count).by(1)
 
       expect(response).to have_http_status(:created)
       expect(response.parsed_body.dig('playlist', 'id')).to eq(playlist.id)
@@ -30,11 +30,11 @@ RSpec.describe 'Api::V1::PlaylistParties', type: :request do
     it 'rejects duplicate party in same playlist with 422' do
       create(:playlist_party, playlist: playlist, party: party)
 
-      expect {
+      expect do
         post "/api/v1/playlists/#{playlist.id}/parties",
              params: { party_id: party.id }.to_json,
              headers: auth_headers
-      }.not_to change(PlaylistParty, :count)
+      end.not_to change(PlaylistParty, :count)
 
       expect(response).to have_http_status(:unprocessable_entity)
     end
@@ -43,11 +43,11 @@ RSpec.describe 'Api::V1::PlaylistParties', type: :request do
       other_token = Doorkeeper::AccessToken.create!(resource_owner_id: other_user.id, expires_in: 30.days, scopes: 'public')
       other_headers = { 'Authorization' => "Bearer #{other_token.token}", 'Content-Type' => 'application/json' }
 
-      expect {
+      expect do
         post "/api/v1/playlists/#{playlist.id}/parties",
              params: { party_id: party.id }.to_json,
              headers: other_headers
-      }.not_to change(PlaylistParty, :count)
+      end.not_to change(PlaylistParty, :count)
 
       expect(response).to have_http_status(:unauthorized)
     end
@@ -55,11 +55,11 @@ RSpec.describe 'Api::V1::PlaylistParties', type: :request do
     it "returns 404 when adding someone else's private party" do
       private_party = create(:party, user: other_user, visibility: 3)
 
-      expect {
+      expect do
         post "/api/v1/playlists/#{playlist.id}/parties",
              params: { party_id: private_party.id }.to_json,
              headers: auth_headers
-      }.not_to change(PlaylistParty, :count)
+      end.not_to change(PlaylistParty, :count)
 
       expect(response).to have_http_status(:not_found)
       private_body = response.body
@@ -106,9 +106,9 @@ RSpec.describe 'Api::V1::PlaylistParties', type: :request do
     let!(:playlist_party) { create(:playlist_party, playlist: playlist, party: party) }
 
     it 'removes a party from the playlist' do
-      expect {
+      expect do
         delete "/api/v1/playlists/#{playlist.id}/parties/#{party.id}", headers: auth_headers
-      }.to change(PlaylistParty, :count).by(-1)
+      end.to change(PlaylistParty, :count).by(-1)
 
       expect(response).to have_http_status(:no_content)
     end
@@ -124,9 +124,9 @@ RSpec.describe 'Api::V1::PlaylistParties', type: :request do
       other_token = Doorkeeper::AccessToken.create!(resource_owner_id: other_user.id, expires_in: 30.days, scopes: 'public')
       other_headers = { 'Authorization' => "Bearer #{other_token.token}", 'Content-Type' => 'application/json' }
 
-      expect {
+      expect do
         delete "/api/v1/playlists/#{playlist.id}/parties/#{party.id}", headers: other_headers
-      }.not_to change(PlaylistParty, :count)
+      end.not_to change(PlaylistParty, :count)
 
       expect(response).to have_http_status(:unauthorized)
     end

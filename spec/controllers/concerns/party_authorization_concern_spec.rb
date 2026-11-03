@@ -34,6 +34,7 @@ RSpec.describe DummyAuthorizationController, type: :controller do
 
       context 'and current_user matches party.user' do
         before { dummy_controller.current_user = user }
+
         it 'does not call render_unauthorized_response' do
           dummy_controller.authorize_party!
           expect(dummy_controller.unauthorized_called?).to be false
@@ -42,6 +43,7 @@ RSpec.describe DummyAuthorizationController, type: :controller do
 
       context 'and current_user is missing or does not match' do
         before { dummy_controller.current_user = other_user }
+
         it 'calls render_unauthorized_response' do
           dummy_controller.authorize_party!
           expect(dummy_controller.unauthorized_called?).to be true
@@ -56,6 +58,7 @@ RSpec.describe DummyAuthorizationController, type: :controller do
 
       context 'with a valid edit_key' do
         before { dummy_controller.edit_key = 'anonkey' }
+
         it 'does not call render_unauthorized_response' do
           dummy_controller.authorize_party!
           expect(dummy_controller.unauthorized_called?).to be false
@@ -64,6 +67,7 @@ RSpec.describe DummyAuthorizationController, type: :controller do
 
       context 'with an invalid edit_key' do
         before { dummy_controller.edit_key = 'wrongkey' }
+
         it 'calls render_unauthorized_response' do
           dummy_controller.authorize_party!
           expect(dummy_controller.unauthorized_called?).to be true
@@ -80,6 +84,7 @@ RSpec.describe DummyAuthorizationController, type: :controller do
 
       context 'and current_user matches party.user' do
         before { dummy_controller.current_user = user }
+
         it 'returns false' do
           expect(dummy_controller.not_owner?).to be false
         end
@@ -87,6 +92,7 @@ RSpec.describe DummyAuthorizationController, type: :controller do
 
       context 'and current_user does not match party.user' do
         before { dummy_controller.current_user = other_user }
+
         it 'returns true' do
           expect(dummy_controller.not_owner?).to be true
         end
@@ -100,6 +106,7 @@ RSpec.describe DummyAuthorizationController, type: :controller do
 
       context 'and the provided edit_key matches' do
         before { dummy_controller.edit_key = 'anonkey' }
+
         it 'returns false' do
           expect(dummy_controller.not_owner?).to be false
         end
@@ -107,6 +114,7 @@ RSpec.describe DummyAuthorizationController, type: :controller do
 
       context 'and the provided edit_key does not match' do
         before { dummy_controller.edit_key = 'wrongkey' }
+
         it 'returns true' do
           expect(dummy_controller.not_owner?).to be true
         end

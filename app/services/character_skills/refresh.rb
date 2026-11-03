@@ -56,9 +56,7 @@ module CharacterSkills
     # token is this user's preview of this character and nothing else changed since.
     def self.apply_preview(character, user:, token:)
       entry = token.present? && RefreshStore.read(preview_key(token))
-      unless entry && entry[:user_id] == user.id && entry[:character_id] == character.id
-        raise PreviewExpired, EXPIRED_MESSAGE
-      end
+      raise PreviewExpired, EXPIRED_MESSAGE unless entry && entry[:user_id] == user.id && entry[:character_id] == character.id
 
       result = new(character).apply(Sources.new(**entry[:sources]))
       RefreshStore.delete(preview_key(token))
@@ -156,9 +154,7 @@ module CharacterSkills
 
     def source_attributes(sources)
       attrs = {}
-      if sources.fetched_en
-        attrs.merge!(wiki_en: sources.wiki_en, wiki_raw: sources.wiki_raw, wiki_raw_fetched_at: sources.fetched_at)
-      end
+      attrs.merge!(wiki_en: sources.wiki_en, wiki_raw: sources.wiki_raw, wiki_raw_fetched_at: sources.fetched_at) if sources.fetched_en
       if sources.fetched_jp
         attrs[:wiki_raw_jp] = sources.wiki_raw_jp
         attrs[:wiki_raw_jp_fetched_at] = sources.fetched_at

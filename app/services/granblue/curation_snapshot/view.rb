@@ -16,17 +16,17 @@ module Granblue
         @suppressed = {}
         @pinned = Set.new
         @leveled = Set.new
-        (overlay.entries("effects") + overlay.entries("data")).each do |row|
-          next unless row["weapon"]
+        (overlay.entries('effects') + overlay.entries('data')).each do |row|
+          next unless row['weapon']
 
-          ref = key(row["weapon"], row["skill"], row["ordinal"])
-          @curated[ref] << row["boost_type"]
+          ref = key(row['weapon'], row['skill'], row['ordinal'])
+          @curated[ref] << row['boost_type']
           @leveled << ref if self.class.leveled_row?(row)
         end
-        overlay.entries("versions").each do |entry|
-          ref = key(entry["weapon"], entry["skill"], entry["ordinal"])
-          @suppressed[ref] = Array(entry["suppressed_boosts"]).to_set.freeze
-          @pinned << ref if entry["modifier_override"].present?
+        overlay.entries('versions').each do |entry|
+          ref = key(entry['weapon'], entry['skill'], entry['ordinal'])
+          @suppressed[ref] = Array(entry['suppressed_boosts']).to_set.freeze
+          @pinned << ref if entry['modifier_override'].present?
         end
         @curated = @curated.transform_values(&:freeze)
       end
@@ -53,9 +53,9 @@ module Granblue
       # skill level: different per-level values, a formula coefficient, a weapon_skill_curve
       # scaling, or a skill-level condition.
       def self.leveled_row?(row)
-        row.values_at(*LEVEL_KEYS).compact.map(&:to_f).uniq.size > 1 || !row["coefficient"].nil? ||
-          row["scaling_kind"] == "weapon_skill_curve" ||
-          row.dig("condition", "type").to_s.include?("skill_level")
+        row.values_at(*LEVEL_KEYS).compact.map(&:to_f).uniq.size > 1 || !row['coefficient'].nil? ||
+          row['scaling_kind'] == 'weapon_skill_curve' ||
+          row.dig('condition', 'type').to_s.include?('skill_level')
       end
 
       # True when the overlay sets the version's family (including "none").

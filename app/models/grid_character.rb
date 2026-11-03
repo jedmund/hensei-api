@@ -20,7 +20,7 @@ class GridCharacter < ApplicationRecord
   ROLE_CAP = 3
 
   # Associations
-  belongs_to :character, foreign_key: :character_id, primary_key: :id
+  belongs_to :character, primary_key: :id
   belongs_to :awakening, optional: true
   belongs_to :party,
              inverse_of: :characters
@@ -49,7 +49,7 @@ class GridCharacter < ApplicationRecord
   validates :uncap_level, presence: true, numericality: { only_integer: true }
   validates :description, rich_text_description: true, if: :description_changed?
   validates :transcendence_step, numericality: { only_integer: true }, allow_nil: true
-  
+
   validate :validate_awakening_level, on: :update, unless: :is_substitute?
   validate :transcendence, unless: :is_substitute?
   validate :validate_over_mastery_values, on: :update, unless: :is_substitute?
@@ -125,6 +125,7 @@ class GridCharacter < ApplicationRecord
   # @return [void]
   def transcendence
     return if transcendence_step.nil?
+
     errors.add(:transcendence_step, 'transcendence step too low') if transcendence_step.negative?
   end
 
@@ -212,12 +213,11 @@ class GridCharacter < ApplicationRecord
     r1 = ring1.with_indifferent_access
     r2 = ring2.with_indifferent_access
     # Only check if either ring has a modifier set.
-    if r1[:modifier].present? || r2[:modifier].present?
+    return unless r1[:modifier].present? || r2[:modifier].present?
       # Ensure that ring2's strength equals exactly half of ring1's strength.
-      unless r2[:strength].to_f == (r1[:strength].to_f / 2)
+      return if r2[:strength].to_f == (r1[:strength].to_f / 2)
+
         errors.add(:over_mastery, 'over mastery attack and hp values do not match')
-      end
-    end
   end
 
   ##
@@ -237,7 +237,7 @@ class GridCharacter < ApplicationRecord
     return unless earring['modifier'].to_i.positive?
 
     modifier = aetherial_mastery_modifiers[earring['modifier'].to_i].to_sym
-    check_value({ "earring": { modifier => earring['strength'] } },
+    check_value({ 'earring': { modifier => earring['strength'] } },
                 'aetherial_mastery')
   end
 

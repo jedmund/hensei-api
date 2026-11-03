@@ -28,13 +28,11 @@ module PostDeployment
 
     def rebuild_indices
       searchable_models.each do |model_name|
-        begin
           model = model_name.constantize
           rebuild_index_for(model)
         rescue NameError => e
           log_error("Could not load model: #{model_name}")
           log_error(e.message) if @verbose
-        end
       end
     end
 
@@ -47,14 +45,12 @@ module PostDeployment
 
       if @test_mode
         log_step "Would rebuild search index for #{model.name}" if new_records.any?
-      else
-        if new_records.any?
-          log_verbose "• #{model.name}... "
+      elsif new_records.any?
+        log_verbose "• #{model.name}... "
           PgSearch::Multisearch.rebuild(model)
           log_verbose "✅ done! (#{new_records.size} new records)\n"
-        else
-          log_step "Skipping #{model.name} - no new records" if @verbose
-        end
+        elsif @verbose
+          log_step "Skipping #{model.name} - no new records"
       end
     rescue StandardError => e
       log_error("Failed to rebuild index for #{model.name}: #{e.message}")

@@ -114,8 +114,6 @@ module Granblue
           nil # Will be handled by download_wide_variants
         when 'zoom'
           nil # Handled by build_zoom_url
-        else
-          nil
         end
       end
 
@@ -144,7 +142,6 @@ module Granblue
       def build_zoom_url(gender)
         "https://media.skycompass.io/assets/customizes/jobs/1138x1138/#{@id}_#{gender}.png"
       end
-
 
       # Gets object type for file paths and storage keys
       # @return [String] Returns "job"

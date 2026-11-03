@@ -51,12 +51,10 @@ module Api
 
         if grid_weapon.valid?
           save_weapon(grid_weapon)
-        else
-          if grid_weapon.errors[:series].include?('must not conflict with existing weapons')
-            handle_conflict(grid_weapon)
+        elsif grid_weapon.errors[:series].include?('must not conflict with existing weapons')
+          handle_conflict(grid_weapon)
           else
             render_validation_error_response(grid_weapon)
-          end
         end
       end
 
@@ -76,19 +74,13 @@ module Api
         normalize_ax_fields!
 
         sync_flag_change = nil
-        if weapon_params.key?(:notes_synced)
-          sync_flag_change = ActiveModel::Type::Boolean.new.cast(weapon_params[:notes_synced])
-        end
+        sync_flag_change = ActiveModel::Type::Boolean.new.cast(weapon_params[:notes_synced]) if weapon_params.key?(:notes_synced)
         description_in_payload = weapon_params.key?(:description)
 
         ActiveRecord::Base.transaction do
-          unless @grid_weapon.update(weapon_params.except(:bullets).merge(seal_state_params(:weapon)))
-            raise ActiveRecord::Rollback
-          end
+          raise ActiveRecord::Rollback unless @grid_weapon.update(weapon_params.except(:bullets).merge(seal_state_params(:weapon)))
 
-          if params.dig(:weapon, :bullets).present?
-            update_bullet_loadout!(@grid_weapon, params[:weapon][:bullets])
-          end
+          update_bullet_loadout!(@grid_weapon, params[:weapon][:bullets]) if params.dig(:weapon, :bullets).present?
 
           # Fan out notes sync changes inside the same transaction so the
           # group's description/flag can't drift if the rest of the request fails.
@@ -191,9 +183,7 @@ module Api
         source = GridWeapon.find_by(id: source_id, party_id: @party.id)
         target = GridWeapon.find_by(id: target_id, party_id: @party.id)
 
-        unless source && target
-          return render_not_found_response('grid_weapon')
-        end
+        return render_not_found_response('grid_weapon') unless source && target
 
         # Perform the swap
         ActiveRecord::Base.transaction do
@@ -234,9 +224,7 @@ module Api
         # Every conflicting id must be a grid weapon in the target party.
         conflicting_ids = Array(resolve_params[:conflicting]).compact_blank.map(&:to_s).uniq
         conflicting_weapons = GridWeapon.where(id: conflicting_ids, party_id: @party.id).to_a
-        if conflicting_ids.empty? || conflicting_weapons.size != conflicting_ids.size
-          render_not_found_response('grid_weapon') and return
-        end
+        render_not_found_response('grid_weapon') and return if conflicting_ids.empty? || conflicting_weapons.size != conflicting_ids.size
 
         # Destroy each conflicting weapon
         conflicting_weapons.each(&:destroy)
@@ -643,7 +631,7 @@ module Api
           :befoulment_modifier_id, :befoulment_strength, :befoulment_permeation, :exorcism_level, :skill_level,
           :awakening_id, :awakening_level,
           :notes_synced,
-          bullets: [:position, :bullet_id]
+          bullets: %i[position bullet_id]
         ).then { |p| permit_description(p, params[:weapon]) }
       end
 

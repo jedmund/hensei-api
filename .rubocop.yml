@@ -6,6 +6,10 @@ inherit_mode:
 
 plugins:
   - rubocop-performance
+  - rubocop-rails
+  - rubocop-rspec
+  - rubocop-rspec_rails
+  - rubocop-factory_bot
 
 AllCops:
   TargetRubyVersion: 3.4
@@ -30,16 +34,19 @@ Layout/LineLength:
 # --- Metrics ---
 Metrics/MethodLength:
   Max: 30
+  CountAsOne: ['array', 'hash', 'heredoc', 'method_call']
   Exclude:
     - 'spec/**/*'
 
 Metrics/ClassLength:
   Max: 200
+  CountAsOne: ['array', 'hash', 'heredoc', 'method_call']
   Exclude:
     - 'spec/**/*'
 
 Metrics/ModuleLength:
   Max: 200
+  CountAsOne: ['array', 'hash', 'heredoc', 'method_call']
   Exclude:
     - 'spec/**/*'
 
@@ -50,6 +57,7 @@ Metrics/AbcSize:
 
 Metrics/BlockLength:
   Max: 80
+  CountAsOne: ['array', 'hash', 'heredoc', 'method_call']
   Exclude:
     - 'spec/**/*'
     - 'lib/tasks/**/*'
@@ -60,21 +68,9 @@ Metrics/CyclomaticComplexity:
 Metrics/PerceivedComplexity:
   Max: 12
 
-# --- Security ---
-Security/Eval:
-  Enabled: true
-
-Security/Open:
-  Enabled: true
-
-Security/YAMLLoad:
-  Enabled: true
-
-Security/JSONLoad:
-  Enabled: true
-
-Security/MarshalLoad:
-  Enabled: true
+# Keyword arguments name themselves, so only positional ones count
+Metrics/ParameterLists:
+  CountKeywordArgs: false
 
 # --- Style ---
 Style/Documentation:
@@ -87,7 +83,7 @@ Style/FrozenStringLiteralComment:
   Enabled: false
 
 Style/HashSyntax:
-  EnforcedShorthandSyntax: never
+  EnforcedShorthandSyntax: either
 
 Style/NumericLiterals:
   Enabled: false
@@ -108,3 +104,30 @@ Naming/PredicateMethod:
     - persist
     - validate_data
     - update_mention_for_entity
+
+# --- Rails ---
+# Specs set up state with update_column and friends on purpose
+Rails/SkipsModelValidations:
+  Exclude:
+    - 'spec/**/*'
+
+# --- RSpec ---
+# A request spec checks the status, the body and the database, so several
+# expectations and helpers per example are normal here
+RSpec/MultipleExpectations:
+  Enabled: false
+
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
+
+RSpec/ExampleLength:
+  Max: 25
+  CountAsOne: ['array', 'hash', 'heredoc', 'method_call']
+
+RSpec/NestedGroups:
+  Max: 5
+
+# rails_helper doesn't call infer_spec_type_from_file_location!, so the
+# `type:` metadata this cop calls redundant is what sets the spec type
+RSpecRails/InferredSpecType:
+  Enabled: false

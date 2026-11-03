@@ -47,7 +47,7 @@ class CollectionWeapon < ApplicationRecord
   scope :by_series, ->(series_id) { joins(:weapon).where(weapons: { weapon_series_id: series_id }) }
   scope :with_keys, -> { where.not(weapon_key1_id: nil) }
   scope :with_ax, -> { where.not(ax_modifier1_id: nil) }
-  scope :by_element, ->(element) {
+  scope :by_element, lambda { |element|
     joins(:weapon).where(
       'collection_weapons.element IN (?) OR (collection_weapons.element IS NULL AND weapons.element IN (?))',
       element, element
@@ -57,11 +57,11 @@ class CollectionWeapon < ApplicationRecord
   scope :by_proficiency, ->(proficiency) { joins(:weapon).where(weapons: { proficiency: proficiency }) }
   scope :transcended, -> { where('transcendence_step > 0') }
   scope :with_awakening, -> { where.not(awakening_id: nil) }
-  scope :by_name, ->(query) {
-    joins(:weapon).where("weapons.name_en ILIKE :q OR weapons.name_jp ILIKE :q", q: "%#{sanitize_sql_like(query)}%")
+  scope :by_name, lambda { |query|
+    joins(:weapon).where('weapons.name_en ILIKE :q OR weapons.name_jp ILIKE :q', q: "%#{sanitize_sql_like(query)}%")
   }
 
-  scope :sorted_by, ->(sort_key, locale = 'en') {
+  scope :sorted_by, lambda { |sort_key, locale = 'en'|
     name_col = locale == 'ja' ? 'weapons.name_jp' : 'weapons.name_en'
     case sort_key
     when 'name_asc'
@@ -99,81 +99,71 @@ class CollectionWeapon < ApplicationRecord
     return unless weapon.present?
 
     # Validate weapon_key4 is only on Opus/Draconic weapons
-    if weapon_key4.present? && !weapon.opus_or_draconic?
-      errors.add(:weapon_key4, "can only be set on Opus or Draconic weapons")
-    end
+    errors.add(:weapon_key4, 'can only be set on Opus or Draconic weapons') if weapon_key4.present? && !weapon.opus_or_draconic?
 
     weapon_keys.each do |key|
-      unless weapon.compatible_with_key?(key)
-        errors.add(:weapon_keys, "#{key.name_en} is not compatible with this weapon")
-      end
+      errors.add(:weapon_keys, "#{key.name_en} is not compatible with this weapon") unless weapon.compatible_with_key?(key)
     end
 
     # Check for duplicate keys
     key_ids = [weapon_key1_id, weapon_key2_id, weapon_key3_id, weapon_key4_id].compact
-    if key_ids.length != key_ids.uniq.length
-      errors.add(:weapon_keys, "cannot have duplicate keys")
-    end
+    errors.add(:weapon_keys, 'cannot have duplicate keys') if key_ids.length != key_ids.uniq.length
 
     # Check for duplicate slots
     slots = weapon_keys.map(&:slot)
-    if slots.length != slots.uniq.length
-      errors.add(:weapon_keys, "cannot have multiple keys for the same slot")
-    end
+    return unless slots.length != slots.uniq.length
+
+      errors.add(:weapon_keys, 'cannot have multiple keys for the same slot')
   end
 
   def validate_befoulment
     # Befoulment: must have both modifier and strength
     if (befoulment_modifier.present? && befoulment_strength.blank?) ||
        (befoulment_modifier.blank? && befoulment_strength.present?)
-      errors.add(:base, "Befoulment must have both modifier and strength")
+      errors.add(:base, 'Befoulment must have both modifier and strength')
     end
 
     # Validate category is 'befoulment'
-    if befoulment_modifier.present? && befoulment_modifier.category != 'befoulment'
-      errors.add(:befoulment_modifier, "must be a befoulment modifier")
-    end
+    errors.add(:befoulment_modifier, 'must be a befoulment modifier') if befoulment_modifier.present? && befoulment_modifier.category != 'befoulment'
 
     # Exorcism level only makes sense with befoulment or befoulment-capable weapons
     if exorcism_level.present? && exorcism_level > 0 && befoulment_modifier.blank? &&
        weapon_augment_type != 'befoulment'
-      errors.add(:exorcism_level, "cannot be set without a befoulment")
+      errors.add(:exorcism_level, 'cannot be set without a befoulment')
     end
   end
 
   def validate_element_change
     return unless element.present? && weapon.present?
 
-    unless weapon_element_changeable?
-      errors.add(:element, "can only be set on element-changeable weapons")
-    end
+    return if weapon_element_changeable?
+
+      errors.add(:element, 'can only be set on element-changeable weapons')
   end
 
   def validate_awakening_compatibility
     return unless awakening.present?
 
-    unless awakening.object_type == 'Weapon'
-      errors.add(:awakening, "must be a weapon awakening")
-    end
+    return if awakening.object_type == 'Weapon'
+
+      errors.add(:awakening, 'must be a weapon awakening')
   end
 
   def validate_awakening_level
-    if awakening_level.present? && awakening_level > 1 && awakening_id.blank?
-      errors.add(:awakening_level, "cannot be set without an awakening")
-    end
+    return unless awakening_level.present? && awakening_level > 1 && awakening_id.blank?
+
+      errors.add(:awakening_level, 'cannot be set without an awakening')
   end
 
   def validate_transcendence_requirements
     return unless transcendence_step.present? && transcendence_step > 0
 
-    if uncap_level < 5
-      errors.add(:transcendence_step, "requires uncap level 5 (current: #{uncap_level})")
-    end
+    errors.add(:transcendence_step, "requires uncap level 5 (current: #{uncap_level})") if uncap_level < 5
 
     # Some weapons might not support transcendence
-    if weapon.present? && !weapon.transcendence
-      errors.add(:transcendence_step, "not available for this weapon") if transcendence_step > 0
-    end
+    return unless weapon.present? && !weapon.transcendence
+
+      errors.add(:transcendence_step, 'not available for this weapon') if transcendence_step > 0
   end
 
   ##

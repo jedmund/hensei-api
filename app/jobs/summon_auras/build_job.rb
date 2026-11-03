@@ -19,14 +19,14 @@ module SummonAuras
       log = StringIO.new
       summary = Build::Runner.new(mode: mode, ids: [summon.granblue_id], io: log).call
       Rails.logger.info "[SUMMON_AURAS] #{summon.granblue_id} (#{mode}): #{log.string.strip.lines.last&.strip}"
-      log.string.lines.each { |line| Rails.logger.info "[SUMMON_AURAS]   #{line.strip}" } if mode == "shadow"
+      log.string.lines.each { |line| Rails.logger.info "[SUMMON_AURAS]   #{line.strip}" } if mode == 'shadow'
       summary
     end
 
     def self.mode_for(summon)
-      return "write" if SummonAuras.build_mode == "write"
+      return 'write' if SummonAuras.build_mode == 'write'
 
-      SummonAura.exists?(summon_granblue_id: summon.granblue_id) ? "shadow" : "write"
+      SummonAura.exists?(summon_granblue_id: summon.granblue_id) ? 'shadow' : 'write'
     end
   end
 end

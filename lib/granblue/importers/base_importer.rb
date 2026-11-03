@@ -115,13 +115,11 @@ module Granblue
             existing_record.update!(update_attributes) if was_updated
             [existing_record, was_updated]
           end
-        else
-          if @test_mode
-            log_test_creation(attributes)
+        elsif @test_mode
+          log_test_creation(attributes)
             nil
           else
             [model_class.create!(attributes), false]
-          end
         end
       end
 
@@ -153,7 +151,8 @@ module Granblue
         update_attributes = attributes.compact
         would_update = update_attributes.any? { |key, value| existing_record[key] != value }
 
-        if would_update
+        return unless would_update
+
           # Create a test record with existing data
           test_record = existing_record.dup
 
@@ -171,7 +170,6 @@ module Granblue
             attributes: update_attributes,
             operation: :update
           }
-        end
       end
 
       # Validate that all required attributes are present
@@ -186,11 +184,12 @@ module Granblue
             !%w[id created_at updated_at].include?(column)
         end
 
-        if missing_columns.any?
+        return unless missing_columns.any?
+
           details = [
-            "Missing required columns:",
+            'Missing required columns:',
             missing_columns.map { |col| "  • #{col}" },
-            "",
+            '',
             "Affected model: #{model_class.name}"
           ].flatten.join("\n")
 
@@ -198,7 +197,6 @@ module Granblue
             file_name: File.basename(@file_path),
             details: details
           )
-        end
       end
 
       # Validate attributes for an update
@@ -219,11 +217,12 @@ module Granblue
             !%w[id created_at updated_at].include?(column)
         end
 
-        if missing_columns.any?
+        return unless missing_columns.any?
+
           details = [
-            "Missing required values for update:",
+            'Missing required values for update:',
             missing_columns.map { |col| "  • #{col}" },
-            "",
+            '',
             "Affected model: #{model_class.name}"
           ].flatten.join("\n")
 
@@ -231,7 +230,6 @@ module Granblue
             file_name: File.basename(@file_path),
             details: details
           )
-        end
       end
 
       # Validate a record can be saved
@@ -254,9 +252,9 @@ module Granblue
           if e.message.include?('violates not-null constraint')
             column = e.message.match(/column "([^"]+)"/)[1]
             details = [
-              "Database constraint violation:",
+              'Database constraint violation:',
               "  • Column '#{column}' cannot be null",
-              "",
+              '',
               "Affected model: #{model_class.name}"
             ].join("\n")
 
@@ -315,7 +313,7 @@ module Granblue
       def log_test_update(record, attributes)
         update_attributes = attributes.compact
         @logger&.log_step("\nUpdate #{model_class.name} #{record.granblue_id}:")
-        @logger&.log_verbose("Current values:")
+        @logger&.log_verbose('Current values:')
         @logger&.log_verbose(format_attributes(record.attributes.symbolize_keys))
         @logger&.log_verbose("\nNew values:")
         @logger&.log_verbose(format_attributes(update_attributes))
@@ -387,7 +385,11 @@ module Granblue
       def parse_date(date_str)
         return nil if date_str.nil? || date_str.strip.empty?
 
-        Date.parse(date_str) rescue nil
+        begin
+          Date.parse(date_str)
+        rescue StandardError
+          nil
+        end
       end
 
       # Parse a string array
@@ -443,10 +445,10 @@ module Granblue
       # @return [String] Formatted error message
       def format_validation_error(error)
         [
-          "Validation failed:",
+          'Validation failed:',
           error.record.errors.full_messages.map { |msg| "  • #{msg}" },
-          "",
-          "Record attributes:",
+          '',
+          'Record attributes:',
           format_attributes(error.record.attributes.symbolize_keys)
         ].flatten.join("\n")
       end
@@ -458,8 +460,8 @@ module Granblue
         if @verbose && error.respond_to?(:backtrace)
           [
             error.message,
-            "",
-            "Backtrace:",
+            '',
+            'Backtrace:',
             error.backtrace.take(3).map { |line| "  #{line}" }
           ].flatten.join("\n")
         else

@@ -3,18 +3,18 @@
     {
       "warning_type": "SQL Injection",
       "warning_code": 0,
-      "fingerprint": "7aa3876f6063209bfcf6c9cccc55d99e87dd337eb0b0459a458d1e5cb02a1243",
+      "fingerprint": "5f872a7deb608dd7b30ec8901662232ea32a302c375f5d1a0e49a8ad81e5389b",
       "check_name": "SQL",
       "message": "Possible SQL injection",
       "file": "app/services/party_query_builder.rb",
-      "line": 202,
+      "line": 244,
       "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "query.where(\"        NOT EXISTS (\\n          SELECT 1 FROM #{grid_table}\\n          JOIN #{object_table} ON #{grid_table}.#{object_table.singularize}_id = #{object_table}.id\\n          WHERE #{object_table}.granblue_id = ? AND #{grid_table}.party_id = parties.id\\n        )\\n\".squish, id)",
+      "code": "query.where(\"EXISTS (\\n  SELECT 1 FROM #{grid_table}\\n  JOIN #{object_table} ON #{grid_table}.#{object_table.singularize}_id = #{object_table}.id\\n  WHERE #{object_table}.granblue_id = ? AND #{grid_table}.party_id = parties.id\\n)\\n\".squish, id)",
       "render_path": null,
       "location": {
         "type": "method",
         "class": "PartyQueryBuilder",
-        "method": "apply_excludes"
+        "method": "apply_includes"
       },
       "user_input": "grid_table",
       "confidence": "Weak",
@@ -46,29 +46,6 @@
       "note": "Real, low risk: YOUTUBE_REGEX is not end-anchored. Clients only use the extracted video ID. Tighten the regex (backlog)."
     },
     {
-      "warning_type": "SQL Injection",
-      "warning_code": 0,
-      "fingerprint": "abf752bb798330c986b5781e671baf8f88f8022f319021921e9bb9045a7c01cd",
-      "check_name": "SQL",
-      "message": "Possible SQL injection",
-      "file": "app/services/party_query_builder.rb",
-      "line": 184,
-      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
-      "code": "query.where(\"        EXISTS (\\n          SELECT 1 FROM #{grid_table}\\n          JOIN #{object_table} ON #{grid_table}.#{object_table.singularize}_id = #{object_table}.id\\n          WHERE #{object_table}.granblue_id = ? AND #{grid_table}.party_id = parties.id\\n        )\\n\".squish, id)",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "PartyQueryBuilder",
-        "method": "apply_includes"
-      },
-      "user_input": "grid_table",
-      "confidence": "Weak",
-      "cwe_id": [
-        89
-      ],
-      "note": "False positive: grid_table/object_table come from a fixed mapping in grid_table_and_object_table, not from params."
-    },
-    {
       "warning_type": "Format Validation",
       "warning_code": 30,
       "fingerprint": "b4bae91607ceabdab124b4ce4dff42b55dee2cc8fc931ac64fa646a57383c6fa",
@@ -89,6 +66,29 @@
         777
       ],
       "note": "Real, low risk: YOUTUBE_REGEX is not end-anchored. Clients only use the extracted video ID. Tighten the regex (backlog)."
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "c877711cca3efde671e5c37b8584113baf61baf55694f15bfb0e849053444bcd",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/services/party_query_builder.rb",
+      "line": 263,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "query.where(\"NOT EXISTS (\\n  SELECT 1 FROM #{grid_table}\\n  JOIN #{object_table} ON #{grid_table}.#{object_table.singularize}_id = #{object_table}.id\\n  WHERE #{object_table}.granblue_id = ? AND #{grid_table}.party_id = parties.id\\n)\\n\".squish, id)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "PartyQueryBuilder",
+        "method": "apply_excludes"
+      },
+      "user_input": "grid_table",
+      "confidence": "Weak",
+      "cwe_id": [
+        89
+      ],
+      "note": "False positive: grid_table/object_table come from a fixed mapping in grid_table_and_object_table, not from params."
     },
     {
       "warning_type": "Mass Assignment",

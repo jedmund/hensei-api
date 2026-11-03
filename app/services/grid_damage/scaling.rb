@@ -36,10 +36,10 @@ module GridDamage
       case datum.formula_type
       # Garrison is the DEF mirror of Enmity — same missing-HP curve, so 0 at full
       # HP (HoEE8b: the panel's DEF line shows no Garrison contribution at 100%).
-      when "enmity" then enmity(datum, skill_level, hp_percent)
-      when "garrison" then garrison(datum, skill_level, hp_percent)
-      when "stamina"     then stamina(datum, skill_level, hp_percent)
-      when "progression" then progression(datum, skill_level, turn)
+      when 'enmity' then enmity(datum, skill_level, hp_percent)
+      when 'garrison' then garrison(datum, skill_level, hp_percent)
+      when 'stamina'     then stamina(datum, skill_level, hp_percent)
+      when 'progression' then progression(datum, skill_level, turn)
       else                    flat(datum, skill_level) # "flat", nil
       end
     end
@@ -92,7 +92,7 @@ module GridDamage
       coef = datum.coefficient&.to_f
       return flat(datum, skill_level) if coef.nil? || coef <= 0 # non-coefficient fallback
 
-      denom = coef - stamina_adjustment(skill_level, small: datum.size == "small")
+      denom = coef - stamina_adjustment(skill_level, small: datum.size == 'small')
       return nil if denom <= 0
 
       # "Stamina does not confer an ATK boost when HP is below 25%" — the panel

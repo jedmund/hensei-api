@@ -32,7 +32,7 @@ module Api
 
         field :description, if: ->(_field_name, gs, _options) { gs.description.present? }
         association :substitutions, blueprint: SubstitutionBlueprint,
-                    if: ->(_field_name, gs, _options) { !gs.is_substitute? && gs.substitutions.any? }
+                                    if: ->(_field_name, gs, _options) { !gs.is_substitute? && gs.substitutions.any? }
       end
 
       view :full do

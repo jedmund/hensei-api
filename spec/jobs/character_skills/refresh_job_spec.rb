@@ -163,7 +163,7 @@ RSpec.describe CharacterSkills::RefreshJob do
       expect(reload_batch.item(second.id)[:status]).to eq('applied')
     end
 
-    it "marks a character failed when its previewed text has expired" do
+    it 'marks a character failed when its previewed text has expired' do
       reload_batch.start_apply!(nil)
       CharacterSkills::RefreshStore.delete("batch:#{batch.id}:sources:#{first.id}")
 

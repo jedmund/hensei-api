@@ -91,18 +91,18 @@ module GridDamage
 
     def build_result(group, meta)
       boost_type = group.first.boost_type
-      rule = meta&.stacking_rule || "additive"
+      rule = meta&.stacking_rule || 'additive'
       cap = meta&.grid_cap&.to_f
       flat = meta&.cap_is_flat || false
       sources = source_map(group)
 
       case rule
-      when "multiplicative_by_series"
+      when 'multiplicative_by_series'
         by_series = group.group_by(&:series).transform_values { |g| sum(g) }
         Result.new(boost_type: boost_type, rule: rule, by_series: by_series, total: by_series.values.sum,
                    raw: by_series.values.sum, cap: nil, cap_is_flat: flat, capped: false,
                    source_map: sources)
-      when "highest_only"
+      when 'highest_only'
         capped(boost_type, rule, group.map(&:value).max, cap, flat, sources)
       else
         capped(boost_type, rule, sum(group), cap, flat, sources)

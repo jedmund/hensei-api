@@ -34,7 +34,7 @@ RSpec.describe 'Collection Weapons - check_conflicts', type: :request do
   describe 'POST /api/v1/collection/weapons/check_conflicts' do
     it 'requires authentication' do
       post endpoint, params: { data: { 'list' => [] } }.to_json,
-           headers: { 'Content-Type' => 'application/json' }
+                     headers: { 'Content-Type' => 'application/json' }
 
       expect(response).to have_http_status(:unauthorized)
     end
@@ -145,9 +145,9 @@ RSpec.describe 'Collection Weapons - check_conflicts', type: :request do
         conflict_resolutions: { '12345' => 'import' }
       }
 
-      expect {
+      expect do
         post import_endpoint, params: payload.to_json, headers: headers
-      }.not_to change(user.collection_weapons, :count)
+      end.not_to change(user.collection_weapons, :count)
 
       expect(response).to have_http_status(:created)
       json = response.parsed_body

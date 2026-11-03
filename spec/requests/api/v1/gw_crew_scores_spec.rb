@@ -24,11 +24,11 @@ RSpec.describe 'Api::V1::GwCrewScores', type: :request do
 
     context 'as crew officer' do
       it 'creates a crew score' do
-        expect {
+        expect do
           post "/api/v1/crew/gw_participations/#{participation.id}/crew_scores",
                params: valid_params,
                headers: auth_headers
-        }.to change(GwCrewScore, :count).by(1)
+        end.to change(GwCrewScore, :count).by(1)
 
         expect(response).to have_http_status(:created)
         json = response.parsed_body
@@ -60,11 +60,11 @@ RSpec.describe 'Api::V1::GwCrewScores', type: :request do
       it 'returns error for duplicate round' do
         create(:gw_crew_score, crew_gw_participation: participation, round: :preliminaries)
 
-        expect {
+        expect do
           post "/api/v1/crew/gw_participations/#{participation.id}/crew_scores",
                params: valid_params,
                headers: auth_headers
-        }.not_to change(GwCrewScore, :count)
+        end.not_to change(GwCrewScore, :count)
 
         expect(response).to have_http_status(:unprocessable_entity)
       end
@@ -74,11 +74,11 @@ RSpec.describe 'Api::V1::GwCrewScores', type: :request do
       let!(:membership) { create(:crew_membership, crew: crew, user: user, role: :member) }
 
       it 'returns unauthorized' do
-        expect {
+        expect do
           post "/api/v1/crew/gw_participations/#{participation.id}/crew_scores",
                params: valid_params,
                headers: auth_headers
-        }.not_to change(GwCrewScore, :count)
+        end.not_to change(GwCrewScore, :count)
 
         expect(response).to have_http_status(:unauthorized)
       end
@@ -119,10 +119,10 @@ RSpec.describe 'Api::V1::GwCrewScores', type: :request do
 
     context 'as crew officer' do
       it 'deletes the score' do
-        expect {
+        expect do
           delete "/api/v1/crew/gw_participations/#{participation.id}/crew_scores/#{score.id}",
                  headers: auth_headers
-        }.to change(GwCrewScore, :count).by(-1)
+        end.to change(GwCrewScore, :count).by(-1)
 
         expect(response).to have_http_status(:no_content)
       end
@@ -132,10 +132,10 @@ RSpec.describe 'Api::V1::GwCrewScores', type: :request do
       let!(:membership) { create(:crew_membership, crew: crew, user: user, role: :member) }
 
       it 'returns unauthorized' do
-        expect {
+        expect do
           delete "/api/v1/crew/gw_participations/#{participation.id}/crew_scores/#{score.id}",
                  headers: auth_headers
-        }.not_to change(GwCrewScore, :count)
+        end.not_to change(GwCrewScore, :count)
 
         expect(response).to have_http_status(:unauthorized)
       end

@@ -74,7 +74,7 @@ module Granblue
 
       def save!
         Source.put(nil, SOURCE_KIND, { 'rows' => @rows, 'queried' => @queried.to_a.sort }, key: SOURCE_KEY,
-                                                                                          fetched_at: Time.current)
+                                                                                           fetched_at: Time.current)
       end
     end
 
@@ -184,9 +184,7 @@ module Granblue
 
       row = rows.first
       page = Granblue::WikiTitle.normalize(row['page'])
-      if weapon.wiki_en.blank? && page.present?
-        result.changes << Change.new(weapon: weapon, field: 'wiki_en', old: weapon.wiki_en, new: page)
-      end
+      result.changes << Change.new(weapon: weapon, field: 'wiki_en', old: weapon.wiki_en, new: page) if weapon.wiki_en.blank? && page.present?
 
       DATE_FIELDS.each do |field, key|
         next unless weapon.public_send(field).nil?

@@ -42,8 +42,8 @@ module WeaponSkills
           log&.call("  ERROR #{weapon.granblue_id} #{weapon.name_en}: #{e.message}")
         end
         result.shared.each do |kind, key|
-          if kind == "family_template"
-            @fetcher.fetch_family_template(key.delete_prefix(Granblue::Extractors::FamilyTemplateImporter.template_title("")))
+          if kind == 'family_template'
+            @fetcher.fetch_family_template(key.delete_prefix(Granblue::Extractors::FamilyTemplateImporter.template_title('')))
           else
             @fetcher.fetch_series_page(key)
           end

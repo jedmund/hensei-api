@@ -25,9 +25,9 @@ module WeaponSkills
       def self.from_database(weapon_granblue_ids: nil)
         scope = WeaponSkillVersion.joins(:weapon_skill, :skill)
         scope = scope.where(weapon_skills: { weapon_granblue_id: weapon_granblue_ids }) if weapon_granblue_ids
-        rows = scope.pluck("weapon_skill_versions.id", "weapon_skills.weapon_granblue_id", "weapon_skills.position",
-                           "weapon_skill_versions.ordinal", "skills.name_en",
-                           "weapon_skill_versions.suppressed_boosts", "weapon_skill_versions.modifier_override")
+        rows = scope.pluck('weapon_skill_versions.id', 'weapon_skills.weapon_granblue_id', 'weapon_skills.position',
+                           'weapon_skill_versions.ordinal', 'skills.name_en',
+                           'weapon_skill_versions.suppressed_boosts', 'weapon_skill_versions.modifier_override')
         ids = rows.map(&:first)
         curated = Hash.new { |h, k| h[k] = Set.new }
         [WeaponSkillDatum, WeaponSkillEffect].each do |model|

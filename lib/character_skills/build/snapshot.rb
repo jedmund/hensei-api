@@ -33,14 +33,14 @@ module CharacterSkills
           entries = snapshot[slot[1]]
           key = key_by_version[version_id]
           if entries.key?(key)
-            entries[key]["duplicates"] = entries[key].fetch("duplicates", 0) + 1
+            entries[key]['duplicates'] = entries[key].fetch('duplicates', 0) + 1
             next
           end
 
           entries[key] = row[:columns].merge(
-            "slot_game_action_id" => slot[4],
-            "effects" => effects.fetch(version_id, []).sort_by { |effect| effect["ordinal"].to_i },
-            "links" => links_from(version_id, key_by_version)
+            'slot_game_action_id' => slot[4],
+            'effects' => effects.fetch(version_id, []).sort_by { |effect| effect['ordinal'].to_i },
+            'links' => links_from(version_id, key_by_version)
           )
         end
         snapshot
@@ -71,7 +71,7 @@ module CharacterSkills
 
       def version_key(slots, row)
         _, _, kind, position = slots.fetch(row[:character_skill_id])
-        [kind, position, row[:columns]["ordinal"]]
+        [kind, position, row[:columns]['ordinal']]
       end
     end
   end

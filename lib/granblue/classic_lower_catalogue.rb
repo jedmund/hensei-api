@@ -25,6 +25,7 @@ module Granblue
         unless LOWER_RARITIES.include?(entry['rarity']) && row.rarity == entry['rarity'] && row.promotions.include?(1)
           raise "Ordinary lower rarity drift #{row.granblue_id}"
         end
+
         validate_evidence!(row, entry.fetch('evidence'))
         after = (row.promotions + [2, 3, 12]).uniq
         { type: entry['type'], granblue_id: row.granblue_id, id: row.id, before: row.promotions, after: after }

@@ -59,9 +59,7 @@ class IconUploadValidator
     # The header has to agree with the signature, and give dimensions
     return invalid('Image could not be read') unless header.type == HEADER_TYPES[format] && width && height
 
-    if width > @max_dimension || height > @max_dimension
-      return invalid("Image must be #{@max_dimension}x#{@max_dimension} or smaller")
-    end
+    return invalid("Image must be #{@max_dimension}x#{@max_dimension} or smaller") if width > @max_dimension || height > @max_dimension
 
     Result.new(valid?: true, error: nil, format: format)
   end

@@ -2,7 +2,7 @@ FactoryBot.define do
   factory :job_accessory do
     association :job
     sequence(:name_en) { |n| "Job Accessory #{n}" }
-    name_jp { "ジョブアクセサリー" }
+    name_jp { 'ジョブアクセサリー' }
     sequence(:granblue_id) { |n| "1#{n.to_s.rjust(8, '0')}" }
     accessory_type { 1 } # Shield
 

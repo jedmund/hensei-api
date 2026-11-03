@@ -328,14 +328,14 @@ class Weapon < ApplicationRecord
       visited = Set.new([granblue_id])
       while current
         break if visited.include?(current.granblue_id)
+
         chain.unshift(current)
         visited.add(current.granblue_id)
 
-        if current.forged_from.present?
+        break unless current.forged_from.present?
+
           current = Weapon.find_by(granblue_id: current.forged_from)
-        else
-          break
-        end
+
       end
 
       # First element is the root
@@ -351,9 +351,9 @@ class Weapon < ApplicationRecord
         updates[:forge_order] = index if weapon.forge_order != index
         weapon.update_columns(updates.merge(updated_at: Time.current)) if updates.any?
       end
-    else
+    elsif forge_chain_id.present?
       # Clearing forged_from - reset forge_order if part of a chain
-      self.forge_order = 0 if forge_chain_id.present?
+      self.forge_order = 0
     end
   end
 end

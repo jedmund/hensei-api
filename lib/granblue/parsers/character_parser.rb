@@ -263,23 +263,23 @@ module Granblue
 
         # Seasonal series based on page name or obtain field
         page_name = @character.wiki_en.to_s.downcase
-        if page_name.include?('summer') || page_name.include?('(swimsuit)')
-          series << 9 unless series.include?(9) # Summer
+        if (page_name.include?('summer') || page_name.include?('(swimsuit)')) && !series.include?(9)
+          series << 9# Summer
         end
-        if page_name.include?('yukata')
-          series << 10 unless series.include?(10) # Yukata
+        if page_name.include?('yukata') && !series.include?(10)
+          series << 10# Yukata
         end
-        if page_name.include?('valentine')
-          series << 11 unless series.include?(11) # Valentine
+        if page_name.include?('valentine') && !series.include?(11)
+          series << 11# Valentine
         end
-        if page_name.include?('halloween')
-          series << 12 unless series.include?(12) # Halloween
+        if page_name.include?('halloween') && !series.include?(12)
+          series << 12# Halloween
         end
-        if page_name.include?('(formal)') || page_name.include?('formal ')
-          series << 13 unless series.include?(13) # Formal
+        if (page_name.include?('(formal)') || page_name.include?('formal ')) && !series.include?(13)
+          series << 13# Formal
         end
-        if page_name.include?('holiday') || page_name.include?('(holiday)')
-          series << 14 unless series.include?(14) # Holiday
+        if (page_name.include?('holiday') || page_name.include?('(holiday)')) && !series.include?(14)
+          series << 14# Holiday
         end
 
         series.uniq.sort
@@ -325,7 +325,7 @@ module Granblue
 
       # Parses a date string into a Date object
       def parse_date(date_str)
-        Date.parse(date_str) unless date_str.blank?
+        Date.parse(date_str) if date_str.present?
       end
 
       # Unused methods for now

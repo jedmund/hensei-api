@@ -19,8 +19,8 @@ RSpec.describe Granblue::Transformers::TransformerError do
   end
 
   it 'can be raised and rescued' do
-    expect {
+    expect do
       raise described_class.new('fail', { row: 5 })
-    }.to raise_error(described_class, 'fail')
+    end.to raise_error(described_class, 'fail')
   end
 end

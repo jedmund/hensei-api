@@ -50,7 +50,7 @@ module WeaponSkills
         hash = page[:hash]
         expanded = page[:expanded] || {}
         match = nil
-        if page[:page_kind] == "series_template" && (row = expanded[name]) && row[:en]
+        if page[:page_kind] == 'series_template' && (row = expanded[name]) && row[:en]
           match = [:expanded, { en: row[:en] }]
         end
         match ||= tier_match(hash, version_position + 1, ordinal, name) if hash
@@ -114,16 +114,16 @@ module WeaponSkills
 
         @result.fallbacks << { weapon_granblue_id: granblue_id, position: version.weapon_skill.position,
                                ordinal: version.ordinal, skill: version.skill&.name_en,
-                               page_kind: page[:page_kind] || "none" }
+                               page_kind: page[:page_kind] || 'none' }
       end
 
       # The weapon's stored page: its page kind, parsed field hash (transclusions and the
       # series template followed, as the structure compiler does) and expanded skill table.
       def load_page(granblue_id)
         weapon = pick_weapon(granblue_id) or return {}
-        raw = fetch("wiki_raw", weapon.wiki_en) or return {}
+        raw = fetch('wiki_raw', weapon.wiki_en) or return {}
 
-        expanded = fetch("expanded", weapon.wiki_en)
+        expanded = fetch('expanded', weapon.wiki_en)
         { page_kind: raw.page_kind, hash: parse_hash(weapon, raw.body),
           expanded: expanded ? TierText.from_expanded(expanded.body) : {} }
       end
@@ -131,7 +131,7 @@ module WeaponSkills
       # A few granblue_ids belong to two weapon rows; prefer the one with a stored page.
       def pick_weapon(granblue_id)
         weapons = Weapon.where(granblue_id: granblue_id).order(:id).to_a
-        weapons.find { |w| w.wiki_en.present? && fetch("wiki_raw", w.wiki_en) } || weapons.first
+        weapons.find { |w| w.wiki_en.present? && fetch('wiki_raw', w.wiki_en) } || weapons.first
       end
 
       # The field hash the tier text reads: the page that holds the skill fields
@@ -142,13 +142,13 @@ module WeaponSkills
       def parse_hash(weapon, body)
         missing = []
         text = Structure.skill_source_text(weapon, body, @store, missing)
-        raise WeaponSkills::SourceStore::SourceMissing.new("wiki_raw", missing.first) if missing.any?
+        raise WeaponSkills::SourceStore::SourceMissing.new('wiki_raw', missing.first) if missing.any?
 
         hash = Structure::Wikitext.fields(text)
         if hash[:template]
           key = "Template:#{hash[:template]}"
           template = Structure.followed_page(@store, key) or
-            raise WeaponSkills::SourceStore::SourceMissing.new("transclusion", key)
+            raise WeaponSkills::SourceStore::SourceMissing.new('transclusion', key)
           hash.merge!(Structure::Wikitext.fields(template))
         end
         hash

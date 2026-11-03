@@ -83,7 +83,7 @@ RSpec.describe ExtensionAuthCode do
     end
   end
 
-  it "is deleted with its user" do
+  it 'is deleted with its user' do
     described_class.issue(user, code_challenge: challenge)
     expect { user.destroy! }.to change(described_class, :count).by(-1)
   end

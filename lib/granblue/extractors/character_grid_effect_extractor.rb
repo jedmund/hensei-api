@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require Rails.root.join("lib/granblue/parsers/weapon_skill_parser")
+require Rails.root.join('lib/granblue/parsers/weapon_skill_parser')
 
 module Granblue
   module Extractors
@@ -17,8 +17,8 @@ module Granblue
 
       # aura-word (downcased) => [frame, element]
       WORD_MAP = {}.tap do |m|
-        P::NORMAL_AURAS.each_with_index { |w, i| m[w.downcase] = ["normal", ELEMENTS[i / 3]] }
-        P::OMEGA_AURAS.each_with_index { |w, i| m[w.downcase] = ["omega", ELEMENTS[i]] }
+        P::NORMAL_AURAS.each_with_index { |w, i| m[w.downcase] = ['normal', ELEMENTS[i / 3]] }
+        P::OMEGA_AURAS.each_with_index { |w, i| m[w.downcase] = ['omega', ELEMENTS[i]] }
       end.freeze
 
       # description (String) -> Array<Hash> of SkillEffect attrs (effect_type/frame/element/amount).
@@ -35,8 +35,8 @@ module Granblue
         pairs = WORD_MAP.select { |w, _| words_part.match?(/\b#{Regexp.escape(w)}\b/) }.values.uniq
         pairs.select! { |_, effect_element| effect_element == element.to_s } if element.present?
         pairs.map do |frame, effect_element|
-          { effect_type: "weapon_skill_boost", frame: frame, element: effect_element,
-            amount: value, target: "element_allies" }
+          { effect_type: 'weapon_skill_boost', frame: frame, element: effect_element,
+            amount: value, target: 'element_allies' }
         end
       end
     end

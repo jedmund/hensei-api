@@ -18,7 +18,7 @@ module Granblue
         decoded = URI.decode_uri_component(text)
         text = decoded if decoded.valid_encoding?
       end
-      text.tr("_", " ").gsub(/\s+/, " ").strip
+      text.tr('_', ' ').gsub(/\s+/, ' ').strip
     end
   end
 end

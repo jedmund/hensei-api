@@ -4,9 +4,9 @@ require 'rails_helper'
 
 RSpec.describe PartyShare, type: :model do
   describe 'associations' do
-    it { should belong_to(:party) }
-    it { should belong_to(:shareable) }
-    it { should belong_to(:shared_by).class_name('User') }
+    it { is_expected.to belong_to(:party) }
+    it { is_expected.to belong_to(:shareable) }
+    it { is_expected.to belong_to(:shared_by).class_name('User') }
   end
 
   describe 'validations' do

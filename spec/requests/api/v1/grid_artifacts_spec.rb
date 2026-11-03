@@ -16,7 +16,7 @@ RSpec.describe 'Api::V1::GridArtifacts', type: :request do
 
   describe 'POST /api/v1/grid_artifacts' do
     it 'creates a grid artifact and returns correct fields' do
-      expect {
+      expect do
         post '/api/v1/grid_artifacts', params: {
           party_id: party.id,
           grid_artifact: {
@@ -26,7 +26,7 @@ RSpec.describe 'Api::V1::GridArtifacts', type: :request do
             level: 1
           }
         }.to_json, headers: headers
-      }.to change(GridArtifact, :count).by(1)
+      end.to change(GridArtifact, :count).by(1)
       expect(response).to have_http_status(:created)
 
       json = response.parsed_body['grid_artifact']
@@ -37,7 +37,7 @@ RSpec.describe 'Api::V1::GridArtifacts', type: :request do
     it 'replaces existing artifact on same grid character' do
       existing = create(:grid_artifact, grid_character: grid_character, artifact: artifact)
       new_artifact = create(:artifact)
-      expect {
+      expect do
         post '/api/v1/grid_artifacts', params: {
           party_id: party.id,
           grid_artifact: {
@@ -47,7 +47,7 @@ RSpec.describe 'Api::V1::GridArtifacts', type: :request do
             level: 1
           }
         }.to_json, headers: headers
-      }.not_to change(GridArtifact, :count)
+      end.not_to change(GridArtifact, :count)
       expect(response).to have_http_status(:created)
       expect { existing.reload }.to raise_error(ActiveRecord::RecordNotFound)
     end
@@ -73,7 +73,7 @@ RSpec.describe 'Api::V1::GridArtifacts', type: :request do
       stranger_character = create(:grid_character, party: stranger_party)
       stranger_artifact = create(:grid_artifact, grid_character: stranger_character, artifact: artifact)
 
-      expect {
+      expect do
         post '/api/v1/grid_artifacts', params: {
           party_id: party.id,
           grid_artifact: {
@@ -83,7 +83,7 @@ RSpec.describe 'Api::V1::GridArtifacts', type: :request do
             level: 1
           }
         }.to_json, headers: headers
-      }.not_to change(GridArtifact, :count)
+      end.not_to change(GridArtifact, :count)
 
       expect(response).to have_http_status(:not_found)
       expect { stranger_artifact.reload }.not_to raise_error
@@ -190,9 +190,9 @@ RSpec.describe 'Api::V1::GridArtifacts', type: :request do
   describe 'DELETE /api/v1/grid_artifacts/:id' do
     it 'deletes a grid artifact' do
       ga = create(:grid_artifact, grid_character: grid_character, artifact: artifact)
-      expect {
+      expect do
         delete "/api/v1/grid_artifacts/#{ga.id}", headers: headers
-      }.to change(GridArtifact, :count).by(-1)
+      end.to change(GridArtifact, :count).by(-1)
       expect(response).to have_http_status(:ok)
     end
 
@@ -200,10 +200,10 @@ RSpec.describe 'Api::V1::GridArtifacts', type: :request do
       ga = create(:grid_artifact, grid_character: grid_character, artifact: artifact)
       other_user = create(:user)
       other_token = Doorkeeper::AccessToken.create!(resource_owner_id: other_user.id, expires_in: 30.days, scopes: 'public')
-      expect {
+      expect do
         delete "/api/v1/grid_artifacts/#{ga.id}",
                headers: { 'Authorization' => "Bearer #{other_token.token}", 'Content-Type' => 'application/json' }
-      }.not_to change(GridArtifact, :count)
+      end.not_to change(GridArtifact, :count)
       expect(response).to have_http_status(:unauthorized)
     end
 
@@ -219,7 +219,7 @@ RSpec.describe 'Api::V1::GridArtifacts', type: :request do
     let(:anon_headers) { { 'Content-Type' => 'application/json', 'X-Edit-Key' => 'anonsecret' } }
 
     it 'allows anonymous creation with correct edit_key' do
-      expect {
+      expect do
         post '/api/v1/grid_artifacts', params: {
           party_id: anon_party.id,
           grid_artifact: {
@@ -229,13 +229,13 @@ RSpec.describe 'Api::V1::GridArtifacts', type: :request do
             level: 1
           }
         }.to_json, headers: anon_headers
-      }.to change(GridArtifact, :count).by(1)
+      end.to change(GridArtifact, :count).by(1)
       expect(response).to have_http_status(:created)
     end
 
     it 'rejects anonymous creation with wrong edit_key' do
       wrong_headers = { 'Content-Type' => 'application/json', 'X-Edit-Key' => 'wrong' }
-      expect {
+      expect do
         post '/api/v1/grid_artifacts', params: {
           party_id: anon_party.id,
           grid_artifact: {
@@ -245,7 +245,7 @@ RSpec.describe 'Api::V1::GridArtifacts', type: :request do
             level: 1
           }
         }.to_json, headers: wrong_headers
-      }.not_to change(GridArtifact, :count)
+      end.not_to change(GridArtifact, :count)
       expect(response).to have_http_status(:unauthorized)
     end
 

@@ -94,13 +94,13 @@ RSpec.describe Granblue::Parsers::Wiki do
     context 'when response is 200 with valid data' do
       it 'returns wikitext content' do
         response = double('Response',
-          code: 200,
-          key?: false,
-          :[] => nil)
+                          code: 200,
+                          key?: false,
+                          :[] => nil)
         allow(response).to receive(:key?).with('error').and_return(false)
         allow(response).to receive(:[]).with('parse').and_return({
-          'wikitext' => { '*' => '|name = Katalina' }
-        })
+                                                                   'wikitext' => { '*' => '|name = Katalina' }
+                                                                 })
 
         allow(HTTParty).to receive(:get).and_return(response)
         expect(wiki.fetch('Katalina')).to eq('|name = Katalina')
@@ -112,9 +112,9 @@ RSpec.describe Granblue::Parsers::Wiki do
         response = double('Response', code: 200)
         allow(response).to receive(:key?).with('error').and_return(true)
         allow(response).to receive(:[]).with('error').and_return({
-          'code' => 'missingtitle',
-          'info' => 'Page not found'
-        })
+                                                                   'code' => 'missingtitle',
+                                                                   'info' => 'Page not found'
+                                                                 })
 
         allow(HTTParty).to receive(:get).and_return(response)
         expect { wiki.fetch('Missing') }.to raise_error(Granblue::WikiError, /missingtitle|Page not found/)

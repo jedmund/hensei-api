@@ -13,7 +13,7 @@ module PartyQueryingConcern
       :difficulty,
       :solomonis_expedition,
       { user: { active_crew_membership: :crew } },
-      { characters: [:character, :awakening] },
+      { characters: %i[character awakening] },
       { weapons: [{ weapon: :weapon_series }, :awakening] },
       { summons: { summon: :summon_series } }
     )
@@ -34,7 +34,7 @@ module PartyQueryingConcern
       :guidebook2,
       :guidebook3,
       { characters: [{ character: :character_series_records }, :grid_artifact, :awakening] },
-      { weapons: [{ weapon: [:weapon_series, :weapon_series_variant], collection_weapon: {} }, :awakening] },
+      { weapons: [{ weapon: %i[weapon_series weapon_series_variant], collection_weapon: {} }, :awakening] },
       { summons: [{ summon: :summon_series }, :collection_summon] }
     )
   end

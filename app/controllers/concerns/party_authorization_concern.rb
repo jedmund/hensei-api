@@ -16,7 +16,7 @@ module PartyAuthorizationConcern
     end
   end
 
-  alias_method :authorize_party_edit!, :authorize_party!
+  alias authorize_party_edit! authorize_party!
 
   # Returns true if the party does not belong to the current user.
   def not_owner?

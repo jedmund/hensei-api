@@ -48,7 +48,7 @@ namespace :granblue do
       puts "  [#{index + 1}/#{stems.size}] processed" if ((index + 1) % 100).zero?
     end
 
-    puts "Done."
+    puts 'Done.'
     puts "  EN: downloaded=#{downloaded['en']} skipped=#{skipped['en']} failed=#{failed['en']}"
     puts "  JA: downloaded=#{downloaded['ja']} skipped=#{skipped['ja']} failed=#{failed['ja']}"
     puts "Failures (#{failures.size}): #{failures.first(40).join(', ')}#{'…' if failures.size > 40}" if failures.any?

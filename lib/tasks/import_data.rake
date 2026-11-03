@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 namespace :granblue do
-  desc "Import weapon, summon and character data from db/seed/updates. Use TEST=true for test mode."
+  desc 'Import weapon, summon and character data from db/seed/updates. Use TEST=true for test mode.'
   task import_data: :environment do
     require 'csv'
-    Dir[Rails.root.join('lib', 'granblue', '**', '*.rb')].each { |file| require file }
+    Dir[Rails.root.join("lib/granblue/**/*.rb")].each { |file| require file }
 
     test_mode = ENV['TEST'] == 'true'
     verbose = ENV['VERBOSE'] == 'true'

@@ -67,7 +67,7 @@ module GridDamage
     # named Betrayal skills do. Include the boost type because composite families
     # can independently contribute several panel lines.
     def stacking_group(effect, version)
-      return unless effect.stacking == "highest_only"
+      return unless effect.stacking == 'highest_only'
 
       "effect|#{effect.boost_type}|#{version.skill&.name_en || effect.modifier}"
     end
@@ -76,9 +76,9 @@ module GridDamage
     # so they use the generic elem_reduc line. Rose Crystal skills name a different
     # protected element explicitly; preserve it as a distinct panel/cap bucket.
     def contribution_boost_type(effect)
-      return effect.boost_type unless effect.boost_type == "elem_reduc"
+      return effect.boost_type unless effect.boost_type == 'elem_reduc'
 
-      element = effect.condition.to_h["reduced_element"].to_s.downcase
+      element = effect.condition.to_h['reduced_element'].to_s.downcase
       REDUCTION_ELEMENTS.include?(element) ? "#{element}_reduc" : effect.boost_type
     end
 
@@ -87,40 +87,40 @@ module GridDamage
     # (no version) level with the weapon, so the default is true.
     def value_for(effect, weapon:, state:, composition:, grid_weapon: nil, levels: true)
       case effect.scaling_kind
-      when "static", "flat", "ally_hp_scaled", "current_hp_scaled"
+      when 'static', 'flat', 'ally_hp_scaled', 'current_hp_scaled'
         # ally_hp_scaled/current_hp_scaled are legacy placeholders; avoid new rows.
         effect.value&.to_f
-      when "conditional_flat", "bonus_dmg"
+      when 'conditional_flat', 'bonus_dmg'
         met = Conditions.met?(effect.condition, state: state, composition: composition,
-                              weapon: weapon, grid_weapon: grid_weapon)
+                                                weapon: weapon, grid_weapon: grid_weapon)
         met ? effect.value&.to_f : nil
-      when "per_grid_count"
+      when 'per_grid_count'
         per_grid_count(effect, weapon: weapon, composition: composition)
       # Persistence supplements scale with current HP: value x (1 + 2*hp/100)/3
       # (QJ9736: 30000 -> 25000/20000/15000/10200, exact at all five anchors)
-      when "persistence_supp"
+      when 'persistence_supp'
         effect.value.to_f * (1 + (2 * state.fetch(:hp_percent, 100).to_f / 100)) / 3.0
       # "Up to N%" boosts linear in current HP (Rightway Pathfinder: 120 x hp/100 ->
       # 120/90/60/30 at 100/75/50/25, still 12 and 6 at 10 and 5% in XfBq6u: no cutoff).
       # The kind keeps its old name; the 1% slider point reads 0 (Scaling.panel_hp).
-      when "hp_linear_cutoff"
+      when 'hp_linear_cutoff'
         effect.value.to_f * Scaling.panel_hp(state.fetch(:hp_percent, 100)) / 100.0
-      when "hp_current_linear"
+      when 'hp_current_linear'
         hp_linear_value(effect, state: state, missing: false)
-      when "hp_missing_linear"
+      when 'hp_missing_linear'
         hp_linear_value(effect, state: state, missing: true)
-      when "weapon_skill_curve"
+      when 'weapon_skill_curve'
         weapon_skill_curve(effect, weapon: weapon, grid_weapon: grid_weapon, state: state,
-                           composition: composition, levels: levels)
-      when "supplemental_cap"
+                                   composition: composition, levels: levels)
+      when 'supplemental_cap'
         supplemental_cap(effect, state: state)
-      when "ally_max_hp_scaled"
+      when 'ally_max_hp_scaled'
         ally_max_hp_scaled(effect, state: state)
-      when "specialty_scaled"
+      when 'specialty_scaled'
         specialty_value(effect, composition: composition, state: state)
-      when "per_buff_count"
+      when 'per_buff_count'
         per_buff_count(effect, state: state)
-      when "documentation"
+      when 'documentation'
         nil
       end
     end
@@ -163,7 +163,7 @@ module GridDamage
       end
 
       fields = InlineCurve.members.index_with { |field| config[field] }
-      fields[:formula_type] ||= "flat"
+      fields[:formula_type] ||= 'flat'
       InlineCurve.new(**fields)
     end
     private_class_method :curve_datum
@@ -196,11 +196,11 @@ module GridDamage
     end
 
     def cap_formula_value(formula, state:)
-      match = formula.to_s.delete(" ").match(CAP_FORMULA_PATTERN)
+      match = formula.to_s.delete(' ').match(CAP_FORMULA_PATTERN)
       return nil unless match
 
       current_ratio = (Scaling.panel_hp(state.fetch(:hp_percent, 100), at_min: 0.0) / 100.0).clamp(0.0, 1.0)
-      ratio = match[:ratio].include?("maxhp-curhp") ? 1.0 - current_ratio : current_ratio
+      ratio = match[:ratio].include?('maxhp-curhp') ? 1.0 - current_ratio : current_ratio
       match[:base].to_f + (match[:slope].to_f * ratio)
     end
 
@@ -211,13 +211,13 @@ module GridDamage
     # only in Arcarum: The World Beyond / Replicard Sandbox). A "turn_lte" limits the row to
     # the opening turns (Hollowsky Staff's turns 1–10 EX ATK).
     def specialty_value(effect, composition:, state: {})
-      return nil if effect.condition["arcarum"] && !state[:arcarum]
-      return nil if effect.condition["turn_lte"] && state.fetch(:turn, 1).to_i > effect.condition["turn_lte"].to_i
+      return nil if effect.condition['arcarum'] && !state[:arcarum]
+      return nil if effect.condition['turn_lte'] && state.fetch(:turn, 1).to_i > effect.condition['turn_lte'].to_i
 
-      table = effect.condition["specialties"] || effect.condition[:specialties] or return nil
+      table = effect.condition['specialties'] || effect.condition[:specialties] or return nil
       specs = Array(composition && (composition[:mc_specialties] || composition[:mc_specialty]))
       matched = specs.filter_map { |s| table[s] }.max
-      (matched || table["other"])&.to_f
+      (matched || table['other'])&.to_f
     end
 
     def per_grid_count(effect, weapon:, composition:)

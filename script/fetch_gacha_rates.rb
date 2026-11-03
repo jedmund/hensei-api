@@ -66,7 +66,7 @@ class GachaRatesFetcher
   def import_cookies(header)
     pairs = header.to_s.sub(/\A\s*cookie:\s*/i, '').split(';').filter_map do |pair|
       name, value = pair.strip.split('=', 2)
-      [name, value] if name && !name.empty? && value
+      [name, value] if name.present? && value
     end
     abort 'No cookies found in the input' if pairs.empty?
 

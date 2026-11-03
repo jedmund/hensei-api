@@ -35,7 +35,7 @@ RSpec.describe Granblue::Parsers::WikiDataParser do
     end
 
     it 'handles values with equals signs' do
-      text = "|link = http://example.com?a=1&b=2"
+      text = '|link = http://example.com?a=1&b=2'
       result = described_class.parse_wiki_text(text)
       expect(result['link']).to eq('http://example.com?a=1&b=2')
     end

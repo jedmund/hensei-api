@@ -48,12 +48,12 @@ class WeaponSkillEffect < ApplicationRecord
     return if count_basis.blank?
     return if GridDamage::GridComposition.valid_count_basis?(count_basis)
 
-    errors.add(:count_basis, "must be a canonical GridComposition count basis")
+    errors.add(:count_basis, 'must be a canonical GridComposition count basis')
   end
 
   def count_condition_is_canonical
     return if GridDamage::GridComposition.valid_count_condition?(condition)
 
-    errors.add(:condition, "must use a canonical positive count-basis threshold")
+    errors.add(:condition, 'must use a canonical positive count-basis threshold')
   end
 end

@@ -95,7 +95,7 @@ RSpec.describe 'Api::V1::Stickers', type: :request do
 
     it 'refuses to change the slug' do
       put "/api/v1/stickers/#{sticker.id}", params: { sticker: { slug: 'renamed', meaning_en: 'New' } },
-                                             headers: editor_headers
+                                            headers: editor_headers
       expect(response).to have_http_status(:unprocessable_entity)
       expect(sticker.reload).to have_attributes(slug: sticker.slug)
       expect(sticker.meaning_en).not_to eq('New')
@@ -103,7 +103,7 @@ RSpec.describe 'Api::V1::Stickers', type: :request do
 
     it 'accepts the unchanged slug, as the editor sends it' do
       put "/api/v1/stickers/#{sticker.id}", params: { sticker: { slug: sticker.slug, meaning_en: 'New' } },
-                                             headers: editor_headers
+                                            headers: editor_headers
       expect(response).to have_http_status(:ok)
       expect(sticker.reload.meaning_en).to eq('New')
     end

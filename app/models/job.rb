@@ -33,7 +33,6 @@ class Job < ApplicationRecord
                   }
 
   belongs_to :base_job,
-             foreign_key: 'base_job_id',
              class_name: 'Job',
              optional: true
 
@@ -43,8 +42,8 @@ class Job < ApplicationRecord
 
   # Rows as stored: Class I-V, Extra I and II, and Origin.
   ROWS = {
-    "Class I": '1', "Class II": '2', "Class III": '3', "Class IV": '4', "Class V": '5',
-    Extra: 'ex1', "Extra II": 'ex2', Origin: 'o1'
+    'Class I': '1', 'Class II': '2', 'Class III': '3', 'Class IV': '4', 'Class V': '5',
+    Extra: 'ex1', 'Extra II': 'ex2', Origin: 'o1'
   }.freeze
   ACCESSORY_TYPES = { None: 0, Shield: 1, Manatura: 2 }.freeze
   UUID_FORMAT = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/i

@@ -53,7 +53,7 @@ class WeaponSkillVersion < ApplicationRecord
   # (Rhomphaia's tail-word collisions were curated by nulling the modifier, which
   # reparse re-derived — the sentinel survives).
   def resolved_modifier
-    return nil if modifier_override == "none"
+    return nil if modifier_override == 'none'
 
     modifier_override.presence || skill_modifier
   end
@@ -147,7 +147,7 @@ class WeaponSkillVersion < ApplicationRecord
     kept_family = family.reject { |row| curated_types.include?(row.boost_type) || suppressed.include?(row.boost_type) }
     kept_generated = generated.reject do |row|
       boost = row.boost_type
-      curated_types.include?(boost) || suppressed.include?(boost) || suppressed.include?("*") ||
+      curated_types.include?(boost) || suppressed.include?(boost) || suppressed.include?('*') ||
         family_types.include?(boost)
     end
     kept_family + curated + kept_generated

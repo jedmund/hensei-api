@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class WeaponSkillDatum < ApplicationRecord
-  self.table_name = "weapon_skill_data"
+  self.table_name = 'weapon_skill_data'
   include CurationExportTracking
 
   SERIES_VALUES = %w[normal omega ex odious normal_omega sephira unique taboo].freeze
@@ -25,7 +25,7 @@ class WeaponSkillDatum < ApplicationRecord
   # The representative SL-curve for a tier — the strongest (max sl15) canonical row for the
   # (boost_type, size) tier. SL VALUES are series-independent (the frame only decides which aura
   # boosts the skill), so this is matched across series so EX/Omega skills reuse the same curve.
-  def self.canonical_curve(boost_type:, size:, formula_type: "flat")
+  def self.canonical_curve(boost_type:, size:, formula_type: 'flat')
     # Ties (Celere, Verity and Precocity are all Critical Big 10% at SL15) go to the most
     # complete curve, then the modifier name, so the pick never depends on row order.
     canonical.where(boost_type: boost_type, size: size, formula_type: formula_type)
@@ -35,8 +35,8 @@ class WeaponSkillDatum < ApplicationRecord
   # Series a version's series also matches in the data: normal and omega share combined
   # "normal_omega" rows; "odious" and "taboo" are the same frame under two names.
   SERIES_FALLBACK = {
-    "normal" => %w[normal normal_omega], "omega" => %w[omega normal_omega],
-    "odious" => %w[odious taboo], "taboo" => %w[taboo odious]
+    'normal' => %w[normal normal_omega], 'omega' => %w[omega normal_omega],
+    'odious' => %w[odious taboo], 'taboo' => %w[taboo odious]
   }.freeze
 
   # Resolve a weapon-skill version's (modifier, series, size) to its canonical scaling
@@ -79,7 +79,7 @@ class WeaponSkillDatum < ApplicationRecord
     return matched if matched.any?
 
     lone = group.map(&:series).uniq
-    lone.size == 1 && lone.first != "normal_omega" ? group : []
+    lone.size == 1 && lone.first != 'normal_omega' ? group : []
   end
   private_class_method :series_matched
 end

@@ -87,6 +87,7 @@ RSpec.describe 'Artifact Skills API', type: :request do
       expect(response).to have_http_status(:unprocessable_entity)
     end
   end
+
   describe 'PATCH /api/v1/artifact_skills/:id' do
     let(:skill) { ArtifactSkill.find_by!(skill_group: :group_i, modifier: 1) }
     let(:path) { "/api/v1/artifact_skills/#{skill.id}" }

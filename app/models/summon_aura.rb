@@ -21,6 +21,6 @@ class SummonAura < ApplicationRecord
   validates :slot, inclusion: { in: SLOTS }
   validates :target, inclusion: { in: TARGETS }
 
-  scope :main, -> { where(slot: "main") }
-  scope :sub, -> { where(slot: "sub") }
+  scope :main, -> { where(slot: 'main') }
+  scope :sub, -> { where(slot: 'sub') }
 end

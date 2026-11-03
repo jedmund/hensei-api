@@ -208,9 +208,7 @@ module SolomonisParty
       evoker = expedition.route_evoker
       if evoker&.solomonis_route_eligible?
         errors.add(:raid, "must be the route Evoker's zone") if raid_id != evoker.solomonis_zone_id
-        if !evoker.element.nil? && element != evoker.element
-          errors.add(:element, "must match the route Evoker's element")
-        end
+        errors.add(:element, "must match the route Evoker's element") if !evoker.element.nil? && element != evoker.element
       end
       validate_solomonis_character_count if expedition.new_record?
     elsif solomonis_zone?

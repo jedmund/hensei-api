@@ -110,9 +110,9 @@ RSpec.describe 'Weapons API', type: :request do
     end
 
     it 'creates a weapon with max_exorcism_level when editor' do
-      expect {
+      expect do
         post '/api/v1/weapons', params: valid_params.to_json, headers: editor_headers
-      }.to change(Weapon, :count).by(1)
+      end.to change(Weapon, :count).by(1)
 
       expect(response).to have_http_status(:created)
       json = response.parsed_body
@@ -135,9 +135,9 @@ RSpec.describe 'Weapons API', type: :request do
     end
 
     it 'rejects creation from non-editor' do
-      expect {
+      expect do
         post '/api/v1/weapons', params: valid_params.to_json, headers: regular_headers
-      }.not_to change(Weapon, :count)
+      end.not_to change(Weapon, :count)
 
       expect(response).to have_http_status(:unauthorized)
     end

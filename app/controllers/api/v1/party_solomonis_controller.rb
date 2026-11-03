@@ -58,9 +58,7 @@ module Api
       def guide_effects
         entries = list_param(:guide_effects)
         return if performed?
-        if entries.size > MAX_GUIDE_EFFECTS
-          return render_list_error(:guide_effects, "can hold at most #{MAX_GUIDE_EFFECTS} effects")
-        end
+        return render_list_error(:guide_effects, "can hold at most #{MAX_GUIDE_EFFECTS} effects") if entries.size > MAX_GUIDE_EFFECTS
 
         return render_list_error(:guide_effects, 'must be objects') unless entries.all?(ActionController::Parameters)
         if entries.any? { |entry| GUIDE_EFFECT_FIELDS.any? { |key| nested?(entry[key]) } }
@@ -70,9 +68,7 @@ module Api
         entries = entries.map { |entry| guide_effect_entry(entry) }
 
         effects_by_id = SolomonisGuideEffect.where(id: entries.pluck(:guide_effect_id)).index_by(&:id)
-        if entries.any? { |entry| effects_by_id[entry[:guide_effect_id]].nil? }
-          return render_list_error(:guide_effects, 'include an unknown effect')
-        end
+        return render_list_error(:guide_effects, 'include an unknown effect') if entries.any? { |entry| effects_by_id[entry[:guide_effect_id]].nil? }
 
         @party.replace_solomonis_guide_effects!(entries.map do |entry|
           entry.except(:guide_effect_id).merge(solomonis_guide_effect: effects_by_id[entry[:guide_effect_id]])
@@ -145,7 +141,7 @@ module Api
       def render_party
         @party.mark_updated!
         render json: PartyBlueprint.render(load_full_party(@party.id), view: :full, root: :party,
-                                                                        current_user: current_user)
+                                                                       current_user: current_user)
       end
     end
   end

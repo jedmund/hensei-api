@@ -83,11 +83,11 @@ RSpec.describe 'Support Summons API', type: :request do
     it 'creates a support summon for the current user' do
       cs = create(:collection_summon, user: user)
 
-      expect {
+      expect do
         post '/api/v1/support_summons',
              params: { support_summon: { collection_summon_id: cs.id, section: 'water', position: 1 } }.to_json,
              headers: headers
-      }.to change(SupportSummon, :count).by(1)
+      end.to change(SupportSummon, :count).by(1)
 
       expect(response).to have_http_status(:created)
       json = response.parsed_body
@@ -147,9 +147,9 @@ RSpec.describe 'Support Summons API', type: :request do
     let!(:row) { create(:support_summon, user: user) }
 
     it 'deletes the slot' do
-      expect {
+      expect do
         delete "/api/v1/support_summons/#{row.id}", headers: headers
-      }.to change(SupportSummon, :count).by(-1)
+      end.to change(SupportSummon, :count).by(-1)
       expect(response).to have_http_status(:no_content)
     end
   end

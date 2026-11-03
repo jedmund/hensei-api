@@ -20,10 +20,10 @@ RSpec.describe 'Api::V1::Crews', type: :request do
 
     context 'when user has no crew' do
       it 'creates a crew and makes user captain' do
-        expect {
+        expect do
           post '/api/v1/crews', params: valid_params, headers: auth_headers
-        }.to change(Crew, :count).by(1)
-          .and change(CrewMembership, :count).by(1)
+        end.to change(Crew, :count).by(1)
+                                   .and change(CrewMembership, :count).by(1)
 
         expect(response).to have_http_status(:created)
         json = response.parsed_body
@@ -35,9 +35,9 @@ RSpec.describe 'Api::V1::Crews', type: :request do
       end
 
       it 'returns validation error for missing name' do
-        expect {
+        expect do
           post '/api/v1/crews', params: { crew: { name: '' } }, headers: auth_headers
-        }.not_to change(Crew, :count)
+        end.not_to change(Crew, :count)
         expect(response).to have_http_status(:unprocessable_entity)
       end
     end
@@ -124,6 +124,7 @@ RSpec.describe 'Api::V1::Crews', type: :request do
     let!(:captain_membership) { create(:crew_membership, crew: crew, user: user, role: :captain) }
     let!(:member1) { create(:crew_membership, crew: crew, role: :member) }
     let!(:member2) { create(:crew_membership, crew: crew, role: :vice_captain) }
+
     context 'with default filter (active)' do
       it 'returns all active crew members' do
         get '/api/v1/crew/members', headers: auth_headers

@@ -204,7 +204,7 @@ RSpec.describe 'Social signup and the password banner', :social_auth, type: :req
       expect(user.reload.language).to eq('ja')
     end
 
-    it "does not let a passwordless account log in with an empty password" do
+    it 'does not let a passwordless account log in with an empty password' do
       post '/oauth/token', params: { grant_type: 'password', email: user.email, password: '' }
       expect(response).to have_http_status(:bad_request).or have_http_status(:unauthorized)
       expect(response.parsed_body).not_to have_key('access_token')

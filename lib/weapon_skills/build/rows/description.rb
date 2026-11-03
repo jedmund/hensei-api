@@ -10,7 +10,7 @@ module WeaponSkills
       # The wiki_raw field is the first tier ("", 4s, 5s, u1, u2, u3) whose sN_name equals the
       # version's skill name, so two tiers that share a name both read the lower tier's text.
       module Description
-        TIERS = ["", "4s", "5s", "u1", "u2", "u3"].freeze
+        TIERS = ['', '4s', '5s', 'u1', 'u2', 'u3'].freeze
 
         module_function
 

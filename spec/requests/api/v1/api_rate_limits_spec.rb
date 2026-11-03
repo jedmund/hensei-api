@@ -13,8 +13,8 @@ RSpec.describe 'General API rate limits', type: :request do
   context 'with small limits' do
     before do
       stub_const('ApiRateLimits::RULES', [
-        { name: 'search/minute', limit: 2, period: 1.minute, path: ApiRateLimits::SEARCH_PATH }
-      ])
+                   { name: 'search/minute', limit: 2, period: 1.minute, path: ApiRateLimits::SEARCH_PATH }
+                 ])
     end
 
     after { ApiRateLimits.define!(enforce: false) }

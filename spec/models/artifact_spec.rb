@@ -7,12 +7,14 @@ RSpec.describe Artifact, type: :model do
     subject { build(:artifact) }
 
     it { is_expected.to validate_presence_of(:granblue_id) }
+
     it 'validates uniqueness of granblue_id' do
       create(:artifact)
       duplicate = build(:artifact, granblue_id: Artifact.first.granblue_id)
       expect(duplicate).not_to be_valid
       expect(duplicate.errors[:granblue_id]).to include('has already been taken')
     end
+
     it { is_expected.to validate_presence_of(:name_en) }
     it { is_expected.to validate_presence_of(:rarity) }
 

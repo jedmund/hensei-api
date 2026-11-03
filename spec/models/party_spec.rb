@@ -30,7 +30,8 @@ RSpec.describe Party, type: :model do
     end
 
     context 'for master_level' do
-      it { should validate_numericality_of(:master_level).only_integer.allow_nil }
+      it { is_expected.to validate_numericality_of(:master_level).only_integer.allow_nil }
+
       it 'is invalid when master_level is non-integer' do
         party = build(:party, master_level: 'high')
         expect(party).not_to be_valid
@@ -39,7 +40,8 @@ RSpec.describe Party, type: :model do
     end
 
     context 'for clear_time' do
-      it { should validate_numericality_of(:clear_time).only_integer }
+      it { is_expected.to validate_numericality_of(:clear_time).only_integer }
+
       it 'is invalid when clear_time is non-integer' do
         party = build(:party, clear_time: 'fast')
         expect(party).not_to be_valid
@@ -48,7 +50,8 @@ RSpec.describe Party, type: :model do
     end
 
     context 'for button_count' do
-      it { should validate_numericality_of(:button_count).only_integer.allow_nil }
+      it { is_expected.to validate_numericality_of(:button_count).only_integer.allow_nil }
+
       it 'is invalid when button_count is non-integer' do
         party = build(:party, button_count: 'ten')
         expect(party).not_to be_valid
@@ -57,7 +60,8 @@ RSpec.describe Party, type: :model do
     end
 
     context 'for chain_count' do
-      it { should validate_numericality_of(:chain_count).only_integer.allow_nil }
+      it { is_expected.to validate_numericality_of(:chain_count).only_integer.allow_nil }
+
       it 'is invalid when chain_count is non-integer' do
         party = build(:party, chain_count: 'two')
         expect(party).not_to be_valid
@@ -66,7 +70,8 @@ RSpec.describe Party, type: :model do
     end
 
     context 'for turn_count' do
-      it { should validate_numericality_of(:turn_count).only_integer.allow_nil }
+      it { is_expected.to validate_numericality_of(:turn_count).only_integer.allow_nil }
+
       it 'is invalid when turn_count is non-integer' do
         party = build(:party, turn_count: 'five')
         expect(party).not_to be_valid
@@ -75,7 +80,8 @@ RSpec.describe Party, type: :model do
     end
 
     context 'for ultimate_mastery_level' do
-      it { should validate_numericality_of(:ultimate_mastery_level).only_integer.allow_nil }
+      it { is_expected.to validate_numericality_of(:ultimate_mastery_level).only_integer.allow_nil }
+
       it 'is invalid when ultimate_mastery_level is non-integer' do
         party = build(:party, ultimate_mastery_level: 'max')
         expect(party).not_to be_valid
@@ -90,18 +96,21 @@ RSpec.describe Party, type: :model do
     end
 
     context 'for visibility' do
-      it { should validate_numericality_of(:visibility).only_integer }
+      it { is_expected.to validate_numericality_of(:visibility).only_integer }
+
       it 'is valid when visibility is one of 1, 2, or 3' do
         [1, 2, 3].each do |value|
           party = build(:party, visibility: value)
           expect(party).to be_valid, "expected visibility #{value} to be valid"
         end
       end
+
       it 'is invalid when visibility is not in [1, 2, 3]' do
         party = build(:party, visibility: 0)
         expect(party).not_to be_valid
         expect(party.errors[:visibility]).to include(/must be 1 \(Public\), 2 \(Unlisted\), or 3 \(Private\)/)
       end
+
       it 'is invalid when visibility is non-integer' do
         party = build(:party, visibility: 'public')
         expect(party).not_to be_valid
@@ -132,7 +141,7 @@ RSpec.describe Party, type: :model do
       parent = create(:party)
       remix1 = create(:party, source_party: parent)
       remix2 = create(:party, source_party: parent)
-      expect(parent.remixes.map(&:id)).to match_array([remix1.id, remix2.id])
+      expect(parent.remixes.map(&:id)).to contain_exactly(remix1.id, remix2.id)
     end
   end
 
@@ -183,10 +192,18 @@ RSpec.describe Party, type: :model do
 
   describe '#mod_and_side' do
     # Create summon series for testing
-    let(:magna_series) { SummonSeries.find_or_create_by!(slug: 'magna') { |s| s.name_en = 'Magna'; s.name_jp = 'マグナ'; s.order = 2 } }
-    let(:optimus_series) { SummonSeries.find_or_create_by!(slug: 'optimus') { |s| s.name_en = 'Optimus'; s.name_jp = 'オプティマス'; s.order = 3 } }
-    let(:demi_optimus_series) { SummonSeries.find_or_create_by!(slug: 'demi-optimus') { |s| s.name_en = 'Demi Optimus'; s.name_jp = 'デミ・オプティマス'; s.order = 4 } }
-    let(:bellum_series) { SummonSeries.find_or_create_by!(slug: 'bellum') { |s| s.name_en = 'Bellum'; s.name_jp = 'ベルム'; s.order = 18 } }
+    let(:magna_series) do SummonSeries.find_or_create_by!(slug: 'magna') do |s| s.name_en = 'Magna'
+ s.name_jp = 'マグナ'
+ s.order = 2 end end
+    let(:optimus_series) do SummonSeries.find_or_create_by!(slug: 'optimus') do |s| s.name_en = 'Optimus'
+ s.name_jp = 'オプティマス'
+ s.order = 3 end end
+    let(:demi_optimus_series) do SummonSeries.find_or_create_by!(slug: 'demi-optimus') do |s| s.name_en = 'Demi Optimus'
+ s.name_jp = 'デミ・オプティマス'
+ s.order = 4 end end
+    let(:bellum_series) do SummonSeries.find_or_create_by!(slug: 'bellum') do |s| s.name_en = 'Bellum'
+ s.name_jp = 'ベルム'
+ s.order = 18 end end
 
     # Use real seeded summons, associate with summon_series for testing
     let(:agni) { Summon.find_by!(granblue_id: '2040094000').tap { |s| s.update_column(:summon_series_id, optimus_series.id) } }
@@ -197,7 +214,11 @@ RSpec.describe Party, type: :model do
     let(:qilin) { Summon.find_by!(granblue_id: '2040158000') }        # no series
 
     def add_summon(party, summon, main:, friend:)
-      position = main ? -1 : (friend ? 4 : 1)
+      position = if main
+-1
+else
+(friend ? 4 : 1)
+end
       GridSummon.create!(
         party: party,
         summon: summon,
@@ -362,14 +383,22 @@ RSpec.describe Party, type: :model do
   end
 
   describe '#recompute_boost!' do
-    let(:magna_series) { SummonSeries.find_or_create_by!(slug: 'magna') { |s| s.name_en = 'Magna'; s.name_jp = 'マグナ'; s.order = 2 } }
-    let(:optimus_series) { SummonSeries.find_or_create_by!(slug: 'optimus') { |s| s.name_en = 'Optimus'; s.name_jp = 'オプティマス'; s.order = 3 } }
+    let(:magna_series) do SummonSeries.find_or_create_by!(slug: 'magna') do |s| s.name_en = 'Magna'
+ s.name_jp = 'マグナ'
+ s.order = 2 end end
+    let(:optimus_series) do SummonSeries.find_or_create_by!(slug: 'optimus') do |s| s.name_en = 'Optimus'
+ s.name_jp = 'オプティマス'
+ s.order = 3 end end
     let(:agni) { Summon.find_by!(granblue_id: '2040094000').tap { |s| s.update_column(:summon_series_id, optimus_series.id) } }
     let(:colossus) { Summon.find_by!(granblue_id: '2040034000').tap { |s| s.update_column(:summon_series_id, magna_series.id) } }
     let(:bahamut) { Summon.find_by!(granblue_id: '2040003000') }
 
     def add_summon(party, summon, main:, friend:)
-      position = main ? -1 : (friend ? 4 : 1)
+      position = if main
+-1
+else
+(friend ? 4 : 1)
+end
       GridSummon.create!(party: party, summon: summon, position: position, main: main, friend: friend, uncap_level: 3, transcendence_step: 0)
     end
 
@@ -394,13 +423,19 @@ RSpec.describe Party, type: :model do
   end
 
   describe '#recompute_side!' do
-    let(:magna_series) { SummonSeries.find_or_create_by!(slug: 'magna') { |s| s.name_en = 'Magna'; s.name_jp = 'マグナ'; s.order = 2 } }
+    let(:magna_series) do SummonSeries.find_or_create_by!(slug: 'magna') do |s| s.name_en = 'Magna'
+ s.name_jp = 'マグナ'
+ s.order = 2 end end
     let(:colossus) { Summon.find_by!(granblue_id: '2040034000').tap { |s| s.update_column(:summon_series_id, magna_series.id) } }
     let(:bahamut) { Summon.find_by!(granblue_id: '2040003000') }
     let(:beelzebub) { Summon.find_by!(granblue_id: '2040408000') }
 
     def add_summon(party, summon, main:, friend:)
-      position = main ? -1 : (friend ? 4 : 1)
+      position = if main
+-1
+else
+(friend ? 4 : 1)
+end
       GridSummon.create!(party: party, summon: summon, position: position, main: main, friend: friend, uncap_level: 3, transcendence_step: 0)
     end
 
@@ -694,9 +729,7 @@ RSpec.describe Party, type: :model do
   end
 
   # Debug block: print debug info if an example fails.
-  after(:each) do |example|
-    if example.exception
-      puts "\nDEBUG [Party Model Validations]: Failed example: #{example.full_description}"
-    end
+  after do |example|
+    puts "\nDEBUG [Party Model Validations]: Failed example: #{example.full_description}" if example.exception
   end
 end

@@ -83,15 +83,15 @@ RSpec.describe 'Character skill refreshes', type: :request do
       expect(body).to include('id' => id, 'status' => 'queued', 'refetch_jp' => false, 'created_at' => be_present)
       expect(body).not_to have_key('user_id')
       expect(body['items']).to eq([
-        { 'character_id' => second.id, 'granblue_id' => '3040900002', 'style_swap' => false,
-          'name' => { 'en' => 'Second', 'ja' => second.name_jp }, 'style_name' => nil,
-          'status' => 'queued', 'error' => nil, 'error_code' => nil, 'error_status' => nil,
-          'refresh' => nil },
+                                    { 'character_id' => second.id, 'granblue_id' => '3040900002', 'style_swap' => false,
+                                      'name' => { 'en' => 'Second', 'ja' => second.name_jp }, 'style_name' => nil,
+                                      'status' => 'queued', 'error' => nil, 'error_code' => nil, 'error_status' => nil,
+                                      'refresh' => nil },
         { 'character_id' => style.id, 'granblue_id' => '3040900001', 'style_swap' => true,
           'name' => { 'en' => 'First', 'ja' => style.name_jp }, 'style_name' => { 'en' => 'Super First', 'ja' => nil },
           'status' => 'queued', 'error' => nil, 'error_code' => nil, 'error_status' => nil,
           'refresh' => nil }
-      ])
+                                  ])
     end
 
     it 'is a 422 too_many_characters over 20' do

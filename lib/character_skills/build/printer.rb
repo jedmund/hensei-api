@@ -6,8 +6,8 @@ module CharacterSkills
     # effects / other), how many versions and characters it touches, then up to `limit` lines
     # grouped by category, each change under its first category.
     class Printer
-      VALUE_FIELDS = (Diff::CATEGORY_FIELDS["icon"] + Diff::CATEGORY_FIELDS["name"] +
-                      Diff::CATEGORY_FIELDS["description"]).freeze
+      VALUE_FIELDS = (Diff::CATEGORY_FIELDS['icon'] + Diff::CATEGORY_FIELDS['name'] +
+                      Diff::CATEGORY_FIELDS['description']).freeze
       WIDTH = 70
 
       def initialize(summary, io:, limit: nil)
@@ -25,7 +25,7 @@ module CharacterSkills
           touched = rows.select { |_, change| change.categories.include?(category) }
           next if touched.empty?
 
-          @io.puts format("  %<category>-12s %<versions>5d versions, %<characters>4d characters",
+          @io.puts format('  %<category>-12s %<versions>5d versions, %<characters>4d characters',
                           category: category, versions: touched.size, characters: touched.map(&:first).uniq.size)
         end
         print_lines(rows)
@@ -53,7 +53,7 @@ module CharacterSkills
       def line(character, change)
         head = "#{character.granblue_id} #{character.name_en}#{' (style)' if character.style_swap} " \
                "#{change.label} #{change.name[:en].inspect} #{change.change}"
-        return head unless change.change == "updated"
+        return head unless change.change == 'updated'
 
         details = change.fields.map do |field|
           next field unless VALUE_FIELDS.include?(field)
@@ -64,7 +64,7 @@ module CharacterSkills
       end
 
       def short(value)
-        text = value.nil? ? "nil" : value.to_s
+        text = value.nil? ? 'nil' : value.to_s
         text.length > WIDTH ? "#{text[0, WIDTH]}…".inspect : text.inspect
       end
     end

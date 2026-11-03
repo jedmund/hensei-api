@@ -127,9 +127,7 @@ module Api
       def create
         Rails.logger.info '[IMPORT] Checking input...'
 
-        if request.raw_post.bytesize > MAX_BODY_BYTES
-          return render json: { error: 'payload_too_large' }, status: :payload_too_large
-        end
+        return render json: { error: 'payload_too_large' }, status: :payload_too_large if request.raw_post.bytesize > MAX_BODY_BYTES
 
         body = parse_request_body
         return unless body

@@ -151,9 +151,7 @@ namespace :deploy do
     return nil if wiki_raw.blank?
 
     wiki_raw.each_line do |line|
-      if line.start_with?("|#{field}=")
-        return line.sub("|#{field}=", '').strip
-      end
+      return line.sub("|#{field}=", '').strip if line.start_with?("|#{field}=")
     end
     nil
   end
@@ -215,8 +213,8 @@ namespace :deploy do
     include LoggingHelper
 
     # Load all required files
-    Dir[Rails.root.join('lib', 'post_deployment', '**', '*.rb')].each { |file| require file }
-    Dir[Rails.root.join('lib', 'granblue', '**', '*.rb')].each { |file| require file }
+    Dir[Rails.root.join("lib/post_deployment/**/*.rb")].each { |file| require file }
+    Dir[Rails.root.join("lib/granblue/**/*.rb")].each { |file| require file }
 
     # Ensure Rails environment is loaded
     Rails.application.eager_load!
@@ -230,7 +228,6 @@ namespace :deploy do
       # Execute the deployment tasks
       manager = PostDeployment::Manager.new(options)
       manager.run
-
     rescue StandardError => e
       display_error(e)
       exit 1
@@ -257,9 +254,7 @@ namespace :deploy do
   def parse_storage_option
     storage = (ENV['STORAGE'] || 'both').to_sym
 
-    unless [:local, :s3, :both].include?(storage)
-      raise ArgumentError, 'Invalid STORAGE option. Must be one of: local, s3, both'
-    end
+    raise ArgumentError, 'Invalid STORAGE option. Must be one of: local, s3, both' unless %i[local s3 both].include?(storage)
 
     storage
   end
@@ -267,15 +262,15 @@ namespace :deploy do
   def display_configuration(options)
     log_header('Configuration', '-')
     puts "\n"
-    display_status("Test mode", options[:test_mode])
-    display_status("Verbose output", options[:verbose])
-    display_status("Process all", options[:force])
+    display_status('Test mode', options[:test_mode])
+    display_status('Verbose output', options[:verbose])
+    display_status('Process all', options[:force])
     puts "Storage mode:\t#{options[:storage]}"
     puts "\n"
   end
 
   def display_status(label, enabled)
-    status = enabled ? "✅ Enabled" : "❌ Disabled"
+    status = enabled ? '✅ Enabled' : '❌ Disabled'
     puts "#{label}:\t#{status}"
   end
 

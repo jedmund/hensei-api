@@ -57,10 +57,9 @@ RSpec.describe CollectionArtifact, type: :model do
 
       it 'returns proficiency from base artifact' do
         collection_artifact = build(:collection_artifact,
-          artifact: artifact,
-          proficiency: nil,
-          skill1: {}, skill2: {}, skill3: {}, skill4: {}
-        )
+                                    artifact: artifact,
+                                    proficiency: nil,
+                                    skill1: {}, skill2: {}, skill3: {}, skill4: {})
         expect(collection_artifact.effective_proficiency).to eq('dagger')
       end
     end
@@ -70,11 +69,10 @@ RSpec.describe CollectionArtifact, type: :model do
 
       it 'returns proficiency from instance' do
         collection_artifact = build(:collection_artifact,
-          artifact: artifact,
-          proficiency: :staff,
-          level: 1,
-          skill1: {}, skill2: {}, skill3: {}, skill4: {}
-        )
+                                    artifact: artifact,
+                                    proficiency: :staff,
+                                    level: 1,
+                                    skill1: {}, skill2: {}, skill3: {}, skill4: {})
         expect(collection_artifact.effective_proficiency).to eq('staff')
       end
     end
@@ -117,26 +115,24 @@ RSpec.describe CollectionArtifact, type: :model do
     it 'is valid with correct skills' do
       artifact = create(:artifact)
       collection_artifact = build(:collection_artifact,
-        artifact: artifact,
-        level: 1,
-        skill1: { 'modifier' => 1, 'quality' => 5, 'level' => 1 },
-        skill2: { 'modifier' => 2, 'quality' => 5, 'level' => 1 },
-        skill3: { 'modifier' => 1, 'quality' => 5, 'level' => 1 },
-        skill4: { 'modifier' => 1, 'quality' => 5, 'level' => 1 }
-      )
+                                  artifact: artifact,
+                                  level: 1,
+                                  skill1: { 'modifier' => 1, 'quality' => 5, 'level' => 1 },
+                                  skill2: { 'modifier' => 2, 'quality' => 5, 'level' => 1 },
+                                  skill3: { 'modifier' => 1, 'quality' => 5, 'level' => 1 },
+                                  skill4: { 'modifier' => 1, 'quality' => 5, 'level' => 1 })
       expect(collection_artifact).to be_valid
     end
 
     it 'is invalid when skill1 and skill2 have the same modifier' do
       artifact = create(:artifact)
       collection_artifact = build(:collection_artifact,
-        artifact: artifact,
-        level: 1,
-        skill1: { 'modifier' => 1, 'quality' => 5, 'level' => 1 },
-        skill2: { 'modifier' => 1, 'quality' => 5, 'level' => 1 }, # Same modifier
-        skill3: { 'modifier' => 1, 'quality' => 5, 'level' => 1 },
-        skill4: { 'modifier' => 1, 'quality' => 5, 'level' => 1 }
-      )
+                                  artifact: artifact,
+                                  level: 1,
+                                  skill1: { 'modifier' => 1, 'quality' => 5, 'level' => 1 },
+                                  skill2: { 'modifier' => 1, 'quality' => 5, 'level' => 1 }, # Same modifier
+                                  skill3: { 'modifier' => 1, 'quality' => 5, 'level' => 1 },
+                                  skill4: { 'modifier' => 1, 'quality' => 5, 'level' => 1 })
       expect(collection_artifact).not_to be_valid
       expect(collection_artifact.errors[:base]).to include('Skill 1 and Skill 2 cannot have the same modifier')
     end
@@ -145,13 +141,12 @@ RSpec.describe CollectionArtifact, type: :model do
       artifact = create(:artifact)
       # At level 1, skill levels must sum to 4 (1 + 3)
       collection_artifact = build(:collection_artifact,
-        artifact: artifact,
-        level: 1,
-        skill1: { 'modifier' => 1, 'quality' => 5, 'level' => 2 },
-        skill2: { 'modifier' => 2, 'quality' => 5, 'level' => 2 },
-        skill3: { 'modifier' => 1, 'quality' => 5, 'level' => 2 },
-        skill4: { 'modifier' => 1, 'quality' => 5, 'level' => 2 }
-      )
+                                  artifact: artifact,
+                                  level: 1,
+                                  skill1: { 'modifier' => 1, 'quality' => 5, 'level' => 2 },
+                                  skill2: { 'modifier' => 2, 'quality' => 5, 'level' => 2 },
+                                  skill3: { 'modifier' => 1, 'quality' => 5, 'level' => 2 },
+                                  skill4: { 'modifier' => 1, 'quality' => 5, 'level' => 2 })
       expect(collection_artifact).not_to be_valid
       expect(collection_artifact.errors[:base].first).to include('Skill levels must sum to')
     end
@@ -162,42 +157,39 @@ RSpec.describe CollectionArtifact, type: :model do
 
     it 'requires level 1 for quirk artifacts' do
       collection_artifact = build(:collection_artifact,
-        artifact: quirk_artifact,
-        proficiency: :sabre,
-        level: 3,
-        skill1: {},
-        skill2: {},
-        skill3: {},
-        skill4: {}
-      )
+                                  artifact: quirk_artifact,
+                                  proficiency: :sabre,
+                                  level: 3,
+                                  skill1: {},
+                                  skill2: {},
+                                  skill3: {},
+                                  skill4: {})
       expect(collection_artifact).not_to be_valid
       expect(collection_artifact.errors[:level]).to include('must be 1 for quirk artifacts')
     end
 
     it 'requires empty skills for quirk artifacts' do
       collection_artifact = build(:collection_artifact,
-        artifact: quirk_artifact,
-        proficiency: :sabre,
-        level: 1,
-        skill1: { 'modifier' => 1, 'quality' => 5, 'level' => 1 },
-        skill2: {},
-        skill3: {},
-        skill4: {}
-      )
+                                  artifact: quirk_artifact,
+                                  proficiency: :sabre,
+                                  level: 1,
+                                  skill1: { 'modifier' => 1, 'quality' => 5, 'level' => 1 },
+                                  skill2: {},
+                                  skill3: {},
+                                  skill4: {})
       expect(collection_artifact).not_to be_valid
       expect(collection_artifact.errors[:skill1]).to include('must be empty for quirk artifacts')
     end
 
     it 'is valid with empty skills and level 1' do
       collection_artifact = build(:collection_artifact,
-        artifact: quirk_artifact,
-        proficiency: :sabre,
-        level: 1,
-        skill1: {},
-        skill2: {},
-        skill3: {},
-        skill4: {}
-      )
+                                  artifact: quirk_artifact,
+                                  proficiency: :sabre,
+                                  level: 1,
+                                  skill1: {},
+                                  skill2: {},
+                                  skill3: {},
+                                  skill4: {})
       expect(collection_artifact).to be_valid
     end
   end

@@ -6,9 +6,7 @@ RSpec.describe 'CopyItemSourcesToSourcesTable' do
   include ItemSourceColumns
 
   let(:migration_class) do
-    unless defined?(CopyItemSourcesToSourcesTable)
-      require Rails.root.join('db/data/20261022110000_copy_item_sources_to_sources_table')
-    end
+    require Rails.root.join('db/data/20261022110000_copy_item_sources_to_sources_table') unless defined?(CopyItemSourcesToSourcesTable)
     CopyItemSourcesToSourcesTable
   end
   let(:fetched_at) { Time.utc(2026, 10, 15) }

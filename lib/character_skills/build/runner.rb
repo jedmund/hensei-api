@@ -49,18 +49,16 @@ module CharacterSkills
       #           the next deploy, and the deploy carries on.
       def self.deploy(mode: CharacterSkills.build_mode, io: $stdout)
         case mode
-        when "shadow"
+        when 'shadow'
           begin
-            new(mode: "shadow", diff_limit: 50, io: io).call
+            new(mode: 'shadow', diff_limit: 50, io: io).call
           rescue StandardError => e
             io.puts "build_character_skills (shadow) failed; the deploy continues: #{e.class}: #{e.message}"
             nil
           end
-        when "write"
-          summary = new(mode: "write", io: io).call
-          if summary.failed.positive?
-            io.puts "build_character_skills (write): #{summary.failed} characters failed and kept their existing rows"
-          end
+        when 'write'
+          summary = new(mode: 'write', io: io).call
+          io.puts "build_character_skills (write): #{summary.failed} characters failed and kept their existing rows" if summary.failed.positive?
           summary
         end
       end
@@ -75,12 +73,12 @@ module CharacterSkills
       # deploy loudly (the old release keeps serving and a redeploy retries) rather than skipping
       # the build or writing alongside another one. Shadow writes nothing, so it takes no lock.
       def self.deploy_locked(mode: CharacterSkills.build_mode, io: $stdout, wait: DEPLOY_LOCK_WAIT)
-        return deploy(mode: mode, io: io) unless mode == "write"
+        return deploy(mode: mode, io: io) unless mode == 'write'
 
         summary = nil
         return summary if BuildLock.all(wait: wait) { summary = deploy(mode: mode, io: io) }
 
-        raise BuildLock::Busy, "build_character_skills (write): another character skill build held the lock " \
+        raise BuildLock::Busy, 'build_character_skills (write): another character skill build held the lock ' \
                                "for #{format('%gs', wait.to_f)}; nothing was built"
       end
 
@@ -103,7 +101,7 @@ module CharacterSkills
         @summary = Summary.new(mode: @mode, in_scope: 0, stale: 0, built: 0, failed: 0, errors: [], no_source: 0, empty: 0,
                                counts: Writer::Report.zero, results: [], icon_stems: Set.new, counted_instants: [])
 
-        if @mode == "write"
+        if @mode == 'write'
           run
         else
           ActiveRecord::Base.transaction do
@@ -113,7 +111,7 @@ module CharacterSkills
         end
 
         @summary.seconds = Process.clock_gettime(Process::CLOCK_MONOTONIC) - started
-        @mode == "write" ? enqueue_icon_jobs : Printer.new(@summary, io: @io, limit: @diff_limit).print
+        @mode == 'write' ? enqueue_icon_jobs : Printer.new(@summary, io: @io, limit: @diff_limit).print
         @io.puts summary_line
         print_counted_instants
         print_display_review
@@ -170,8 +168,8 @@ module CharacterSkills
 
       # → [[character id, fingerprint]] from the scope, from the sources' stored sha256.
       def scoped_targets(fingerprints)
-        wiki = Source.select(1).where(owner_type: Character.polymorphic_name, kind: "wiki_raw", key: "")
-                     .where("sources.owner_id = characters.id")
+        wiki = Source.select(1).where(owner_type: Character.polymorphic_name, kind: 'wiki_raw', key: '')
+                     .where('sources.owner_id = characters.id')
         rows = scope.pluck(:id, :granblue_id, Arel.sql("NOT EXISTS (#{wiki.to_sql})"), :character_skill_build_fingerprint)
         report_unknown_ids(rows.map(&:second))
         @summary.in_scope = rows.size
@@ -208,31 +206,31 @@ module CharacterSkills
         # leaves the surrounding (shadow) transaction usable.
         ActiveRecord::Base.transaction(requires_new: true) do
           report = writer.call
-          character.update_columns(character_skill_build_fingerprint: fingerprint) if @mode == "write"
+          character.update_columns(character_skill_build_fingerprint: fingerprint) if @mode == 'write'
         end
         @summary.counts.merge!(report)
         @summary.counted_instants.concat(parser.counted_instants.map { |instant| instant.merge(character: label(character)) })
         @summary.icon_stems.merge(writer.icon_stems)
         @summary.built += 1
-        @summary.results << Result.new(character: character, status: "built", report: report,
+        @summary.results << Result.new(character: character, status: 'built', report: report,
                                        icon_fallbacks: icon_fallbacks(graph))
       rescue StandardError => e
         @summary.failed += 1
         @summary.errors << [character.granblue_id, e]
-        @summary.results << Result.new(character: character, status: "failed", error: e, icon_fallbacks: [])
+        @summary.results << Result.new(character: character, status: 'failed', error: e, icon_fallbacks: [])
         @io.puts "#{label(character)}: #{e.class}: #{e.message.lines.first&.strip}"
       end
 
       def no_source(character)
         @summary.no_source += 1
-        @summary.results << Result.new(character: character, status: "no_source", icon_fallbacks: [])
+        @summary.results << Result.new(character: character, status: 'no_source', icon_fallbacks: [])
         @io.puts "#{label(character)}: no wiki_raw; kept its existing skills"
         nil
       end
 
       def empty(character)
         @summary.empty += 1
-        @summary.results << Result.new(character: character, status: "empty", icon_fallbacks: [])
+        @summary.results << Result.new(character: character, status: 'empty', icon_fallbacks: [])
         @io.puts "#{label(character)}: the build made no skills; kept its existing skills"
       end
 
@@ -242,7 +240,7 @@ module CharacterSkills
       def icon_fallbacks(graph)
         graph[:slots].flat_map do |slot|
           slot[:versions].filter_map do |version|
-            next unless version[:game_icon_source].to_s == "wiki"
+            next unless version[:game_icon_source].to_s == 'wiki'
 
             attrs = version[:attrs]
             { kind: slot[:attrs][:kind].to_s, position: slot[:attrs][:position], ordinal: attrs[:ordinal],
@@ -301,7 +299,7 @@ module CharacterSkills
       # Statuses the catalogue couldn't save (logged by StatusCatalogBuilder; the build goes on).
       def statuses_failed
         failed = @summary.statuses.is_a?(Hash) ? @summary.statuses[:failed].to_i : 0
-        failed.positive? ? "; #{failed} statuses failed to save" : ""
+        failed.positive? ? "; #{failed} statuses failed to save" : ''
       end
     end
   end

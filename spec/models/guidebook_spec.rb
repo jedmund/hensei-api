@@ -20,7 +20,6 @@ RSpec.describe Guidebook, type: :model do
       guidebook = build(:guidebook)
       expect(guidebook).not_to eq('not a guidebook')
     end
-
   end
 
   describe 'search' do

@@ -52,7 +52,7 @@ module SummonAuras
             report.updated += 1
             report.changes << [:updated, key, diff]
           end
-          record.slice(*KEY, *COLUMNS).merge("summon_granblue_id" => @granblue_id)
+          record.slice(*KEY, *COLUMNS).merge('summon_granblue_id' => @granblue_id)
         end
         SummonAura.upsert_all(upserts, unique_by: KEY, returning: false) if upserts.any?
 
@@ -69,7 +69,7 @@ module SummonAuras
       private
 
       def tier(row)
-        [row["slot"].to_s, row["uncap_level"].to_i, row["transcendence_stage"].to_i]
+        [row['slot'].to_s, row['uncap_level'].to_i, row['transcendence_stage'].to_i]
       end
 
       # value is decimal in the table and a float from the extractor.

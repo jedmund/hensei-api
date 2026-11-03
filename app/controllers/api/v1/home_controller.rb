@@ -88,9 +88,7 @@ module Api
           latest_date: item.latest_date,
           change: entry.change
         }
-        if entry.type == 'character'
-          rendered[:character] = CharacterBlueprint.render_as_hash(item).slice(*CHARACTER_TAG_FIELDS)
-        end
+        rendered[:character] = CharacterBlueprint.render_as_hash(item).slice(*CHARACTER_TAG_FIELDS) if entry.type == 'character'
         rendered
       end
 

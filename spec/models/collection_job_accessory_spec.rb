@@ -2,8 +2,8 @@ require 'rails_helper'
 
 RSpec.describe CollectionJobAccessory, type: :model do
   describe 'associations' do
-    it { should belong_to(:user) }
-    it { should belong_to(:job_accessory) }
+    it { is_expected.to belong_to(:user) }
+    it { is_expected.to belong_to(:job_accessory) }
   end
 
   describe 'validations' do
@@ -14,7 +14,7 @@ RSpec.describe CollectionJobAccessory, type: :model do
     subject { build(:collection_job_accessory, user: user, job_accessory: job_accessory) }
 
     describe 'uniqueness validation' do
-      it { should validate_uniqueness_of(:job_accessory_id).scoped_to(:user_id).ignoring_case_sensitivity.with_message('already exists in your collection') }
+      it { is_expected.to validate_uniqueness_of(:job_accessory_id).scoped_to(:user_id).ignoring_case_sensitivity.with_message('already exists in your collection') }
     end
   end
 

@@ -28,7 +28,7 @@ module PostDeployment
       download_images
       rebuild_search_indices
       display_completion_message
-    rescue => e
+    rescue StandardError => e
       handle_error(e)
     end
 
@@ -103,6 +103,7 @@ module PostDeployment
     def display_record_summary(label, records)
       records.each do |type, items|
         next if items.empty?
+
         count = items.size
         puts "\n#{type.capitalize}: #{count} #{label.downcase} #{count == 1 ? 'record' : 'records'}"
         items.each do |item|
@@ -113,13 +114,13 @@ module PostDeployment
 
     def display_completion_message
       if @test_mode
-        log_header "✅ Test run completed successfully!", "-"
+        log_header '✅ Test run completed successfully!', '-'
         puts "\n"
         log_step "#{@new_records.values.flatten.size} records would be created"
         log_step "#{@updated_records.values.flatten.size} records would be updated"
         puts "\n"
       else
-        log_header "✅ Post-deployment tasks completed successfully!"
+        log_header '✅ Post-deployment tasks completed successfully!'
       end
     end
 
@@ -135,9 +136,9 @@ module PostDeployment
 
       # Add header section
       sections << [
-        "═" * 60,
-        "❌ Error during deployment",
-        "═" * 60
+        '═' * 60,
+        '❌ Error during deployment',
+        '═' * 60
       ]
 
       # Add main error message
@@ -146,7 +147,7 @@ module PostDeployment
       # Add stack trace if verbose
       if @verbose && error.respond_to?(:backtrace)
         sections << [
-          "Stack trace:",
+          'Stack trace:',
           error.backtrace.take(5).map { |line| "  #{line}" }
         ].flatten
       end
@@ -159,7 +160,7 @@ module PostDeployment
       when Granblue::Importers::ImportError
         [
           "File: #{error.file_name}",
-          "-" * 80,
+          '-' * 80,
           error.details
         ]
       else

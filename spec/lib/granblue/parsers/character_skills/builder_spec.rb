@@ -7,8 +7,8 @@ RSpec.describe Granblue::Parsers::CharacterSkills::Builder do
   let(:character) do
     build(
       :character, granblue_id: '3040252000', name_en: 'Vikala',
-      wiki_raw: File.read(fixtures.join('character-vikala-wikidata.txt')),
-      game_raw_en: JSON.parse(File.read(fixtures.join('character-vikala-gamedata.json')))
+                  wiki_raw: File.read(fixtures.join('character-vikala-wikidata.txt')),
+                  game_raw_en: JSON.parse(File.read(fixtures.join('character-vikala-gamedata.json')))
     )
   end
   let(:data) { Granblue::Parsers::CharacterWikiData.new(character) }

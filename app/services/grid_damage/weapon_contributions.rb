@@ -65,7 +65,7 @@ module GridDamage
     # Decimation" is the 5★ form of "Dreadflame's Supremacy"). Group the slots' active
     # versions by name stem and keep the highest variant.
     ROMAN_SUFFIX = /\s+(II|III|IV)\z/
-    ROMAN_RANK = { nil => 1, "II" => 2, "III" => 3, "IV" => 4 }.freeze
+    ROMAN_RANK = { nil => 1, 'II' => 2, 'III' => 3, 'IV' => 4 }.freeze
     TRUE_PREFIX = /\ATrue\s+/
     DECIMATION_SUFFIX = /:\s+Decimation\z/
 
@@ -82,7 +82,7 @@ module GridDamage
     end
 
     def skill_stem(version)
-      skill_name(version).sub(TRUE_PREFIX, "").sub(DECIMATION_SUFFIX, "").sub(ROMAN_SUFFIX, "")
+      skill_name(version).sub(TRUE_PREFIX, '').sub(DECIMATION_SUFFIX, '').sub(ROMAN_SUFFIX, '')
     end
 
     def variant_rank(name)

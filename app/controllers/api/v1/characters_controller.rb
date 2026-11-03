@@ -103,14 +103,10 @@ module Api
         end
 
         # Validate element for null-element characters
-        if element.present? && !(1..6).cover?(element)
-          return render json: { error: 'Invalid element. Must be 1-6' }, status: :unprocessable_entity
-        end
+        return render json: { error: 'Invalid element. Must be 1-6' }, status: :unprocessable_entity if element.present? && !(1..6).cover?(element)
 
         # Validate gender (0=Gran, 1=Djeeta)
-        unless [0, 1].include?(gender)
-          return render json: { error: 'Invalid gender. Must be 0 (Gran) or 1 (Djeeta)' }, status: :unprocessable_entity
-        end
+        return render json: { error: 'Invalid gender. Must be 0 (Gran) or 1 (Djeeta)' }, status: :unprocessable_entity unless [0, 1].include?(gender)
 
         begin
           downloader = Granblue::Downloaders::CharacterDownloader.new(
@@ -216,9 +212,7 @@ module Api
       # POST /characters/:id/fetch_wiki
       # Fetches and stores wiki data for this character
       def fetch_wiki
-        unless @character.wiki_en.present?
-          return render json: { error: 'No wiki page configured for this character' }, status: :unprocessable_entity
-        end
+        return render json: { error: 'No wiki page configured for this character' }, status: :unprocessable_entity unless @character.wiki_en.present?
 
         begin
           Granblue::WikiFetcher.new.fetch_and_store(@character)

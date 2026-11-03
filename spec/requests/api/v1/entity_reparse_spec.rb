@@ -29,7 +29,7 @@ RSpec.describe 'Entity reparse endpoints', type: :request do
       create(:summon_aura, summon_granblue_id: summon.granblue_id, slot: 'main',
                            uncap_level: 3, transcendence_stage: 0, target: 'other', value: 1)
       stale = create(:summon_aura, summon_granblue_id: summon.granblue_id, slot: 'sub',
-                     uncap_level: 5, transcendence_stage: 3, target: 'other', value: 99)
+                                   uncap_level: 5, transcendence_stage: 3, target: 'other', value: 99)
 
       post "/api/v1/summons/#{summon.id}/reparse", headers: editor_headers
 
@@ -81,7 +81,7 @@ RSpec.describe 'Entity reparse endpoints', type: :request do
 
     def store_source
       WeaponSkills::SourceStore::Database.new.put('wiki_raw', weapon.wiki_en, wiki_raw, weapon_id: weapon.id,
-                                                                                      page_kind: 'inline')
+                                                                                        page_kind: 'inline')
     end
 
     it 'rebuilds skills from the stored source with the weapon-skill build' do

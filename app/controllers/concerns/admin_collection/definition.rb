@@ -144,9 +144,7 @@ module AdminCollection
     # collection row's `owner_key`. The association's own scope is not applied.
     def through_config(association)
       reflection = model.reflect_on_association(association)
-      unless reflection&.collection? && !reflection.through_reflection?
-        raise ArgumentError, "#{model} has no direct has_many #{association}"
-      end
+      raise ArgumentError, "#{model} has no direct has_many #{association}" unless reflection&.collection? && !reflection.through_reflection?
 
       { model: reflection.klass, key: reflection.foreign_key.to_s, owner_key: reflection.active_record_primary_key.to_s }
     end

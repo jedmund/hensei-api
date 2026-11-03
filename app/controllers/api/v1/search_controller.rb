@@ -4,7 +4,7 @@ module Api
   module V1
     class SearchController < Api::V1::ApiController
       rate_limit to: 30, within: 1.minute, by: -> { client_ip }, only: :suggestions,
-                 with: -> { render json: { error: "Rate limit exceeded. Try again later." }, status: :too_many_requests }
+                 with: -> { render json: { error: 'Rate limit exceeded. Try again later.' }, status: :too_many_requests }
 
       TRIGRAM = {
         trigram: {
@@ -98,14 +98,10 @@ module Api
         end
 
         # Filter by character series (UUID-based)
-        if filters && filters['series'].present? && !filters['series'].empty?
-          characters = characters.by_series(Array(filters['series']))
-        end
+        characters = characters.by_series(Array(filters['series'])) if filters && filters['series'].present? && !filters['series'].empty?
 
         # Exclude already-owned characters (for collection modal)
-        if exclude.present? && exclude.any?
-          characters = characters.where.not(id: exclude)
-        end
+        characters = characters.where.not(id: exclude) if exclude.present? && exclude.any?
 
         count = characters.length
         paginated = characters.includes(:character_series_records)
@@ -130,7 +126,7 @@ module Api
               filters['proficiency1']
           end
           conditions[:weapon_series_id] = filters['series'] unless filters['series'].blank? || filters['series'].empty?
-          conditions[:extra] = filters['extra'] unless filters['extra'].blank?
+          conditions[:extra] = filters['extra'] if filters['extra'].present?
         end
 
         weapons = if search_params[:query].present? && search_params[:query].length >= 2
@@ -178,7 +174,7 @@ module Api
         if filters
           conditions[:rarity] = filters['rarity'] unless filters['rarity'].blank? || filters['rarity'].empty?
           conditions[:element] = filters['element'] unless filters['element'].blank? || filters['element'].empty?
-          conditions[:subaura] = filters['subaura'] unless filters['subaura'].blank?
+          conditions[:subaura] = filters['subaura'] if filters['subaura'].present?
           conditions[:summon_series_id] = filters['series'] unless filters['series'].blank? || filters['series'].empty?
         end
 
@@ -300,17 +296,17 @@ module Api
 
         # Apply feature filters
         if filters
-          jobs = jobs.where(master_level: true) if filters['masterLevel'] == true || filters['masterLevel'] == 'true'
-          jobs = jobs.where(ultimate_mastery: true) if filters['ultimateMastery'] == true || filters['ultimateMastery'] == 'true'
-          jobs = jobs.where(accessory: true) if filters['accessory'] == true || filters['accessory'] == 'true'
+          jobs = jobs.where(master_level: true) if [true, 'true'].include?(filters['masterLevel'])
+          jobs = jobs.where(ultimate_mastery: true) if [true, 'true'].include?(filters['ultimateMastery'])
+          jobs = jobs.where(accessory: true) if [true, 'true'].include?(filters['accessory'])
         end
 
         # Apply sorting if specified, otherwise use default (row, then order)
-        if search_params[:sort].present?
-          jobs = apply_job_sort(jobs, search_params[:sort], search_params[:order], locale)
+        jobs = if search_params[:sort].present?
+          apply_job_sort(jobs, search_params[:sort], search_params[:order], locale)
         else
-          jobs = jobs.order(:row, :order)
-        end
+          jobs.order(:row, :order)
+               end
 
         count = jobs.length
         paginated = jobs.paginate(page: search_params[:page], per_page: search_page_size)
@@ -328,7 +324,7 @@ module Api
         weapons = Weapon.order(Arel.sql('RANDOM()')).limit(per_type)
         summons = Summon.order(Arel.sql('RANDOM()')).limit(per_type)
 
-        results = (characters + weapons + summons).shuffle.first(count).map do |entity|
+        results = (characters + weapons + summons).sample(count).map do |entity|
           {
             id: entity.id,
             granblue_id: entity.granblue_id,
@@ -362,6 +358,7 @@ module Api
       # Specify whitelisted properties that can be modified.
       def search_params
         return {} unless params[:search].present?
+
         params.require(:search).permit!
       end
 

@@ -51,9 +51,7 @@ RSpec.describe CollectionArtifacts::RawDataClearer do
 
   describe 'data migration' do
     let(:migration_class) do
-      unless defined?(ClearCollectionArtifactRawData)
-        require Rails.root.join('db/data/20261020150000_clear_collection_artifact_raw_data')
-      end
+      require Rails.root.join('db/data/20261020150000_clear_collection_artifact_raw_data') unless defined?(ClearCollectionArtifactRawData)
       ClearCollectionArtifactRawData
     end
 

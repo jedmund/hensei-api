@@ -18,7 +18,7 @@ module SummonAuras
       SOURCES = %w[wiki_raw].freeze
       # Columns besides the sources that change the build's output. A series is read by its slug.
       ATTRIBUTES = %w[granblue_id element summon_series_id].freeze
-      NONE = "-"
+      NONE = '-'
 
       def for(summon)
         combine(summon.source_sha256(:wiki_raw), summon.granblue_id, summon.element, summon.summon_series_id)
@@ -28,7 +28,7 @@ module SummonAuras
       # source body.
       def for_relation(relation)
         rows = relation.pluck(:id, *ATTRIBUTES)
-        shas = Source.where(owner_type: Summon.polymorphic_name, owner_id: rows.map(&:first), kind: SOURCES, key: "")
+        shas = Source.where(owner_type: Summon.polymorphic_name, owner_id: rows.map(&:first), kind: SOURCES, key: '')
                      .pluck(:owner_id, :sha256).to_h
         rows.to_h { |id, *values| [id, combine(shas[id], *values)] }
       end

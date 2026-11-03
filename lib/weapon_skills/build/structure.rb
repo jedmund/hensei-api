@@ -30,14 +30,14 @@ module WeaponSkills
       Parser = Granblue::Parsers::WeaponSkillDescriptionParser
       GARBLED = /[{}]/
       WILDCARD = "\u0001" # not "\0": String#strip removes NULs
-      KEY_DETERMINED = "key_determined"
-      SERIES_TEMPLATE = "series_template"
+      KEY_DETERMINED = 'key_determined'
+      SERIES_TEMPLATE = 'series_template'
 
       module_function
 
       def call(weapon, store:)
         warnings = []
-        page = fetch(store, "wiki_raw", weapon.wiki_en)
+        page = fetch(store, 'wiki_raw', weapon.wiki_en)
         return [[], [], ["#{weapon.granblue_id}: no stored wiki_raw for #{weapon.wiki_en.inspect}"]] unless page
 
         fields = page_fields(weapon, page.body, store, warnings)
@@ -117,7 +117,7 @@ module WeaponSkills
 
         followed_page(store, target) || begin
           warnings << "#{weapon.granblue_id}: no stored page #{target.inspect}"
-          ""
+          ''
         end
       end
 
@@ -125,13 +125,13 @@ module WeaponSkills
       # ({{:Concordia|…stats}}) renders the Mk I's skills, so the Mk I's expansion stands in
       # when the Mk II has none of its own.
       def expansion(store, page, raw)
-        fetch(store, "expanded", page) ||
-          ((base = raw[/\A\s*\{\{:([^|}\n]+)/, 1]) && fetch(store, "expanded", base.strip))
+        fetch(store, 'expanded', page) ||
+          ((base = raw[/\A\s*\{\{:([^|}\n]+)/, 1]) && fetch(store, 'expanded', base.strip))
       end
 
       # Granblue::Parsers::Wiki#fetch in store mode: transclusions, then whole pages.
       def followed_page(store, key)
-        (fetch(store, "transclusion", key) || fetch(store, "wiki_raw", key))&.body
+        (fetch(store, 'transclusion', key) || fetch(store, 'wiki_raw', key))&.body
       end
 
       def garbled?(slots)
@@ -252,9 +252,7 @@ module WeaponSkills
       # first). The lowest tier when a slot has several; nothing when slots disagree.
       def filled_tier(name, dropped, fields)
         matches = dropped.select { |entry| resolved_name(entry, fields) == name }
-        if matches.empty?
-          matches = dropped.select { |entry| name_pattern(entry[:name_en], fields)&.match?(name) }
-        end
+        matches = dropped.select { |entry| name_pattern(entry[:name_en], fields)&.match?(name) } if matches.empty?
         return nil unless matches.map { |e| e[:position] }.uniq.size == 1
 
         matches.min_by { |e| e[:ordinal] }
@@ -295,7 +293,7 @@ module WeaponSkills
         return fallback if text.blank?
 
         clauses = Parser.parse(text, name: name)[:clauses]
-        return clauses.filter_map { |c| c[:series] }.first || "ex" if clauses.any?
+        return clauses.filter_map { |c| c[:series] }.first || 'ex' if clauses.any?
 
         Parser.series_for(text, name)
       end

@@ -74,9 +74,7 @@ module Solomonis
       return skip(index, "(status #{status_id}) has no valid num") unless valid_count?(raw['num'])
 
       text = normalize_text(raw['name'])
-      unless text && text.length <= SolomonisGuideEffect::NAME_MAX_LENGTH
-        return skip(index, "(status #{status_id}) has no usable name")
-      end
+      return skip(index, "(status #{status_id}) has no usable name") unless text && text.length <= SolomonisGuideEffect::NAME_MAX_LENGTH
 
       { status_id: status_id, num: raw['num'].to_i, text: text, japanese: text.match?(JAPANESE_SCRIPT) }
     end

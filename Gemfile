@@ -119,7 +119,11 @@ end
 
 group :tools do
   gem 'rubocop'
+  gem 'rubocop-factory_bot'
   gem 'rubocop-performance'
+  gem 'rubocop-rails'
+  gem 'rubocop-rspec'
+  gem 'rubocop-rspec_rails'
   gem 'squasher', '>= 0.6.0'
 end
 

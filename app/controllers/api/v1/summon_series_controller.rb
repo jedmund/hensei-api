@@ -41,9 +41,9 @@ module Api
       def destroy
         if @summon_series.summons.exists?
           render json: ErrorBlueprint.render(nil, error: {
-            message: 'Cannot delete series with associated summons',
-            code: 'has_dependencies'
-          }), status: :unprocessable_entity
+                                               message: 'Cannot delete series with associated summons',
+                                               code: 'has_dependencies'
+                                             }), status: :unprocessable_entity
         else
           @summon_series.destroy!
           head :no_content

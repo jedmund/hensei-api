@@ -83,7 +83,6 @@ class Party < ApplicationRecord
   # ActiveRecord Associations
   belongs_to :source_party,
              class_name: 'Party',
-             foreign_key: :source_party_id,
              optional: true
 
   has_many :remixes, -> { order(created_at: :desc) },
@@ -99,42 +98,34 @@ class Party < ApplicationRecord
   belongs_to :difficulty, optional: true
 
   belongs_to :accessory,
-             foreign_key: 'accessory_id',
              class_name: 'JobAccessory',
              optional: true
 
   belongs_to :skill0,
-             foreign_key: 'skill0_id',
              class_name: 'JobSkill',
              optional: true
 
   belongs_to :skill1,
-             foreign_key: 'skill1_id',
              class_name: 'JobSkill',
              optional: true
 
   belongs_to :skill2,
-             foreign_key: 'skill2_id',
              class_name: 'JobSkill',
              optional: true
 
   belongs_to :skill3,
-             foreign_key: 'skill3_id',
              class_name: 'JobSkill',
              optional: true
 
   belongs_to :guidebook1,
-             foreign_key: 'guidebook1_id',
              class_name: 'Guidebook',
              optional: true
 
   belongs_to :guidebook2,
-             foreign_key: 'guidebook2_id',
              class_name: 'Guidebook',
              optional: true
 
   belongs_to :guidebook3,
-             foreign_key: 'guidebook3_id',
              class_name: 'Guidebook',
              optional: true
 
@@ -158,19 +149,16 @@ class Party < ApplicationRecord
   # would skip callbacks and leave orphan substitution rows pointing at deleted
   # grid ids.
   has_many :all_characters,
-           foreign_key: 'party_id',
            class_name: 'GridCharacter',
            dependent: :destroy,
            inverse_of: :party
 
   has_many :all_weapons,
-           foreign_key: 'party_id',
            class_name: 'GridWeapon',
            dependent: :destroy,
            inverse_of: :party
 
   has_many :all_summons,
-           foreign_key: 'party_id',
            class_name: 'GridSummon',
            dependent: :destroy,
            inverse_of: :party
@@ -308,10 +296,10 @@ class Party < ApplicationRecord
 
   def self.rising_rank_sql(now)
     sanitize_sql_array([
-      'parties.participation_score * POWER(0.5, ' \
-      'GREATEST(EXTRACT(EPOCH FROM (? - parties.created_at)), 0) / ?) DESC',
+                         'parties.participation_score * POWER(0.5, ' \
+                         'GREATEST(EXTRACT(EPOCH FROM (? - parties.created_at)), 0) / ?) DESC',
       now, RISING_AGE_HALF_LIFE.to_i
-    ])
+                       ])
   end
 
   # ActiveRecord Validations
@@ -320,12 +308,12 @@ class Party < ApplicationRecord
   validate :validate_full_auto_skills
 
   validates :name,
-            profanity: { languages: [:en, :ja], tier: :moderate, message: 'contains inappropriate language' },
+            profanity: { languages: %i[en ja], tier: :moderate, message: 'contains inappropriate language' },
             allow_nil: true,
             allow_blank: true
 
   validates :description,
-            profanity: { languages: [:en, :ja], tier: :moderate, message: 'contains inappropriate language' },
+            profanity: { languages: %i[en ja], tier: :moderate, message: 'contains inappropriate language' },
             allow_nil: true,
             allow_blank: true
   validates :description, rich_text_description: true, if: :description_changed?

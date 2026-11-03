@@ -89,8 +89,8 @@ RSpec.describe Granblue::Transformers::SummonTransformer do
   describe 'sub_aura' do
     it 'includes sub_aura when sub_skill has name' do
       data = { '1' => summon_entry(extras: {
-        'sub_skill' => { 'name' => 'Sub Aura Effect' }
-      }) }
+                                     'sub_skill' => { 'name' => 'Sub Aura Effect' }
+                                   }) }
       result = described_class.new(data).transform
       expect(result[0][:sub_aura]).to eq('Sub Aura Effect')
     end

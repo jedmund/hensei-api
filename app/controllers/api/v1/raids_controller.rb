@@ -54,9 +54,9 @@ module Api
       def destroy
         if Party.where(raid_id: @raid.id).exists?
           render json: ErrorBlueprint.render(nil, error: {
-            message: 'Cannot delete raid with associated parties',
-            code: 'has_dependencies'
-          }), status: :unprocessable_entity
+                                               message: 'Cannot delete raid with associated parties',
+                                               code: 'has_dependencies'
+                                             }), status: :unprocessable_entity
         else
           @raid.destroy!
           head :no_content
@@ -72,9 +72,7 @@ module Api
         force = params[:force] == true
 
         # Check if the required ID exists
-        if size == 'icon' && @raid.enemy_id.blank?
-          return render json: { error: 'Raid has no enemy_id configured' }, status: :unprocessable_entity
-        end
+        return render json: { error: 'Raid has no enemy_id configured' }, status: :unprocessable_entity if size == 'icon' && @raid.enemy_id.blank?
         if size == 'thumbnail' && @raid.summon_id.blank?
           return render json: { error: 'Raid has no summon_id configured' }, status: :unprocessable_entity
         end

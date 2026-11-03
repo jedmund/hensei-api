@@ -34,13 +34,13 @@ module WeaponSkills
         def fields(string)
           data = {}
           each_line(string) do |line|
-            if line.start_with?("{{")
+            if line.start_with?('{{')
               substr = line[2..].strip
               next if substr.start_with?(*DISALLOWED)
 
-              if substr.start_with?("Weapon")
-                substr = substr.split("|").first
-                data[:template] = substr if substr != "Weapon"
+              if substr.start_with?('Weapon')
+                substr = substr.split('|').first
+                data[:template] = substr if substr != 'Weapon'
                 next
               end
             end
@@ -61,28 +61,28 @@ module WeaponSkills
         def inline_fields(key, value)
           segments = top_level_split(value)
           extra = segments.drop(1).filter_map do |segment|
-            k, v = segment.split("=", 2).map(&:strip)
+            k, v = segment.split('=', 2).map(&:strip)
             [k, v] if v && k.match?(/\A[A-Za-z0-9_]+\z/)
           end
           [[key, segments.first.strip], *extra]
         end
 
         def top_level_split(text)
-          parts = [+""]
+          parts = [+'']
           depth = 0
           i = 0
           while i < text.length
             two = text[i, 2]
-            if ["{{", "[["].include?(two)
+            if ['{{', '[['].include?(two)
               depth += 1
               parts.last << two
               i += 2
-            elsif ["}}", "]]"].include?(two) && depth.positive?
+            elsif ['}}', ']]'].include?(two) && depth.positive?
               depth -= 1
               parts.last << two
               i += 2
-            elsif text[i] == "|" && depth.zero?
-              parts << +""
+            elsif text[i] == '|' && depth.zero?
+              parts << +''
               i += 1
             else
               parts.last << text[i]
@@ -111,11 +111,11 @@ module WeaponSkills
 
             merged[key] = page[alt]
             merged.delete(alt)
-          elsif key.end_with?("_lvl") && (m = value.match(DEFAULT)) && m[1] == key
+          elsif key.end_with?('_lvl') && (m = value.match(DEFAULT)) && m[1] == key
             merged[key] = m[2].strip if !page.key?(key) && m[2].strip.present?
-          elsif key.end_with?("_lvl") && value.match?(/#if(?:eq)?:/)
+          elsif key.end_with?('_lvl') && value.match?(/#if(?:eq)?:/)
             evaluated = evaluate(value, vars, page)
-            merged[key] = evaluated if evaluated.present? && !evaluated.include?("{{")
+            merged[key] = evaluated if evaluated.present? && !evaluated.include?('{{')
           end
         end
 
@@ -128,7 +128,7 @@ module WeaponSkills
             if (m = line.match(/\A\|([^=|{}\s]+)\s*=(.*)\z/))
               key = m[1]
               out[key] = m[2].strip
-            elsif key && !line.start_with?("{{", "}}")
+            elsif key && !line.start_with?('{{', '}}')
               out[key] = "#{out[key]}\n#{line}"
             else
               key = nil
@@ -149,16 +149,16 @@ module WeaponSkills
 
         def each_line(string)
           string.to_s.split("\n").each do |line|
-            break if line.include?("Gameplay Notes")
+            break if line.include?('Gameplay Notes')
 
             yield line
           end
         end
 
         def field(line)
-          return nil unless line[0] == "|" && line.size > 2
+          return nil unless line[0] == '|' && line.size > 2
 
-          key, value = line[1..].split("=", 2).map(&:strip)
+          key, value = line[1..].split('=', 2).map(&:strip)
           value ? [key, value] : nil
         end
 

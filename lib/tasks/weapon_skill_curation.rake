@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 namespace :granblue do
-  desc "Export hand-curated weapon-skill rows to data/weapon_skill_curation/ (commit it with your change)"
+  desc 'Export hand-curated weapon-skill rows to data/weapon_skill_curation/ (commit it with your change)'
   task export_weapon_skill_curation: :environment do
     Granblue::CurationSnapshot.export
     overlay = Granblue::CurationSnapshot.load.to_h
@@ -11,7 +11,7 @@ namespace :granblue do
     abort e.message
   end
 
-  desc "Apply data/weapon_skill_curation/ to this database (runs after every db:migrate:with_data)"
+  desc 'Apply data/weapon_skill_curation/ to this database (runs after every db:migrate:with_data)'
   task sync_weapon_skill_curation: :environment do
     Granblue::CurationSnapshot.sync
   rescue Granblue::CurationSnapshot::Overlay::Invalid => e
@@ -21,26 +21,26 @@ namespace :granblue do
   desc "List curation in this database that the committed overlay doesn't have. Exits nonzero on drift."
   task weapon_skill_curation_drift: :environment do
     drift = Granblue::CurationSnapshot.drift
-    { "missing" => "curated here, not exported", "changed" => "changed here since the export",
-      "unapplied" => "in the overlay, not in this database (run granblue:sync_weapon_skill_curation)" }
+    { 'missing' => 'curated here, not exported', 'changed' => 'changed here since the export',
+      'unapplied' => 'in the overlay, not in this database (run granblue:sync_weapon_skill_curation)' }
       .each do |key, heading|
         next if drift[key].empty?
 
         puts "#{heading}:"
         drift[key].each { |entry| puts "  #{Granblue::CurationSnapshot.describe(entry)}" }
       end
-    if drift.values_at("missing", "changed").any?(&:present?)
-      abort "Unshipped curation: run rake granblue:export_weapon_skill_curation and commit data/weapon_skill_curation/"
+    if drift.values_at('missing', 'changed').any?(&:present?)
+      abort 'Unshipped curation: run rake granblue:export_weapon_skill_curation and commit data/weapon_skill_curation/'
     end
-    puts "No unshipped curation."
+    puts 'No unshipped curation.'
   rescue Granblue::CurationSnapshot::Overlay::Invalid => e
     abort e.message
   end
 
-  desc "Move data/weapon_skill_curation.json (v1) and pending/ fragments into the per-series overlay files"
+  desc 'Move data/weapon_skill_curation.json (v1) and pending/ fragments into the per-series overlay files'
   task split_weapon_skill_curation: :environment do
     counts = Granblue::CurationSnapshot.split
-    counts.each { |file, n| puts format("%<n>6d  %<file>s", n: n, file: file) }
+    counts.each { |file, n| puts format('%<n>6d  %<file>s', n: n, file: file) }
     puts "#{counts.values.sum} entries in #{counts.size} files"
   rescue Granblue::CurationSnapshot::Overlay::Invalid => e
     abort e.message
@@ -55,11 +55,11 @@ end
 # and build_weapon_skills.rake loads before this file. The character-skill build follows, in
 # CHARACTER_SKILL_BUILD's mode, then the summon-aura build in SUMMON_AURA_BUILD's, with the
 # same rules.
-if Rake::Task.task_defined?("db:migrate:with_data")
-  Rake::Task["db:migrate:with_data"].enhance do
+if Rake::Task.task_defined?('db:migrate:with_data')
+  Rake::Task['db:migrate:with_data'].enhance do
     next if Rails.env.test?
 
-    Rake::Task["granblue:sync_weapon_skill_curation"].invoke
+    Rake::Task['granblue:sync_weapon_skill_curation'].invoke
     WeaponSkills::Build::Runner.deploy
     CharacterSkills::Build::Runner.deploy_locked
     SummonAuras::Build::Runner.deploy

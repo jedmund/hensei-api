@@ -5,7 +5,7 @@ require 'csv'
 namespace :characters do
   # Known character lists for series detection
   ETERNALS = %w[Seofon Tweyen Threo Feower Fif Seox Niyon Eahta Tien Anre].freeze
-  EVOKERS = %w[Maria\ Theresa Caim Lobelia Alanaan Fraux Katzelia Haaselia Nier Estarriola Geisenborger].freeze
+  EVOKERS = ['Maria Theresa', 'Caim', 'Lobelia', 'Alanaan', 'Fraux', 'Katzelia', 'Haaselia', 'Nier', 'Estarriola', 'Geisenborger'].freeze
   ZODIACS = %w[Anila Andira Mahira Vajra Kumbhira Vikala Catura Cidala].freeze
 
   # Infer season from name suffix
@@ -44,17 +44,11 @@ namespace :characters do
     # Check known character lists (base name without suffix)
     base_name = name.gsub(/\s*\([^)]+\)/, '').strip
 
-    if ETERNALS.any? { |e| base_name == e }
-      series << GranblueEnums::CHARACTER_SERIES[:Eternal]
-    end
+    series << GranblueEnums::CHARACTER_SERIES[:Eternal] if ETERNALS.any? { |e| base_name == e }
 
-    if EVOKERS.any? { |e| base_name == e }
-      series << GranblueEnums::CHARACTER_SERIES[:Evoker]
-    end
+    series << GranblueEnums::CHARACTER_SERIES[:Evoker] if EVOKERS.any? { |e| base_name == e }
 
-    if ZODIACS.any? { |z| base_name == z }
-      series << GranblueEnums::CHARACTER_SERIES[:Zodiac]
-    end
+    series << GranblueEnums::CHARACTER_SERIES[:Zodiac] if ZODIACS.any? { |z| base_name == z }
 
     # Default to Standard if no series detected and not a special type
     series << GranblueEnums::CHARACTER_SERIES[:Standard] if series.empty?
@@ -93,21 +87,19 @@ namespace :characters do
         puts "  series: #{series} (#{series.map { |s| GranblueEnums::CHARACTER_SERIES.key(s) }.join(', ')})"
         puts "  gacha_available: #{gacha_available}"
         updated += 1
-      else
-        if character.update(season: season, series: series, gacha_available: gacha_available)
-          updated += 1
+      elsif character.update(season: season, series: series, gacha_available: gacha_available)
+        updated += 1
         else
           puts "Failed to update #{character.name_en}: #{character.errors.full_messages.join(', ')}"
-        end
       end
     end
 
     puts "Updated: #{updated}, Skipped: #{skipped}"
-    puts "(TEST MODE - no changes made)" if test_mode
+    puts '(TEST MODE - no changes made)' if test_mode
   end
   desc 'Export characters to CSV for season/series mapping'
   task export_for_mapping: :environment do
-    output_path = ENV['OUTPUT'] || Rails.root.join('export', 'characters_for_mapping.csv')
+    output_path = ENV['OUTPUT'] || Rails.root.join("export/characters_for_mapping.csv")
     FileUtils.mkdir_p(File.dirname(output_path))
 
     headers = %w[id granblue_id name_en name_jp rarity element season series gacha_available]
@@ -136,7 +128,7 @@ namespace :characters do
   task :import_season_series, [:csv_path] => :environment do |_t, args|
     csv_path = args[:csv_path]
     unless csv_path && File.exist?(csv_path)
-      puts "Usage: bundle exec rake characters:import_season_series[path/to/curated.csv]"
+      puts 'Usage: bundle exec rake characters:import_season_series[path/to/curated.csv]'
       puts "Error: CSV file not found at #{csv_path}"
       exit 1
     end
@@ -170,17 +162,15 @@ namespace :characters do
       if test_mode
         puts "Would update #{character.name_en}: season=#{season}, series=#{series}, gacha_available=#{gacha_available}"
         updated += 1
-      else
-        if character.update(season: season, series: series, gacha_available: gacha_available)
-          updated += 1
+      elsif character.update(season: season, series: series, gacha_available: gacha_available)
+        updated += 1
         else
           errors << "Failed to update #{character.name_en} (#{character.id}): #{character.errors.full_messages.join(', ')}"
-        end
       end
     end
 
     puts "Updated: #{updated}, Skipped: #{skipped}, Errors: #{errors.count}"
     errors.each { |e| puts "  - #{e}" } if errors.any?
-    puts "(TEST MODE - no changes made)" if test_mode
+    puts '(TEST MODE - no changes made)' if test_mode
   end
 end

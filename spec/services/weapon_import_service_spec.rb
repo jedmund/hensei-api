@@ -843,8 +843,8 @@ RSpec.describe WeaponImportService, type: :service do
         expect(Weapon.find_by(granblue_id: '1040005500')).to be_nil
 
         result = described_class.new(user, { 'list' => [
-          weapon_item(game_id: 5001, image_id: '1040005500')
-        ] }).import
+                                       weapon_item(game_id: 5001, image_id: '1040005500')
+                                     ] }).import
 
         expect(result.errors).to be_empty
         expect(result.created.size).to eq(1)
@@ -858,8 +858,8 @@ RSpec.describe WeaponImportService, type: :service do
         # Fire variant is 1040005200, which is the same as the base granblue_id.
         # It should still resolve and set the correct element.
         result = described_class.new(user, { 'list' => [
-          weapon_item(game_id: 5002, image_id: '1040005200')
-        ] }).import
+                                       weapon_item(game_id: 5002, image_id: '1040005200')
+                                     ] }).import
 
         expect(result.errors).to be_empty
         expect(result.created.first.weapon_id).to eq(ccw_weapon.id)
@@ -867,8 +867,8 @@ RSpec.describe WeaponImportService, type: :service do
 
       it 'returns an error for an image_id that matches no weapon or variant' do
         result = described_class.new(user, { 'list' => [
-          weapon_item(game_id: 5003, image_id: '9999999999')
-        ] }).import
+                                       weapon_item(game_id: 5003, image_id: '9999999999')
+                                     ] }).import
 
         expect(result.created).to be_empty
         expect(result.errors.first[:error]).to eq('Weapon not found')
@@ -878,10 +878,10 @@ RSpec.describe WeaponImportService, type: :service do
     context 'element assignment' do
       it 'stores the correct element for each variant' do
         result = described_class.new(user, { 'list' => [
-          weapon_item(game_id: 6001, image_id: '1040005500'), # Wind = 4
+                                       weapon_item(game_id: 6001, image_id: '1040005500'), # Wind = 4
           weapon_item(game_id: 6002, image_id: '1040005300'), # Water = 2
           weapon_item(game_id: 6003, image_id: '1040005700')  # Dark = 6
-        ] }).import
+                                     ] }).import
 
         expect(result.errors).to be_empty
 
@@ -893,24 +893,24 @@ RSpec.describe WeaponImportService, type: :service do
 
       it 'stores the correct element when variant ID matches base granblue_id' do
         result = described_class.new(user, { 'list' => [
-          weapon_item(game_id: 6004, image_id: '1040005200') # Fire = 1
-        ] }).import
+                                       weapon_item(game_id: 6004, image_id: '1040005200') # Fire = 1
+                                     ] }).import
 
         expect(result.created.first.element).to eq(1)
       end
 
       it 'does not set element for non-element-changeable weapons' do
         result = described_class.new(user, { 'list' => [
-          weapon_item(game_id: 6005, image_id: standard_weapon.granblue_id)
-        ] }).import
+                                       weapon_item(game_id: 6005, image_id: standard_weapon.granblue_id)
+                                     ] }).import
 
         expect(result.created.first.element).to be_nil
       end
 
       it 'persists element to the database' do
         described_class.new(user, { 'list' => [
-          weapon_item(game_id: 6006, image_id: '1040005400') # Earth = 3
-        ] }).import
+                              weapon_item(game_id: 6006, image_id: '1040005400') # Earth = 3
+                            ] }).import
 
         cw = user.collection_weapons.find_by(game_id: '6006')
         expect(cw.element).to eq(3)
@@ -961,16 +961,16 @@ RSpec.describe WeaponImportService, type: :service do
       it 'updates uncap_level on existing variant when update_existing is true' do
         # First import at uncap 3
         described_class.new(user, { 'list' => [
-          weapon_item(game_id: 8001, image_id: '1040005500', evolution: '3')
-        ] }).import
+                              weapon_item(game_id: 8001, image_id: '1040005500', evolution: '3')
+                            ] }).import
 
         cw = user.collection_weapons.find_by(game_id: '8001')
         expect(cw.uncap_level).to eq(3)
 
         # Re-import same game_id at uncap 5
         described_class.new(user, { 'list' => [
-          weapon_item(game_id: 8001, image_id: '1040005500', evolution: '5')
-        ] }, update_existing: true).import
+                              weapon_item(game_id: 8001, image_id: '1040005500', evolution: '5')
+                            ] }, update_existing: true).import
 
         cw.reload
         expect(cw.uncap_level).to eq(5)

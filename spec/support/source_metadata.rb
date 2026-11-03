@@ -12,7 +12,7 @@ module SourceMetadata
   def record_source_metadata(key, time, suffix = nil)
     conn = ActiveRecord::Base.connection
     value = [time.utc.iso8601(6), suffix].compact.join(' ')
-    conn.execute("INSERT INTO ar_internal_metadata (key, value, created_at, updated_at) " \
+    conn.execute('INSERT INTO ar_internal_metadata (key, value, created_at, updated_at) ' \
                  "VALUES (#{conn.quote(key)}, #{conn.quote(value)}, now(), now()) " \
                  'ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value')
   end

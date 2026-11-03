@@ -35,9 +35,7 @@ module CharacterSkills
       batch.status!('running')
       batch.items.each do |item|
         character = Character.find_by(id: item[:character_id])
-        unless character
-          next batch.update_item!(item[:character_id], status: 'failed', **failure(ActiveRecord::RecordNotFound.new))
-        end
+        next batch.update_item!(item[:character_id], status: 'failed', **failure(ActiveRecord::RecordNotFound.new)) unless character
 
         batch.update_item!(character.id, status: 'fetching')
         refresh = Refresh.new(character, lock_wait: LOCK_WAIT)

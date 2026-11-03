@@ -52,7 +52,7 @@ FactoryBot.define do
     trait :with_awakening do
       after(:build) do |collection_weapon|
         collection_weapon.awakening = Awakening.where(object_type: 'Weapon').first ||
-                                     FactoryBot.create(:awakening, object_type: 'Weapon')
+                                      FactoryBot.create(:awakening, object_type: 'Weapon')
         collection_weapon.awakening_level = 5
       end
     end
@@ -115,7 +115,7 @@ FactoryBot.define do
         opus_series = WeaponSeries.find_by(slug: 'dark-opus') || FactoryBot.create(:weapon_series, :opus)
         collection_weapon.weapon = FactoryBot.create(:weapon, :transcendable, weapon_series: opus_series)
         collection_weapon.awakening = Awakening.where(object_type: 'Weapon').first ||
-                                     FactoryBot.create(:awakening, object_type: 'Weapon')
+                                      FactoryBot.create(:awakening, object_type: 'Weapon')
         collection_weapon.awakening_level = 10
         # Create keys with distinct slots compatible with Opus weapons
         collection_weapon.weapon_key1 = FactoryBot.create(:weapon_key, :opus_key, slot: 0)

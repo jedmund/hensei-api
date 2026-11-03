@@ -57,8 +57,8 @@ RSpec.describe AddCharacterUlbAndTranscendenceStages do
     it 'clamps collection stages from the old 0..10 domain to stage 5' do
       character = create(:character, :transcendable)
       collection_character = create(:collection_character, character: character,
-                                                            uncap_level: 5,
-                                                            transcendence_step: 5)
+                                                           uncap_level: 5,
+                                                           transcendence_step: 5)
       collection_character.update_column(:transcendence_step, 10)
 
       described_class.new.send(:clamp_legacy_collection_transcendence_stages)

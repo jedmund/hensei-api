@@ -56,9 +56,7 @@ class PartyQueryBuilder
     query = apply_boost_mod_filter(query)
     query = apply_difficulty_filter(query)
     query = apply_solomonis_filters(query)
-    query = apply_label_filter(query)
-
-    query
+    apply_label_filter(query)
   end
 
   # `sort=rising` lists only teams in Rising, in Home's Rising order (see
@@ -155,7 +153,7 @@ class PartyQueryBuilder
     # 1. Public parties (visibility = 1)
     # 2. Crew-shared parties from other users (excludes own non-public parties)
     if @current_user&.crew
-      query.where(<<-SQL.squish, 1, @current_user.id, 'Crew', @current_user.crew.id)
+      query.where(<<~SQL.squish, 1, @current_user.id, 'Crew', @current_user.crew.id)
         visibility = ? OR (parties.user_id != ? AND parties.id IN (
           SELECT party_id FROM party_shares
           WHERE shareable_type = ? AND shareable_id = ?
@@ -209,6 +207,7 @@ class PartyQueryBuilder
   # If recency is not provided, returns nil so no date filter is applied.
   def build_date_range
     return nil unless @params[:recency].present?
+
     start_time = DateTime.current - @params[:recency].to_i.seconds
     start_time.beginning_of_day..DateTime.current
   end
@@ -233,7 +232,8 @@ class PartyQueryBuilder
     includes.split(',').each do |id|
       grid_table, object_table = grid_table_and_object_table(id)
       next unless grid_table && object_table
-      condition = <<-SQL.squish
+
+      condition = <<~SQL.squish
         EXISTS (
           SELECT 1 FROM #{grid_table}
           JOIN #{object_table} ON #{grid_table}.#{object_table.singularize}_id = #{object_table}.id
@@ -251,7 +251,8 @@ class PartyQueryBuilder
     excludes.split(',').each do |id|
       grid_table, object_table = grid_table_and_object_table(id)
       next unless grid_table && object_table
-      condition = <<-SQL.squish
+
+      condition = <<~SQL.squish
         NOT EXISTS (
           SELECT 1 FROM #{grid_table}
           JOIN #{object_table} ON #{grid_table}.#{object_table.singularize}_id = #{object_table}.id
@@ -366,7 +367,7 @@ class PartyQueryBuilder
     user_id = @current_user.id
 
     # Characters: every grid character must exist in user’s collection
-    query = query.where(<<-SQL.squish, user_id)
+    query = query.where(<<~SQL.squish, user_id)
       NOT EXISTS (
         SELECT 1 FROM grid_characters gc
         WHERE gc.party_id = parties.id
@@ -378,7 +379,7 @@ class PartyQueryBuilder
     SQL
 
     # Weapons: user must own >= the count used in the party per weapon_id
-    query = query.where(<<-SQL.squish, user_id)
+    query = query.where(<<~SQL.squish, user_id)
       NOT EXISTS (
         SELECT 1 FROM grid_weapons gw
         WHERE gw.party_id = parties.id
@@ -391,7 +392,7 @@ class PartyQueryBuilder
     SQL
 
     # Summons: same count-based logic
-    query = query.where(<<-SQL.squish, user_id)
+    query.where(<<~SQL.squish, user_id)
       NOT EXISTS (
         SELECT 1 FROM grid_summons gs
         WHERE gs.party_id = parties.id
@@ -403,8 +404,6 @@ class PartyQueryBuilder
         )
       )
     SQL
-
-    query
   end
 
   # Maps an ID’s first character to the corresponding grid table and object table names.

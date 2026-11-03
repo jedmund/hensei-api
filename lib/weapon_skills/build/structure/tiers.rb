@@ -68,7 +68,7 @@ module WeaponSkills
           raw_name = hash["#{prefix}_name"]
           return nil if raw_name.blank?
 
-          name = raw_name.gsub(/\{\{WeaponSkillMod\|[^}]+\}\}\s*/, "").gsub(/<!--.*?-->/, "").strip
+          name = raw_name.gsub(/\{\{WeaponSkillMod\|[^}]+\}\}\s*/, '').gsub(/<!--.*?-->/, '').strip
           name = resolve_ifeq_name(name)
 
           description = hash["#{en_prefix}_desc"].presence || hash["#{prefix}_desc"]
@@ -77,10 +77,10 @@ module WeaponSkills
           tier = tier_for(unlock_level)
 
           modifier = parsed[:modifier]
-          modifier = modifier.sub(ELEMENT_SUFFIX, "") if modifier
+          modifier = modifier.sub(ELEMENT_SUFFIX, '') if modifier
 
           size = size_from_description(description)
-          size = "big_ii" if size == "big" && raw_name =~ /\bII\b/ && raw_name !~ /\bIII\b/
+          size = 'big_ii' if size == 'big' && raw_name =~ /\bII\b/ && raw_name !~ /\bIII\b/
           size ||= parsed[:size]
 
           {
@@ -102,7 +102,7 @@ module WeaponSkills
         # Dark Opus `{{#ifeq:…|Majesty III|Majesty}}` names: both branches share the
         # modifier, so the ELSE (last) branch.
         def resolve_ifeq_name(name)
-          return name if name.blank? || !name.include?("#ifeq")
+          return name if name.blank? || !name.include?('#ifeq')
 
           name.gsub(/\{\{\s*#ifeq:.*\|\s*([^|{}]+?)\s*\}\}/m, '\1').strip
         end
@@ -119,10 +119,10 @@ module WeaponSkills
         end
 
         def strip_markup(text)
-          text.gsub(/<!--.*?(?:-->|\z)/m, " ")
-              .gsub(%r{<ref\b[^>]*/>}i, " ")
-              .gsub(%r{<ref\b[^>]*>.*?(?:</ref>|\z)}im, " ")
-              .gsub(/<[^>]+>/, " ")
+          text.gsub(/<!--.*?(?:-->|\z)/m, ' ')
+              .gsub(%r{<ref\b[^>]*/>}i, ' ')
+              .gsub(%r{<ref\b[^>]*>.*?(?:</ref>|\z)}im, ' ')
+              .gsub(/<[^>]+>/, ' ')
         end
 
         # A later main-hand-only clause does not make an earlier always-on one main-hand-only.

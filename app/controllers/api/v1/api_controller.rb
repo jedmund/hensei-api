@@ -120,9 +120,7 @@ module Api
       end
 
       def admin_mode
-        if current_user&.admin? && request.headers['X-Admin-Mode']
-          @admin_mode ||= request.headers['X-Admin-Mode'] == 'true'
-        end
+        @admin_mode ||= request.headers['X-Admin-Mode'] == 'true' if current_user&.admin? && request.headers['X-Admin-Mode']
 
         @admin_mode
       end
@@ -182,9 +180,9 @@ module Api
 
       def render_not_found_response(object)
         render json: ErrorBlueprint.render(nil, error: {
-          message: "#{object.capitalize} could not be found",
-          code: 'not_found'
-        }), status: :not_found
+                                             message: "#{object.capitalize} could not be found",
+                                             code: 'not_found'
+                                           }), status: :not_found
       end
 
       def render_unauthorized_response
@@ -223,9 +221,9 @@ module Api
 
       def render_forbidden_response(message = 'Forbidden')
         render json: ErrorBlueprint.render(nil, error: {
-          message: message,
-          code: 'forbidden'
-        }), status: :forbidden
+                                             message: message,
+                                             code: 'forbidden'
+                                           }), status: :forbidden
       end
 
       private

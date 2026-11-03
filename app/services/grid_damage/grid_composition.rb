@@ -29,13 +29,13 @@ module GridDamage
     def valid_count_condition?(condition)
       return true unless condition.is_a?(Hash)
 
-      type = condition["type"]
+      type = condition['type']
       return false if %w[weapon_group_count same_weapon_type_count].include?(type)
-      return true unless type == "count_basis_gte"
-      return false if condition.key?("all")
+      return true unless type == 'count_basis_gte'
+      return false if condition.key?('all')
 
-      threshold = Integer(condition["gte"], exception: false)
-      valid_count_basis?(condition["basis"]) && threshold&.positive?
+      threshold = Integer(condition['gte'], exception: false)
+      valid_count_basis?(condition['basis']) && threshold&.positive?
     end
 
     def for_party(party)
@@ -52,7 +52,7 @@ module GridDamage
           # omega-skill counters (Vivification) go by the RESOLVED frame — a Dark Opus
           # Renunciation's s1 counts as an omega skill despite its template series
           # (mcwZet: Vivification counts 7, incl. the opus).
-          omega ||= FrameResolver.frame_for(w, v) == "omega"
+          omega ||= FrameResolver.frame_for(w, v) == 'omega'
           next unless v.resolved_modifier
 
           modifiers << v.resolved_modifier
@@ -119,25 +119,25 @@ module GridDamage
       raise ArgumentError, "Unknown count_basis: #{basis.inspect}" unless valid_count_basis?(basis)
 
       case basis
-      when "same_weapon_type"
+      when 'same_weapon_type'
         composition.dig(:weapon_type_counts, weapon&.proficiency).to_i
-      when "max_same_weapon_type"
+      when 'max_same_weapon_type'
         composition[:max_weapon_type_count].to_i
-      when "distinct_weapon_types"
+      when 'distinct_weapon_types'
         composition[:distinct_weapon_type_count].to_i
-      when "same_series"
+      when 'same_series'
         composition.dig(:weapon_series_counts, weapon&.weapon_series&.slug).to_i
       # Vivification counts weapons with its own element's omega skills ("Ironflame's"
       # for Iron's): 6C5bN9's Earth Lifetree's Insignia don't count on a Fire grid.
-      when "omega_skill"
+      when 'omega_skill'
         element = Calculator::ELEMENT_WORD[weapon&.element.to_i]
         by_element = composition[:omega_skill_counts_by_element]
         element && by_element ? by_element[element].to_i : composition[:omega_skill_count].to_i
-      when "crew_races"
-        races = Array(effect&.condition&.dig("races")).map(&:to_i)
+      when 'crew_races'
+        races = Array(effect&.condition&.dig('races')).map(&:to_i)
         composition.fetch(:character_races, []).count { |r| races.include?(r.to_i) }
       else
-        composition.dig(:weapon_series_counts, basis.split(":", 2).last).to_i
+        composition.dig(:weapon_series_counts, basis.split(':', 2).last).to_i
       end
     end
   end

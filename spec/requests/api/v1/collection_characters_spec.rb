@@ -287,9 +287,9 @@ RSpec.describe 'Collection Characters API', type: :request do
     it 'returns error when character already in collection' do
       create(:collection_character, user: user, character: character)
 
-      expect {
+      expect do
         post '/api/v1/collection/characters', params: valid_attributes.to_json, headers: headers
-      }.not_to change(CollectionCharacter, :count)
+      end.not_to change(CollectionCharacter, :count)
 
       expect(response).to have_http_status(:conflict)
       json = response.parsed_body
@@ -302,9 +302,9 @@ RSpec.describe 'Collection Characters API', type: :request do
         collection_character: { awakening_id: weapon_awakening.id }
       )
 
-      expect {
+      expect do
         post '/api/v1/collection/characters', params: invalid_attributes.to_json, headers: headers
-      }.not_to change(CollectionCharacter, :count)
+      end.not_to change(CollectionCharacter, :count)
 
       expect(response).to have_http_status(:unprocessable_entity)
       json = response.parsed_body
@@ -316,9 +316,9 @@ RSpec.describe 'Collection Characters API', type: :request do
         collection_character: { uncap_level: 3, transcendence_step: 5 }
       )
 
-      expect {
+      expect do
         post '/api/v1/collection/characters', params: invalid_attributes.to_json, headers: headers
-      }.not_to change(CollectionCharacter, :count)
+      end.not_to change(CollectionCharacter, :count)
 
       expect(response).to have_http_status(:unprocessable_entity)
       json = response.parsed_body
@@ -363,7 +363,7 @@ RSpec.describe 'Collection Characters API', type: :request do
     it 'returns error with invalid ring data' do
       invalid_attributes = {
         collection_character: {
-          ring1: { modifier: 1, strength: nil }  # Invalid: missing strength
+          ring1: { modifier: 1, strength: nil } # Invalid: missing strength
         }
       }
 

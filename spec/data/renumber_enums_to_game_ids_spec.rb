@@ -92,7 +92,7 @@ RSpec.describe RenumberEnumsToGameIds do
     expect(misc_slot.read_attribute_before_type_cast(:section)).to eq(0)
   end
 
-  it "renumbers weapon-skill race lists and Solomonis proficiency targets, but not race targets" do
+  it 'renumbers weapon-skill race lists and Solomonis proficiency targets, but not race targets' do
     migration.up
 
     expect(races_effect.reload.condition).to eq('races' => [1, 6, 5])

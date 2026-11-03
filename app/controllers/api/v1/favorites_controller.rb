@@ -22,7 +22,7 @@ module Api
 
         @favorite.save!
         render json: FavoriteBlueprint.render(@favorite, root: :favorite),
-                      status: :created
+               status: :created
       end
 
       def destroy

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "rails_helper"
+require 'rails_helper'
 
 RSpec.describe WeaponSkills::Build::Writer do
   let(:weapon) { create(:weapon) }
@@ -9,22 +9,22 @@ RSpec.describe WeaponSkills::Build::Writer do
 
   def version(position, ordinal, name, **attrs)
     WeaponSkills::BuildResult::Version.new(weapon_granblue_id: gid, position: position, ordinal: ordinal,
-                                           skill_name_en: name, skill_modifier: "Might", skill_series: "normal",
-                                           skill_size: "big", transcendence_stage: 0, **attrs)
+                                           skill_name_en: name, skill_modifier: 'Might', skill_series: 'normal',
+                                           skill_size: 'big', transcendence_stage: 0, **attrs)
   end
 
   def datum(identity, boost_type, sl10)
     WeaponSkills::BuildResult::Row.new(
       version_identity: identity, kind: :datum, boost_type: boost_type, condition: nil,
-      attributes: { modifier: "Might", boost_type: boost_type, series: "normal", size: "big",
-                    formula_type: "flat", sl1: 1.0, sl10: sl10, sl15: 15.0 }
+      attributes: { modifier: 'Might', boost_type: boost_type, series: 'normal', size: 'big',
+                    formula_type: 'flat', sl1: 1.0, sl10: sl10, sl15: 15.0 }
     )
   end
 
   def effect(identity, boost_type, condition)
     WeaponSkills::BuildResult::Row.new(
       version_identity: identity, kind: :effect, boost_type: boost_type, condition: condition,
-      attributes: { modifier: "Might", boost_type: boost_type, series: "normal", scaling_kind: "static",
+      attributes: { modifier: 'Might', boost_type: boost_type, series: 'normal', scaling_kind: 'static',
                     value: 10, condition: condition }
     )
   end
@@ -36,15 +36,15 @@ RSpec.describe WeaponSkills::Build::Writer do
 
   def write(res) = described_class.call(res)
 
-  it "creates slots, versions and rows, then changes nothing on a second write" do
+  it 'creates slots, versions and rows, then changes nothing on a second write' do
     v = version(0, 0, "Inferno's Might", unlock_level: 100, scales_with_skill_level: true)
-    res = result([v], [datum(v.identity, "atk", 10.0), effect(v.identity, "da", { "type" => "x", "a" => 1 })])
+    res = result([v], [datum(v.identity, 'atk', 10.0), effect(v.identity, 'da', { 'type' => 'x', 'a' => 1 })])
 
     first = write(res)
     expect(first.to_h.slice(:slots_created, :versions_created, :rows_created)).to eq(slots_created: 1, versions_created: 1,
                                                                                      rows_created: 2)
     record = WeaponSkillVersion.sole
-    expect(record).to have_attributes(unlock_level: 100, skill_modifier: "Might", scales_with_skill_level: true)
+    expect(record).to have_attributes(unlock_level: 100, skill_modifier: 'Might', scales_with_skill_level: true)
     expect(record.skill.name_en).to eq("Inferno's Might")
 
     second = write(res)
@@ -52,12 +52,12 @@ RSpec.describe WeaponSkills::Build::Writer do
     expect(WeaponSkillVersion.sole.id).to eq(record.id)
   end
 
-  it "updates in place, keeping ids, and removes generated rows the build no longer has" do
+  it 'updates in place, keeping ids, and removes generated rows the build no longer has' do
     v = version(0, 0, "Inferno's Might")
-    write(result([v], [datum(v.identity, "atk", 10.0), datum(v.identity, "hp", 3.0)]))
-    ids = [WeaponSkillVersion.sole.id, WeaponSkillDatum.find_by(boost_type: "atk").id]
+    write(result([v], [datum(v.identity, 'atk', 10.0), datum(v.identity, 'hp', 3.0)]))
+    ids = [WeaponSkillVersion.sole.id, WeaponSkillDatum.find_by(boost_type: 'atk').id]
 
-    report = write(result([version(0, 0, "Inferno's Might", unlock_level: 150)], [datum(v.identity, "atk", 12.0)]))
+    report = write(result([version(0, 0, "Inferno's Might", unlock_level: 150)], [datum(v.identity, 'atk', 12.0)]))
 
     expect(report.to_h.slice(:versions_updated, :rows_updated, :rows_deleted)).to eq(versions_updated: 1, rows_updated: 1,
                                                                                      rows_deleted: 1)
@@ -67,13 +67,13 @@ RSpec.describe WeaponSkills::Build::Writer do
 
   it "writes a fallback row's provenance and clears it once the row has its own curve" do
     v = version(0, 0, "Inferno's Might")
-    fallback = datum(v.identity, "atk", 10.0)
-    fallback.attributes = fallback.attributes.merge(provenance: "fallback:Might/normal")
+    fallback = datum(v.identity, 'atk', 10.0)
+    fallback.attributes = fallback.attributes.merge(provenance: 'fallback:Might/normal')
     write(result([v], [fallback]))
-    expect(WeaponSkillDatum.sole.provenance).to eq("fallback:Might/normal")
+    expect(WeaponSkillDatum.sole.provenance).to eq('fallback:Might/normal')
 
     expect(write(result([v], [fallback])).changed?).to be(false)
-    write(result([v], [datum(v.identity, "atk", 10.0)]))
+    write(result([v], [datum(v.identity, 'atk', 10.0)]))
     expect(WeaponSkillDatum.sole.provenance).to be_nil
   end
 
@@ -81,15 +81,15 @@ RSpec.describe WeaponSkills::Build::Writer do
     v = version(0, 0, "Inferno's Might")
     write(result([v]))
     record = WeaponSkillVersion.sole
-    record.update_columns(modifier_override: "none", suppressed_boosts: ["hp"], overrides_edited_at: edited_at)
-    curated = WeaponSkillDatum.create!(weapon_skill_version: record, modifier: "Might", boost_type: "atk", series: "normal",
-                                       size: "big", sl10: 99, manually_edited_at: edited_at, provenance: "manual")
+    record.update_columns(modifier_override: 'none', suppressed_boosts: ['hp'], overrides_edited_at: edited_at)
+    curated = WeaponSkillDatum.create!(weapon_skill_version: record, modifier: 'Might', boost_type: 'atk', series: 'normal',
+                                       size: 'big', sl10: 99, manually_edited_at: edited_at, provenance: 'manual')
 
-    report = write(result([v], [datum(v.identity, "atk", 10.0)]))
+    report = write(result([v], [datum(v.identity, 'atk', 10.0)]))
 
     expect(report.rows_kept_curated).to eq(1)
     expect(curated.reload.sl10).to eq(99)
-    expect(record.reload).to have_attributes(modifier_override: "none", suppressed_boosts: ["hp"])
+    expect(record.reload).to have_attributes(modifier_override: 'none', suppressed_boosts: ['hp'])
   end
 
   it "deletes a version the build no longer produces, unless it's curated" do
@@ -98,13 +98,13 @@ RSpec.describe WeaponSkills::Build::Writer do
     c = version(2, 0, "Fire's Majesty")
     write(result([a, b, c]))
     WeaponSkillVersion.joins(:skill).find_by(skills: { name_en: "Fire's Majesty" })
-                      .update_columns(size_override: "big", overrides_edited_at: edited_at)
+                      .update_columns(size_override: 'big', overrides_edited_at: edited_at)
 
     report = write(result([a]))
 
     expect(report.to_h.slice(:versions_deleted, :versions_kept, :slots_deleted)).to eq(versions_deleted: 1, versions_kept: 1,
                                                                                        slots_deleted: 1)
-    expect(WeaponSkillVersion.joins(:skill).pluck("skills.name_en")).to contain_exactly("Inferno's Might", "Fire's Majesty")
+    expect(WeaponSkillVersion.joins(:skill).pluck('skills.name_en')).to contain_exactly("Inferno's Might", "Fire's Majesty")
   end
 
   it "accepts a derived modifier outside the model's list" do

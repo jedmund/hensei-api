@@ -16,7 +16,7 @@ module PostDeployment
     end
 
     def process_all_files(&block)
-      files = Dir.glob(Rails.root.join('db', 'seed', 'updates', '*.csv')).sort
+      files = Dir.glob(Rails.root.join("db/seed/updates/*.csv")).sort
 
       files.each do |file|
         if (result = import_csv(file))
@@ -25,9 +25,9 @@ module PostDeployment
         end
       end
 
-      if @processed_files.any?
+      return unless @processed_files.any?
+
         print_summary
-      end
     end
 
     private
@@ -59,7 +59,7 @@ module PostDeployment
       force_text = @force ? ' (Force mode)' : ''
 
       if @verbose
-        log_header("#{mode_text}#{force_text}: #{filename}", "-")
+        log_header("#{mode_text}#{force_text}: #{filename}", '-')
         puts "\n"
       end
 
@@ -116,6 +116,7 @@ module PostDeployment
 
     def already_imported?(filename)
       return false if @force
+
       DataVersion.imported?(filename)
     end
 
@@ -138,7 +139,7 @@ module PostDeployment
     def print_summary
       return if @processed_files.empty?
 
-      log_header("Processed files:")
+      log_header('Processed files:')
       puts "\n"
       @processed_files.each { |file| log_step "  • #{file}" }
     end
@@ -146,6 +147,7 @@ module PostDeployment
     def print_change_summary(action, changes)
       changes.each do |type, records|
         next if records.empty?
+
         log_step "  • #{action} #{records.size} #{type} #{records.size == 1 ? 'record' : 'records'}"
       end
     end

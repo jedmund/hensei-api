@@ -117,9 +117,7 @@ module Api
       def import
         game_data = import_params[:data]
 
-        unless game_data.present?
-          return render json: { error: 'No data provided' }, status: :bad_request
-        end
+        return render json: { error: 'No data provided' }, status: :bad_request unless game_data.present?
 
         service = ArtifactImportService.new(
           current_user,
@@ -153,9 +151,7 @@ module Api
         game_data = import_params[:data]
         filter = import_params[:filter]
 
-        unless game_data.present?
-          return render json: { error: 'No data provided' }, status: :bad_request
-        end
+        return render json: { error: 'No data provided' }, status: :bad_request unless game_data.present?
 
         service = ArtifactImportService.new(current_user, game_data, filter: filter)
         items_to_delete = service.preview_deletions
@@ -226,12 +222,12 @@ module Api
 
       def batch_artifact_params
         params.permit(collection_artifacts: [
-          :artifact_id, :element, :proficiency, :level, :nickname, :reroll_slot,
+                        :artifact_id, :element, :proficiency, :level, :nickname, :reroll_slot,
           { skill1: %i[modifier quality level] },
           { skill2: %i[modifier quality level] },
           { skill3: %i[modifier quality level] },
           { skill4: %i[modifier quality level] }
-        ])
+                      ])
       end
 
       def import_params

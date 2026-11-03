@@ -2,8 +2,8 @@ require 'rails_helper'
 
 RSpec.describe CrewMembership, type: :model do
   describe 'associations' do
-    it { should belong_to(:crew) }
-    it { should belong_to(:user) }
+    it { is_expected.to belong_to(:crew) }
+    it { is_expected.to belong_to(:user) }
   end
 
   describe 'validations' do
@@ -19,7 +19,7 @@ RSpec.describe CrewMembership, type: :model do
   end
 
   describe 'role enum' do
-    it { should define_enum_for(:role).with_values(member: 0, vice_captain: 1, captain: 2) }
+    it { is_expected.to define_enum_for(:role).with_values(member: 0, vice_captain: 1, captain: 2) }
   end
 
   describe 'scopes' do

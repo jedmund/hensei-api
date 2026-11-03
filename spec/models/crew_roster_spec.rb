@@ -74,9 +74,9 @@ RSpec.describe CrewRoster, type: :model do
 
   describe '.seed_for_crew!' do
     it 'creates one roster per element' do
-      expect {
+      expect do
         described_class.seed_for_crew!(crew, user)
-      }.to change(described_class, :count).by(6)
+      end.to change(described_class, :count).by(6)
 
       expect(crew.crew_rosters.pluck(:element).sort).to eq([1, 2, 3, 4, 5, 6])
     end
@@ -84,9 +84,9 @@ RSpec.describe CrewRoster, type: :model do
     it 'is idempotent' do
       described_class.seed_for_crew!(crew, user)
 
-      expect {
+      expect do
         described_class.seed_for_crew!(crew, user)
-      }.not_to change(described_class, :count)
+      end.not_to change(described_class, :count)
     end
   end
 

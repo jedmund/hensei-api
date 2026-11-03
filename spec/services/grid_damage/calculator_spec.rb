@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "rails_helper"
+require 'rails_helper'
 
 # End-to-end wiring of the boost-list orchestrator over a small factory grid:
 # data-track resolution → summon-aura amplification → flat sources → key effects
@@ -11,16 +11,16 @@ RSpec.describe GridDamage::Calculator do
   let(:state) { { turn: 1, hp_percent: 100 } }
 
   before do
-    create(:weapon_skill_boost_type, key: "atk", stacking_rule: "multiplicative_by_series")
-    create(:weapon_skill_boost_type, key: "hp")
-    create(:weapon_skill_boost_type, key: "ta")
+    create(:weapon_skill_boost_type, key: 'atk', stacking_rule: 'multiplicative_by_series')
+    create(:weapon_skill_boost_type, key: 'hp')
+    create(:weapon_skill_boost_type, key: 'ta')
   end
 
   # A grid weapon whose single skill is (modifier, series, size), backed by a canonical
   # SL-curve for `boosts` (sl15 values). max_skill_level 15 + uncap 4 ⇒ evaluates at SL15.
   # Extra opts: `main_hand_only:` for the version, `weapon_series:`/`weapon_element:` for
   # the weapon; the rest go to the grid weapon.
-  def add_weapon(modifier:, series:, position:, boosts:, size: "big", **opts)
+  def add_weapon(modifier:, series:, position:, boosts:, size: 'big', **opts)
     weapon_series = opts.delete(:weapon_series)
     weapon = create(:weapon, max_skill_level: 15, weapon_series: weapon_series,
                              element: opts.delete(:weapon_element) || 1)
@@ -40,78 +40,78 @@ RSpec.describe GridDamage::Calculator do
 
   def add_main_summon(normal_aura:)
     summon = create(:summon)
-    SummonAura.create!(summon_granblue_id: summon.granblue_id, slot: "main",
-                       target: "normal_frame", uncap_level: 0, transcendence_stage: 0,
+    SummonAura.create!(summon_granblue_id: summon.granblue_id, slot: 'main',
+                       target: 'normal_frame', uncap_level: 0, transcendence_stage: 0,
                        value: normal_aura)
     create(:grid_summon, party: party, summon: summon, main: true, position: 0)
   end
 
-  context "with a 100% Optimus aura (enhancement factor 2.0)" do
+  context 'with a 100% Optimus aura (enhancement factor 2.0)' do
     before do
       add_main_summon(normal_aura: 100)
-      add_weapon(modifier: "Might", series: "normal", position: 0, mainhand: true,
-                 boosts: { "atk" => 20.0 })
-      add_weapon(modifier: "Aegis", series: "normal", position: 1, boosts: { "hp" => 21.0 })
-      add_weapon(modifier: "Bewitching", series: "ex", position: 2, size: "massive",
-                 boosts: { "atk" => 30.0 })
+      add_weapon(modifier: 'Might', series: 'normal', position: 0, mainhand: true,
+                 boosts: { 'atk' => 20.0 })
+      add_weapon(modifier: 'Aegis', series: 'normal', position: 1, boosts: { 'hp' => 21.0 })
+      add_weapon(modifier: 'Bewitching', series: 'ex', position: 2, size: 'massive',
+                 boosts: { 'atk' => 30.0 })
     end
 
-    it "amplifies Normal-frame skills by the enhancement and leaves EX flat" do
+    it 'amplifies Normal-frame skills by the enhancement and leaves EX flat' do
       result = described_class.boost_list(party, state: state)
-      expect(result["atk"].by_series["normal"]).to eq(40.0) # 20 × (1 + 100/100)
-      expect(result["atk"].by_series["ex"]).to eq(30.0)     # EX: no aura
+      expect(result['atk'].by_series['normal']).to eq(40.0) # 20 × (1 + 100/100)
+      expect(result['atk'].by_series['ex']).to eq(30.0)     # EX: no aura
     end
 
-    it "amplifies HP by the same enhancement as ATK" do
-      expect(described_class.boost_list(party, state: state)["hp"].total).to eq(42.0)
+    it 'amplifies HP by the same enhancement as ATK' do
+      expect(described_class.boost_list(party, state: state)['hp'].total).to eq(42.0)
     end
 
-    it "adds weapon-awakening bonuses flat (never amplified)" do
+    it 'adds weapon-awakening bonuses flat (never amplified)' do
       # The seeds may already hold it; slugs are unique
-      atk_awakening = Awakening.find_by(slug: "weapon-atk") || create(:awakening, :for_weapon, slug: "weapon-atk")
+      atk_awakening = Awakening.find_by(slug: 'weapon-atk') || create(:awakening, :for_weapon, slug: 'weapon-atk')
       party.weapons.find_by(position: 1).update!(awakening: atk_awakening, awakening_level: 4)
       result = described_class.boost_list(party, state: state)
-      expect(result["atk"].by_series["normal"]).to eq(80.0) # 40 amplified + 40 flat
+      expect(result['atk'].by_series['normal']).to eq(80.0) # 40 amplified + 40 flat
     end
 
-    it "clamps rate boosts to their in-game cap" do
-      add_weapon(modifier: "Abandon", series: "normal", position: 3, boosts: { "ta" => 40.0 })
+    it 'clamps rate boosts to their in-game cap' do
+      add_weapon(modifier: 'Abandon', series: 'normal', position: 3, boosts: { 'ta' => 40.0 })
       result = described_class.boost_list(party, state: state)
-      expect(result["ta"].total).to eq(75.0) # 40 × 2.0 = 80 raw → cap
-      expect(result["ta"]).to have_attributes(capped: true, raw: 80.0)
+      expect(result['ta'].total).to eq(75.0) # 40 × 2.0 = 80 raw → cap
+      expect(result['ta']).to have_attributes(capped: true, raw: 80.0)
     end
 
-    it "drops main-hand-only skills on non-mainhand weapons" do
-      add_weapon(modifier: "Celere", series: "ex", position: 3, main_hand_only: true,
-                 boosts: { "atk" => 12.0 })
-      expect(described_class.boost_list(party, state: state)["atk"].by_series["ex"]).to eq(30.0)
+    it 'drops main-hand-only skills on non-mainhand weapons' do
+      add_weapon(modifier: 'Celere', series: 'ex', position: 3, main_hand_only: true,
+                 boosts: { 'atk' => 12.0 })
+      expect(described_class.boost_list(party, state: state)['atk'].by_series['ex']).to eq(30.0)
     end
 
-    it "does not amplify Ancestral weapon skills with summon auras" do
-      ancestral = create(:weapon_series, slug: "ancestral", summon_boosted: false)
-      add_weapon(modifier: "Fandango", series: "normal", position: 3,
-                 boosts: { "atk" => 33.0 }, size: "ancestral", weapon_series: ancestral)
+    it 'does not amplify Ancestral weapon skills with summon auras' do
+      ancestral = create(:weapon_series, slug: 'ancestral', summon_boosted: false)
+      add_weapon(modifier: 'Fandango', series: 'normal', position: 3,
+                 boosts: { 'atk' => 33.0 }, size: 'ancestral', weapon_series: ancestral)
 
-      expect(described_class.boost_list(party, state: state)["atk"].by_series["normal"]).to eq(73.0)
+      expect(described_class.boost_list(party, state: state)['atk'].by_series['normal']).to eq(73.0)
     end
 
-    it "keeps panel_hidden skills off the panel and lists them as hidden stats" do
-      add_weapon(modifier: "Celere", series: "ex", position: 3, boosts: { "critical" => 12.0 })
-      WeaponSkillDatum.find_by!(modifier: "Celere").update!(panel_hidden: true)
+    it 'keeps panel_hidden skills off the panel and lists them as hidden stats' do
+      add_weapon(modifier: 'Celere', series: 'ex', position: 3, boosts: { 'critical' => 12.0 })
+      WeaponSkillDatum.find_by!(modifier: 'Celere').update!(panel_hidden: true)
 
-      expect(described_class.boost_list(party, state: state)).not_to have_key("critical")
-      expect(described_class.panel(party, state: state)[:hidden_agg]["critical"].total).to eq(12.0)
+      expect(described_class.boost_list(party, state: state)).not_to have_key('critical')
+      expect(described_class.panel(party, state: state)[:hidden_agg]['critical'].total).to eq(12.0)
 
       lines = GridDamage::PanelPresenter.present(party, state: state)[:lines]
-      expect(lines.select { |l| l[:key] == "critical" }).to contain_exactly(
-        a_hash_including(group: "hidden", label: "Critical", display: "12%")
+      expect(lines.select { |l| l[:key] == 'critical' }).to contain_exactly(
+        a_hash_including(group: 'hidden', label: 'Critical', display: '12%')
       )
     end
   end
 
   # 0umD8e: three Earth Fang of the Dragonslayer Mk II on a Fire grid under two Colossus
   # Omega auras.
-  context "with off-element weapons in the grid" do
+  context 'with off-element weapons in the grid' do
     let(:earth) { 3 }
 
     def describe_skill(weapon_position, text)
@@ -121,140 +121,140 @@ RSpec.describe GridDamage::Calculator do
 
     before do
       add_main_summon(normal_aura: 100)
-      add_weapon(modifier: "Might", series: "normal", position: -1, mainhand: true, boosts: { "atk" => 20.0 })
+      add_weapon(modifier: 'Might', series: 'normal', position: -1, mainhand: true, boosts: { 'atk' => 20.0 })
       describe_skill(-1, "Big boost to fire allies' ATK")
     end
 
     # 6C5bN9: the in-game panel shows no Turn DMG for the Earth Insignia copies.
     it "leaves out another element's skills, demerits included" do
-      create(:weapon_skill_boost_type, key: "turn_dmg")
-      add_weapon(modifier: "Insignia", series: "normal", position: 0, weapon_element: earth,
-                 boosts: { "atk" => 18.0, "turn_dmg" => 5.0 })
+      create(:weapon_skill_boost_type, key: 'turn_dmg')
+      add_weapon(modifier: 'Insignia', series: 'normal', position: 0, weapon_element: earth,
+                 boosts: { 'atk' => 18.0, 'turn_dmg' => 5.0 })
       describe_skill(0, "Big boost to earth allies' ATK / Take 5% damage every turn.")
 
       result = described_class.boost_list(party, state: state)
 
-      expect(result["atk"].by_series["normal"]).to eq(40.0) # the fire Might alone, amplified
-      expect(result).not_to have_key("turn_dmg")
+      expect(result['atk'].by_series['normal']).to eq(40.0) # the fire Might alone, amplified
+      expect(result).not_to have_key('turn_dmg')
     end
 
     it "keeps an on-element skill's turn damage at its per-copy value" do
-      create(:weapon_skill_boost_type, key: "turn_dmg")
-      add_weapon(modifier: "Insignia", series: "normal", position: 0,
-                 boosts: { "atk" => 18.0, "turn_dmg" => 5.0 })
+      create(:weapon_skill_boost_type, key: 'turn_dmg')
+      add_weapon(modifier: 'Insignia', series: 'normal', position: 0,
+                 boosts: { 'atk' => 18.0, 'turn_dmg' => 5.0 })
       describe_skill(0, "Big boost to fire allies' ATK / Take 5% damage every turn.")
 
-      expect(described_class.boost_list(party, state: state)["turn_dmg"].total).to eq(5.0) # never amplified
+      expect(described_class.boost_list(party, state: state)['turn_dmg'].total).to eq(5.0) # never amplified
     end
 
-    it "keeps skills that affect allies of any element" do
-      add_weapon(modifier: "Majesty", series: "normal", position: 0, weapon_element: earth,
-                 boosts: { "hp" => 10.0 })
+    it 'keeps skills that affect allies of any element' do
+      add_weapon(modifier: 'Majesty', series: 'normal', position: 0, weapon_element: earth,
+                 boosts: { 'hp' => 10.0 })
       describe_skill(0, "Boost to all allies' ATK and max HP based on number of Humans in party.")
 
-      expect(described_class.boost_list(party, state: state)["hp"].total).to eq(20.0)
+      expect(described_class.boost_list(party, state: state)['hp'].total).to eq(20.0)
     end
 
     it "follows the element a skill names over the weapon's own (early gacha weapons)" do
-      add_weapon(modifier: "Aegis", series: "normal", position: 0, weapon_element: earth,
-                 boosts: { "hp" => 10.0 })
+      add_weapon(modifier: 'Aegis', series: 'normal', position: 0, weapon_element: earth,
+                 boosts: { 'hp' => 10.0 })
       describe_skill(0, "Big boost to fire allies' max HP")
 
-      expect(described_class.boost_list(party, state: state)["hp"].total).to eq(20.0)
+      expect(described_class.boost_list(party, state: state)['hp'].total).to eq(20.0)
     end
 
     it "reads a copy's own element over the catalogue's" do
-      add_weapon(modifier: "Majesty", series: "normal", position: 0, boosts: { "hp" => 10.0 }, element: earth)
+      add_weapon(modifier: 'Majesty', series: 'normal', position: 0, boosts: { 'hp' => 10.0 }, element: earth)
       describe_skill(0, "Small boost to {{WeaponElement|wpn}} allies' ATK and max HP")
 
-      expect(described_class.boost_list(party, state: state)).not_to have_key("hp")
+      expect(described_class.boost_list(party, state: state)).not_to have_key('hp')
     end
 
     it "drops an off-element Revans weapon's awakening" do
-      revans = WeaponSeries.find_by(slug: "revans") || create(:weapon_series, slug: "revans")
-      atk = Awakening.find_by(slug: "weapon-atk") || create(:awakening, :for_weapon, slug: "weapon-atk")
-      add_weapon(modifier: "Aegis", series: "normal", position: 0, boosts: { "hp" => 10.0 },
+      revans = WeaponSeries.find_by(slug: 'revans') || create(:weapon_series, slug: 'revans')
+      atk = Awakening.find_by(slug: 'weapon-atk') || create(:awakening, :for_weapon, slug: 'weapon-atk')
+      add_weapon(modifier: 'Aegis', series: 'normal', position: 0, boosts: { 'hp' => 10.0 },
                  weapon_series: revans, weapon_element: earth, awakening: atk, awakening_level: 4)
 
       expect(GridDamage::AwakeningContributions.for_party(party)).to be_empty
     end
   end
 
-  it "caps E. ATK at 40%" do
-    create(:weapon_skill_boost_type, key: "e_atk")
-    add_weapon(modifier: "Celere", series: "ex", position: -1, mainhand: true, boosts: { "e_atk" => 25.0 })
-    add_weapon(modifier: "Celere", series: "ex", position: 0, boosts: { "e_atk" => 25.0 })
+  it 'caps E. ATK at 40%' do
+    create(:weapon_skill_boost_type, key: 'e_atk')
+    add_weapon(modifier: 'Celere', series: 'ex', position: -1, mainhand: true, boosts: { 'e_atk' => 25.0 })
+    add_weapon(modifier: 'Celere', series: 'ex', position: 0, boosts: { 'e_atk' => 25.0 })
 
-    expect(described_class.boost_list(party, state: state)["e_atk"]).to have_attributes(total: 40.0, capped: true)
+    expect(described_class.boost_list(party, state: state)['e_atk']).to have_attributes(total: 40.0, capped: true)
   end
 
-  context "boost_level (≥280) key effects — the two-pass activation" do
+  context 'boost_level (≥280) key effects — the two-pass activation' do
     def add_keyed_weapon(position:)
-      key = create(:weapon_key, slug: "test-pendulum")
-      WeaponSkillEffect.create!(key_slug: "test-pendulum", modifier: "Test Pendulum",
-                                boost_type: "atk", series: "ex", scaling_kind: "conditional_flat",
-                                value: 40.0, value_unit: "percent", stacking: "additive",
-                                applies_to: "element_allies",
-                                condition: { "type" => "boost_level", "gte" => 280 })
-      add_weapon(modifier: "Might", series: "normal", position: position,
-                 boosts: { "atk" => 20.0 }, weapon_key1: key)
+      key = create(:weapon_key, slug: 'test-pendulum')
+      WeaponSkillEffect.create!(key_slug: 'test-pendulum', modifier: 'Test Pendulum',
+                                boost_type: 'atk', series: 'ex', scaling_kind: 'conditional_flat',
+                                value: 40.0, value_unit: 'percent', stacking: 'additive',
+                                applies_to: 'element_allies',
+                                condition: { 'type' => 'boost_level', 'gte' => 280 })
+      add_weapon(modifier: 'Might', series: 'normal', position: position,
+                 boosts: { 'atk' => 20.0 }, weapon_key1: key)
     end
 
-    it "activates the key effect when the enhancement reaches 280" do
+    it 'activates the key effect when the enhancement reaches 280' do
       add_main_summon(normal_aura: 300)
       add_keyed_weapon(position: 0)
-      expect(described_class.boost_list(party, state: state)["atk"].by_series["ex"]).to eq(40.0)
+      expect(described_class.boost_list(party, state: state)['atk'].by_series['ex']).to eq(40.0)
     end
 
-    it "stays inactive below the threshold" do
+    it 'stays inactive below the threshold' do
       add_main_summon(normal_aura: 100)
       add_keyed_weapon(position: 0)
-      expect(described_class.boost_list(party, state: state)["atk"].by_series["ex"]).to be_nil
+      expect(described_class.boost_list(party, state: state)['atk'].by_series['ex']).to be_nil
     end
   end
 
-  describe ".drop_unrealized_crit_amp" do
+  describe '.drop_unrealized_crit_amp' do
     def result(key, total, capped)
       GridDamage::Aggregator::Result.new(boost_type: key, total: total, capped: capped)
     end
 
-    it "keeps Crit. Amp. only once Critical is capped (ZCoUJT vs F0MD7j)" do
-      capped = { "critical" => result("critical", 100.0, true), "crit_amp" => result("crit_amp", 18.0, false) }
-      uncapped = { "critical" => result("critical", 45.0, false), "crit_amp" => result("crit_amp", 18.0, false) }
+    it 'keeps Crit. Amp. only once Critical is capped (ZCoUJT vs F0MD7j)' do
+      capped = { 'critical' => result('critical', 100.0, true), 'crit_amp' => result('crit_amp', 18.0, false) }
+      uncapped = { 'critical' => result('critical', 45.0, false), 'crit_amp' => result('crit_amp', 18.0, false) }
 
-      expect(described_class.drop_unrealized_crit_amp(capped)).to have_key("crit_amp")
-      expect(described_class.drop_unrealized_crit_amp(uncapped)).not_to have_key("crit_amp")
+      expect(described_class.drop_unrealized_crit_amp(capped)).to have_key('crit_amp')
+      expect(described_class.drop_unrealized_crit_amp(uncapped)).not_to have_key('crit_amp')
     end
   end
 
-  describe ".drop_uncapped_crit_gated" do
+  describe '.drop_uncapped_crit_gated' do
     def contribution(boost_type, value, crit_gated: nil)
-      GridDamage::Aggregator::Contribution.new(boost_type: boost_type, series: "ex", value: value,
+      GridDamage::Aggregator::Contribution.new(boost_type: boost_type, series: 'ex', value: value,
                                                amplifiable: false, crit_gated: crit_gated)
     end
 
     # Impulse (Graphite Impulse): czpldM lists DMG Supp. at Critical 100, mBaLHl at 50 doesn't.
-    it "drops crit-gated boosts below Critical 100 and keeps the rest" do
-      impulse = contribution("dmg_supp", 50_000.0, crit_gated: true)
-      other = contribution("dmg_supp", 20_000.0)
-      contributions = [contribution("critical", 50.0), impulse, other]
+    it 'drops crit-gated boosts below Critical 100 and keeps the rest' do
+      impulse = contribution('dmg_supp', 50_000.0, crit_gated: true)
+      other = contribution('dmg_supp', 20_000.0)
+      contributions = [contribution('critical', 50.0), impulse, other]
       agg = GridDamage::Aggregator.aggregate(contributions)
 
       agg, kept = described_class.drop_uncapped_crit_gated(agg, contributions)
 
       expect(kept).not_to include(impulse)
-      expect(agg["dmg_supp"].total).to eq(20_000.0)
+      expect(agg['dmg_supp'].total).to eq(20_000.0)
     end
 
-    it "keeps crit-gated boosts once Critical is capped" do
-      contributions = [contribution("critical", 100.0), contribution("dmg_supp", 50_000.0, crit_gated: true)]
+    it 'keeps crit-gated boosts once Critical is capped' do
+      contributions = [contribution('critical', 100.0), contribution('dmg_supp', 50_000.0, crit_gated: true)]
       agg = GridDamage::Aggregator.aggregate(contributions)
-      agg["critical"].capped = true
+      agg['critical'].capped = true
 
       agg, kept = described_class.drop_uncapped_crit_gated(agg, contributions)
 
       expect(kept.size).to eq(2)
-      expect(agg["dmg_supp"].total).to eq(50_000.0)
+      expect(agg['dmg_supp'].total).to eq(50_000.0)
     end
   end
 end

@@ -62,9 +62,9 @@ RSpec.describe PartyDifficulty::DraftWorkspace do
       draft = workspace.stage!(target_type: 'DifficultyRule', target_id: rule.id, operation: 'update', attributes: { name: 'Renamed' })
       workspace.stage!(target_type: 'DifficultyRule', target_id: rule.id, operation: 'update', attributes: { weight: 3 })
       expect(draft.reload.attributes_payload).to eq('name' => 'Renamed', 'weight' => 3)
-      expect {
+      expect do
         workspace.stage!(target_type: 'DifficultyRule', target_id: rule.id, operation: 'update', attributes: { params: {} })
-      }.to raise_error(ActiveRecord::RecordInvalid)
+      end.to raise_error(ActiveRecord::RecordInvalid)
       expect(draft.reload.attributes_payload).to eq('name' => 'Renamed', 'weight' => 3)
       expect(rule.reload.name).to eq('Spec base rule')
     end
@@ -117,6 +117,7 @@ RSpec.describe PartyDifficulty::DraftWorkspace do
       rule_loads = 0
       subscriber = ActiveSupport::Notifications.subscribe('sql.active_record') do |_, _, _, _, payload|
         next if payload[:name] == 'SCHEMA' || payload[:cached]
+
         rule_loads += 1 if payload[:sql].include?('FROM "difficulty_rules"')
       end
       begin

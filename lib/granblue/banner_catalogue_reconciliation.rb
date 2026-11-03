@@ -44,25 +44,25 @@ module Granblue
       rows = model.where(granblue_id: entry.fetch('granblue_id')).to_a
       raise "Duplicate catalogue ID #{entry['granblue_id']}" if rows.length > 1
       if rows.empty? && entry['create']
-        return new_weapon(entry, metadata.fetch(entry.fetch('granblue_id')) {
+        return new_weapon(entry, metadata.fetch(entry.fetch('granblue_id')) do
           raise "Missing verified metadata #{entry['granblue_id']}"
-        })
+        end)
       end
       raise "Missing catalogue ID #{entry['granblue_id']}" if rows.empty?
 
       row = rows.first
       raise "Rarity drift for #{entry['granblue_id']}" unless row.rarity == entry.fetch('rarity')
+
       validate_metadata!(row, metadata.fetch(entry['granblue_id'])) if entry['create']
       if entry['expected_obtain']
         obtain = row.wiki_raw.to_s[/\|obtain\s*=\s*([^\n]+)/, 1].to_s.strip
-        unless obtain == entry['expected_obtain'] && row.recruits == entry['expected_recruits']
-          raise "Source drift #{entry['granblue_id']}"
-        end
+        raise "Source drift #{entry['granblue_id']}" unless obtain == entry['expected_obtain'] && row.recruits == entry['expected_recruits']
       end
       promotion = entry['add_promotion']
       if entry['rarity'] == 3 && row.promotions.include?(12) && promotion && !row.promotions.include?(1)
         raise "Classic III SSR exclusion conflict #{entry['granblue_id']}"
       end
+
       after = ((row.promotions - Array(entry['remove_promotions'])) + Array(promotion)).uniq
       after = row.promotions if after.sort == row.promotions.sort
       { type: entry['type'], granblue_id: row.granblue_id, id: row.id, name: row.name_en,
@@ -71,6 +71,7 @@ module Granblue
 
     def new_weapon(entry, attributes)
       raise 'Only weapons may be created' unless entry.fetch('type') == 'Weapon'
+
       validate_attributes!(entry, attributes)
       { type: 'Weapon', granblue_id: entry['granblue_id'], action: 'create', before: [], after: [1],
         attributes: attributes.slice('granblue_id', 'name_en', 'name_jp', 'rarity', 'element', 'proficiency', 'recruits',
@@ -83,9 +84,11 @@ module Granblue
       raise "Invalid element #{entry['granblue_id']}" unless (1..6).cover?(attributes.fetch('element'))
       raise "Invalid proficiency #{entry['granblue_id']}" unless (1..10).cover?(attributes.fetch('proficiency'))
       raise "Missing metadata source #{entry['granblue_id']}" if attributes.fetch('source').blank?
+
       recruits = attributes['recruits']
       if entry.fetch('category').zero?
         raise "Missing recruitment ID #{entry['granblue_id']}" if recruits.blank?
+
         candidates = Character.where(granblue_id: recruits, rarity: attributes['rarity'], element: attributes['element'],
                                      season: nil).pluck(:granblue_id).uniq
         raise "Recruitment mismatch #{entry['granblue_id']}" unless candidates == [recruits]

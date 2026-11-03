@@ -54,8 +54,7 @@ class SummonImportService
                  .where.not(game_id: nil)
                  .where.not(game_id: game_ids)
 
-    scope = apply_filter_scope(scope)
-    scope
+    apply_filter_scope(scope)
   end
 
   ##
@@ -85,9 +84,7 @@ class SummonImportService
 
     # Handle deletion reconciliation if requested
     reconciliation_result = nil
-    if @reconcile_deletions && @is_full_inventory && @processed_game_ids.any?
-      reconciliation_result = reconcile_deletions
-    end
+    reconciliation_result = reconcile_deletions if @reconcile_deletions && @is_full_inventory && @processed_game_ids.any?
 
     Result.new(
       success?: @errors.empty?,

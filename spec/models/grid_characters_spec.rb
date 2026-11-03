@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # spec/models/grid_character_spec.rb
 #
 # This spec verifies the GridCharacter model’s associations, validations,
@@ -45,6 +46,7 @@ RSpec.describe GridCharacter, type: :model do
   describe 'Validations and Associations' do
     context 'with valid attributes' do
       subject { build(:grid_character, valid_attributes) }
+
       it 'is valid' do
         expect(subject).to be_valid
       end
@@ -52,6 +54,7 @@ RSpec.describe GridCharacter, type: :model do
 
     context 'without a party' do
       subject { build(:grid_character, valid_attributes.merge(party: nil)) }
+
       it 'is invalid' do
         subject.valid?
         expect(subject.errors[:party]).to include("can't be blank")
@@ -65,9 +68,9 @@ RSpec.describe GridCharacter, type: :model do
         grid_char = build(
           :grid_character,
           valid_attributes.merge(new_rings: [
-            { 'modifier' => '1', 'strength' => 300 },
+                                   { 'modifier' => '1', 'strength' => 300 },
             { 'modifier' => '2', 'strength' => 150 }
-          ])
+                                 ])
         )
         grid_char.valid? # triggers the before_validation callback
         expect(grid_char.ring1).to eq({ 'modifier' => '1', 'strength' => 300 })

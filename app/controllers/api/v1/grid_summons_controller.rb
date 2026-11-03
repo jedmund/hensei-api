@@ -78,9 +78,7 @@ module Api
         @grid_summon.attributes = summon_params.merge(seal_state_params(:summon))
 
         sync_flag_change = nil
-        if summon_params.key?(:notes_synced)
-          sync_flag_change = ActiveModel::Type::Boolean.new.cast(summon_params[:notes_synced])
-        end
+        sync_flag_change = ActiveModel::Type::Boolean.new.cast(summon_params[:notes_synced]) if summon_params.key?(:notes_synced)
         description_in_payload = summon_params.key?(:description)
 
         ActiveRecord::Base.transaction do
@@ -117,8 +115,8 @@ module Api
 
         greater_than_max_uncap = summon_params[:uncap_level].to_i > max_level
         can_be_transcended = summon.transcendence &&
-          summon_params[:transcendence_step].present? &&
-          summon_params[:transcendence_step].to_i.positive?
+                             summon_params[:transcendence_step].present? &&
+                             summon_params[:transcendence_step].to_i.positive?
 
         new_uncap_level = greater_than_max_uncap || can_be_transcended ? max_level : summon_params[:uncap_level]
         new_transcendence_step = if summon.transcendence && summon_params[:transcendence_step].present?
@@ -221,14 +219,12 @@ module Api
         source = GridSummon.find_by(id: source_id, party_id: @party.id)
         target = GridSummon.find_by(id: target_id, party_id: @party.id)
 
-        unless source && target
-          return render_not_found_response('grid_summon')
-        end
+        return render_not_found_response('grid_summon') unless source && target
 
         # Check if either position is restricted
         if restricted_summon_position?(source.position) || restricted_summon_position?(target.position)
           return render_unprocessable_entity_response(
-            Api::V1::InvalidPositionError.new("Cannot swap summons in restricted positions")
+            Api::V1::InvalidPositionError.new('Cannot swap summons in restricted positions')
           )
         end
 
@@ -567,7 +563,7 @@ module Api
       # @return [Boolean] true if the position is restricted; false otherwise.
       def restricted_summon_position?(position)
         # Main summon (-1) and friend summon (6) are restricted
-        position == -1 || position == 6
+        [-1, 6].include?(position)
       end
 
       ##

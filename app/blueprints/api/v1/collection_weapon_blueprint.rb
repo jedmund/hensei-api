@@ -27,7 +27,7 @@ module Api
         {
           modifier: WeaponStatModifierBlueprint.render_as_hash(obj.befoulment_modifier),
           strength: obj.befoulment_strength,
-            permeation: obj.befoulment_permeation,
+          permeation: obj.befoulment_permeation,
           exorcism_level: obj.exorcism_level
         }
       end
@@ -47,7 +47,7 @@ module Api
 
       association :weapon, blueprint: WeaponBlueprint
       association :weapon_keys, blueprint: WeaponKeyBlueprint,
-                  if: ->(_, obj, _) { obj.weapon_keys.any? }
+                                if: ->(_, obj, _) { obj.weapon_keys.any? }
 
       view :full do
         association :weapon, blueprint: WeaponBlueprint, view: :full

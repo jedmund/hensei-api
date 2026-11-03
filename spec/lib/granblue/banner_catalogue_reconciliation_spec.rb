@@ -14,6 +14,7 @@ RSpec.describe Granblue::BannerCatalogueReconciliation do
       { 'type' => 'Weapon', 'granblue_id' => attributes['granblue_id'], 'rarity' => 2, 'category' => 0, 'create' => true, 'add_promotion' => 1 }
     ], 'new_weapons' => [attributes] }
   end
+
   subject(:service) { described_class.new(manifest: manifest) }
 
   it 'previews, creates canonical recruits, preserves UUIDs and unrelated promotions, and reruns' do

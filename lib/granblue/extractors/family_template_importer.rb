@@ -9,43 +9,43 @@ module Granblue
     # (provenance "wiki_template"); disagreements with existing rows are reported, never
     # applied — golden/manual provenance always wins (#62 phase 4/5).
     class FamilyTemplateImporter
-      EFFECT_OWNED_FAMILIES = ["Betrayal", "Preemptive Blade", "Preemptive Wall"].freeze
+      EFFECT_OWNED_FAMILIES = ['Betrayal', 'Preemptive Blade', 'Preemptive Wall'].freeze
       NAV_FAMILIES = [
-        "Abandon", "Aegis", "Apotheosis", "Aramis", "Ars",
-        "Arts", "Ascendancy", "Athos", "Auspice", "Bastion",
-        "Beast Essence", "Betrayal", "Bladeshield", "Blessing", "Bloodrage",
-        "Bloodshed", "Blow", "Celere", "Chain Force", "Charge",
-        "Clarity", "Convergence", "Craft", "Crux", "Deathstrike",
-        "Demolishment", "Devastation", "Dominion", "Draconic Barrier", "Draconic Fortitude",
-        "Draconic Magnitude", "Draconic Progression", "Dual-Edge", "Empowerment", "Encouragement",
-        "Enforcement", "Enmity", "Essence", "Excelsior", "Exertion",
-        "Fandango", "Fathoms", "Fortified", "Fortitude", "Frailty",
-        "Fulgor Elatio", "Fulgor Fortis", "Fulgor Impetus", "Fulgor Sanatio", "Garrison",
-        "Glory", "Godblade", "Godflair", "Godheart", "Godshield",
-        "Godstrike", "Grace", "Grand Epic", "Haunt", "Healing",
-        "Heed", "Heroism", "Honing", "Hunt", "Impalement", "Impulse",
-        "Initiation", "Insignia", "Majesty", "Maneuver", "Marvel",
-        "Might", "Mystery", "Onslaught", "Pact", "Parity",
-        "Persistence", "Plenum", "Porthos", "Precocity", "Preemptive Barrier",
-        "Preemptive Blade", "Preemptive Wall", "Primacy", "Progression", "Quenching",
-        "Quintessence", "Refuge", "Resolve", "Resonator", "Restraint",
-        "Rigor", "Rubell", "Ruination", "Sapience", "Scandere Aggressio",
-        "Scandere Arcanum", "Scandere Catena", "Scandere Facultas", "Sentence", "Sephira Maxi",
-        "Sephira Soul", "Sephira Tek", "Sovereign", "Spearhead", "Spectacle",
-        "Stamina", "Stratagem", "Strike", "Striking Art", "Supremacy",
-        "Supremacy: Decimation", "Surge", "Sweep", "Tempering", "Trituration",
-        "Trium", "Truce", "True Dragon Barrier", "True Supremacy", "Tyranny",
-        "Ultio", "Utopia", "Valuables", "Verity", "Verve",
-        "Vitality", "Vivification", "Voltage", "Wrath", "Zenith Art",
-        "Zenith Strike"
+        'Abandon', 'Aegis', 'Apotheosis', 'Aramis', 'Ars',
+        'Arts', 'Ascendancy', 'Athos', 'Auspice', 'Bastion',
+        'Beast Essence', 'Betrayal', 'Bladeshield', 'Blessing', 'Bloodrage',
+        'Bloodshed', 'Blow', 'Celere', 'Chain Force', 'Charge',
+        'Clarity', 'Convergence', 'Craft', 'Crux', 'Deathstrike',
+        'Demolishment', 'Devastation', 'Dominion', 'Draconic Barrier', 'Draconic Fortitude',
+        'Draconic Magnitude', 'Draconic Progression', 'Dual-Edge', 'Empowerment', 'Encouragement',
+        'Enforcement', 'Enmity', 'Essence', 'Excelsior', 'Exertion',
+        'Fandango', 'Fathoms', 'Fortified', 'Fortitude', 'Frailty',
+        'Fulgor Elatio', 'Fulgor Fortis', 'Fulgor Impetus', 'Fulgor Sanatio', 'Garrison',
+        'Glory', 'Godblade', 'Godflair', 'Godheart', 'Godshield',
+        'Godstrike', 'Grace', 'Grand Epic', 'Haunt', 'Healing',
+        'Heed', 'Heroism', 'Honing', 'Hunt', 'Impalement', 'Impulse',
+        'Initiation', 'Insignia', 'Majesty', 'Maneuver', 'Marvel',
+        'Might', 'Mystery', 'Onslaught', 'Pact', 'Parity',
+        'Persistence', 'Plenum', 'Porthos', 'Precocity', 'Preemptive Barrier',
+        'Preemptive Blade', 'Preemptive Wall', 'Primacy', 'Progression', 'Quenching',
+        'Quintessence', 'Refuge', 'Resolve', 'Resonator', 'Restraint',
+        'Rigor', 'Rubell', 'Ruination', 'Sapience', 'Scandere Aggressio',
+        'Scandere Arcanum', 'Scandere Catena', 'Scandere Facultas', 'Sentence', 'Sephira Maxi',
+        'Sephira Soul', 'Sephira Tek', 'Sovereign', 'Spearhead', 'Spectacle',
+        'Stamina', 'Stratagem', 'Strike', 'Striking Art', 'Supremacy',
+        'Supremacy: Decimation', 'Surge', 'Sweep', 'Tempering', 'Trituration',
+        'Trium', 'Truce', 'True Dragon Barrier', 'True Supremacy', 'Tyranny',
+        'Ultio', 'Utopia', 'Valuables', 'Verity', 'Verve',
+        'Vitality', 'Vivification', 'Voltage', 'Wrath', 'Zenith Art',
+        'Zenith Strike'
       ].freeze
 
       Result = Struct.new(:family, :status, :missing, :mismatches, :skipped, keyword_init: true)
 
       SIZE_TIERS = {
-        "small" => "small", "medium" => "medium", "big" => "big",
-        "big ii" => "big_ii", "big2" => "big_ii", "massive" => "massive",
-        "unworldly" => "unworldly"
+        'small' => 'small', 'medium' => 'medium', 'big' => 'big',
+        'big ii' => 'big_ii', 'big2' => 'big_ii', 'massive' => 'massive',
+        'unworldly' => 'unworldly'
       }.freeze
       SL_HEADER = /!\s*1\s*!!\s*10\s*!!\s*15(?:\s*!!\s*20)?(?:\s*!!\s*25)?/
       SL_COLUMNS = %w[sl1 sl10 sl15 sl20 sl25].freeze
@@ -53,18 +53,18 @@ module Granblue
       # Panel boost label (wiki {{Label|…}}) → our boost_type key. Only mapped labels
       # become curve rows; unmapped ones are reported as skipped, never guessed.
       LABEL_TO_BOOST = {
-        "might" => "atk", "omega might" => "atk", "ex might" => "atk", "atk" => "atk",
-        "hp" => "hp", "def" => "def", "critical" => "critical",
-        "da rate" => "da", "ta rate" => "ta",
-        "stamina" => "atk", "omega stamina" => "atk", "enmity" => "atk", "omega enmity" => "atk",
-        "c.a. dmg" => "ca_dmg", "c.a. dmg cap" => "ca_dmg_cap",
-        "c.b. dmg" => "cb_dmg", "c.b. dmg cap" => "cb_dmg_cap",
-        "skill dmg cap" => "skill_dmg_cap", "n.a. dmg cap" => "na_dmg_cap",
-        "dmg cap" => "dmg_cap", "dmg amp." => "dmg_amp", "heal cap" => "heal_cap",
-        "debuff res." => "debuff_res", "counter rate" => "counter_dmg",
-        "hp cut" => "hp_cut", "hp dmg" => "hp_dmg", "turn dmg" => "turn_dmg",
-        "elem. reduc." => "elem_reduc", "elem. amplify" => "elem_amplify",
-        "charge gain" => "charge_gain", "def ignore" => "def_ignore"
+        'might' => 'atk', 'omega might' => 'atk', 'ex might' => 'atk', 'atk' => 'atk',
+        'hp' => 'hp', 'def' => 'def', 'critical' => 'critical',
+        'da rate' => 'da', 'ta rate' => 'ta',
+        'stamina' => 'atk', 'omega stamina' => 'atk', 'enmity' => 'atk', 'omega enmity' => 'atk',
+        'c.a. dmg' => 'ca_dmg', 'c.a. dmg cap' => 'ca_dmg_cap',
+        'c.b. dmg' => 'cb_dmg', 'c.b. dmg cap' => 'cb_dmg_cap',
+        'skill dmg cap' => 'skill_dmg_cap', 'n.a. dmg cap' => 'na_dmg_cap',
+        'dmg cap' => 'dmg_cap', 'dmg amp.' => 'dmg_amp', 'heal cap' => 'heal_cap',
+        'debuff res.' => 'debuff_res', 'counter rate' => 'counter_dmg',
+        'hp cut' => 'hp_cut', 'hp dmg' => 'hp_dmg', 'turn dmg' => 'turn_dmg',
+        'elem. reduc.' => 'elem_reduc', 'elem. amplify' => 'elem_amplify',
+        'charge gain' => 'charge_gain', 'def ignore' => 'def_ignore'
       }.freeze
 
       class << self
@@ -86,7 +86,7 @@ module Granblue
         def import_one(name, apply: false)
           raw = fetch_template(name)
           if raw.blank?
-            return Result.new(family: name, status: "no_template",
+            return Result.new(family: name, status: 'no_template',
                               missing: [], mismatches: [], skipped: [])
           end
 
@@ -101,7 +101,7 @@ module Granblue
         # Raw template wikitext: from the source store inside Wiki.offline (or a build),
         # else from gbf.wiki. nil when the wiki has no such template.
         def fetch_template(name)
-          Granblue::Parsers::Wiki.new.fetch_raw(template_title(name), kind: "family_template")
+          Granblue::Parsers::Wiki.new.fetch_raw(template_title(name), kind: 'family_template')
         end
 
         # The WsBox header IS the family registry row.
@@ -110,7 +110,7 @@ module Granblue
           fields = box.scan(/^\|([a-z0-9_]+)=(.*)$/).to_h.transform_values(&:strip)
           boosts = fields.keys.grep(/\Aboost\d\z/).sort.filter_map { |k| fields[k].presence }
           stems = {}
-          { "" => "normal", "o_" => "omega", "ex_" => "ex" }.each do |prefix, series|
+          { '' => 'normal', 'o_' => 'omega', 'ex_' => 'ex' }.each do |prefix, series|
             SIZE_TIERS.each_value.uniq.each do |size|
               key = "#{prefix}#{size.sub('_ii', '2')}"
               stems[series] ||= {}
@@ -121,8 +121,8 @@ module Granblue
           return if family.manually_edited_at.present?
 
           family.update!(
-            aura_boostable: fields["aura_boostable"].blank? ? nil : fields["aura_boostable"] == "yes",
-            boosts: boosts, color: fields["color"].presence,
+            aura_boostable: fields['aura_boostable'].blank? ? nil : fields['aura_boostable'] == 'yes',
+            boosts: boosts, color: fields['color'].presence,
             icon_stems: stems.reject { |_, v| v.empty? }, imported_at: Time.current
           )
         end
@@ -150,9 +150,9 @@ module Granblue
               stat = label.strip
             end
 
-            next unless series && size && line.start_with?("|") && line.include?("%")
+            next unless series && size && line.start_with?('|') && line.include?('%')
 
-            values = line.split("||").map { |c| c[/([\d.]+)%/, 1] }
+            values = line.split('||').map { |c| c[/([\d.]+)%/, 1] }
             next if values.compact.empty? || columns.empty?
 
             boost = LABEL_TO_BOOST[stat.to_s.downcase]
@@ -169,11 +169,11 @@ module Granblue
 
         def series_for_title(title)
           t = title.downcase
-          return "normal_omega" if t.include?("normal") && t.include?("omega")
-          return "taboo" if t.include?("taboo")
-          return "omega" if t.include?("omega")
-          return "normal" if t.include?("normal")
-          return "ex" if t.include?("ex")
+          return 'normal_omega' if t.include?('normal') && t.include?('omega')
+          return 'taboo' if t.include?('taboo')
+          return 'omega' if t.include?('omega')
+          return 'normal' if t.include?('normal')
+          return 'ex' if t.include?('ex')
 
           nil
         end
@@ -193,7 +193,7 @@ module Granblue
 
               WeaponSkillDatum.create!(
                 modifier: name, series: cand[:series], size: cand[:size],
-                boost_type: cand[:boost_type], formula_type: "flat", provenance: "wiki_template",
+                boost_type: cand[:boost_type], formula_type: 'flat', provenance: 'wiki_template',
                 **cand.slice(*SL_COLUMNS).compact.transform_keys(&:to_sym)
               )
             else
@@ -212,14 +212,14 @@ module Granblue
               end
             end
           end
-          Result.new(family: name, status: "ok", missing: missing,
+          Result.new(family: name, status: 'ok', missing: missing,
                      mismatches: mismatches, skipped: skipped)
         end
 
         def series_compatible?(ours, wiki)
           return true if ours == wiki
-          return true if wiki == "normal_omega" && %w[normal omega normal_omega].include?(ours)
-          return true if %w[normal omega].include?(wiki) && ours == "normal_omega"
+          return true if wiki == 'normal_omega' && %w[normal omega normal_omega].include?(ours)
+          return true if %w[normal omega].include?(wiki) && ours == 'normal_omega'
 
           false
         end

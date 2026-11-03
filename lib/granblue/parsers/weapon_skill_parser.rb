@@ -253,7 +253,7 @@ module Granblue
         %w[Fire Rock Shadow Ice Gale Silver Azure Amber Cloud Frost Light Terra]
       ).freeze
       PREEMPTIVE_BLADE_TAILS = Set.new(
-        ["Frost Blade", "Light Blade", "Shadow Blade", "Terra Blade"]
+        ['Frost Blade', 'Light Blade', 'Shadow Blade', 'Terra Blade']
       ).freeze
 
       # Modifiers that appear with element word suffixes (e.g. "Clawed Shadow" → "Clawed").
@@ -270,9 +270,7 @@ module Granblue
         clean_name = skill_name.gsub(/<!--.*?-->/, '').strip
 
         # Handle {{WeaponSkillMod|...}} template syntax
-        if clean_name.include?('{{WeaponSkillMod|')
-          return parse_template_skill(clean_name, skill_name)
-        end
+        return parse_template_skill(clean_name, skill_name) if clean_name.include?('{{WeaponSkillMod|')
 
         # Extract trailing roman numeral
         numeral = nil
@@ -462,14 +460,10 @@ module Granblue
         end
 
         # "Preemptive {element} {base}" → "Preemptive {base}"
-        if words.size == 3 && words[0] == 'Preemptive' && PREEMPTIVE_ELEMENT_WORDS.include?(words[1])
-          return { modifier: "Preemptive #{words[2]}" }
-        end
+        return { modifier: "Preemptive #{words[2]}" } if words.size == 3 && words[0] == 'Preemptive' && PREEMPTIVE_ELEMENT_WORDS.include?(words[1])
 
         # "{Clawed|Armed} {element_word}" → "{Clawed|Armed}"
-        if words.size == 2 && ELEMENT_WORDS.include?(words[1]) && ELEMENT_SUFFIXED_MODIFIERS.include?(words[0])
-          return { modifier: words[0] }
-        end
+        return { modifier: words[0] } if words.size == 2 && ELEMENT_WORDS.include?(words[1]) && ELEMENT_SUFFIXED_MODIFIERS.include?(words[0])
 
         nil
       end

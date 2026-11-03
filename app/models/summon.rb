@@ -18,7 +18,7 @@ class Summon < ApplicationRecord
   normalizes :wiki_ja, with: ->(title) { Granblue::JpWikiTitle.normalize(title) }
 
   belongs_to :summon_series, optional: true
-  has_many :auras, class_name: "SummonAura", foreign_key: :summon_granblue_id,
+  has_many :auras, class_name: 'SummonAura', foreign_key: :summon_granblue_id,
                    primary_key: :granblue_id, inverse_of: :summon, dependent: :destroy
 
   # Aura build: a new summon, or a change to anything its auras are built from
@@ -46,7 +46,7 @@ class Summon < ApplicationRecord
   def self.source_changed(summon_id, _kind)
     granblue_id = where(id: summon_id).pick(:granblue_id)
     return unless granblue_id
-    return unless Source.exists?(owner_type: polymorphic_name, owner_id: summon_id, kind: "wiki_raw") ||
+    return unless Source.exists?(owner_type: polymorphic_name, owner_id: summon_id, kind: 'wiki_raw') ||
                   SummonAura.exists?(summon_granblue_id: granblue_id)
 
     SummonAuras::BuildJob.perform_later(summon_id)

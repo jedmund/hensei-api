@@ -66,12 +66,8 @@ module Api
         return if performed?
 
         # Keep a generated name in step with the number.
-        if attrs.key?(:event_number) && @event.name_en == default_name(@event.event_number)
-          attrs[:name_en] = default_name(attrs[:event_number])
-        end
-        if attrs.key?(:event_number) && @event.name_jp == default_name_jp(@event.event_number)
-          attrs[:name_jp] = default_name_jp(attrs[:event_number])
-        end
+        attrs[:name_en] = default_name(attrs[:event_number]) if attrs.key?(:event_number) && @event.name_en == default_name(@event.event_number)
+        attrs[:name_jp] = default_name_jp(attrs[:event_number]) if attrs.key?(:event_number) && @event.name_jp == default_name_jp(@event.event_number)
         @event.assign_attributes(attrs)
 
         if @event.save

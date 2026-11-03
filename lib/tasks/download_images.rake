@@ -15,7 +15,7 @@ namespace :granblue do
     require 'logger'
 
     require_relative '../granblue/downloaders/base_downloader'
-    Dir[Rails.root.join('lib', 'granblue', 'downloaders', '*.rb')].each { |file| require file }
+    Dir[Rails.root.join("lib/granblue/downloaders/*.rb")].each { |file| require file }
 
     timestamp = Time.now.strftime('%Y%m%d_%H%M%S')
     log_path = Rails.root.join('log', "download_null_weapons_#{timestamp}.log")

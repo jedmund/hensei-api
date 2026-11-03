@@ -9,16 +9,16 @@ RSpec.describe 'Password Resets API', type: :request do
     let(:user) { create(:user, email: 'reset@example.com') }
 
     it 'enqueues a reset email for an existing user' do
-      expect {
+      expect do
         post '/api/v1/password_resets', params: { email: user.email }.to_json, headers: headers
-      }.to have_enqueued_job(SendPasswordResetEmailJob)
+      end.to have_enqueued_job(SendPasswordResetEmailJob)
       expect(response).to have_http_status(:ok)
     end
 
     it 'returns 200 for a non-existent email without enqueuing' do
-      expect {
+      expect do
         post '/api/v1/password_resets', params: { email: 'nobody@example.com' }.to_json, headers: headers
-      }.not_to have_enqueued_job(SendPasswordResetEmailJob)
+      end.not_to have_enqueued_job(SendPasswordResetEmailJob)
       expect(response).to have_http_status(:ok)
     end
 
@@ -35,26 +35,26 @@ RSpec.describe 'Password Resets API', type: :request do
     it 'does not enqueue a second email during the cooldown period' do
       post '/api/v1/password_resets', params: { email: user.email }.to_json, headers: headers
 
-      expect {
+      expect do
         post '/api/v1/password_resets', params: { email: user.email }.to_json, headers: headers
-      }.not_to have_enqueued_job(SendPasswordResetEmailJob)
+      end.not_to have_enqueued_job(SendPasswordResetEmailJob)
     end
 
     it 'enqueues again after the cooldown period' do
       post '/api/v1/password_resets', params: { email: user.email }.to_json, headers: headers
 
       travel_to(3.minutes.from_now) do
-        expect {
+        expect do
           post '/api/v1/password_resets', params: { email: user.email }.to_json, headers: headers
-        }.to have_enqueued_job(SendPasswordResetEmailJob)
+        end.to have_enqueued_job(SendPasswordResetEmailJob)
       end
     end
 
     it 'handles mixed-case email addresses' do
       user # ensure the user record exists
-      expect {
+      expect do
         post '/api/v1/password_resets', params: { email: 'RESET@Example.COM' }.to_json, headers: headers
-      }.to have_enqueued_job(SendPasswordResetEmailJob)
+      end.to have_enqueued_job(SendPasswordResetEmailJob)
     end
   end
 

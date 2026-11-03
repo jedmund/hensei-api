@@ -52,13 +52,13 @@ class User < ApplicationRecord
 
   validates :display_name,
             length: { minimum: 3, maximum: 26 },
-            profanity: { languages: [:en, :ja], tier: :strict, message: 'contains inappropriate language' },
+            profanity: { languages: %i[en ja], tier: :strict, message: 'contains inappropriate language' },
             allow_nil: true,
             allow_blank: true
 
   validates :description,
             length: { maximum: 140 },
-            profanity: { languages: [:en, :ja], tier: :strict, message: 'contains inappropriate language' },
+            profanity: { languages: %i[en ja], tier: :strict, message: 'contains inappropriate language' },
             allow_nil: true,
             allow_blank: true
 

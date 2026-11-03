@@ -29,8 +29,8 @@ module WeaponSkills
     # comments removed, and Dark Opus `{{#ifeq:…|Majesty III|Majesty}}` names resolved to
     # their ELSE (last) branch (both branches share the modifier).
     def clean_name(raw_name)
-      name = raw_name.gsub(/\{\{WeaponSkillMod\|[^}]+\}\}\s*/, "").gsub(/<!--.*?-->/, "").strip
-      return name if name.blank? || !name.include?("#ifeq")
+      name = raw_name.gsub(/\{\{WeaponSkillMod\|[^}]+\}\}\s*/, '').gsub(/<!--.*?-->/, '').strip
+      return name if name.blank? || !name.include?('#ifeq')
 
       name.gsub(/\{\{\s*#ifeq:.*\|\s*([^|{}]+?)\s*\}\}/m, '\1').strip
     end
@@ -86,7 +86,7 @@ module WeaponSkills
     # next lines, so only "{{" is kept) has unbalanced template braces: no usable text.
     def presence(value)
       text = value.to_s.strip.presence or return nil
-      text.scan("{{").size == text.scan("}}").size ? text : nil
+      text.scan('{{').size == text.scan('}}').size ? text : nil
     end
 
     private_class_method :clean_name, :presence

@@ -51,7 +51,7 @@ module WeaponSkills
 
       def templates_digest
         @templates_digest ||= Digest::SHA256.hexdigest(
-          WeaponSource.where(kind: "family_template").pluck(:key, :sha256).sort.map { |k, s| "#{k}:#{s}" }.join("\n")
+          WeaponSource.where(kind: 'family_template').pluck(:key, :sha256).sort.map { |k, s| "#{k}:#{s}" }.join("\n")
         )
       end
 
@@ -64,7 +64,7 @@ module WeaponSkills
         @overlay_index ||= begin
           pairs = SECTIONS.flat_map do |section|
             @context.overlay.entries(section).filter_map do |entry|
-              [entry["weapon"].to_s, "#{section}:#{JSON.generate(canonical(entry))}"] if entry["weapon"].present?
+              [entry['weapon'].to_s, "#{section}:#{JSON.generate(canonical(entry))}"] if entry['weapon'].present?
             end
           end
           pairs.group_by(&:first).transform_values { |group| group.map(&:last).sort }

@@ -40,7 +40,7 @@ FactoryBot.define do
       after(:build) do |collection_character|
         # Create a character awakening if none exists
         collection_character.awakening = Awakening.where(object_type: 'Character').first ||
-                                        FactoryBot.create(:awakening, object_type: 'Character')
+                                         FactoryBot.create(:awakening, object_type: 'Character')
         collection_character.awakening_level = 5
       end
     end
@@ -49,7 +49,7 @@ FactoryBot.define do
     trait :max_awakening do
       after(:build) do |collection_character|
         collection_character.awakening = Awakening.where(object_type: 'Character').first ||
-                                        FactoryBot.create(:awakening, object_type: 'Character')
+                                         FactoryBot.create(:awakening, object_type: 'Character')
         collection_character.awakening_level = 10
       end
     end

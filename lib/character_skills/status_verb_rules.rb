@@ -45,7 +45,7 @@ module CharacterSkills
       rule('consume', 'consume, use or spend it (spending, not applying)', 'Consumes 1 Dissolution.', nil, '-', 'condition') do |b, _|
         b.match?(/\b(?:consume|consumes|consuming|use|uses|spend|spends)\b/)
       end,
-      rule('starts_battle', 'starts or begins battle with it', "Starts battle with 3 Bridal Bullet.", 'buff', 'caster', 'gain') do |b, _|
+      rule('starts_battle', 'starts or begins battle with it', 'Starts battle with 3 Bridal Bullet.', 'buff', 'caster', 'gain') do |b, _|
         b.match?(/\b(?:starts?|begins?) (?:the )?battle with\b/)
       end,
       rule('switch_to', 'switch, shift or change to it (a mode or stance)', 'Switch to Supplication mode.', 'buff', 'caster',
@@ -60,7 +60,7 @@ module CharacterSkills
         rest = after_last(b, COUNTER_VERB)
         rest&.match?(/\b(?:based on|number of|for each|with)\b/)
       end,
-      rule('foe_held_counter', "raise/restore/reset/refill a counter the wiki list files under debuffs (it sits on a foe)",
+      rule('foe_held_counter', 'raise/restore/reset/refill a counter the wiki list files under debuffs (it sits on a foe)',
            'Raise Thunderstruck lvl by 1.', nil, '-', 'condition') do |b, _, listed|
         listed == 'debuff' && b.match?(COUNTER_VERB) && !b.match?(FOE) && !b.match?(/\b(?:when|while|if|upon)\b/)
       end,

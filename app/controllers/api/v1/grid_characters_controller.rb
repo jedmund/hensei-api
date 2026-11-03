@@ -174,9 +174,7 @@ module Api
         source = GridCharacter.find_by(id: source_id, party_id: @party.id)
         target = GridCharacter.find_by(id: target_id, party_id: @party.id)
 
-        unless source && target
-          return render_not_found_response('grid_character')
-        end
+        return render_not_found_response('grid_character') unless source && target
 
         # Perform the swap
         ActiveRecord::Base.transaction do
@@ -217,9 +215,7 @@ module Api
         # Every conflicting id must be a grid character in the target party.
         conflicting_ids = Array(resolve_params[:conflicting]).compact_blank.map(&:to_s).uniq
         conflicting = GridCharacter.where(id: conflicting_ids, party_id: @party.id).to_a
-        if conflicting_ids.empty? || conflicting.size != conflicting_ids.size
-          render_not_found_response('grid_character') and return
-        end
+        render_not_found_response('grid_character') and return if conflicting_ids.empty? || conflicting.size != conflicting_ids.size
 
         conflicting.each(&:destroy)
 
@@ -562,9 +558,9 @@ module Api
         character_id = character_params[:character_id]
         @incoming_character = find_by_any_id(Character, character_id)
 
-        unless @incoming_character
+        return if @incoming_character
+
           render_unprocessable_entity_response(Api::V1::NoCharacterProvidedError.new)
-        end
       end
 
       ##

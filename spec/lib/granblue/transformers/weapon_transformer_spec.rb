@@ -125,8 +125,8 @@ RSpec.describe Granblue::Transformers::WeaponTransformer do
   describe 'awakening' do
     it 'includes awakening when present' do
       data = { '1' => weapon_entry(extras: {
-        'arousal' => { 'is_arousal_weapon' => true, 'form_name' => 'Attack', 'level' => 5 }
-      }) }
+                                     'arousal' => { 'is_arousal_weapon' => true, 'form_name' => 'Attack', 'level' => 5 }
+                                   }) }
 
       result = described_class.new(data).transform
       expect(result[0][:awakening]).to eq({ type: 'Attack', lvl: 5 })
@@ -142,8 +142,8 @@ RSpec.describe Granblue::Transformers::WeaponTransformer do
   describe 'AX skills' do
     it 'includes ax skills when present' do
       data = { '1' => weapon_entry(extras: {
-        'augment_skill_info' => [{ '1' => { 'skill_id' => 123, 'show_value' => '+15%' } }]
-      }) }
+                                     'augment_skill_info' => [{ '1' => { 'skill_id' => 123, 'show_value' => '+15%' } }]
+                                   }) }
 
       result = described_class.new(data).transform
       expect(result[0][:ax]).to eq([{ id: '123', val: '+15%' }])

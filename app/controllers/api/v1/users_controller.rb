@@ -58,7 +58,7 @@ module Api
                                             email_verified: false
                                           },
                                           view: :token),
-                      status: :created
+               status: :created
       rescue StandardError => e
         Rails.logger.error "[Registration] Unexpected error: #{e.class}: #{e.message}"
         Rails.logger.error e.backtrace&.first(10)&.join("\n")
@@ -84,13 +84,9 @@ module Api
         payload = UserBlueprint.render_as_hash(@user, view: :minimal)
         cast_bool = ActiveModel::Type::Boolean.new
 
-        if cast_bool.cast(params[:check_collection])
-          payload[:collection_accessible] = @user.collection_viewable_by?(current_user)
-        end
+        payload[:collection_accessible] = @user.collection_viewable_by?(current_user) if cast_bool.cast(params[:check_collection])
 
-        if cast_bool.cast(params[:check_support_summons])
-          payload[:support_summons_accessible] = @user.support_summons_viewable_by?(current_user)
-        end
+        payload[:support_summons_accessible] = @user.support_summons_viewable_by?(current_user) if cast_bool.cast(params[:check_support_summons])
 
         render json: payload
       end
@@ -132,7 +128,7 @@ module Api
             :guidebook2,
             :guidebook3,
             { characters: [{ character: :character_series_records }, :grid_artifact, :awakening] },
-            { weapons: [{ weapon: [:weapon_series, :weapon_series_variant], collection_weapon: {} }, :awakening] },
+            { weapons: [{ weapon: %i[weapon_series weapon_series_variant], collection_weapon: {} }, :awakening] },
             { summons: [{ summon: :summon_series }, :collection_summon] }
           )
           # Restrict to parties belonging to the profile owner
@@ -152,8 +148,7 @@ module Api
                                             root: 'profile',
                                             parties: parties,
                                             meta: { count: count, total_pages: (count.to_f / current_page_size).ceil, per_page: current_page_size },
-                                            current_user: current_user
-          )
+                                            current_user: current_user)
         end
       end
 
@@ -184,9 +179,7 @@ module Api
       def deposit_edit_keys
         entries = params.require(:edit_keys).map { |e| e.permit(:shortcode, :edit_key) }
 
-        if entries.size > 100
-          return render json: { error: 'Too many edit keys (max 100)' }, status: :unprocessable_entity
-        end
+        return render json: { error: 'Too many edit keys (max 100)' }, status: :unprocessable_entity if entries.size > 100
 
         entries.each do |entry|
           current_user.user_edit_keys.find_or_create_by(edit_key: entry[:edit_key]) do |uek|
@@ -248,7 +241,7 @@ module Api
           :guidebook2,
           :guidebook3,
           { characters: [{ character: :character_series_records }, :awakening] },
-          { weapons: [{ weapon: [:weapon_series, :weapon_series_variant] }, :awakening] },
+          { weapons: [{ weapon: %i[weapon_series weapon_series_variant] }, :awakening] },
           { summons: { summon: :summon_series } }
         )
         # Restrict to parties belonging to the profile’s owner.
@@ -268,9 +261,9 @@ module Api
       def build_conditions
         params = request.params
 
-        unless params['recency'].blank?
+        if params['recency'].present?
           start_time = (DateTime.current - params['recency'].to_i.seconds)
-                         .to_datetime.beginning_of_day
+                       .to_datetime.beginning_of_day
         end
 
         min_characters_count = params['characters_count'].blank? ? DEFAULT_MIN_CHARACTERS : params['characters_count'].to_i
@@ -280,9 +273,9 @@ module Api
 
         {}.tap do |hash|
           # Basic filters
-          hash[:element] = params['element'].to_i unless params['element'].blank?
-          hash[:raid] = params['raid'] unless params['raid'].blank?
-          hash[:created_at] = start_time..DateTime.current unless params['recency'].blank?
+          hash[:element] = params['element'].to_i if params['element'].present?
+          hash[:raid] = params['raid'] if params['raid'].present?
+          hash[:created_at] = start_time..DateTime.current if params['recency'].present?
 
           # Advanced filters: Team parameters
           unless params['full_auto'].blank? || params['full_auto'].to_i == -1

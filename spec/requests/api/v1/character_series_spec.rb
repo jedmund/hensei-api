@@ -61,9 +61,9 @@ RSpec.describe 'Api::V1::CharacterSeries', type: :request do
     end
 
     it 'creates a series as editor and returns it' do
-      expect {
+      expect do
         post '/api/v1/character_series', params: valid_params.to_json, headers: editor_headers
-      }.to change(CharacterSeries, :count).by(1)
+      end.to change(CharacterSeries, :count).by(1)
       expect(response).to have_http_status(:created)
 
       json = response.parsed_body
@@ -78,7 +78,7 @@ RSpec.describe 'Api::V1::CharacterSeries', type: :request do
 
     it 'rejects creation without auth' do
       post '/api/v1/character_series', params: valid_params.to_json,
-           headers: { 'Content-Type' => 'application/json' }
+                                       headers: { 'Content-Type' => 'application/json' }
       expect(response).to have_http_status(:unauthorized)
     end
   end
@@ -106,9 +106,9 @@ RSpec.describe 'Api::V1::CharacterSeries', type: :request do
   describe 'DELETE /api/v1/character_series/:id' do
     it 'deletes a series without dependencies' do
       series = create(:character_series)
-      expect {
+      expect do
         delete "/api/v1/character_series/#{series.id}", headers: editor_headers
-      }.to change(CharacterSeries, :count).by(-1)
+      end.to change(CharacterSeries, :count).by(-1)
       expect(response).to have_http_status(:no_content)
     end
 

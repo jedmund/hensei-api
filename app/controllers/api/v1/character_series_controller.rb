@@ -44,9 +44,9 @@ module Api
       def destroy
         if @character_series.characters.exists?
           render json: ErrorBlueprint.render(nil, error: {
-            message: 'Cannot delete series with associated characters',
-            code: 'has_dependencies'
-          }), status: :unprocessable_entity
+                                               message: 'Cannot delete series with associated characters',
+                                               code: 'has_dependencies'
+                                             }), status: :unprocessable_entity
         else
           @character_series.destroy!
           head :no_content

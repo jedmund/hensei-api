@@ -75,7 +75,7 @@ module PostDeployment
           **options
         )
       end
-    rescue => e
+    rescue StandardError => e
       error_message = "Error #{@test_mode ? 'would occur' : 'occurred'} downloading images for #{type} #{id}: #{e.message}"
       puts error_message
       puts e.backtrace.take(5) if @verbose

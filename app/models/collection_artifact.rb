@@ -34,7 +34,7 @@ class CollectionArtifact < ApplicationRecord
   scope :by_element, ->(el) { where(element: el) }
   scope :by_artifact, ->(artifact_id) { where(artifact_id: artifact_id) }
   # Filter by proficiency - handles both quirk (instance) and standard (artifact) proficiencies
-  scope :by_proficiency, ->(prof) {
+  scope :by_proficiency, lambda { |prof|
     joins(:artifact).where(
       'collection_artifacts.proficiency IN (?) OR (collection_artifacts.proficiency IS NULL AND artifacts.proficiency IN (?))',
       Array(prof), Array(prof)
@@ -43,11 +43,11 @@ class CollectionArtifact < ApplicationRecord
   scope :by_rarity, ->(rar) { joins(:artifact).where(artifacts: { rarity: rar }) }
   scope :standard_only, -> { joins(:artifact).where(artifacts: { rarity: :standard }) }
   scope :quirk_only, -> { joins(:artifact).where(artifacts: { rarity: :quirk }) }
-  scope :by_name, ->(query) {
-    joins(:artifact).where("artifacts.name_en ILIKE :q OR artifacts.name_jp ILIKE :q", q: "%#{sanitize_sql_like(query)}%")
+  scope :by_name, lambda { |query|
+    joins(:artifact).where('artifacts.name_en ILIKE :q OR artifacts.name_jp ILIKE :q', q: "%#{sanitize_sql_like(query)}%")
   }
 
-  scope :sorted_by, ->(sort_key, locale = 'en') {
+  scope :sorted_by, lambda { |sort_key, locale = 'en'|
     name_col = locale == 'ja' ? 'artifacts.name_jp' : 'artifacts.name_en'
     case sort_key
     when 'name_asc'
@@ -69,7 +69,7 @@ class CollectionArtifact < ApplicationRecord
 
   # Filter by skill modifier in a specific slot (1-4)
   # Uses OR logic when multiple modifiers are provided
-  scope :with_skill_in_slot, ->(slot, modifiers) {
+  scope :with_skill_in_slot, lambda { |slot, modifiers|
     return all if modifiers.blank?
 
     modifiers = Array(modifiers).map(&:to_s)

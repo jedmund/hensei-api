@@ -23,7 +23,7 @@ RSpec.describe AddExoCrucibleRaids do
     )
   end
 
-  it "uses an existing group and puts the groups in element order after Dread Barrage and Unite and Fight" do
+  it 'uses an existing group and puts the groups in element order after Dread Barrage and Unite and Fight' do
     existing = create(:raid_group, name_en: 'Exo Vohu Manah Crucible', name_jp: 'エクス・ウォフマナフ神滅戦',
                                    section: 2, order: 6)
     migration.up
@@ -35,7 +35,7 @@ RSpec.describe AddExoCrucibleRaids do
     )
   end
 
-  it "leaves a raid an editor already made alone" do
+  it 'leaves a raid an editor already made alone' do
     group = create(:raid_group, name_en: 'Exo Corow Crucible', section: 2)
     edited = create(:raid, slug: 'exo-corow-lv80', group: group, name_en: 'Edited', level: 80, player_count: 1)
     migration.up

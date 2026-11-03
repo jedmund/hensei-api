@@ -105,7 +105,7 @@ RSpec.describe 'CharacterSkillParser golden snapshots for a style shift' do
     end
   end
 
-  it "gives a style row no JP text when the page has no section for it" do
+  it 'gives a style row no JP text when the page has no section for it' do
     style.update!(wiki_raw_jp: jp_page.gsub('スタイルシフト「スーパーシンダラ」', '別ページ'))
 
     names = build(style)[:slots].flat_map { |slot| slot[:versions].map { |v| v[:attrs][:name_jp] } }

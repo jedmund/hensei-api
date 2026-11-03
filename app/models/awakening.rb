@@ -8,7 +8,7 @@ class Awakening < ApplicationRecord
   # What an awakening applies to: collection items check it against their own type
   OBJECT_TYPES = %w[Character Weapon].freeze
 
-  has_many :weapon_awakenings, foreign_key: :awakening_id
+  has_many :weapon_awakenings
   has_many :weapons, through: :weapon_awakenings
 
   validates :name_en, presence: true

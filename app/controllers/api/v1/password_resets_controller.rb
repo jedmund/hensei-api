@@ -22,9 +22,7 @@ module Api
       def update
         user = User.find_by(email: params[:email]&.downcase)
 
-        unless user&.reset_token_valid?(params[:token])
-          return render json: { error: 'Invalid or expired reset token.' }, status: :bad_request
-        end
+        return render json: { error: 'Invalid or expired reset token.' }, status: :bad_request unless user&.reset_token_valid?(params[:token])
 
         user.password = params[:password]
         user.password_confirmation = params[:password_confirmation]

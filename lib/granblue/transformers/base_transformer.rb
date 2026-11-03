@@ -45,12 +45,12 @@ module Granblue
         Rails.logger.info "[TRANSFORM] Validating data: #{data.inspect[0..100]}..."
 
         if data.nil?
-          Rails.logger.info "[TRANSFORM] Data is nil"
+          Rails.logger.info '[TRANSFORM] Data is nil'
           return true
         end
 
         if data.empty?
-          Rails.logger.info "[TRANSFORM] Data is empty"
+          Rails.logger.info '[TRANSFORM] Data is empty'
           return true
         end
 
@@ -76,6 +76,7 @@ module Granblue
       # @return [void]
       def log_debug(message)
         return unless options[:debug]
+
         Rails.logger.debug "[TRANSFORM-DEBUG] #{self.class.name}: #{message}"
       end
     end

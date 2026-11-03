@@ -9,7 +9,7 @@ class SupportSummon < ApplicationRecord
 
   validates :section, presence: true
   validates :position, presence: true
-  validates :position, uniqueness: { scope: [:user_id, :section] }
+  validates :position, uniqueness: { scope: %i[user_id section] }
   validate :position_within_section_bounds
   validate :collection_summon_belongs_to_user
 

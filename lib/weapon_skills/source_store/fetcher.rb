@@ -43,14 +43,12 @@ module WeaponSkills
 
       # page_kind of a weapon page, decided at fetch time from its template.
       def self.page_kind(wiki_raw, expanded = nil)
-        return "key_determined" if expanded.to_s.match?(KEY_PLACEHOLDER)
+        return 'key_determined' if expanded.to_s.match?(KEY_PLACEHOLDER)
         # The template supplies the skills unless the page has an English "|s1_desc=" line
         # ("|jps1_desc=" doesn't count).
-        if wiki_raw.to_s.include?("{{Weapon/Common/") && !wiki_raw.to_s.match?(ENGLISH_S1_DESC)
-          return "series_template"
-        end
+        return 'series_template' if wiki_raw.to_s.include?('{{Weapon/Common/') && !wiki_raw.to_s.match?(ENGLISH_S1_DESC)
 
-        "inline"
+        'inline'
       end
 
       # Fetches and stores one weapon's sources. Raises when the page itself can't be
@@ -59,31 +57,31 @@ module WeaponSkills
         kinds = kinds.map(&:to_s)
         raise ArgumentError, "#{weapon.granblue_id} has no wiki page" if weapon.wiki_en.blank?
 
-        text = kinds.include?("wiki_raw") ? fetch_page_text(weapon) : weapon.wiki_raw.to_s
+        text = kinds.include?('wiki_raw') ? fetch_page_text(weapon) : weapon.wiki_raw.to_s
         page = weapon.wiki_en
-        followed, garbled = record_followed_pages(weapon, text) if kinds.include?("transclusion") || kinds.include?("expanded")
+        followed, garbled = record_followed_pages(weapon, text) if kinds.include?('transclusion') || kinds.include?('expanded')
 
         expanded = nil
-        if kinds.include?("expanded") && (text.include?("{{Weapon/Common/") || garbled)
-          expanded = request("expand #{page}") { @wiki.expand(text).presence || raise(EmptyResponse, "empty expansion") }
-          failed("expanded", page, weapon, @last_error) if expanded.nil?
+        if kinds.include?('expanded') && (text.include?('{{Weapon/Common/') || garbled)
+          expanded = request("expand #{page}") { @wiki.expand(text).presence || raise(EmptyResponse, 'empty expansion') }
+          failed('expanded', page, weapon, @last_error) if expanded.nil?
         end
-        expanded ||= stored_body("expanded", page)
+        expanded ||= stored_body('expanded', page)
         kind_of_page = self.class.page_kind(text, expanded)
 
         WeaponSource.transaction do
-          if kinds.include?("wiki_raw")
-            put("wiki_raw", page, text, weapon, kind_of_page)
-            WeaponSource.where(weapon_id: weapon.id, kind: "wiki_raw").where.not(key: page).delete_all
+          if kinds.include?('wiki_raw')
+            put('wiki_raw', page, text, weapon, kind_of_page)
+            WeaponSource.where(weapon_id: weapon.id, kind: 'wiki_raw').where.not(key: page).delete_all
             # The stored page is now the weapon's page (Weapon#wiki_raw): one stored without a
             # fetch (key '') goes.
             drop_untitled_page(weapon) if @store.is_a?(Database)
           elsif @store.is_a?(Database)
             # The page stays as stored (an editor's import); its kind is decided here, like a fetched one's.
-            WeaponSource.where(weapon_id: weapon.id, kind: "wiki_raw", key: page).update_all(page_kind: kind_of_page)
+            WeaponSource.where(weapon_id: weapon.id, kind: 'wiki_raw', key: page).update_all(page_kind: kind_of_page)
           end
-          put("expanded", page, expanded, weapon, kind_of_page) if expanded && kinds.include?("expanded")
-          store_followed(weapon, followed) if kinds.include?("transclusion")
+          put('expanded', page, expanded, weapon, kind_of_page) if expanded && kinds.include?('expanded')
+          store_followed(weapon, followed) if kinds.include?('transclusion')
         end
         text
       end
@@ -91,17 +89,17 @@ module WeaponSkills
       # Pages no single weapon owns: family templates (action=raw) and key series pages.
       def fetch_family_template(name)
         title = Granblue::Extractors::FamilyTemplateImporter.template_title(name)
-        body = request("family #{name}") { @wiki.fetch_raw(title).presence || raise(EmptyResponse, "no template") }
-        return failed("family_template", title, nil, @last_error) if body.nil?
+        body = request("family #{name}") { @wiki.fetch_raw(title).presence || raise(EmptyResponse, 'no template') }
+        return failed('family_template', title, nil, @last_error) if body.nil?
 
-        put("family_template", title, body, nil, nil)
+        put('family_template', title, body, nil, nil)
       end
 
       def fetch_series_page(title)
         body = request("series #{title}") { @wiki.fetch(title) }
-        return failed("wiki_raw", title, nil, @last_error) if body.nil?
+        return failed('wiki_raw', title, nil, @last_error) if body.nil?
 
-        put("wiki_raw", title, body, nil, nil)
+        put('wiki_raw', title, body, nil, nil)
       end
 
       # Latest-edit times for up to 50 titles, throttled and retried like every request.
@@ -139,7 +137,7 @@ module WeaponSkills
           fields = Build::Structure.page_fields(weapon, text, store, [])
           Build::Structure.garbled?(Build::Structure::Tiers.slots(fields))
         rescue StandardError => e
-          failed("structure", weapon.wiki_en, weapon, "#{e.class}: #{e.message}")
+          failed('structure', weapon.wiki_en, weapon, "#{e.class}: #{e.message}")
           false
         end
         recording.failures.each { |f| failed(f[:kind], f[:key], weapon, f[:error]) }
@@ -162,8 +160,8 @@ module WeaponSkills
 
         def fetch(kind, key)
           key = Granblue::WikiTitle.normalize(key).to_s
-          return own_page if kind.to_s == "wiki_raw" && key == @page
-          raise SourceMissing.new(kind, key) unless kind.to_s == "transclusion"
+          return own_page if kind.to_s == 'wiki_raw' && key == @page
+          raise SourceMissing.new(kind, key) unless kind.to_s == 'transclusion'
 
           begin
             @recording.fetch(kind, key)
@@ -175,23 +173,23 @@ module WeaponSkills
           end
         end
 
-        def put(*) = raise(NotImplementedError, "read-only")
+        def put(*) = raise(NotImplementedError, 'read-only')
 
         private
 
         def own_page
-          Source.new(kind: "wiki_raw", key: @page, body: @text, sha256: Digest::SHA256.hexdigest(@text),
+          Source.new(kind: 'wiki_raw', key: @page, body: @text, sha256: Digest::SHA256.hexdigest(@text),
                      fetched_at: Time.current, page_kind: @page_kind)
         end
       end
 
       def drop_untitled_page(weapon)
-        ::Source.where(owner_type: Weapon.polymorphic_name, owner_id: weapon.id, kind: "wiki_raw", key: "").delete_all
+        ::Source.where(owner_type: Weapon.polymorphic_name, owner_id: weapon.id, kind: 'wiki_raw', key: '').delete_all
       end
 
       def store_followed(weapon, followed)
         followed.each { |(kind, key), body| put(kind, key, body, weapon, nil) }
-        stale = WeaponSource.where(weapon_id: weapon.id, kind: "transclusion")
+        stale = WeaponSource.where(weapon_id: weapon.id, kind: 'transclusion')
         stale = stale.where.not(key: followed.keys.map(&:last)) if followed.any?
         stale.delete_all
       end
@@ -238,7 +236,7 @@ module WeaponSkills
         @last_error = @last_error_exception = nil
         begin
           sleep(@delay) if @delay.positive?
-          @stats["requests"] += 1
+          @stats['requests'] += 1
           yield
         rescue Granblue::WikiError, EmptyResponse, *RETRYABLE_ERRORS => e
           if retryable?(e) && attempt < @retries
@@ -256,7 +254,7 @@ module WeaponSkills
 
       def retryable?(error)
         return true if RETRYABLE_ERRORS.any? { |k| error.is_a?(k) }
-        return error.message != "no template" if error.is_a?(EmptyResponse)
+        return error.message != 'no template' if error.is_a?(EmptyResponse)
 
         code = error.code.to_i
         code == 429 || code >= 500

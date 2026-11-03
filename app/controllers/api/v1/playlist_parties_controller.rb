@@ -40,6 +40,7 @@ module Api
 
       def authorize_owner!
         raise Api::V1::UnauthorizedError unless current_user
+
         render_unauthorized_response unless @playlist.owned_by?(current_user)
       end
     end

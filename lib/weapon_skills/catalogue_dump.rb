@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "open3"
+require 'open3'
 
 module WeaponSkills
   # A data-only dump of the game catalogue (no users, parties, grids, collections, crews
@@ -8,9 +8,9 @@ module WeaponSkills
   # without a production backup. Published as a draft GitHub release asset
   # (catalogue-YYYYMMDD on jedmund/hensei-api) and restored by bin/setup-pipeline-db.
   module CatalogueDump
-    REPO = "jedmund/hensei-api"
-    ASSET = "catalogue.dump"
-    TAG_METADATA_KEY = "catalogue_tag"
+    REPO = 'jedmund/hensei-api'
+    ASSET = 'catalogue.dump'
+    TAG_METADATA_KEY = 'catalogue_tag'
 
     # Every table here must be public game data. spec/lib/weapon_skills/catalogue_dump_spec.rb
     # fails if one gains a column that looks like user data.
@@ -34,16 +34,16 @@ module WeaponSkills
     def tag_for(date = Date.current) = "catalogue-#{date.strftime('%Y%m%d')}"
 
     def pg_dump_command(database_url, path)
-      ["pg_dump", "-Fc", "-Z9", "--data-only", "--no-owner", "--no-privileges",
-       *TABLES.flat_map { |t| ["-t", t] }, "-f", path.to_s, database_url]
+      ['pg_dump', '-Fc', '-Z9', '--data-only', '--no-owner', '--no-privileges',
+       *TABLES.flat_map { |t| ['-t', t] }, '-f', path.to_s, database_url]
     end
 
     # Whether REPO already has a release (draft or published) with this tag. Listed rather
     # than looked up by git tag: a draft has no git tag, and GitHub lets two drafts share
     # one (catalogue-20261015 was published twice).
     def release_exists?(tag, runner: Open3)
-      out, status = runner.capture2("gh", "release", "list", "--repo", REPO, "--limit", "1000",
-                                    "--json", "tagName", "--jq", ".[].tagName")
+      out, status = runner.capture2('gh', 'release', 'list', '--repo', REPO, '--limit', '1000',
+                                    '--json', 'tagName', '--jq', '.[].tagName')
       raise "gh release list failed (exit #{status.exitstatus})" unless status.success?
 
       out.split("\n").map(&:strip).include?(tag)
@@ -52,7 +52,7 @@ module WeaponSkills
     # The tag recorded by bin/setup-pipeline-db, if this database was restored from a dump.
     def restored_tag
       ActiveRecord::Base.connection.select_value(
-        ActiveRecord::Base.sanitize_sql(["SELECT value FROM ar_internal_metadata WHERE key = ?", TAG_METADATA_KEY])
+        ActiveRecord::Base.sanitize_sql(['SELECT value FROM ar_internal_metadata WHERE key = ?', TAG_METADATA_KEY])
       )
     rescue ActiveRecord::StatementInvalid
       nil

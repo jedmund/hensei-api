@@ -54,7 +54,7 @@ class Api::V1::CrewRostersController < Api::V1::ApiController
   end
 
   def roster_params
-    params.permit(:name, items: [:id, :type])
+    params.permit(:name, items: %i[id type])
   end
 
   def enrich_items(character_ids, weapon_ids, summon_ids)
@@ -138,7 +138,7 @@ class Api::V1::CrewRostersController < Api::V1::ApiController
         user_id: user.id,
         username: user.username,
         role: membership.role,
-        characters: (chars_by_user[user.id] || []).map { |cc|
+        characters: (chars_by_user[user.id] || []).map do |cc|
           c = cc.character
           {
             id: c.id,
@@ -149,8 +149,8 @@ class Api::V1::CrewRostersController < Api::V1::ApiController
             transcendence: c.transcendence,
             special: c.special
           }
-        },
-        weapons: (weapons_by_user[user.id] || []).map { |cw|
+        end,
+        weapons: (weapons_by_user[user.id] || []).map do |cw|
           w = cw.weapon
           {
             id: w.id,
@@ -160,8 +160,8 @@ class Api::V1::CrewRostersController < Api::V1::ApiController
             ulb: w.ulb,
             transcendence: w.transcendence
           }
-        },
-        summons: (summons_by_user[user.id] || []).map { |cs|
+        end,
+        summons: (summons_by_user[user.id] || []).map do |cs|
           s = cs.summon
           {
             id: s.id,
@@ -171,7 +171,7 @@ class Api::V1::CrewRostersController < Api::V1::ApiController
             ulb: s.ulb,
             transcendence: s.transcendence
           }
-        }
+        end
       }
     end
   end

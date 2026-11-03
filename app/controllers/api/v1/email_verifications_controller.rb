@@ -13,9 +13,7 @@ module Api
         user = current_user
         return render json: { message: 'Email already verified.' }, status: :ok if user.email_verified?
 
-        if user.verification_token_cooldown?
-          return render json: { error: 'Please wait before requesting another email.' }, status: :too_many_requests
-        end
+        return render json: { error: 'Please wait before requesting another email.' }, status: :too_many_requests if user.verification_token_cooldown?
 
         raw_token = user.generate_verification_token!
         SendEmailVerificationJob.perform_later(user.id, raw_token)

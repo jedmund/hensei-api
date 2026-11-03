@@ -250,14 +250,14 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
 
     it 'returns the awakening id if found' do
       arousal_data = {
-        "is_arousal_weapon": true,
-        "level": 4,
-        "form": 2,
-        "form_name": 'Defense',
-        "remain_for_next_level": 0,
-        "width": 100,
-        "is_complete_condition": true,
-        "max_level": 4,
+        'is_arousal_weapon': true,
+        'level': 4,
+        'form': 2,
+        'form_name': 'Defense',
+        'remain_for_next_level': 0,
+        'width': 100,
+        'is_complete_condition': true,
+        'max_level': 4
       }
 
       awakening = Awakening.find_by(slug: 'weapon-def')
@@ -267,7 +267,7 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
 
   describe '#process_weapon_keys' do
     let(:deck_data) do
-      file_path = Rails.root.join('spec', 'fixtures', 'deck_sample2.json')
+      file_path = Rails.root.join("spec/fixtures/deck_sample2.json")
       JSON.parse(File.read(file_path))
     end
 
@@ -304,7 +304,7 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
   describe 'AX skills survive collection sync' do
     # Weapon 10 in deck_sample2 is Celeste Zaghnal Omega with augment_skill_info skill_id=1589 (ax_atk)
     let(:deck_data) do
-      file_path = Rails.root.join('spec', 'fixtures', 'deck_sample2.json')
+      file_path = Rails.root.join("spec/fixtures/deck_sample2.json")
       JSON.parse(File.read(file_path))
     end
 
@@ -447,7 +447,7 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
 
   describe 'processing a complete canonical deck' do
     let(:deck_data) do
-      file_path = Rails.root.join('spec', 'fixtures', 'deck_sample2.json')
+      file_path = Rails.root.join("spec/fixtures/deck_sample2.json")
       JSON.parse(File.read(file_path))
     end
 

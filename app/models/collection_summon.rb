@@ -21,11 +21,11 @@ class CollectionSummon < ApplicationRecord
   scope :support_eligible, -> { joins(:summon).where(summons: { support_eligible: true }) }
   scope :transcended, -> { where('transcendence_step > 0') }
   scope :max_uncapped, -> { where(uncap_level: 5) }
-  scope :by_name, ->(query) {
-    joins(:summon).where("summons.name_en ILIKE :q OR summons.name_jp ILIKE :q", q: "%#{sanitize_sql_like(query)}%")
+  scope :by_name, lambda { |query|
+    joins(:summon).where('summons.name_en ILIKE :q OR summons.name_jp ILIKE :q', q: "%#{sanitize_sql_like(query)}%")
   }
 
-  scope :sorted_by, ->(sort_key, locale = 'en') {
+  scope :sorted_by, lambda { |sort_key, locale = 'en'|
     name_col = locale == 'ja' ? 'summons.name_jp' : 'summons.name_en'
     case sort_key
     when 'name_asc'
@@ -66,14 +66,12 @@ class CollectionSummon < ApplicationRecord
   def validate_transcendence_requirements
     return unless transcendence_step.present? && transcendence_step > 0
 
-    if uncap_level < 5
-      errors.add(:transcendence_step, "requires uncap level 5 (current: #{uncap_level})")
-    end
+    errors.add(:transcendence_step, "requires uncap level 5 (current: #{uncap_level})") if uncap_level < 5
 
     # Some summons might not support transcendence
-    if summon.present? && !summon.transcendence
-      errors.add(:transcendence_step, "not available for this summon")
-    end
+    return unless summon.present? && !summon.transcendence
+
+      errors.add(:transcendence_step, 'not available for this summon')
   end
 
   ##

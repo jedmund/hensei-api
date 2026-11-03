@@ -175,7 +175,7 @@ RSpec.describe 'ImportController Evoking Solomonis runs', type: :request do
       end
     end
 
-    context "when someone else imported the same report" do
+    context 'when someone else imported the same report' do
       let(:other_user) { create(:user) }
 
       before { import(body, as: auth_headers_for(other_user)) }

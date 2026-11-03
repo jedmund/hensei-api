@@ -69,9 +69,9 @@ module GachaSimulation
         result = { 'draws' => count.to_s, 'comparison' => comparison,
                    'probability' => Probability.odds(count, p, g, copies, @config['purchase'], comparison),
                    'expected_copies' => ((count - slots) * p) + (slots * g),
-                   'thresholds' => [50, 90, 95].to_h { |level|
+                   'thresholds' => [50, 90, 95].to_h do |level|
                      [level.to_s, Probability.threshold(p, g, copies, @config['purchase'], level / 100.0)]
-                   } }
+                   end }
       end
       metadata.merge(result).merge('target' => identity, 'requested_copies' => copies.to_s,
                                    'cost' => ExchangeRate.cost(result['draws']))

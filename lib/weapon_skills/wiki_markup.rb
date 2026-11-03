@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "cgi"
+require 'cgi'
 
 module WeaponSkills
   # Turns the gbf.wiki markup in a skill description into display segments, so clients
@@ -14,21 +14,21 @@ module WeaponSkills
   # Pure: no database, no network. The stored description stays raw wikitext.
   module WikiMarkup
     ELEMENT_NAMES = {
-      "wind" => { en: "Wind", ja: "風" }, "fire" => { en: "Fire", ja: "火" },
-      "water" => { en: "Water", ja: "水" }, "earth" => { en: "Earth", ja: "土" },
-      "dark" => { en: "Dark", ja: "闇" }, "light" => { en: "Light", ja: "光" }
+      'wind' => { en: 'Wind', ja: '風' }, 'fire' => { en: 'Fire', ja: '火' },
+      'water' => { en: 'Water', ja: '水' }, 'earth' => { en: 'Earth', ja: '土' },
+      'dark' => { en: 'Dark', ja: '闇' }, 'light' => { en: 'Light', ja: '光' }
     }.freeze
 
     # The element each element is strong against ({{WeaponWeakElement}}).
-    ADVANTAGE = { "fire" => "wind", "wind" => "earth", "earth" => "water", "water" => "fire",
-                  "light" => "dark", "dark" => "light" }.freeze
+    ADVANTAGE = { 'fire' => 'wind', 'wind' => 'earth', 'earth' => 'water', 'water' => 'fire',
+                  'light' => 'dark', 'dark' => 'light' }.freeze
 
     LABELS = {
-      en: { max: "Max %s", indefinite: "Indefinite", modifier: "Modifier: %s", element: "same-element" },
-      ja: { max: "最大%s", indefinite: "永続", modifier: "枠: %s", element: "同属性" }
+      en: { max: 'Max %s', indefinite: 'Indefinite', modifier: 'Modifier: %s', element: 'same-element' },
+      ja: { max: '最大%s', indefinite: '永続', modifier: '枠: %s', element: '同属性' }
     }.freeze
 
-    MODIFIERS = { "ex" => "EX", "normal" => "Normal", "omega" => "Omega", "magna" => "Omega" }.freeze
+    MODIFIERS = { 'ex' => 'EX', 'normal' => 'Normal', 'omega' => 'Omega', 'magna' => 'Omega' }.freeze
 
     module_function
 
@@ -42,7 +42,7 @@ module WeaponSkills
     end
 
     def plain(text, **)
-      segments(text, **).sum("") { |segment| segment[:text] }
+      segments(text, **).sum('') { |segment| segment[:text] }
     end
 
     def element_key(element)
@@ -57,7 +57,7 @@ module WeaponSkills
     # Nesting is tracked by recursion, so {{WeaponElement|{{{element|}}}}} and templates
     # inside {{tt}} arguments parse correctly. Unclosed constructs end at the end of text.
     class Parser
-      OPENERS = { "{{{" => [:param, "}}}"], "{{" => [:template, "}}"], "[[" => [:link, "]]"] }.freeze
+      OPENERS = { '{{{' => [:param, '}}}'], '{{' => [:template, '}}'], '[[' => [:link, ']]'] }.freeze
 
       def initialize(text)
         @text = text
@@ -72,7 +72,7 @@ module WeaponSkills
 
       def parse_until(terminators)
         nodes = []
-        buffer = +""
+        buffer = +''
         flush = lambda do
           nodes << decode(buffer.dup) unless buffer.empty?
           buffer.clear
@@ -95,7 +95,7 @@ module WeaponSkills
             flush.call
             nodes << [:italic]
             @pos += 2
-          elsif @text[@pos] == "<" && (tag = tag_node)
+          elsif @text[@pos] == '<' && (tag = tag_node)
             flush.call
             nodes << tag unless tag == :skip
           else
@@ -110,7 +110,7 @@ module WeaponSkills
       def parse_parts(close)
         parts = [[]]
         loop do
-          nodes, hit = parse_until(["|", close])
+          nodes, hit = parse_until(['|', close])
           parts.last.concat(nodes)
           return parts if hit.nil?
 
@@ -135,7 +135,7 @@ module WeaponSkills
       def at?(token) = @text[@pos, token.length] == token
 
       def decode(text)
-        CGI.unescapeHTML(text.gsub("&nbsp;", " "))
+        CGI.unescapeHTML(text.gsub('&nbsp;', ' '))
       end
     end
 
@@ -186,11 +186,11 @@ module WeaponSkills
         name = text_of(parts.first).strip
         positional, named = split_args(parts.drop(1))
         case name.downcase
-        when "tt" then with_tooltip(render(positional[0]), tooltip_text(positional[1]))
-        when "status" then with_tooltip(render(positional[0]), status_tooltip(named))
-        when "atkmod" then atkmod(positional[0], named["m"])
-        when "weaponelement", "element" then [segment(element_name(text_of(positional[0]).strip.downcase))]
-        when "weaponweakelement" then [segment(element_name(nil, weak: true))]
+        when 'tt' then with_tooltip(render(positional[0]), tooltip_text(positional[1]))
+        when 'status' then with_tooltip(render(positional[0]), status_tooltip(named))
+        when 'atkmod' then atkmod(positional[0], named['m'])
+        when 'weaponelement', 'element' then [segment(element_name(text_of(positional[0]).strip.downcase))]
+        when 'weaponweakelement' then [segment(element_name(nil, weak: true))]
         else render(positional[0] || named.values.first)
         end
       end
@@ -202,7 +202,7 @@ module WeaponSkills
         args.each do |nodes|
           first = nodes.first
           if first.is_a?(String) && (m = first.match(/\A\s*([A-Za-z_][\w-]*)\s*=/))
-            named[m[1]] = [first[m[0].length..], *nodes.drop(1)].reject { |n| n == "" }
+            named[m[1]] = [first[m[0].length..], *nodes.drop(1)].reject { |n| n == '' }
           else
             positional << nodes
           end
@@ -222,22 +222,22 @@ module WeaponSkills
 
         saved = @strong
         @strong = false
-        text = render(nodes).sum("") { |s| s[:text] }
+        text = render(nodes).sum('') { |s| s[:text] }
         @strong = saved
         tidy_text(text).strip.presence
       end
 
       def status_tooltip(named)
-        amount = tooltip_text(named["a"])
-        max = tooltip_text(named["am"])
-        duration = tooltip_text(named["t"])
-        duration = labels[:indefinite] if duration == "i"
-        first = [amount, max && format(labels[:max], max), duration].compact.join(" · ").presence
-        [first, tooltip_text(named["c"])].compact.join("\n").presence
+        amount = tooltip_text(named['a'])
+        max = tooltip_text(named['am'])
+        duration = tooltip_text(named['t'])
+        duration = labels[:indefinite] if duration == 'i'
+        first = [amount, max && format(labels[:max], max), duration].compact.join(' · ').presence
+        [first, tooltip_text(named['c'])].compact.join("\n").presence
       end
 
       def atkmod(label, modifier)
-        text = label ? render(label) : [segment("ATK")]
+        text = label ? render(label) : [segment('ATK')]
         key = tooltip_text(modifier).to_s.downcase
         name = MODIFIERS[key] || key.capitalize.presence
         with_tooltip(text, name && format(labels[:modifier], name))
@@ -251,13 +251,13 @@ module WeaponSkills
 
       def text_of(nodes)
         saved = @strong
-        text = render(nodes).sum("") { |s| s[:text] }
+        text = render(nodes).sum('') { |s| s[:text] }
         @strong = saved
         text
       end
 
       def tidy_text(text)
-        text.gsub(/[ \t]*\n[ \t]*/, "\n").gsub(/[ \t]{2,}/, " ")
+        text.gsub(/[ \t]*\n[ \t]*/, "\n").gsub(/[ \t]{2,}/, ' ')
       end
 
       # Merge neighbours with the same formatting, tidy whitespace, trim the ends.

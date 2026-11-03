@@ -15,11 +15,11 @@ RSpec.describe 'Api::V1::Favorites', type: :request do
   describe 'POST /api/v1/favorites' do
     it 'creates a favorite and returns it' do
       party = create(:party, user: other_user)
-      expect {
+      expect do
         post '/api/v1/favorites',
              params: { favorite: { party_id: party.id } }.to_json,
              headers: auth_headers
-      }.to change(Favorite, :count).by(1)
+      end.to change(Favorite, :count).by(1)
       expect(response).to have_http_status(:created)
 
       json = response.parsed_body['favorite']
@@ -45,11 +45,11 @@ RSpec.describe 'Api::V1::Favorites', type: :request do
 
     it 'allows favoriting your own party' do
       party = create(:party, user: user)
-      expect {
+      expect do
         post '/api/v1/favorites',
              params: { favorite: { party_id: party.id } }.to_json,
              headers: auth_headers
-      }.to change(Favorite, :count).by(1)
+      end.to change(Favorite, :count).by(1)
       expect(response).to have_http_status(:created)
 
       json = response.parsed_body['favorite']
@@ -60,11 +60,11 @@ RSpec.describe 'Api::V1::Favorites', type: :request do
     it 'returns the same 404 for a private party as for an unknown id' do
       private_party = create(:party, user: other_user, visibility: 3)
 
-      expect {
+      expect do
         post '/api/v1/favorites',
              params: { favorite: { party_id: private_party.id } }.to_json,
              headers: auth_headers
-      }.not_to change(Favorite, :count)
+      end.not_to change(Favorite, :count)
       expect(response).to have_http_status(:not_found)
       private_body = response.body
 
@@ -87,11 +87,11 @@ RSpec.describe 'Api::V1::Favorites', type: :request do
     it 'returns error when favorite already exists' do
       party = create(:party, user: other_user)
       create(:favorite, user: user, party: party)
-      expect {
+      expect do
         post '/api/v1/favorites',
              params: { favorite: { party_id: party.id } }.to_json,
              headers: auth_headers
-      }.not_to change(Favorite, :count)
+      end.not_to change(Favorite, :count)
       expect(response).to have_http_status(:unprocessable_entity)
       expect(response.parsed_body['code']).to eq('favorite_already_exists')
     end
@@ -109,21 +109,21 @@ RSpec.describe 'Api::V1::Favorites', type: :request do
     it 'deletes a favorite' do
       party = create(:party, user: other_user)
       create(:favorite, user: user, party: party)
-      expect {
+      expect do
         delete '/api/v1/favorites',
                params: { favorite: { party_id: party.id } }.to_json,
                headers: auth_headers
-      }.to change(Favorite, :count).by(-1)
+      end.to change(Favorite, :count).by(-1)
       expect(response).to have_http_status(:ok)
     end
 
     it 'returns 404 for non-existent favorite' do
       party = create(:party, user: other_user)
-      expect {
+      expect do
         delete '/api/v1/favorites',
                params: { favorite: { party_id: party.id } }.to_json,
                headers: auth_headers
-      }.not_to change(Favorite, :count)
+      end.not_to change(Favorite, :count)
       expect(response).to have_http_status(:not_found)
     end
   end
