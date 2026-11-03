@@ -48,6 +48,8 @@ module GridDamage
       ["heal_cap", nil, "Heal Cap", "heal-cap", "hp"],
       ["hp_cut", nil, "HP Cut", "hp-cut", "hp"],
       ["hp_dmg", nil, "HP DMG", "hp-dmg", "hp"],
+      # Insignia's end-of-turn self-damage (green badge, 03_icon_turn_dmg)
+      ["turn_dmg", nil, "Turn DMG", "turn-dmg", "hp"],
       # Defense (blue labels) — reduction is labeled with the foe's element ("Wind Reduc."
       # on a fire grid)
       ["def", nil, "DEF", "def", "defense"],

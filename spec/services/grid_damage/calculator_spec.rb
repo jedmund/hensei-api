@@ -170,6 +170,14 @@ RSpec.describe GridDamage::Calculator do
     end
   end
 
+  it "caps E. ATK at 40%" do
+    create(:weapon_skill_boost_type, key: "e_atk")
+    add_weapon(modifier: "Celere", series: "ex", position: -1, mainhand: true, boosts: { "e_atk" => 25.0 })
+    add_weapon(modifier: "Celere", series: "ex", position: 0, boosts: { "e_atk" => 25.0 })
+
+    expect(described_class.boost_list(party, state: state)["e_atk"]).to have_attributes(total: 40.0, capped: true)
+  end
+
   context "boost_level (≥280) key effects — the two-pass activation" do
     def add_keyed_weapon(position:)
       key = create(:weapon_key, slug: "test-pendulum")
