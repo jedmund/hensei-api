@@ -1,10 +1,10 @@
 "id","name_en","name_jp","proficiency1","proficiency2","row","master_level","order","base_job_id","granblue_id","accessory","accessory_type","ultimate_mastery"
 "67899c05-e73a-43ee-a83b-30fcd6e8ccf8","Fighter","ファイター",1,4,"1",FALSE,1,"67899c05-e73a-43ee-a83b-30fcd6e8ccf8","100001",FALSE,0,FALSE
-"56aa0f3e-5cc1-49e7-a12d-a4d506064c9a","Warrior","ウオーリア",1,4,"2",FALSE,1,"67899c05-e73a-43ee-a83b-30fcd6e8ccf8","100001",FALSE,0,FALSE
+"56aa0f3e-5cc1-49e7-a12d-a4d506064c9a","Warrior","ウオーリア",1,4,"2",FALSE,1,"67899c05-e73a-43ee-a83b-30fcd6e8ccf8","100101",FALSE,0,FALSE
 "6283eb60-234f-4851-8cc7-7ea36e42def2","Weapon Master","ウェポンマスター",1,4,"3",FALSE,1,"67899c05-e73a-43ee-a83b-30fcd6e8ccf8","100201",FALSE,0,FALSE
 "0e0c149d-8021-4f1e-a9d4-e2c77fd9e59a","Viking","ヴァイキング",1,4,"5",FALSE,1,"67899c05-e73a-43ee-a83b-30fcd6e8ccf8","100401",FALSE,0,FALSE
 "2b0cfead-50b3-4acd-8cb0-18aab243fdd1","Wizard","ウィザード",5,2,"1",FALSE,4,"2b0cfead-50b3-4acd-8cb0-18aab243fdd1","130001",FALSE,0,FALSE
-"0b536736-669c-48d2-9b3c-a450f5183951","Sorcerer","ソーサラー",5,2,"2",FALSE,4,"2b0cfead-50b3-4acd-8cb0-18aab243fdd1","130001",FALSE,0,FALSE
+"0b536736-669c-48d2-9b3c-a450f5183951","Sorcerer","ソーサラー",5,2,"2",FALSE,4,"2b0cfead-50b3-4acd-8cb0-18aab243fdd1","130101",FALSE,0,FALSE
 "667bf041-61c9-4568-bdd3-ce6e43f40603","Warlock","ウォーロック",5,2,"4",TRUE,4,"2b0cfead-50b3-4acd-8cb0-18aab243fdd1","130301",FALSE,0,TRUE
 "1eb55dd3-3278-4da1-8940-c4fc50c1a0f5","Berserker","ベルセルク",1,4,"4",TRUE,1,"67899c05-e73a-43ee-a83b-30fcd6e8ccf8","100301",FALSE,0,TRUE
 "a5d6fca3-5649-4e12-a6db-5fcec49150ee","Manadiver","マナダイバー",5,2,"5",FALSE,4,"2b0cfead-50b3-4acd-8cb0-18aab243fdd1","130401",TRUE,2,FALSE

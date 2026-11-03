@@ -20,14 +20,13 @@ RSpec.describe 'Admin jobs collection', type: :request do
     body['results'].map { |r| r['name_en'] }
   end
 
-  # Fighter and Warrior share a granblue_id, as Class I and II jobs do in the game.
   let!(:fighter) do
     create(:job, name_en: 'Fighter', name_jp: 'ファイター', granblue_id: '900001', row: '1', order: 1,
                  proficiency1: 1, proficiency2: 4, accessory: false, accessory_type: 0,
                  master_level: false, ultimate_mastery: false, updated_at: Time.zone.parse('2026-01-01'))
   end
   let!(:warrior) do
-    create(:job, name_en: 'Warrior', name_jp: 'ウォーリア', granblue_id: '900001', row: '2', order: 1,
+    create(:job, name_en: 'Warrior', name_jp: 'ウォーリア', granblue_id: '900101', row: '2', order: 1,
                  proficiency1: 1, proficiency2: 4, accessory: false, accessory_type: 0,
                  master_level: false, ultimate_mastery: false, updated_at: Time.zone.parse('2026-02-01'))
   end
@@ -72,8 +71,8 @@ RSpec.describe 'Admin jobs collection', type: :request do
     it 'matches names and granblue_id' do
       fetch(q: 'pala')
       expect(names).to eq(['Paladin'])
-      fetch(q: '900001')
-      expect(names).to eq(%w[Fighter Warrior])
+      fetch(q: '900101')
+      expect(names).to eq(['Warrior'])
     end
   end
 

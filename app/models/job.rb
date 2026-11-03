@@ -37,8 +37,8 @@ class Job < ApplicationRecord
              class_name: 'Job',
              optional: true
 
-  # The game's job ids are 6 digits. A Class I job and its Class II successor
-  # share one (Fighter and Warrior are both 100001), so ids are unique per row.
+  # The game's job ids are 6 digits: the class line, then its tier (Fighter
+  # 100001, Warrior 100101, Weapon Master 100201).
   GRANBLUE_ID_FORMAT = /\A\d{6}\z/
 
   # Rows as stored: Class I-V, Extra I and II, and Origin.
@@ -52,7 +52,7 @@ class Job < ApplicationRecord
   # has two proficiencies.
   PROFICIENCY_VALUES = GranblueEnums::PROFICIENCY.except(:None).freeze
 
-  validates :granblue_id, presence: true, format: { with: GRANBLUE_ID_FORMAT }, uniqueness: { scope: :row }
+  validates :granblue_id, presence: true, format: { with: GRANBLUE_ID_FORMAT }, uniqueness: true
   validates :name_en, :name_jp, presence: true
   validates :row, inclusion: { in: ROWS.values }
   validates :proficiency1, :proficiency2, inclusion: { in: PROFICIENCY_VALUES.values }
@@ -62,9 +62,7 @@ class Job < ApplicationRecord
   # A new job without an order goes last in its row.
   before_validation :assign_next_order, on: :create
 
-  # A job by uuid, else by granblue_id. Class I and II jobs share a granblue_id,
-  # so the uuid is the one that names a single job; granblue_id lookups stay for
-  # older links and callers.
+  # A job by uuid, else by granblue_id (for older links and callers).
   def self.find_by_route_id(id)
     return if id.blank?
 

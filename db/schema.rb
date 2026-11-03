@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_02_210000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_03_030100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -929,7 +929,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_02_210000) do
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["base_job_id"], name: "index_jobs_on_base_job_id"
-    t.index ["granblue_id", "row"], name: "index_jobs_on_granblue_id_and_row", unique: true
+    t.index ["granblue_id"], name: "index_jobs_on_granblue_id", unique: true
     t.index ["updated_at"], name: "index_jobs_on_updated_at"
   end
 

@@ -24,13 +24,13 @@ RSpec.describe Job, type: :model do
   end
 
   describe 'validations' do
-    it 'requires a 6-digit granblue_id, unique per row' do
+    it 'requires a unique 6-digit granblue_id' do
       expect(build(:job, granblue_id: nil)).not_to be_valid
       expect(build(:job, granblue_id: '1000010')).not_to be_valid
 
       first = create(:job, granblue_id: '900001', row: '1')
       expect(build(:job, granblue_id: first.granblue_id, row: '1')).not_to be_valid
-      expect(build(:job, granblue_id: first.granblue_id, row: '2')).to be_valid
+      expect(build(:job, granblue_id: first.granblue_id, row: '2')).not_to be_valid
     end
 
     it 'requires both names' do
