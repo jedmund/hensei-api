@@ -19,7 +19,9 @@ class HomeFeed
   CURRENT_LIMIT = 6
   STAFF_PICKS_LIMIT = 12
   NEW_ITEMS_WINDOW = 18.days
-  NEW_ITEMS_LIMIT = 10
+  NEW_ITEMS_LIMIT = 11
+  # Event rewards aren't news; this series is left out of new items
+  EVENT_WEAPON_SERIES = 'event'
   PARTIES_PER_ITEM = 6
   NEW_BATTLES_WINDOW = 4.weeks
   NEW_BATTLES_LIMIT = 6
@@ -40,7 +42,7 @@ class HomeFeed
   NewBattle = Struct.new(:raid, :recent_ids, :trending_ids, :has_more, keyword_init: true)
 
   # The cached GET /home payload (see HomeController)
-  CACHE_KEY = 'home/v5'
+  CACHE_KEY = 'home/v6'
 
   def self.call(**)
     new(**).call
@@ -136,11 +138,13 @@ class HomeFeed
   # Items whose latest date (release, FLB, ULB or transcendence) is in the
   # last 18 days, newest first, each with the teams made since then that use
   # it, in both orders (see #ordered). Items without such teams are included
-  # with no teams.
+  # with no teams. Event weapons are left out.
   def new_items
     since = @now.in_time_zone('Asia/Tokyo').to_date - NEW_ITEMS_WINDOW
     candidates = ITEM_SOURCES.flat_map do |type, (model, _grid, _fk)|
-      model.where(latest_date: since..).order(latest_date: :desc).limit(NEW_ITEMS_LIMIT * 2).map { |item| [type, item] }
+      scope = model.where(latest_date: since..)
+      scope = without_event_weapons(scope) if type == 'weapon'
+      scope.order(latest_date: :desc).limit(NEW_ITEMS_LIMIT * 2).map { |item| [type, item] }
     end
     candidates.sort_by { |type, item| [-item.latest_date.jd, type, item.id] }.first(NEW_ITEMS_LIMIT).map do |type, item|
       NewItem.new(type: type, item: item, change: item_change(item),
@@ -157,6 +161,12 @@ class HomeFeed
       teams = Party.quality.where(visibility: 1, raid_id: raid.id)
       NewBattle.new(raid: raid, **ordered(teams, PARTIES_PER_BATTLE))
     end
+  end
+
+  # Weapons with no series are kept (NOT IN alone would drop them)
+  def without_event_weapons(weapons)
+    event_series = WeaponSeries.where(slug: EVENT_WEAPON_SERIES).select(:id)
+    weapons.where(weapon_series_id: nil).or(weapons.where.not(weapon_series_id: event_series))
   end
 
   # A scope's first `limit` teams twice: most recent first, and trending
