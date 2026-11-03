@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_03_140000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_03_150000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1597,6 +1597,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_03_140000) do
     t.index ["weapon_series_id"], name: "index_weapon_key_series_on_weapon_series_id"
   end
 
+  create_table "weapon_key_skills", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "weapon_granblue_id", null: false
+    t.uuid "weapon_key_id", null: false
+    t.jsonb "versions", default: [], null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["weapon_granblue_id", "weapon_key_id"], name: "idx_on_weapon_granblue_id_weapon_key_id_6d03ca68a3", unique: true
+    t.index ["weapon_key_id"], name: "index_weapon_key_skills_on_weapon_key_id"
+  end
+
   create_table "weapon_keys", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name_en"
     t.string "name_jp"
@@ -1993,6 +2003,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_03_140000) do
   add_foreign_key "weapon_awakenings", "weapons"
   add_foreign_key "weapon_key_series", "weapon_keys"
   add_foreign_key "weapon_key_series", "weapon_series"
+  add_foreign_key "weapon_key_skills", "weapon_keys"
   add_foreign_key "weapon_series_variants", "weapon_series"
   add_foreign_key "weapon_skill_data", "weapon_skill_versions", on_delete: :cascade
   add_foreign_key "weapon_skill_effects", "weapon_skill_versions", on_delete: :cascade

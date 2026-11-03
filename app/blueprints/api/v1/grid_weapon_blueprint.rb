@@ -66,12 +66,20 @@ module Api
         association :weapon, blueprint: WeaponBlueprint, view: :full,
                              if: ->(_field_name, w, _options) { w.weapon.present? }
 
-        association :weapon_keys,
-                    blueprint: WeaponKeyBlueprint,
-                    if: lambda { |_field_name, w, _options|
-                      w.weapon.present? &&
-                        w.weapon.effective_has_weapon_keys
-                    }
+        # Each key with the skill it gives this weapon (WeaponKeySkill), for the Skills tab
+        field :weapon_keys,
+              if: lambda { |_field_name, w, _options|
+                w.weapon.present? &&
+                  w.weapon.effective_has_weapon_keys
+              } do |w|
+          keys = w.weapon_keys
+          skills = WeaponKeySkill.where(weapon_granblue_id: w.weapon.granblue_id, weapon_key_id: keys.map(&:id))
+                                 .index_by(&:weapon_key_id)
+          keys.map do |key|
+            WeaponKeyBlueprint.render_as_hash(key)
+                              .merge(skill_versions: WeaponKeySkillBlueprint.versions(skills[key.id], w.weapon))
+          end
+        end
 
         field :bullets, if: ->(_field_name, w, _options) { w.weapon&.bullet_slots&.any? } do |w|
           w.grid_weapon_bullets.sort_by(&:position).map do |gwb|

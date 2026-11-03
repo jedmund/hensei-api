@@ -9,6 +9,8 @@ namespace :granblue do
       rake granblue:download_weapon_skill_icons                 # storage=both
       rake granblue:download_weapon_skill_icons storage=s3
       rake granblue:download_weapon_skill_icons force=true throttle=0.1
+      rake granblue:download_weapon_skill_icons only=keys        # the key skills' icons alone
+    Key skills (WeaponKeySkill) are included: their icons are the game's own file names.
   DESC
   task download_weapon_skill_icons: :environment do
     require_relative '../granblue/downloaders/base_downloader'
@@ -18,10 +20,14 @@ namespace :granblue do
     force = ENV['force'] == 'true'
     throttle = (ENV['throttle'] || '0.2').to_f
 
-    stems = WeaponSkillVersion.includes(weapon_skill: :weapon)
-                              .where.not(icon: [nil, ''])
-                              .find_each.filter_map(&:icon_stem)
-                              .uniq
+    key_stems = WeaponKeySkill.pluck(:versions).flatten.filter_map { |v| v['icon'].presence }
+    stems = if ENV['only'] == 'keys'
+              key_stems.uniq
+            else
+              (WeaponSkillVersion.includes(weapon_skill: :weapon)
+                                 .where.not(icon: [nil, ''])
+                                 .find_each.filter_map(&:icon_stem) + key_stems).uniq
+            end
 
     puts "Distinct weapon skill icons: #{stems.size} (storage=#{storage}, force=#{force}, throttle=#{throttle})"
 

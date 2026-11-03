@@ -19,3 +19,10 @@ namespace :granblue do
     exit(1) if summary.failed.positive?
   end
 end
+
+namespace :granblue do
+  desc 'Write the skills each key gives each keyed weapon (WeaponKeySkill) from the stored expansions'
+  task build_weapon_key_skills: :environment do
+    WeaponSkills::KeyOptions.build
+  end
+end
