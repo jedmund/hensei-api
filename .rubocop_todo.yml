@@ -91,12 +91,11 @@ Layout/BlockEndNewline:
     - 'spec/models/grid_summons_spec.rb'
     - 'spec/models/party_spec.rb'
 
-# Offense count: 13
+# Offense count: 10
 # This cop supports safe autocorrection (--autocorrect).
 Layout/ElseAlignment:
   Exclude:
     - 'app/controllers/api/v1/grid_weapons_controller.rb'
-    - 'app/controllers/api/v1/parties_controller.rb'
     - 'app/controllers/api/v1/search_controller.rb'
     - 'app/controllers/concerns/batch_previewable.rb'
     - 'lib/granblue/importers/base_importer.rb'
@@ -104,45 +103,12 @@ Layout/ElseAlignment:
     - 'lib/tasks/characters.rake'
     - 'spec/models/party_spec.rb'
 
-# Offense count: 44
-# This cop supports safe autocorrection (--autocorrect).
-Layout/EmptyLinesAroundMethodBody:
-  Exclude:
-    - 'app/controllers/api/v1/collection_characters_controller.rb'
-    - 'app/controllers/api/v1/collection_controller.rb'
-    - 'app/controllers/api/v1/collection_summons_controller.rb'
-    - 'app/controllers/api/v1/collection_weapons_controller.rb'
-    - 'app/controllers/api/v1/grid_characters_controller.rb'
-    - 'app/models/collection_character.rb'
-    - 'app/models/collection_summon.rb'
-    - 'app/models/collection_weapon.rb'
-    - 'app/models/collection_weapon_bullet.rb'
-    - 'app/models/concerns/artifact_skill_validations.rb'
-    - 'app/models/crew_membership.rb'
-    - 'app/models/grid_artifact.rb'
-    - 'app/models/grid_character.rb'
-    - 'app/models/grid_weapon.rb'
-    - 'app/models/grid_weapon_bullet.rb'
-    - 'app/models/gw_individual_score.rb'
-    - 'app/models/phantom_player.rb'
-    - 'app/models/substitution.rb'
-    - 'app/services/artifact_import_service.rb'
-    - 'app/services/party_query_builder.rb'
-    - 'app/services/processors/summon_processor.rb'
-    - 'app/services/summon_import_service.rb'
-    - 'app/services/weapon_import_service.rb'
-    - 'app/validators/profanity_validator.rb'
-    - 'lib/granblue/importers/base_importer.rb'
-    - 'lib/post_deployment/data_importer.rb'
-    - 'lib/post_deployment/database_migrator.rb'
-
-# Offense count: 6
+# Offense count: 3
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: EnforcedStyleAlignWith.
 # SupportedStylesAlignWith: keyword, variable, start_of_line
 Layout/EndAlignment:
   Exclude:
-    - 'app/controllers/api/v1/parties_controller.rb'
     - 'spec/models/party_spec.rb'
 
 # Offense count: 70
@@ -179,13 +145,12 @@ Layout/IndentationConsistency:
     - 'spec/models/grid_summons_spec.rb'
     - 'spec/models/party_spec.rb'
 
-# Offense count: 15
+# Offense count: 12
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: Width, EnforcedStyleAlignWith, AllowedPatterns.
 # SupportedStylesAlignWith: start_of_line, relative_to_receiver
 Layout/IndentationWidth:
   Exclude:
-    - 'app/controllers/api/v1/parties_controller.rb'
     - 'app/controllers/api/v1/search_controller.rb'
     - 'app/controllers/concerns/batch_previewable.rb'
     - 'app/services/processors/character_processor.rb'
@@ -194,7 +159,7 @@ Layout/IndentationWidth:
     - 'lib/post_deployment/search_indexer.rb'
     - 'spec/models/party_spec.rb'
 
-# Offense count: 21
+# Offense count: 24
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: Max, AllowHeredoc, AllowURI, AllowQualifiedName, URISchemes, AllowRBSInlineAnnotation, AllowCopDirectives, AllowedPatterns, SplitStrings.
 # URISchemes: http, https
@@ -1292,12 +1257,13 @@ RSpec/StubbedMock:
     - 'spec/lib/granblue/parsers/wiki_spec.rb'
     - 'spec/services/gacha_simulation/cache_and_cost_spec.rb'
 
-# Offense count: 11
+# Offense count: 12
 RSpec/SubjectStub:
   Exclude:
     - 'spec/data/add_exo_crucible_raids_spec.rb'
     - 'spec/data/add_records_of_the_ten_raids_spec.rb'
     - 'spec/data/decode_percent_encoded_jp_wiki_titles_spec.rb'
+    - 'spec/data/fix_class_ii_job_ids_spec.rb'
     - 'spec/data/fix_stale_wiki_titles_spec.rb'
     - 'spec/data/null_blank_weapon_text_fields_spec.rb'
     - 'spec/data/null_zero_weapon_awakening_levels_spec.rb'
@@ -2267,6 +2233,12 @@ Style/HashLikeCase:
     - 'lib/granblue/downloaders/character_downloader.rb'
     - 'lib/granblue/downloaders/summon_downloader.rb'
     - 'lib/granblue/downloaders/weapon_downloader.rb'
+
+# Offense count: 2
+# This cop supports safe autocorrection (--autocorrect).
+Style/IfUnlessModifier:
+  Exclude:
+    - 'app/controllers/api/v1/parties_controller.rb'
 
 # Offense count: 2
 # This cop supports unsafe autocorrection (--autocorrect-all).
