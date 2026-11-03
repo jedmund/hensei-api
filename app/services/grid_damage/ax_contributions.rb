@@ -71,7 +71,7 @@ module GridDamage
       return anchors[upper] if upper == lower
 
       t = (hp_pct - lower) / (upper - lower).to_f
-      (anchors[lower] + ((anchors[upper] - anchors[lower]) * t)).round(2)
+      (anchors[lower] + ((anchors[upper] - anchors[lower]) * t)).round(4)
     end
 
     def display_value(mod, strength, hp_pct)

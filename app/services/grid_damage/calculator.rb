@@ -112,7 +112,7 @@ module GridDamage
       pen = cap_excess >= 2 ? cap_excess * 0.5 : 0.0
       hit = (excess(agg, "da") * 0.4) + (excess(agg, "ta") * 0.6)
       # HP over its 400% grid cap converts at 5% (SPhnLB: (494.6-400) x 0.05 = 4.73 exact)
-      hp = (excess(agg, "hp") * 0.05).round(4) # float noise: 494.4999 raw must show 4.73, not 4.72
+      hp = (excess(agg, "hp") * 0.05).round(4) # float noise: 494.4999 raw must give 4.73, not 4.72
 
       overskill_sources = { "crit_dmg" => %w[critical], "dmg_cap_pen" => %w[dmg_cap dmg_cap_sp],
                             "added_hit" => %w[da ta], "added_hp" => %w[hp] }
