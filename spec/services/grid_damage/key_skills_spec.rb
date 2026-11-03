@@ -38,6 +38,28 @@ RSpec.describe GridDamage::KeySkills do
     expect(unmatched).to be_empty
   end
 
+  # Gate of Omnipotence opens at level 200: Tria on a 4★ Ultima grants nothing.
+  it 'skips an Ultima key whose slot the copy has not unlocked' do
+    series = WeaponSeries.find_by!(slug: 'ultima')
+    series.update!(has_weapon_keys: true, summon_boosted: false)
+    key = compatible_key(series, slug: 'gauph-tria', slot: 2)
+    weapon = create(:weapon, :transcendable, weapon_series: series)
+    grid_weapon = create(:grid_weapon, party: party, weapon: weapon, position: 0, uncap_level: 4,
+                                       weapon_key3: key)
+    WeaponSkillEffect.where(key_slug: key.slug).delete_all
+    WeaponSkillEffect.create!(
+      key_slug: key.slug, modifier: 'Gauph Key Tria', boost_type: 'elem_amplify', series: 'ex',
+      scaling_kind: 'static', value: 25, value_unit: 'percent', stacking: 'additive',
+      applies_to: 'all_allies'
+    )
+
+    expect(described_class.contributions(party, composition: {})).to be_empty
+
+    grid_weapon.update!(uncap_level: 5)
+    expect(described_class.contributions(party, composition: {}).sole)
+      .to have_attributes(boost_type: 'elem_amplify', value: 25.0)
+  end
+
   it 'uses element-specific reduction labels and the selected Omega Teluma frame' do
     series = WeaponSeries.find_by!(slug: 'draconic')
     series.update!(has_weapon_keys: true)

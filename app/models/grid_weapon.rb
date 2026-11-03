@@ -259,6 +259,24 @@ class GridWeapon < ApplicationRecord
   end
 
   ##
+  # Whether the game opens this key's slot on this copy (gbf.wiki Ultima Weapons).
+  # Soulless Passage (slot 1) exists only on Ultima weapons, not their Atma first stage
+  # (the level-100 weapons without a ULB); Gate of Omnipotence (slot 2) only on level-200
+  # (5★) copies. Other key series aren't modeled and stay unlocked.
+  #
+  # @param key [WeaponKey]
+  # @return [Boolean]
+  def key_slot_unlocked?(key)
+    return true unless weapon&.weapon_series&.slug == 'ultima'
+
+    case key.slot
+    when 1 then weapon.ulb == true
+    when 2 then weapon.ulb == true && uncap_level.to_i >= 5
+    else true
+    end
+  end
+
+  ##
   # Returns conflicting grid weapons within a given party.
   #
   # Checks if the associated weapon is present, responds to a :limit method, and is limited.
