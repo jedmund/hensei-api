@@ -220,6 +220,16 @@ RSpec.describe 'GridWeapons API', type: :request do
       expect(grid_weapon.reload.skill_level).to be_nil
     end
 
+    it 'drops it at Transcendence 5, which opens SL25, but not at stages 1–4' do
+      weapon.update!(flb: true, ulb: true, transcendence: true)
+      grid_weapon.update!(uncap_level: 6, transcendence_step: 0, skill_level: 18)
+      put "/api/v1/grid_weapons/#{grid_weapon.id}", params: { weapon: { transcendence_step: 3 } }.to_json, headers: headers
+      expect(grid_weapon.reload.skill_level).to eq(18)
+
+      put "/api/v1/grid_weapons/#{grid_weapon.id}", params: { weapon: { transcendence_step: 5 } }.to_json, headers: headers
+      expect(grid_weapon.reload.skill_level).to be_nil
+    end
+
     it 'keeps a skill level sent with the uncap, and one an unrelated edit leaves alone' do
       grid_weapon.update!(skill_level: 10)
       put "/api/v1/grid_weapons/#{grid_weapon.id}",
