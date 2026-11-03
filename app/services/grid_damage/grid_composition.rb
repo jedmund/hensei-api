@@ -16,6 +16,7 @@ module GridDamage
       max_same_weapon_type
       distinct_weapon_types
       same_series
+      same_element_series
       omega_skill
       crew_races
     ].freeze
@@ -91,6 +92,7 @@ module GridDamage
     def summarize(entries)
       types = Hash.new(0)
       series = Hash.new(0)
+      series_by_element = Hash.new(0)
       ids = Hash.new(0)
       modifiers = Set.new
       omega = 0
@@ -98,6 +100,7 @@ module GridDamage
       entries.each do |e|
         types[e[:proficiency]] += 1
         series[e[:series_slug]] += 1 if e[:series_slug].present?
+        series_by_element[[e[:series_slug], e[:element]]] += 1 if e[:series_slug].present? && e[:element]
         ids[e[:granblue_id]] += 1
         e[:modifiers].each { |m| modifiers << m }
         omega += 1 if e[:omega]
@@ -106,6 +109,7 @@ module GridDamage
       {
         weapon_type_counts: types,
         weapon_series_counts: series,
+        weapon_series_counts_by_element: series_by_element,
         id_counts: ids,
         distinct_weapon_type_count: types.size,
         max_weapon_type_count: types.values.max.to_i,
@@ -127,6 +131,11 @@ module GridDamage
         composition[:distinct_weapon_type_count].to_i
       when 'same_series'
         composition.dig(:weapon_series_counts, weapon&.weapon_series&.slug).to_i
+      # Vitiation and Guile count "weapons with Taboo Allowater's skills": its series in its
+      # own element (a Fire Odious weapon doesn't count for Water's)
+      when 'same_element_series'
+        element = Calculator::ELEMENT_WORD[weapon&.element.to_i]
+        composition.dig(:weapon_series_counts_by_element, [weapon&.weapon_series&.slug, element]).to_i
       # Vivification counts weapons with its own element's omega skills ("Ironflame's"
       # for Iron's): 6C5bN9's Earth Lifetree's Insignia don't count on a Fire grid.
       when 'omega_skill'

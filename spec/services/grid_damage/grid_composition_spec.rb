@@ -28,6 +28,16 @@ RSpec.describe GridDamage::GridComposition do
       ]
       expect(described_class.summarize(entries)[:omega_skill_counts_by_element]).to eq('fire' => 1, 'earth' => 2)
     end
+
+    it 'tallies each series per element' do
+      entries = [
+        { proficiency: 1, series_slug: 'odious', granblue_id: 'A', modifiers: [], element: 'water' },
+        { proficiency: 1, series_slug: 'odious', granblue_id: 'B', modifiers: [], element: 'water' },
+        { proficiency: 1, series_slug: 'odious', granblue_id: 'C', modifiers: [], element: 'fire' }
+      ]
+      expect(described_class.summarize(entries)[:weapon_series_counts_by_element])
+        .to eq(%w[odious water] => 2, %w[odious fire] => 1)
+    end
   end
 
   describe '.count_for_basis' do
@@ -47,6 +57,14 @@ RSpec.describe GridDamage::GridComposition do
     it "counts only the bearing weapon's element's omega weapons" do
       by_element = composition.merge(omega_skill_counts_by_element: { 'fire' => 4, 'earth' => 3 })
       expect(described_class.count_for_basis('omega_skill', weapon: weapon, composition: by_element)).to eq(4)
+    end
+
+    # h6sAVJ: Allowater's Vitiation counts Water Taboo weapons only
+    it "counts the bearing weapon's series in its own element" do
+      odious = instance_double(WeaponSeries, slug: 'odious')
+      water = instance_double(Weapon, proficiency: 1, weapon_series: odious, element: 2)
+      counts = composition.merge(weapon_series_counts_by_element: { %w[odious water] => 7, %w[odious fire] => 2 })
+      expect(described_class.count_for_basis('same_element_series', weapon: water, composition: counts)).to eq(7)
     end
 
     it 'resolves canonical count bases' do
