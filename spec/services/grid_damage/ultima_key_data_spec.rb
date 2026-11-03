@@ -51,6 +51,27 @@ RSpec.describe 'Ultima key effect data' do
       .to eq('modifier' => 'Enmity', 'series' => 'normal', 'size' => 'big')
   end
 
+  # gbf.wiki: Strength is a Normal Stamina modifier, Zeal a Normal Enmity one, Will EX ATK.
+  it 'puts Strength and Zeal on the normal frame and Will on EX' do
+    expect(key_rows('gauph-strength').sole['series']).to eq('normal')
+    expect(key_rows('gauph-zeal').sole['series']).to eq('normal')
+    expect(key_rows('gauph-will').sole['series']).to eq('ex')
+  end
+
+  it 'moves stored Strength and Zeal rows to the normal frame' do
+    WeaponSkillEffect.where(key_slug: MoveGauphStatKeysToNormalFrame::KEYS.keys).delete_all
+    MoveGauphStatKeysToNormalFrame::KEYS.each do |slug, boost_type|
+      WeaponSkillEffect.create!(key_slug: slug, modifier: slug, boost_type: boost_type, series: 'ex',
+                                scaling_kind: 'conditional_flat', value: 1, value_unit: 'percent',
+                                stacking: 'additive', applies_to: 'all_allies')
+    end
+
+    2.times { MoveGauphStatKeysToNormalFrame.new.up }
+
+    expect(WeaponSkillEffect.where(key_slug: MoveGauphStatKeysToNormalFrame::KEYS.keys).pluck(:series))
+      .to eq(%w[normal normal])
+  end
+
   it 'migrates idempotently and preserves provenance' do
     scope = WeaponSkillEffect.where(key_slug: FixUltimaSkillCurves::KEY_SLUGS).or(
       WeaponSkillEffect.where(key_slug: nil, weapon_skill_version_id: nil, modifier: 'Rubell')

@@ -1535,7 +1535,7 @@
     {
       "modifier": "Gauph Key of Strength",
       "boost_type": "stamina",
-      "series": "ex",
+      "series": "normal",
       "scaling_kind": "weapon_skill_curve",
       "value_unit": "percent",
       "condition": {
@@ -1649,7 +1649,7 @@
     {
       "modifier": "Gauph Key of Zeal",
       "boost_type": "enmity",
-      "series": "ex",
+      "series": "normal",
       "scaling_kind": "weapon_skill_curve",
       "value_unit": "percent",
       "condition": {
