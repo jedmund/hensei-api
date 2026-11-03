@@ -109,10 +109,12 @@ module GridDamage
       end
     end
 
+    # A negative cap is a floor: befoulment Hit lines stop at -99% (-90% for HP).
     def capped(boost_type, rule, raw, cap, flat, sources = {})
-      total = cap ? [raw, cap].min : raw
+      over = !cap.nil? && (cap.negative? ? raw < cap : raw > cap)
+      total = over ? cap : raw
       Result.new(boost_type: boost_type, rule: rule, total: total, by_series: nil, raw: raw, cap: cap,
-                 cap_is_flat: flat, capped: !cap.nil? && raw > cap, source_map: sources)
+                 cap_is_flat: flat, capped: over, source_map: sources)
     end
 
     def source_map(group)
