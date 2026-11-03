@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 module GridDamage
-  # rubocop:disable Metrics/ModuleLength -- the in-game panel order is intentionally explicit
   # Shapes Calculator.boost_list into the in-game "Weapon Skill Boosts" panel: display
   # lines in the game's group order (attack → HP → defense → special → overskill → AX)
   # with panel labels, in-game label-image slugs (the gbf.wiki/game texture names, EN/JA
@@ -304,5 +303,4 @@ module GridDamage
       end
     end
   end
-  # rubocop:enable Metrics/ModuleLength
 end

@@ -108,7 +108,7 @@ module Granblue
       response.body
     end
 
-    def initialize(ids: nil, rarities: nil, write: false, refresh: false, offline: false, # rubocop:disable Metrics/ParameterLists
+    def initialize(ids: nil, rarities: nil, write: false, refresh: false, offline: false,
                    chunk_size: CHUNK_SIZE, delay: Granblue::WikiThrottle::MIN_DELAY,
                    fetcher: DEFAULT_FETCHER, io: $stdout)
       @ids = ids

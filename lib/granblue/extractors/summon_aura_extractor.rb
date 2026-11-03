@@ -62,7 +62,7 @@ module Granblue
       TARGET_PRIORITY = %w[normal_frame omega_frame odious_frame elemental_atk normal_atk omega_atk multiattack atk other].freeze
       private_constant :TARGET_PRIORITY
 
-      def build(text, slot:, uncap_level:, transcendence_stage:, series:, summon_element:, granblue_id:) # rubocop:disable Metrics/ParameterLists
+      def build(text, slot:, uncap_level:, transcendence_stage:, series:, summon_element:, granblue_id:)
         return nil if text.blank?
 
         clean = strip_markup(text)

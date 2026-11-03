@@ -52,7 +52,7 @@ module WeaponSkills
         end
       end
 
-      def initialize(mode:, ids: nil, series: nil, all: false, diff_limit: nil, io: $stdout, context: nil, # rubocop:disable Metrics/ParameterLists
+      def initialize(mode:, ids: nil, series: nil, all: false, diff_limit: nil, io: $stdout, context: nil,
                      lock_wait: LOCK_WAIT)
         raise ArgumentError, "mode must be one of #{MODES.join(', ')} (got #{mode.inspect})" unless MODES.include?(mode)
 

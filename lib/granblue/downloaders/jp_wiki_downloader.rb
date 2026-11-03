@@ -27,7 +27,7 @@ module Granblue
       #            only those rows
       #
       # Returns { downloaded:, skipped:, errors:, summary: } (a Granblue::SourceFetchSummary).
-      def self.backfill(model:, limit: nil, throttle: DEFAULT_THROTTLE, force: false, debug: false, # rubocop:disable Metrics/ParameterLists
+      def self.backfill(model:, limit: nil, throttle: DEFAULT_THROTTLE, force: false, debug: false,
                         ids: nil, missing: false)
         throttle = Granblue::WikiThrottle.clamp(throttle, warn: method(:puts))
         scope = backfill_scope(model, ids: ids, missing: missing, force: force)
