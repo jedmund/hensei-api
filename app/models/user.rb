@@ -183,9 +183,7 @@ class User < ApplicationRecord
       true
     when 'crew_only'
       viewer.present? && in_same_crew_as?(viewer)
-    when 'private_collection'
-      false
-    else
+    else # 'private_collection', and anything unknown
       false
     end
   end

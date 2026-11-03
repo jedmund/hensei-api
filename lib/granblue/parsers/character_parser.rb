@@ -33,6 +33,59 @@ module Granblue
         handle_fetch_success(response, save)
       end
 
+      # Iterates over all characters in the database and fetches their data
+      # If the save flag is set, data is saved to the database
+      # If the overwrite flag is set, data is fetched even if it already exists
+      # If the debug flag is set, additional information is printed to the console
+      def self.fetch_all(save: false, overwrite: false, debug: false)
+        errors = []
+
+        count = Character.count
+        Character.all.each_with_index do |c, i|
+          percentage = ((i + 1) / count.to_f * 100).round(2)
+          ap "#{percentage}%: Fetching #{c.name_en}... (#{i + 1}/#{count})" if debug
+          next unless c.release_date.nil? || overwrite
+
+          begin
+            CharacterParser.new(granblue_id: c.granblue_id,
+                                debug: debug).fetch(save: save)
+          rescue WikiError => e
+            errors.push(e.page)
+          end
+          sleep(Granblue::WikiThrottle::MIN_DELAY) # gbf.wiki: one request per 2s
+        end
+
+        ap 'The following pages were unable to be fetched:'
+        ap errors
+      end
+
+      def self.fetch_list(list: [], save: false, overwrite: false, debug: false, start: nil)
+        errors = []
+
+        start_index = start.nil? ? 0 : list.index { |id| id == start }
+        count = list.drop(start_index).count
+
+        # ap "Start index: #{start_index}"
+
+        list.drop(start_index).each_with_index do |id, i|
+          chara = Character.find_by(granblue_id: id)
+          percentage = ((i + 1) / count.to_f * 100).round(2)
+          ap "#{percentage}%: Fetching #{chara.wiki_en}... (#{i + 1}/#{count})" if debug
+          next unless chara.release_date.nil? || overwrite
+
+          begin
+            WeaponParser.new(granblue_id: chara.granblue_id,
+                             debug: debug).fetch(save: save)
+          rescue WikiError => e
+            errors.push(e.page)
+          end
+          sleep(Granblue::WikiThrottle::MIN_DELAY) # gbf.wiki: one request per 2s
+        end
+
+        ap 'The following pages were unable to be fetched:'
+        ap errors
+      end
+
       private
 
       # Determines whether or not the response is a redirect
@@ -102,59 +155,6 @@ module Granblue
       rescue WikiError => e
         ap "There was an error fetching #{e.page}: #{e.message}" if @debug
         nil
-      end
-
-      # Iterates over all characters in the database and fetches their data
-      # If the save flag is set, data is saved to the database
-      # If the overwrite flag is set, data is fetched even if it already exists
-      # If the debug flag is set, additional information is printed to the console
-      def self.fetch_all(save: false, overwrite: false, debug: false)
-        errors = []
-
-        count = Character.count
-        Character.all.each_with_index do |c, i|
-          percentage = ((i + 1) / count.to_f * 100).round(2)
-          ap "#{percentage}%: Fetching #{c.name_en}... (#{i + 1}/#{count})" if debug
-          next unless c.release_date.nil? || overwrite
-
-          begin
-            CharacterParser.new(granblue_id: c.granblue_id,
-                                debug: debug).fetch(save: save)
-          rescue WikiError => e
-            errors.push(e.page)
-          end
-          sleep(Granblue::WikiThrottle::MIN_DELAY) # gbf.wiki: one request per 2s
-        end
-
-        ap 'The following pages were unable to be fetched:'
-        ap errors
-      end
-
-      def self.fetch_list(list: [], save: false, overwrite: false, debug: false, start: nil)
-        errors = []
-
-        start_index = start.nil? ? 0 : list.index { |id| id == start }
-        count = list.drop(start_index).count
-
-        # ap "Start index: #{start_index}"
-
-        list.drop(start_index).each_with_index do |id, i|
-          chara = Character.find_by(granblue_id: id)
-          percentage = ((i + 1) / count.to_f * 100).round(2)
-          ap "#{percentage}%: Fetching #{chara.wiki_en}... (#{i + 1}/#{count})" if debug
-          next unless chara.release_date.nil? || overwrite
-
-          begin
-            WeaponParser.new(granblue_id: chara.granblue_id,
-                             debug: debug).fetch(save: save)
-          rescue WikiError => e
-            errors.push(e.page)
-          end
-          sleep(Granblue::WikiThrottle::MIN_DELAY) # gbf.wiki: one request per 2s
-        end
-
-        ap 'The following pages were unable to be fetched:'
-        ap errors
       end
 
       # Parses the hash into a format that can be saved to the database

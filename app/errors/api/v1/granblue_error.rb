@@ -6,6 +6,7 @@ module Api
     class GranblueError < StandardError
       def initialize(data = '')
         @data = data
+        super(message)
       end
 
       def http_status

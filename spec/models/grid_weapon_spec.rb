@@ -2,9 +2,6 @@
 
 require 'rails_helper'
 
-# Define a dummy GridWeaponBlueprint if it is not already defined.
-class GridWeaponBlueprint; end unless defined?(GridWeaponBlueprint)
-
 RSpec.describe GridWeapon, type: :model do
   it { is_expected.to belong_to(:weapon) }
   it { is_expected.to belong_to(:party) }
@@ -216,6 +213,8 @@ RSpec.describe GridWeapon, type: :model do
 
   describe '#blueprint' do
     it 'returns the GridWeaponBlueprint constant' do
+      # #blueprint names a top-level constant the app doesn't define
+      stub_const('GridWeaponBlueprint', Class.new)
       expect(grid_weapon.blueprint).to eq(GridWeaponBlueprint)
     end
   end

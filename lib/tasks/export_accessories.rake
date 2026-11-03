@@ -21,7 +21,7 @@ namespace :granblue do
       # Set up filepath
       dir = "#{Rails.root.join("export/")}"
       filename = "#{dir}/accessory-#{size}.txt"
-      FileUtils.mkdir(dir) unless Dir.exist?(dir)
+      FileUtils.mkdir_p(dir)
 
       # Write to file
       File.open(filename, 'w') do |f|

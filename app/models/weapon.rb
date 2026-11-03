@@ -225,11 +225,8 @@ class Weapon < ApplicationRecord
   # Virtual attribute to set weapon_series by ID or slug
   # Supports both UUID and slug lookup for flexibility
   def series=(value)
-    return self.weapon_series = nil if value.blank?
-
     # Try to find by ID first, then by slug
-    found = WeaponSeries.find_by(id: value) || WeaponSeries.find_by(slug: value)
-    self.weapon_series = found
+    self.weapon_series = value.blank? ? nil : (WeaponSeries.find_by(id: value) || WeaponSeries.find_by(slug: value))
   end
 
   # The game's weapon ids are 10 digits; they also become image filenames.

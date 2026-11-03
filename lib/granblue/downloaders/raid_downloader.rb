@@ -31,14 +31,8 @@ module Granblue
       # @param force [Boolean] When true, re-downloads even if file exists
       def initialize(raid, test_mode: false, verbose: false, storage: :both, force: false, logger: nil)
         @raid = raid
-        @id = raid.slug # Use slug for logging
-        @test_mode = test_mode
-        @verbose = verbose
-        @storage = storage
-        @force = force
-        @logger = logger || Logger.new($stdout)
-        @aws_service = self.class.aws_service if store_in_s3?
-        ensure_directories_exist unless @test_mode
+        # The slug stands in for the id (used for logging)
+        super(raid.slug, test_mode: test_mode, verbose: verbose, storage: storage, force: force, logger: logger)
       end
 
       # Download images for all available sizes

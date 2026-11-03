@@ -269,7 +269,6 @@ module Api
         min_characters_count = params['characters_count'].blank? ? DEFAULT_MIN_CHARACTERS : params['characters_count'].to_i
         min_summons_count = params['summons_count'].blank? ? DEFAULT_MIN_SUMMONS : params['summons_count'].to_i
         min_weapons_count = params['weapons_count'].blank? ? DEFAULT_MIN_WEAPONS : params['weapons_count'].to_i
-        max_clear_time = params['max_clear_time'].blank? ? DEFAULT_MAX_CLEAR_TIME : params['max_clear_time'].to_i
 
         {}.tap do |hash|
           # Basic filters

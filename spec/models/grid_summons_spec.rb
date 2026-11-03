@@ -2,9 +2,6 @@
 
 require 'rails_helper'
 
-# Define a dummy GridSummonBlueprint if it is not already defined.
-class GridSummonBlueprint; end unless defined?(GridSummonBlueprint)
-
 RSpec.describe GridSummon, type: :model do
   describe 'associations' do
     it 'belongs to a party' do
@@ -344,6 +341,8 @@ RSpec.describe GridSummon, type: :model do
 
   describe '#blueprint' do
     it 'returns the GridSummonBlueprint constant' do
+      # #blueprint names a top-level constant the app doesn't define
+      stub_const('GridSummonBlueprint', Class.new)
       grid_summon = build(:grid_summon)
       expect(grid_summon.blueprint).to eq(GridSummonBlueprint)
     end
@@ -475,6 +474,29 @@ RSpec.describe GridSummon, type: :model do
     end
   end
 
+  describe '#conflicts' do
+    let(:party) { create(:party) }
+    let(:limited_summon) { Summon.find_by!(granblue_id: '2040003000').tap { |s| s.limit = true } }
+    let!(:existing) do
+      create(:grid_summon, party: party, summon: limited_summon, position: 1, uncap_level: 3, transcendence_step: 0)
+    end
+    let(:unsaved) do
+      build(:grid_summon, party: party, summon: limited_summon, position: 2, uncap_level: 3, transcendence_step: 0)
+    end
+
+    it 'skips unsaved summons and keeps looking for a persisted conflict' do
+      allow(party).to receive(:summons).and_return([unsaved, existing])
+
+      expect(unsaved.conflicts(party)).to eq(existing)
+    end
+
+    it 'returns nil when the summon has no limit' do
+      limited_summon.limit = false
+
+      expect(unsaved.conflicts(party)).to be_nil
+    end
+  end
+
   describe 'boost recomputation callback' do
     let(:magna_series) do SummonSeries.find_or_create_by!(slug: 'magna') do |s| s.name_en = 'Magna'
  s.name_jp = 'マグナ'
@@ -497,7 +519,7 @@ RSpec.describe GridSummon, type: :model do
       party = create(:party)
       party.update_columns(boost_mod: 'omega', boost_side: 'double')
 
-      sub_summon = GridSummon.create!(party: party, summon: bahamut, position: 1, main: false, friend: false, uncap_level: 3, transcendence_step: 0)
+      GridSummon.create!(party: party, summon: bahamut, position: 1, main: false, friend: false, uncap_level: 3, transcendence_step: 0)
 
       party.reload
       expect(party.boost_mod).to eq('omega')

@@ -82,7 +82,7 @@ module CharacterSkills
                                "for #{format('%gs', wait.to_f)}; nothing was built"
       end
 
-      def initialize(mode:, ids: nil, characters: nil, all: false, diff_limit: nil, io: $stdout, # rubocop:disable Metrics/ParameterLists
+      def initialize(mode:, ids: nil, characters: nil, all: false, diff_limit: nil, io: $stdout,
                      enqueue_icons: true)
         raise ArgumentError, "mode must be one of #{MODES.join(', ')} (got #{mode.inspect})" unless MODES.include?(mode)
 

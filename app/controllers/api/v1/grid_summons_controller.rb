@@ -169,7 +169,6 @@ module Api
       # @return [void]
       def update_position
         new_position = position_params[:position].to_i
-        new_container = position_params[:container]
 
         # Validate position bounds (-1 main, 0-3 sub, 4-5 subaura, 6 friend)
         unless valid_summon_position?(new_position)

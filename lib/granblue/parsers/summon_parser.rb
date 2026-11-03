@@ -31,45 +31,6 @@ module Granblue
         end
       end
 
-      private
-
-      # Handle the response from the wiki if the response is successful
-      # If the save flag is set, it will persist the data to the database
-      def handle_fetch_success(response, save)
-        ap "#{@summon.granblue_id}: Successfully fetched info for #{@summon.wiki_en}" if @debug
-
-        extracted = parse_string(response)
-
-        unless extracted[:template].nil?
-          template = @wiki.fetch("Template:#{extracted[:template]}")
-          extracted.merge!(parse_string(template))
-        end
-
-        info, skills = parse(extracted)
-
-        # ap info
-        # ap skills
-
-        persist(info[:info]) if save
-        true
-      end
-
-      # Fetches the wiki info from the wiki
-      # Returns the response body
-      # Raises an exception if something went wrong
-      def fetch_wiki_info(name = nil)
-        @wiki.fetch(name || @summon.wiki_en)
-      rescue WikiError => e
-        ap e
-        # ap "There was an error fetching #{e.page}: #{e.message}" if @debug
-        {
-          error: {
-            name: @summon.wiki_en,
-            granblue_id: @summon.granblue_id
-          }
-        }
-      end
-
       # Iterates over all summons in the database and fetches their data
       # If the save flag is set, data is saved to the database
       # If the overwrite flag is set, data is fetched even if it already exists
@@ -129,6 +90,42 @@ module Granblue
         ap errors
       end
 
+      private
+
+      # Handle the response from the wiki if the response is successful
+      # If the save flag is set, it will persist the data to the database
+      def handle_fetch_success(response, save)
+        ap "#{@summon.granblue_id}: Successfully fetched info for #{@summon.wiki_en}" if @debug
+
+        extracted = parse_string(response)
+
+        unless extracted[:template].nil?
+          template = @wiki.fetch("Template:#{extracted[:template]}")
+          extracted.merge!(parse_string(template))
+        end
+
+        parsed = parse(extracted)
+
+        persist(parsed[:info]) if save
+        true
+      end
+
+      # Fetches the wiki info from the wiki
+      # Returns the response body
+      # Raises an exception if something went wrong
+      def fetch_wiki_info(name = nil)
+        @wiki.fetch(name || @summon.wiki_en)
+      rescue WikiError => e
+        ap e
+        # ap "There was an error fetching #{e.page}: #{e.message}" if @debug
+        {
+          error: {
+            name: @summon.wiki_en,
+            granblue_id: @summon.granblue_id
+          }
+        }
+      end
+
       # Parses the response string into a hash
       def parse_string(string)
         data = {}
@@ -175,7 +172,6 @@ module Granblue
       # Parses the hash into a format that can be saved to the database
       def parse(hash)
         info = {}
-        skills = {}
 
         info[:name] = { en: hash['name'], ja: hash['jpname'] }
         info[:flavor] = { en: hash['flavor'], ja: hash['jpflavor'] }

@@ -402,7 +402,7 @@ module Granblue
       # @param obtain [String] The obtain field value
       # @param wiki_series [String] The series field value
       # @return [Boolean]
-      def self.gacha_available_from_obtain(obtain, wiki_series)
+      def self.gacha_available_from_obtain(obtain, _wiki_series)
         return false if obtain.blank?
 
         # Check for non-gacha indicators

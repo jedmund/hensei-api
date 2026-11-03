@@ -142,11 +142,8 @@ class Summon < ApplicationRecord
   # Virtual attribute to set summon_series by ID or slug
   # Supports both UUID and slug lookup for flexibility
   def series=(value)
-    return self.summon_series = nil if value.blank?
-
     # Try to find by ID first, then by slug
-    found = SummonSeries.find_by(id: value) || SummonSeries.find_by(slug: value)
-    self.summon_series = found
+    self.summon_series = value.blank? ? nil : (SummonSeries.find_by(id: value) || SummonSeries.find_by(slug: value))
   end
 
   private
