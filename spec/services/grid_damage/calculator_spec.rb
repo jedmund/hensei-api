@@ -180,6 +180,26 @@ RSpec.describe GridDamage::Calculator do
     end
   end
 
+  # DkQurT: Gauph Key of Strength is Normal Stamina, so it shares the grid's Stamina line,
+  # but Ultima isn't summon-boosted, so only the Optimus weapon's part is amplified.
+  it 'adds a flat Normal-frame key skill to the amplified Normal line' do
+    create(:weapon_skill_boost_type, key: 'stamina', stacking_rule: 'multiplicative_by_series')
+    add_main_summon(normal_aura: 100)
+    add_weapon(modifier: 'Stamina', series: 'normal', position: 0, boosts: { 'stamina' => 10.0 })
+    ultima = WeaponSeries.find_by!(slug: 'ultima')
+    ultima.update!(has_weapon_keys: true, summon_boosted: false)
+    key = create(:weapon_key, slug: 'test-gauph-strength')
+    WeaponSkillEffect.create!(key_slug: key.slug, modifier: 'Test Gauph', boost_type: 'stamina',
+                              series: 'normal', scaling_kind: 'conditional_flat', value: 20.4,
+                              value_unit: 'percent', stacking: 'additive', applies_to: 'all_allies')
+    create(:grid_weapon, party: party, weapon: create(:weapon, weapon_series: ultima),
+                         position: 1, uncap_level: 4, weapon_key1: key)
+
+    stamina = described_class.boost_list(party, state: state)['stamina']
+
+    expect(stamina.by_series).to eq('normal' => 40.4) # 10 × (1 + 100/100) + 20.4 flat
+  end
+
   it 'caps E. ATK at 40%' do
     create(:weapon_skill_boost_type, key: 'e_atk')
     add_weapon(modifier: 'Celere', series: 'ex', position: -1, mainhand: true, boosts: { 'e_atk' => 25.0 })

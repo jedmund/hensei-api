@@ -21,7 +21,8 @@ module GridDamage
         next unless w
 
         # Key-granted skills on non-summon-boosted series (Ultima gauphs) land flat,
-        # like the weapon's own skills (dAV5ds: Gauph Key of Strength's Stamina 20.4).
+        # like the weapon's own skills (dAV5ds: Gauph Key of Strength's Stamina 20.4). They
+        # keep their frame: Strength's flat Normal Stamina adds to the grid's Stamina line.
         amplifiable = WeaponContributions.series_summon_boosted?(w.weapon_series)
         equipped_keys(gw).each do |key|
           Array(by_slug[key.slug]).each do |e|
