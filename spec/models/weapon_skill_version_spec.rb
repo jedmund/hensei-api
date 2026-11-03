@@ -102,4 +102,22 @@ RSpec.describe WeaponSkillVersion, type: :model do
       expect(described_class::VALID_MODIFIERS).to eq(Granblue::Parsers::WeaponSkillParser::KNOWN_MODIFIERS)
     end
   end
+
+  describe '#weapon_skill_effects' do
+    # h6sAVJ: Taboo Pact's level table replaces Hollowsky Pact's flat 50,000 effect
+    it "lets a family row of the skill's own series replace the family's generic effect" do
+      create(:weapon_skill_datum, modifier: 'Pact', boost_type: 'dmg_supp', series: 'odious', size: 'big',
+                                  sl1: 4700, sl10: 6500, sl15: 7000)
+      WeaponSkillEffect.create!(modifier: 'Pact', boost_type: 'dmg_supp', scaling_kind: 'supplemental_cap',
+                                value: 1, per_copy_cap: 50_000, condition: {}, applies_to: 'element_allies',
+                                stacking: 'additive')
+      odious = create(:weapon_skill_version, skill_modifier: 'Pact', skill_series: 'odious', skill_size: 'big')
+      hollowsky = create(:weapon_skill_version, skill_modifier: 'Pact', skill_series: 'ex')
+
+      expect(odious.weapon_skill_effects).to be_empty
+      expect(odious.weapon_skill_data.map(&:sl15)).to eq([7000])
+      expect(hollowsky.weapon_skill_effects.map(&:per_copy_cap)).to eq([50_000])
+      expect(hollowsky.weapon_skill_data).to be_empty
+    end
+  end
 end

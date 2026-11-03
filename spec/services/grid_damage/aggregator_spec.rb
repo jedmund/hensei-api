@@ -19,7 +19,8 @@ RSpec.describe GridDamage::Aggregator do
       'da' => Meta.new(stacking_rule: 'additive', grid_cap: nil, cap_is_flat: false),
       'hp' => Meta.new(stacking_rule: 'additive', grid_cap: 400.0, cap_is_flat: false),
       'ca_supp' => Meta.new(stacking_rule: 'additive', grid_cap: 1_000_000.0, cap_is_flat: true),
-      'elem_amplify' => Meta.new(stacking_rule: 'highest_only', grid_cap: nil, cap_is_flat: false)
+      'elem_amplify' => Meta.new(stacking_rule: 'highest_only', grid_cap: nil, cap_is_flat: false),
+      'ca_dmg_hit' => Meta.new(stacking_rule: 'additive', grid_cap: -99.0, cap_is_flat: false)
     }
   end
 
@@ -43,6 +44,17 @@ RSpec.describe GridDamage::Aggregator do
       expect(r.raw).to eq(500.0)
       expect(r.total).to eq(400.0)
       expect(r.capped).to be(true)
+    end
+
+    # h6sAVJ: five C.A. DMG Down befoulments sum to -129; the panel stops at -99
+    it 'treats a negative cap as a floor' do
+      r = agg([-32, -32, -12, -18, -35].map { |v| contrib(boost_type: 'ca_dmg_hit', value: v) })['ca_dmg_hit']
+      expect(r.raw).to eq(-129.0)
+      expect(r.total).to eq(-99.0)
+      expect(r.capped).to be(true)
+
+      r = agg([contrib(boost_type: 'ca_dmg_hit', value: -40)])['ca_dmg_hit']
+      expect([r.total, r.capped]).to eq([-40.0, false])
     end
 
     it 'applies flat caps the same way (C.A. supplemental)' do

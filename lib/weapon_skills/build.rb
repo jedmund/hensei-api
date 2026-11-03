@@ -134,7 +134,7 @@ module WeaponSkills
 
     def scales?(version, registry, text = nil)
       modifier = version.skill_modifier
-      return registry.leveled_family?(modifier) if modifier.present? && registry.canonical_family?(modifier)
+      return registry.leveled_family?(modifier, series: version.skill_series) if modifier.present? && registry.canonical_family?(modifier)
 
       text.to_s.match?(SIZED_BOOST)
     end

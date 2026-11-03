@@ -39,6 +39,11 @@ class WeaponSkillDatum < ApplicationRecord
     'odious' => %w[odious taboo], 'taboo' => %w[taboo odious]
   }.freeze
 
+  # Series that are a real frame claim, never an import default: a family that stores only
+  # one of these doesn't drift to other series (Odious Pact's level table isn't Hollowsky's
+  # flat EX Pact).
+  EXPLICIT_SERIES = %w[normal_omega odious taboo].freeze
+
   # Resolve a weapon-skill version's (modifier, series, size) to its canonical scaling
   # rows — AT MOST ONE row per boost_type (a version is one skill; multiple rows of one
   # boost would double-count in the calculator; e.g. "Dragon-Knight's Might" used to pull
@@ -72,14 +77,14 @@ class WeaponSkillDatum < ApplicationRecord
   # Rows a series-bearing skill may use: its own/shared series (or series-less data), else —
   # when the family stores exactly ONE series — tolerate the drift (a single-series family's
   # series is often an import default, not a real frame claim; e.g. Strike's "normal").
-  # "normal_omega" IS an explicit frame claim (the Normal/Omega shared curve), so it never
-  # crosses to EX/Odious skills.
+  # "normal_omega", "odious" and "taboo" ARE explicit frame claims (EXPLICIT_SERIES), so
+  # they never cross to other skills.
   def self.series_matched(group, compatible)
     matched = group.select { |d| d.series.nil? || compatible.include?(d.series) }
     return matched if matched.any?
 
     lone = group.map(&:series).uniq
-    lone.size == 1 && lone.first != 'normal_omega' ? group : []
+    lone.size == 1 && EXPLICIT_SERIES.exclude?(lone.first) ? group : []
   end
   private_class_method :series_matched
 end

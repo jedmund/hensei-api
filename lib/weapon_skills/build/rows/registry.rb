@@ -124,8 +124,12 @@ module WeaponSkills
         # skill level (per-level values, or a formula coefficient that takes the skill level,
         # as Stamina's does), or it has a weapon_skill_curve base effect. A family with only
         # fixed values (Godblade, Voltage II, Exalto, …) has none.
-        def leveled_family?(modifier)
-          curve_effect?(modifier) || @data_by_modifier.fetch(modifier, []).any? do |d|
+        # With a series, only the curves that series can take count: Odious Pact levels
+        # (4,700 → 7,000), Hollowsky's EX Pact is a flat 50,000 and doesn't.
+        def leveled_family?(modifier, series: nil)
+          rows = @data_by_modifier.fetch(modifier, [])
+          rows = series_matched(rows, SERIES_FALLBACK.fetch(series, [series])) if series.present?
+          curve_effect?(modifier) || rows.any? do |d|
             d.levels.compact.uniq.size > 1 || !d.coefficient.nil?
           end
         end
@@ -153,7 +157,7 @@ module WeaponSkills
           return matched if matched.any?
 
           lone = group.map(&:series).uniq
-          lone.size == 1 && lone.first != 'normal_omega' ? group : []
+          lone.size == 1 && !WeaponSkillDatum::EXPLICIT_SERIES.include?(lone.first) ? group : []
         end
       end
     end

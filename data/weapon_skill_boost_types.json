@@ -611,5 +611,50 @@
     "cap_is_flat": true,
     "stacking_rule": "highest_only",
     "notes": "Flat HP shield granted at start of battle. Multiple shield weapon skills do not stack; only the highest value takes effect."
+  },
+  {
+    "key": "atk_hit",
+    "name_en": "ATK Hit",
+    "category": "offensive",
+    "grid_cap": -99.0,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Befoulment line; the panel stops at -99%."
+  },
+  {
+    "key": "ca_dmg_hit",
+    "name_en": "C.A. DMG Hit",
+    "category": "offensive",
+    "grid_cap": -99.0,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Befoulment line; the panel stops at -99%."
+  },
+  {
+    "key": "def_hit",
+    "name_en": "DEF Hit",
+    "category": "defensive",
+    "grid_cap": -99.0,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Befoulment line; the panel stops at -99%."
+  },
+  {
+    "key": "turn_dmg_hit",
+    "name_en": "Turn DMG",
+    "category": "defensive",
+    "grid_cap": -99.0,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Befoulment line; the panel stops at -99%."
+  },
+  {
+    "key": "hp_hit",
+    "name_en": "HP Hit",
+    "category": "defensive",
+    "grid_cap": -90.0,
+    "cap_is_flat": false,
+    "stacking_rule": "additive",
+    "notes": "Befoulment line; the panel stops at -90%."
   }
 ]

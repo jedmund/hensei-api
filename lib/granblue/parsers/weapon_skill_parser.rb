@@ -147,12 +147,12 @@ module Granblue
       # Skill modifiers with flat values
       FLAT_MODIFIERS = %w[
         Aramis Ars Arts Ascendancy Athos Blessing Bloodrage Blow Charge
-        Convergence Craft Dominion Enforcement Excelsior Exertion Fathoms
+        Convergence Craft Dominion Enforcement Excelsior Execration Exertion Fathoms
         Fortified Fortitude Frailty Godblade Godflair Godheart Godshield
-        Godstrike Honing Impulse Initiation Marvel Pact Parity Persistence Plenum
-        Porthos Quenching Quintessence Resonator Rigor Rubell Ruination
+        Godstrike Guile Honing Impulse Initiation Marvel Pact Parity Persistence Plenum
+        Porthos Puncturing Quenching Quintessence Resonator Rigor Rubell Ruination
         Sovereign Spectacle Strike Supremacy Surge
-        Ultio Utopia Valuables Vitality Vivification Voltage Wrath
+        Ultio Utopia Valuables Vitality Vitiation Vivification Voltage Wrath
       ].freeze
 
       # Multi-word flat modifiers

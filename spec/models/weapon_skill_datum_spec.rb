@@ -105,6 +105,13 @@ RSpec.describe WeaponSkillDatum, type: :model do
       end
     end
 
+    # Odious Pact's level table must not reach Hollowsky's EX Pact
+    it "doesn't lend an Odious-only family to another series" do
+      create(:weapon_skill_datum, modifier: 'Pact', boost_type: 'dmg_supp', series: 'odious', size: 'big')
+      expect(described_class.for_skill(modifier: 'Pact', series: 'ex')).to be_empty
+      expect(described_class.for_skill(modifier: 'Pact', series: 'odious', size: 'big').size).to eq(1)
+    end
+
     context 'with series filter' do
       let!(:normal_datum) { create(:weapon_skill_datum, modifier: 'SeriesMod', series: 'normal', size: 'big') }
       let!(:omega_datum) { create(:weapon_skill_datum, modifier: 'SeriesMod', series: 'omega', size: 'big') }

@@ -13,14 +13,23 @@ RSpec.describe WeaponSkills::Build, '.scales?' do
              curve.call(modifier: 'Stamina', boost_type: 'stamina', series: 'normal', size: 'big',
                         formula_type: 'stamina', coefficient: 56.4),
              curve.call(modifier: 'Omega Exalto', boost_type: 'omega_exalto', series: 'omega',
-                        sl1: 20, sl10: 20, sl15: 20)],
-      effects: [registry_class::Effect.new(modifier: 'Voltage II', boost_type: 'ex_atk_sp')]
+                        sl1: 20, sl10: 20, sl15: 20),
+             curve.call(modifier: 'Pact', boost_type: 'dmg_supp', series: 'odious', size: 'big',
+                        sl1: 4700, sl10: 6500, sl15: 7000)],
+      effects: [registry_class::Effect.new(modifier: 'Voltage II', boost_type: 'ex_atk_sp'),
+                registry_class::Effect.new(modifier: 'Pact', boost_type: 'dmg_supp')]
     )
   end
 
-  def version(modifier)
+  def version(modifier, series: nil)
     WeaponSkills::BuildResult::Version.new(weapon_granblue_id: '1', position: 0, ordinal: 0,
-                                           skill_name_en: 'x', skill_modifier: modifier)
+                                           skill_name_en: 'x', skill_modifier: modifier, skill_series: series)
+  end
+
+  # Odious Pact's level table is its own; Hollowsky's EX Pact is a flat 50,000
+  it "reads a family's levels from the skill's own series" do
+    expect(described_class.scales?(version('Pact', series: 'odious'), registry)).to be(true)
+    expect(described_class.scales?(version('Pact', series: 'ex'), registry)).to be(false)
   end
 
   it 'follows a family with values that change by skill level' do
