@@ -45,7 +45,7 @@ RSpec.describe Granblue::CurationAutoExport do
     expect(described_class::DIRTY.true?).to be(true)
   end
 
-  it "won't overwrite a snapshot holding rows this database lacks" do
+  it "does not overwrite a snapshot holding rows this database lacks" do
     curated = effect(Time.current)
     Granblue::CurationSnapshot.export
     curated.destroy!

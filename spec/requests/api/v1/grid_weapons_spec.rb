@@ -224,6 +224,7 @@ RSpec.describe 'GridWeapons API', type: :request do
       # For this test, update the weapon so that its conditions dictate a maximum uncap of 5.
       weapon.update!(flb: false, ulb: true, transcendence: false)
     end
+
     let!(:grid_weapon) do
       create(:grid_weapon,
              party: party,

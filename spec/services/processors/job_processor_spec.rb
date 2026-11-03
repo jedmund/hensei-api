@@ -71,6 +71,7 @@ RSpec.describe Processors::JobProcessor, type: :model do
 
   context 'with invalid job data' do
     let(:invalid_data) { 'invalid data' }
+
     subject { described_class.new(party, invalid_data, language: 'en') }
 
     it 'logs an error and does not assign a job' do

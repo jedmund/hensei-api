@@ -26,6 +26,7 @@ RSpec.describe Processors::SummonProcessor, type: :model do
 
   context 'with invalid summon data' do
     let(:deck_data) { 'invalid data' }
+
     it 'does not create any GridSummon and logs an error containing "SUMMON"' do
       expect { subject.process }.not_to change(GridSummon, :count)
       begin
@@ -132,7 +133,7 @@ RSpec.describe Processors::SummonProcessor, type: :model do
     end
   end
 
-  after(:each) do |example|
+  after do |example|
     puts "\nDEBUG [SummonProcessor]: #{example.full_description} failed with error: #{example.exception.message}" if example.exception
   end
 end

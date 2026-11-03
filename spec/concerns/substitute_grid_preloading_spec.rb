@@ -58,7 +58,7 @@ RSpec.describe SubstituteGridPreloading, type: :concern do
 
     subs = fresh_gw.substitutions.to_a
     owned_flags = subs.map { |s| s.substitute_grid.owned }
-    expect(owned_flags).to match_array([true, false])
+    expect(owned_flags).to contain_exactly(true, false)
   end
 
   it 'no-ops when there are no substitutions' do

@@ -4,9 +4,9 @@ require 'rails_helper'
 
 RSpec.describe Playlist, type: :model do
   describe 'associations' do
-    it { should belong_to(:user) }
-    it { should have_many(:playlist_parties).dependent(:destroy) }
-    it { should have_many(:parties).through(:playlist_parties) }
+    it { is_expected.to belong_to(:user) }
+    it { is_expected.to have_many(:playlist_parties).dependent(:destroy) }
+    it { is_expected.to have_many(:parties).through(:playlist_parties) }
   end
 
   describe 'validations' do
@@ -35,7 +35,7 @@ RSpec.describe Playlist, type: :model do
     end
 
     describe 'visibility' do
-      it { should allow_values(1, 2, 3).for(:visibility) }
+      it { is_expected.to allow_values(1, 2, 3).for(:visibility) }
 
       it 'rejects invalid visibility values' do
         playlist = build(:playlist, user: user, visibility: 0)

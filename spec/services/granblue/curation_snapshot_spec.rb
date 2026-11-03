@@ -255,7 +255,7 @@ RSpec.describe Granblue::CurationSnapshot do
       expect(sync).to have_attributes(ops_applied: 0, ops_satisfied: 1, updated: 0, changed?: false)
     end
 
-    it "won't add a version over another skill's tier" do
+    it "does not add a version over another skill's tier" do
       taken = { 'weapon' => weapon.granblue_id, 'skill' => 'Interloper', 'ordinal' => version.ordinal,
                 'position' => weapon_skill.position, 'min_uncap' => 3 }
       write_overlay('s.json', 'ops' => [op('add_version', taken)])

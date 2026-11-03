@@ -2,24 +2,24 @@ require 'rails_helper'
 
 RSpec.describe User, type: :model do
   describe 'associations' do
-    it { should have_many(:parties).dependent(:destroy) }
-    it { should have_many(:favorites).dependent(:destroy) }
-    it { should have_many(:collection_characters).dependent(:destroy) }
-    it { should have_many(:collection_weapons).dependent(:destroy) }
-    it { should have_many(:collection_summons).dependent(:destroy) }
-    it { should have_many(:collection_job_accessories).dependent(:destroy) }
-    it { should have_many(:collection_artifacts).dependent(:destroy) }
-    it { should have_many(:crew_memberships).dependent(:destroy) }
-    it { should have_one(:active_crew_membership) }
-    it { should have_one(:crew).through(:active_crew_membership) }
+    it { is_expected.to have_many(:parties).dependent(:destroy) }
+    it { is_expected.to have_many(:favorites).dependent(:destroy) }
+    it { is_expected.to have_many(:collection_characters).dependent(:destroy) }
+    it { is_expected.to have_many(:collection_weapons).dependent(:destroy) }
+    it { is_expected.to have_many(:collection_summons).dependent(:destroy) }
+    it { is_expected.to have_many(:collection_job_accessories).dependent(:destroy) }
+    it { is_expected.to have_many(:collection_artifacts).dependent(:destroy) }
+    it { is_expected.to have_many(:crew_memberships).dependent(:destroy) }
+    it { is_expected.to have_one(:active_crew_membership) }
+    it { is_expected.to have_one(:crew).through(:active_crew_membership) }
   end
 
   describe 'validations' do
-    it { should validate_presence_of(:username) }
-    it { should validate_length_of(:username).is_at_least(3).is_at_most(26) }
-    it { should validate_uniqueness_of(:username).case_insensitive }
-    it { should validate_presence_of(:email) }
-    it { should validate_uniqueness_of(:email).ignoring_case_sensitivity }
+    it { is_expected.to validate_presence_of(:username) }
+    it { is_expected.to validate_length_of(:username).is_at_least(3).is_at_most(26) }
+    it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
+    it { is_expected.to validate_presence_of(:email) }
+    it { is_expected.to validate_uniqueness_of(:email).ignoring_case_sensitivity }
   end
 
   describe 'username format validation' do
@@ -242,7 +242,7 @@ RSpec.describe User, type: :model do
   end
 
   describe 'collection_privacy enum' do
-    it { should define_enum_for(:collection_privacy).with_values(everyone: 1, crew_only: 2, private_collection: 3).with_prefix(true) }
+    it { is_expected.to define_enum_for(:collection_privacy).with_values(everyone: 1, crew_only: 2, private_collection: 3).with_prefix(true) }
 
     it 'defaults to everyone' do
       user = build(:user)
@@ -474,7 +474,7 @@ RSpec.describe User, type: :model do
       party2 = create(:party)
       create(:favorite, user: user, party: party1)
       create(:favorite, user: user, party: party2)
-      expect(user.favorite_parties).to match_array([party1, party2])
+      expect(user.favorite_parties).to contain_exactly(party1, party2)
     end
 
     it 'returns empty array when no favorites' do

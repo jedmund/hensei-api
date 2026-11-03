@@ -254,6 +254,7 @@ RSpec.describe GridSummon, type: :model do
   describe 'default values' do
     let(:party) { create(:party) }
     let(:summon) { Summon.find_by!(granblue_id: '2040433000') }
+
     subject do
       build(:grid_summon,
             party: party,

@@ -23,14 +23,18 @@ RSpec.describe DummyQueryClass do
   describe '#remixed_name' do
     context 'when current_user is present' do
       let(:user) { build(:user, language: 'en') }
+
       before { dummy.current_user = user }
+
       it 'returns a remix name in English' do
         expect(dummy.remixed_name('Original Party')).to eq('Remix of Original Party')
       end
 
       context 'when user language is Japanese' do
         let(:user) { build(:user, language: 'ja') }
+
         before { dummy.current_user = user }
+
         it 'returns a remix name in Japanese' do
           expect(dummy.remixed_name('オリジナル')).to eq('オリジナルのリミックス')
         end
@@ -39,6 +43,7 @@ RSpec.describe DummyQueryClass do
 
     context 'when current_user is nil' do
       before { dummy.current_user = nil }
+
       it 'returns a remix name in English by default' do
         expect(dummy.remixed_name('Original Party')).to eq('Remix of Original Party')
       end

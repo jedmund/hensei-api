@@ -28,7 +28,7 @@ RSpec.describe 'Draconic Teluma effect data' do
     ]
 
     expect(effects.filter_map { |row| row['key_slug'] if row['key_slug']&.start_with?('teluma-') }.uniq)
-      .to contain_exactly(*expected)
+      .to match_array(expected)
     expect(expected.sum { |slug| key_rows(slug).size }).to eq(13)
   end
 

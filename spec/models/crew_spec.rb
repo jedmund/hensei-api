@@ -2,16 +2,16 @@ require 'rails_helper'
 
 RSpec.describe Crew, type: :model do
   describe 'associations' do
-    it { should have_many(:crew_memberships).dependent(:destroy) }
-    it { should have_many(:users).through(:crew_memberships) }
-    it { should have_many(:active_memberships) }
-    it { should have_many(:active_members).through(:active_memberships) }
+    it { is_expected.to have_many(:crew_memberships).dependent(:destroy) }
+    it { is_expected.to have_many(:users).through(:crew_memberships) }
+    it { is_expected.to have_many(:active_memberships) }
+    it { is_expected.to have_many(:active_members).through(:active_memberships) }
   end
 
   describe 'validations' do
-    it { should validate_presence_of(:name) }
-    it { should validate_length_of(:name).is_at_most(100) }
-    it { should validate_length_of(:gamertag).is_at_most(4) }
+    it { is_expected.to validate_presence_of(:name) }
+    it { is_expected.to validate_length_of(:name).is_at_most(100) }
+    it { is_expected.to validate_length_of(:gamertag).is_at_most(4) }
 
     context 'granblue_crew_id uniqueness' do
       it 'validates uniqueness' do

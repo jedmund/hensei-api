@@ -124,6 +124,7 @@ RSpec.describe 'Api::V1::Crews', type: :request do
     let!(:captain_membership) { create(:crew_membership, crew: crew, user: user, role: :captain) }
     let!(:member1) { create(:crew_membership, crew: crew, role: :member) }
     let!(:member2) { create(:crew_membership, crew: crew, role: :vice_captain) }
+
     context 'with default filter (active)' do
       it 'returns all active crew members' do
         get '/api/v1/crew/members', headers: auth_headers

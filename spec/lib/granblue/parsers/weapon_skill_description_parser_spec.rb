@@ -178,6 +178,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillDescriptionParser do
     r = parse("20% boost to Water allies' C.A. DMG.")
     expect(boost(r, 'ca_dmg')).to include(value: 20.0)
   end
+
   describe 'proc and condition text (2026-10 audit)' do
     def boost_types(desc) = parse(desc)[:clauses].map { |c| c[:boost_type] }
 

@@ -38,7 +38,7 @@ RSpec.describe 'Ultima key effect data' do
     expected.each do |slug, boost_types|
       rows = key_rows(slug)
       aggregate_failures(slug) do
-        expect(rows.map { |row| row['boost_type'] }).to contain_exactly(*boost_types)
+        expect(rows.map { |row| row['boost_type'] }).to match_array(boost_types)
         expect(rows).to all(satisfy { |row| row.dig('condition', 'type') == 'weapon_specialty' })
       end
     end

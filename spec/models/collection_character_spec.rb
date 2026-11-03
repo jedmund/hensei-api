@@ -2,9 +2,9 @@ require 'rails_helper'
 
 RSpec.describe CollectionCharacter, type: :model do
   describe 'associations' do
-    it { should belong_to(:user) }
-    it { should belong_to(:character) }
-    it { should belong_to(:awakening).optional }
+    it { is_expected.to belong_to(:user) }
+    it { is_expected.to belong_to(:character) }
+    it { is_expected.to belong_to(:awakening).optional }
   end
 
   describe 'validations' do
@@ -14,16 +14,18 @@ RSpec.describe CollectionCharacter, type: :model do
     subject { build(:collection_character, user: user, character: character) }
 
     describe 'basic validations' do
-      it { should validate_inclusion_of(:uncap_level).in_range(0..6) }
+      it { is_expected.to validate_inclusion_of(:uncap_level).in_range(0..6) }
+
       it 'rejects negative transcendence stages' do
         subject.transcendence_step = -1
         expect(subject).not_to be_valid
       end
-      it { should validate_inclusion_of(:awakening_level).in_range(1..10) }
+
+      it { is_expected.to validate_inclusion_of(:awakening_level).in_range(1..10) }
     end
 
     describe 'uniqueness validation' do
-      it { should validate_uniqueness_of(:character_id).scoped_to(:user_id).ignoring_case_sensitivity.with_message('already exists in your collection') }
+      it { is_expected.to validate_uniqueness_of(:character_id).scoped_to(:user_id).ignoring_case_sensitivity.with_message('already exists in your collection') }
     end
 
     describe 'ring validations' do

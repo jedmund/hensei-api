@@ -91,6 +91,7 @@ RSpec.describe GridWeapon, type: :model do
 
         context 'when position is not in extra positions' do
           before { grid_weapon.position = 2 }
+
           it 'does not add an error on :series' do
             grid_weapon.validate
             expect(grid_weapon.errors[:series]).to be_empty
@@ -209,7 +210,7 @@ RSpec.describe GridWeapon, type: :model do
       grid_weapon.weapon_key1 = weapon_key1
       grid_weapon.weapon_key2 = weapon_key2
       grid_weapon.weapon_key3 = nil
-      expect(grid_weapon.weapon_keys).to match_array([weapon_key1, weapon_key2])
+      expect(grid_weapon.weapon_keys).to contain_exactly(weapon_key1, weapon_key2)
     end
   end
 

@@ -2,13 +2,13 @@ require 'rails_helper'
 
 RSpec.describe CollectionWeapon, type: :model do
   describe 'associations' do
-    it { should belong_to(:user) }
-    it { should belong_to(:weapon) }
-    it { should belong_to(:awakening).optional }
-    it { should belong_to(:weapon_key1).class_name('WeaponKey').optional }
-    it { should belong_to(:weapon_key2).class_name('WeaponKey').optional }
-    it { should belong_to(:weapon_key3).class_name('WeaponKey').optional }
-    it { should belong_to(:weapon_key4).class_name('WeaponKey').optional }
+    it { is_expected.to belong_to(:user) }
+    it { is_expected.to belong_to(:weapon) }
+    it { is_expected.to belong_to(:awakening).optional }
+    it { is_expected.to belong_to(:weapon_key1).class_name('WeaponKey').optional }
+    it { is_expected.to belong_to(:weapon_key2).class_name('WeaponKey').optional }
+    it { is_expected.to belong_to(:weapon_key3).class_name('WeaponKey').optional }
+    it { is_expected.to belong_to(:weapon_key4).class_name('WeaponKey').optional }
   end
 
   describe 'validations' do
@@ -18,9 +18,9 @@ RSpec.describe CollectionWeapon, type: :model do
     subject { build(:collection_weapon, user: user, weapon: weapon) }
 
     describe 'basic validations' do
-      it { should validate_inclusion_of(:uncap_level).in_range(0..6) }
-      it { should validate_inclusion_of(:transcendence_step).in_range(0..10) }
-      it { should validate_inclusion_of(:awakening_level).in_range(1..20) }
+      it { is_expected.to validate_inclusion_of(:uncap_level).in_range(0..6) }
+      it { is_expected.to validate_inclusion_of(:transcendence_step).in_range(0..10) }
+      it { is_expected.to validate_inclusion_of(:awakening_level).in_range(1..20) }
     end
 
     describe 'transcendence validations' do

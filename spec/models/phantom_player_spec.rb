@@ -2,16 +2,16 @@ require 'rails_helper'
 
 RSpec.describe PhantomPlayer, type: :model do
   describe 'associations' do
-    it { should belong_to(:crew) }
-    it { should belong_to(:claimed_by).class_name('User').optional }
-    it { should belong_to(:claimed_from_membership).class_name('CrewMembership').optional }
-    it { should have_many(:gw_individual_scores) }
+    it { is_expected.to belong_to(:crew) }
+    it { is_expected.to belong_to(:claimed_by).class_name('User').optional }
+    it { is_expected.to belong_to(:claimed_from_membership).class_name('CrewMembership').optional }
+    it { is_expected.to have_many(:gw_individual_scores) }
   end
 
   describe 'validations' do
-    it { should validate_presence_of(:name) }
-    it { should validate_length_of(:name).is_at_most(100) }
-    it { should validate_length_of(:granblue_id).is_at_most(20) }
+    it { is_expected.to validate_presence_of(:name) }
+    it { is_expected.to validate_length_of(:name).is_at_most(100) }
+    it { is_expected.to validate_length_of(:granblue_id).is_at_most(20) }
 
     describe 'granblue_id uniqueness within crew' do
       let(:crew) { create(:crew) }
