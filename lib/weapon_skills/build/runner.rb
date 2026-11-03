@@ -48,6 +48,9 @@ module WeaponSkills
           # other weapons written but the release blocked.
           summary = new(mode: 'write', io: io).call
           io.puts "build_weapon_skills (write): #{summary.failed} weapons failed and kept their existing rows" if summary.failed.positive?
+          # Every deploy, not only when a weapon was stale: cheap, idempotent, and it fills
+          # the table the first time without a data migration
+          WeaponSkills::KeyOptions.build(io: io)
           summary
         end
       end
