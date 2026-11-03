@@ -104,12 +104,9 @@ module Granblue
           extracted.merge!(parse_string(template))
         end
 
-        info, skills = parse(extracted)
+        parsed = parse(extracted)
 
-        # ap info
-        # ap skills
-
-        persist(info[:info]) if save
+        persist(parsed[:info]) if save
         true
       end
 
@@ -175,7 +172,6 @@ module Granblue
       # Parses the hash into a format that can be saved to the database
       def parse(hash)
         info = {}
-        skills = {}
 
         info[:name] = { en: hash['name'], ja: hash['jpname'] }
         info[:flavor] = { en: hash['flavor'], ja: hash['jpflavor'] }

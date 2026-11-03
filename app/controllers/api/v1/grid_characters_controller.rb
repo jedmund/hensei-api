@@ -125,7 +125,6 @@ module Api
       # @return [void]
       def update_position
         new_position = position_params[:position].to_i
-        new_container = position_params[:container]
 
         # Validate position bounds (0-4 main, 5-6 extra)
         unless valid_character_position?(new_position)

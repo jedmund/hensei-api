@@ -135,7 +135,6 @@ module Api
       # @return [void]
       def update_position
         new_position = position_params[:position].to_i
-        new_container = position_params[:container]
 
         # Validate position bounds
         unless valid_weapon_position?(new_position)
@@ -152,7 +151,6 @@ module Api
         end
 
         # Update position
-        old_position = @grid_weapon.position
         @grid_weapon.position = new_position
 
         # Update party attributes if needed
