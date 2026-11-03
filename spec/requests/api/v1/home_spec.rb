@@ -386,6 +386,30 @@ RSpec.describe 'Api::V1::Home', type: :request do
         .to eq([[new_character.id, [], []]])
     end
 
+    it 'leaves out event weapons but keeps other weapons, including ones with no series' do
+      event_weapon = create(:weapon, release_date: 2.days.ago.to_date,
+                                     weapon_series: WeaponSeries.find_by(slug: 'event') ||
+                                                    create(:weapon_series, slug: 'event'))
+      gacha_weapon = create(:weapon, release_date: 3.days.ago.to_date,
+                                     weapon_series: WeaponSeries.find_by(slug: 'gacha') ||
+                                                    create(:weapon_series, :gacha))
+      unsorted_weapon = create(:weapon, release_date: 4.days.ago.to_date, weapon_series: nil)
+
+      get '/api/v1/home'
+
+      ids = json_response['new_items'].map { |entry| entry['item']['id'] }
+      expect(ids).to eq([gacha_weapon.id, unsorted_weapon.id])
+      expect(ids).not_to include(event_weapon.id)
+    end
+
+    it 'shows up to 11 items' do
+      12.times { |n| create(:character, release_date: (n + 1).days.ago.to_date) }
+
+      get '/api/v1/home'
+
+      expect(json_response['new_items'].size).to eq(11)
+    end
+
     it 'orders teams by most recent and by trending, like new battles' do
       older = team_with(new_character, made: 2.days.ago)
       newer = team_with(new_character, made: 1.hour.ago)
