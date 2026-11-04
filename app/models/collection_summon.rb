@@ -64,7 +64,7 @@ class CollectionSummon < ApplicationRecord
   private
 
   def validate_transcendence_requirements
-    return unless transcendence_step.present? && transcendence_step > 0
+    return unless transcendence_step.present? && transcendence_step.positive?
 
     errors.add(:transcendence_step, "requires uncap level 5 (current: #{uncap_level})") if uncap_level < 5
 

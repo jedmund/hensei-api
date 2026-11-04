@@ -64,7 +64,7 @@ module Granblue
         # The |series= field can be comma-separated (e.g., "evoker,summer")
         if data['series'].present?
           series_values = data['series'].to_s.downcase.split(',').map(&:strip)
-          series = series_values.map { |s| Wiki.character_series[s] }.compact
+          series = series_values.filter_map { |s| Wiki.character_series[s] }
           suggestions[:series] = series.uniq.sort if series.any?
         end
 

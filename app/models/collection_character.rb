@@ -102,7 +102,7 @@ class CollectionCharacter < ApplicationRecord
   end
 
   def validate_transcendence_requirements
-    return unless transcendence_step.present? && transcendence_step > 0 && uncap_level < 5
+    return unless transcendence_step.present? && transcendence_step.positive? && uncap_level < 5
 
     errors.add(:transcendence_step, "requires uncap level 5 (current: #{uncap_level})")
   end

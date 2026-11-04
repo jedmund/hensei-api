@@ -129,7 +129,7 @@ class CollectionWeapon < ApplicationRecord
     errors.add(:befoulment_modifier, 'must be a befoulment modifier') if befoulment_modifier.present? && befoulment_modifier.category != 'befoulment'
 
     # Exorcism level only makes sense with befoulment or befoulment-capable weapons
-    if exorcism_level.present? && exorcism_level > 0 && befoulment_modifier.blank? &&
+    if exorcism_level.present? && exorcism_level.positive? && befoulment_modifier.blank? &&
        weapon_augment_type != 'befoulment'
       errors.add(:exorcism_level, 'cannot be set without a befoulment')
     end
@@ -158,14 +158,14 @@ class CollectionWeapon < ApplicationRecord
   end
 
   def validate_transcendence_requirements
-    return unless transcendence_step.present? && transcendence_step > 0
+    return unless transcendence_step.present? && transcendence_step.positive?
 
     errors.add(:transcendence_step, "requires uncap level 5 (current: #{uncap_level})") if uncap_level < 5
 
     # Some weapons might not support transcendence
     return unless weapon.present? && !weapon.transcendence
 
-    errors.add(:transcendence_step, 'not available for this weapon') if transcendence_step > 0
+    errors.add(:transcendence_step, 'not available for this weapon') if transcendence_step.positive?
   end
 
   ##

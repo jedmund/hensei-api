@@ -6,7 +6,7 @@ FactoryBot.define do
     group { 1 }
     sequence(:order) { |n| n }
     sequence(:slug) { |n| "key-#{n}" }
-    sequence(:granblue_id) { |n| n.to_s }
+    sequence(:granblue_id, &:to_s)
     series { [3, 27] } # Opus and Draconic weapons (legacy)
 
     trait :opus_key do

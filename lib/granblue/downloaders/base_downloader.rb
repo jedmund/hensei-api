@@ -207,7 +207,7 @@ module Granblue
       # @param size [String] Image size variant
       # @return [String] Local directory path
       def download_path(size)
-        "#{Rails.root.join("download/#{object_type}-#{size}")}"
+        Rails.root.join("download/#{object_type}-#{size}").to_s
       end
 
       # S3 prefix for this object type. Defaults to the pluralized object_type

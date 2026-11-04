@@ -10,7 +10,7 @@ module LoggingHelper
   end
 
   def log_error(message)
-    puts "#{message}"
+    puts message.to_s
   end
 
   def log_warning(message)

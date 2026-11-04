@@ -18,10 +18,10 @@ namespace :granblue do
       size = args[:size]
 
       # Include character model
-      Dir.glob("#{Rails.root.join('app/models/character.rb')}").each { |file| require file }
+      Dir.glob(Rails.root.join('app/models/character.rb').to_s).each { |file| require file }
 
       # Set up filepath
-      dir = "#{Rails.root.join('export/')}"
+      dir = Rails.root.join('export/').to_s
       filename = "#{dir}/character-#{size}.txt"
       FileUtils.mkdir_p(dir)
 

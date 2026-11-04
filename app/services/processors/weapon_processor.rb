@@ -236,7 +236,7 @@ module Processors
     # @param weapons_data [Hash] the raw weapons data (keyed by slot number).
     # @return [Array<GridWeapon>]
     def process_weapons(weapons_data)
-      weapons_data.map do |key, raw_weapon|
+      weapons_data.filter_map do |key, raw_weapon|
         next if raw_weapon.nil? || raw_weapon['param'].nil? || raw_weapon['master'].nil?
 
         position = key.to_i == 1 ? -1 : key.to_i - 2
@@ -306,7 +306,7 @@ module Processors
         process_augment_skills(grid_weapon, raw_weapon['param'])
 
         grid_weapon
-      end.compact
+      end
     end
 
     ##

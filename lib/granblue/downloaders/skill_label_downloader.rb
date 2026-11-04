@@ -43,7 +43,7 @@ module Granblue
       def download_one(lang)
         filename = "#{@id}.png"
         s3_key = "#{object_type}/#{lang}/#{filename}"
-        local_uri = "#{Rails.root.join("download/#{object_type}/#{lang}/#{filename}")}"
+        local_uri = Rails.root.join("download/#{object_type}/#{lang}/#{filename}").to_s
         return { success: true, skipped: true } unless should_download?(local_uri, s3_key)
 
         url = "#{CDN_HOST}/#{LANGUAGES.fetch(lang)}/#{LABEL_PATH}/#{@source_filename}"
@@ -79,7 +79,7 @@ module Granblue
         return unless store_locally?
 
         LANGUAGES.each_key do |lang|
-          FileUtils.mkdir_p("#{Rails.root.join("download/#{object_type}/#{lang}")}")
+          FileUtils.mkdir_p(Rails.root.join("download/#{object_type}/#{lang}").to_s)
         end
       end
     end

@@ -83,7 +83,7 @@ module Processors
     end
 
     def process_characters(characters_data)
-      characters_data.map do |key, raw_character|
+      characters_data.filter_map do |key, raw_character|
         next if raw_character.nil? || raw_character['param'].nil? || raw_character['master'].nil?
 
         position = key.to_i - 1
@@ -143,7 +143,7 @@ module Processors
         grid_character.collection_character = collection_character if collection_character
 
         grid_character
-      end.compact
+      end
     end
 
     # Converts a value to a boolean.

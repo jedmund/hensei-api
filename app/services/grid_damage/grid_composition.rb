@@ -77,7 +77,7 @@ module GridDamage
       job = party.try(:job)
       mc_specialties = [job&.proficiency1, job&.proficiency2].filter_map { |p| PROFICIENCY_NAME[p] }
       if mc_specialties.empty?
-        mh = party.weapons.find { |gw| gw.mainhand }&.weapon
+        mh = party.weapons.find(&:mainhand)&.weapon
         mc_specialties = [PROFICIENCY_NAME[mh&.proficiency]].compact
       end
       summarize(entries).merge(
