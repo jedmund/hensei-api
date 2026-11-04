@@ -5,27 +5,15 @@ module Api
     ##
     # Controller handling API requests related to grid characters within a party.
     #
-    # This controller provides endpoints for creating, updating, resolving conflicts,
-    # updating uncap levels, and deleting grid characters. It follows the structure of
-    # GridSummonsController and GridWeaponsController by using the new authorization method
-    # `authorize_party_edit!` and deprecating legacy methods such as `set` in favor of
-    # `find_party`, `find_grid_character`, and `find_incoming_character`.
+    # This controller provides endpoints for creating, updating and resolving conflicts
+    # between grid characters, and for switching a character's style. Moving, swapping,
+    # uncapping, removing and collection sync come from GridItemsController.
     #
-    # @see Api::V1::ApiController for shared API behavior.
-    class GridCharactersController < Api::V1::ApiController
-      include IdResolvable
-      include CollectionSourceConcern
-      include PartyAuthorizationConcern
-      include SubstituteGridPreloading
-      include PartyFullLoading
-
-      before_action :find_grid_character,
-                    only: %i[update update_uncap_level update_position destroy sync sync_to_collection switch_style]
-      before_action :find_party,
-                    only: %i[create resolve update update_uncap_level update_position swap destroy sync sync_to_collection switch_style]
-      before_action :find_incoming_character, only: :create
-      before_action :authorize_party_edit!,
-                    only: %i[create resolve update update_uncap_level update_position swap destroy sync sync_to_collection switch_style]
+    # @see Api::V1::GridItemsController for the shared grid actions.
+    class GridCharactersController < GridItemsController
+      grid_item GridCharacter, blueprint: GridCharacterBlueprint, view: :nested,
+                               party_param_keys: %i[character resolve], reports_reordered: true,
+                               row_actions: %i[switch_style], edit_actions: %i[resolve switch_style]
 
       ##
       # Creates a new grid character.
@@ -84,119 +72,16 @@ module Api
         end
 
         processed_params = transform_character_params(character_params)
-        assign_raw_attributes(@grid_character)
-        assign_transformed_attributes(@grid_character, processed_params)
+        assign_raw_attributes(@grid_item)
+        assign_transformed_attributes(@grid_item, processed_params)
 
-        if @grid_character.save
-          render json: GridCharacterBlueprint.render(@grid_character,
+        if @grid_item.save
+          render json: GridCharacterBlueprint.render(@grid_item,
                                                      root: :grid_character,
                                                      view: :nested)
         else
-          render_validation_error_response(@grid_character)
+          render_validation_error_response(@grid_item)
         end
-      end
-
-      ##
-      # Updates the uncap level and transcendence step of a grid character.
-      #
-      # The grid character's uncap level and transcendence step are updated based on the provided parameters.
-      # This action requires that the current user is authorized to modify the party.
-      #
-      # @return [void]
-      def update_uncap_level
-        @grid_character.uncap_level = character_params[:uncap_level]
-        @grid_character.transcendence_step = character_params[:transcendence_step].to_i
-
-        if @grid_character.save
-          render json: GridCharacterBlueprint.render(@grid_character,
-                                                     root: :grid_character,
-                                                     view: :uncap)
-        else
-          render_validation_error_response(@grid_character)
-        end
-      end
-
-      ##
-      # Updates the position of a GridCharacter.
-      #
-      # Moves a grid character to a new position, maintaining sequential filling for main slots.
-      # Validates that the target position is empty and within allowed bounds.
-      #
-      # @return [void]
-      def update_position
-        new_position = position_params[:position].to_i
-
-        # Validate position bounds (0-4 main, 5-6 extra)
-        unless valid_character_position?(new_position)
-          return render_unprocessable_entity_response(
-            Api::V1::InvalidPositionError.new("Invalid position #{new_position} for character")
-          )
-        end
-
-        # Check if target position is occupied
-        if GridCharacter.exists?(party_id: @party.id, position: new_position)
-          return render_unprocessable_entity_response(
-            Api::V1::PositionOccupiedError.new("Position #{new_position} is already occupied")
-          )
-        end
-
-        old_position = @grid_character.position
-        @grid_character.position = new_position
-
-        if @grid_character.save
-          @party.mark_updated!
-          # Compact positions after save so the moved character is no longer
-          # included in the main positions query
-          reordered = compact_character_positions if should_compact_characters?(old_position, new_position)
-
-          render json: {
-            party: PartyBlueprint.render_as_hash(load_full_party(@party.id), view: :full),
-            grid_character: GridCharacterBlueprint.render_as_hash(@grid_character.reload, view: :nested),
-            reordered: reordered || false
-          }, status: :ok
-        else
-          render_validation_error_response(@grid_character)
-        end
-      end
-
-      ##
-      # Swaps positions between two GridCharacters.
-      #
-      # Exchanges the positions of two grid characters within the same party.
-      # Both characters must belong to the same party.
-      #
-      # @return [void]
-      def swap
-        source_id = swap_params[:source_id]
-        target_id = swap_params[:target_id]
-
-        source = GridCharacter.find_by(id: source_id, party_id: @party.id)
-        target = GridCharacter.find_by(id: target_id, party_id: @party.id)
-
-        return render_not_found_response('grid_character') unless source && target
-
-        # Perform the swap
-        ActiveRecord::Base.transaction do
-          temp_position = -999
-          source_pos = source.position
-          target_pos = target.position
-
-          source.update!(position: temp_position)
-          target.update!(position: source_pos)
-          source.update!(position: target_pos)
-        end
-
-        @party.mark_updated!
-
-        render json: {
-          party: PartyBlueprint.render_as_hash(load_full_party(@party.id), view: :full),
-          swapped: {
-            source: GridCharacterBlueprint.render_as_hash(source.reload, view: :nested),
-            target: GridCharacterBlueprint.render_as_hash(target.reload, view: :nested)
-          }
-        }, status: :ok
-      rescue ActiveRecord::RecordInvalid => e
-        render_validation_error_response(e.record)
       end
 
       ##
@@ -226,81 +111,13 @@ module Api
           party_id: @party.id,
           character_id: incoming.id,
           position: resolve_params[:position],
-          uncap_level: compute_max_uncap_level(incoming),
-          transcendence_step: compute_max_transcendence_step(incoming)
+          uncap_level: incoming.max_uncap_level,
+          transcendence_step: incoming.max_transcendence_stage
         )
         @party.mark_updated!
         render json: GridCharacterBlueprint.render(grid_character,
                                                    root: :grid_character,
                                                    view: :nested), status: :created
-      end
-
-      ##
-      # Destroys a grid character.
-      #
-      # If the current user is not the owner of the party, an unauthorized response is rendered.
-      # On successful destruction, the destroyed grid character view is rendered.
-      #
-      # @return [void]
-      def destroy
-        grid_character = @grid_character
-
-        if grid_character.destroy
-          @party.mark_updated!
-          clear_collection_source_if_empty!(@party)
-          render json: GridCharacterBlueprint.render(grid_character, view: :destroyed)
-        else
-          render_unprocessable_entity_response(
-            Api::V1::GranblueError.new(grid_character.errors.full_messages.join(', '))
-          )
-        end
-      end
-
-      ##
-      # Syncs a grid character from its linked collection character.
-      #
-      # Copies all customizations from the collection character to this grid character.
-      # Returns 422 if no collection character is linked.
-      #
-      # @return [void]
-      def sync
-        unless @grid_character.collection_character.present?
-          return render_unprocessable_entity_response(
-            Api::V1::GranblueError.new('No collection character linked')
-          )
-        end
-
-        return unless validate_collection_access!(@grid_character.collection_character)
-
-        @grid_character.sync_from_collection!(fields: sync_fields_param)
-        render json: GridCharacterBlueprint.render(@grid_character.reload,
-                                                   root: :grid_character,
-                                                   view: :nested)
-      end
-
-      ##
-      # Syncs a grid character to its linked collection character.
-      #
-      # Copies all customizations from this grid character to the collection character.
-      # Returns 422 if no collection character is linked.
-      #
-      # @return [void]
-      def sync_to_collection
-        unless @grid_character.collection_character.present?
-          return render_unprocessable_entity_response(
-            Api::V1::GranblueError.new('No collection character linked')
-          )
-        end
-
-        unless current_user.present? && @party.collection_source_user_id == current_user.id &&
-               @grid_character.collection_character.user_id == current_user.id
-          return render_unauthorized_response
-        end
-
-        @grid_character.sync_to_collection!(fields: sync_fields_param)
-        render json: GridCharacterBlueprint.render(@grid_character.reload,
-                                                   root: :grid_character,
-                                                   view: :nested)
       end
 
       ##
@@ -311,7 +128,7 @@ module Api
       #
       # @return [void]
       def switch_style
-        current_character = @grid_character.character
+        current_character = @grid_item.character
 
         alternate = if current_character.style_swap?
                       current_character.base_character
@@ -325,25 +142,14 @@ module Api
           )
         end
 
-        @grid_character.update!(character_id: alternate.id)
+        @grid_item.update!(character_id: alternate.id)
         @party.mark_updated!
-        render json: GridCharacterBlueprint.render(@grid_character.reload,
+        render json: GridCharacterBlueprint.render(@grid_item.reload,
                                                    root: :grid_character,
                                                    view: :nested)
       end
 
       private
-
-      ##
-      # Pulls the optional `fields` array (camelCase keys) from the request body
-      # used by per-section sync. Returns nil when omitted so the model falls
-      # back to syncing every tracked column.
-      def sync_fields_param
-        raw = params[:fields]
-        return nil if raw.blank?
-
-        Array(raw).map(&:to_s).reject(&:blank?)
-      end
 
       ##
       # Builds a new grid character using the transformed parameters.
@@ -355,8 +161,8 @@ module Api
           character_params.except(:rings, :awakening).merge(
             party_id: @party.id,
             character_id: @incoming_character.id,
-            uncap_level: compute_max_uncap_level(@incoming_character),
-            transcendence_step: compute_max_transcendence_step(@incoming_character)
+            uncap_level: @incoming_character.max_uncap_level,
+            transcendence_step: @incoming_character.max_transcendence_stage
           )
         )
         assign_transformed_attributes(grid_character, processed_params)
@@ -365,29 +171,11 @@ module Api
       end
 
       ##
-      # Computes the maximum uncap level for a character based on its flags.
-      #
-      # Special characters have a different uncap progression:
-      # - Base: 3, FLB: 4, ULB: 5
-      # Regular characters:
-      # - Base: 4, FLB: 5, Transcendence: 6
-      #
-      # @param character [Character] the character to compute max uncap for.
-      # @return [Integer] the maximum uncap level.
-      def compute_max_transcendence_step(character)
-        character.max_transcendence_stage
-      end
-
-      def compute_max_uncap_level(character)
-        character.max_uncap_level
-      end
-
-      ##
       # Assigns raw attributes from the original parameters to the grid character.
       #
       # These attributes (like new_rings and new_awakening) are used by model callbacks.
-      # Note: We exclude :character_id and :party_id because they are already set correctly
-      # in build_new_grid_character using the resolved UUIDs, not the raw granblue_id from params.
+      # Note: We exclude :character_id because it is already set correctly in
+      # build_new_grid_character using the resolved UUID, not the raw granblue_id from params.
       #
       # @param grid_character [GridCharacter] the grid character instance.
       # @return [void]
@@ -397,13 +185,13 @@ module Api
         # `role_ids` is the public param name; map it to the Rails-generated
         # `grid_character_role_ids=` setter on the has_many :through association.
         # Reset the through-association cache so the blueprint sees the new set
-        # (the cache was warmed by `find_grid_character`'s preload).
+        # (the cache was warmed by `find_grid_item`'s preload).
         if character_params.key?(:role_ids)
           grid_character.grid_character_role_ids = Array(character_params[:role_ids])
           grid_character.grid_character_roles.reset
         end
         grid_character.assign_attributes(
-          character_params.except(:rings, :awakening, :character_id, :party_id, :role_ids)
+          character_params.except(:rings, :awakening, :character_id, :role_ids)
         )
       end
 
@@ -453,7 +241,7 @@ module Api
         if raw[:awakening].present?
           transformed[:awakening_id] = raw[:awakening][:id]
           # Default to 1 if level is missing (to satisfy validations)
-          transformed[:awakening_level] = raw[:awakening][:level].present? ? raw[:awakening][:level] : 1
+          transformed[:awakening_level] = raw[:awakening][:level].presence || 1
         end
 
         transformed
@@ -498,107 +286,18 @@ module Api
       end
 
       ##
-      # Renders the conflict view for characters.
-      #
-      # @param conflict_characters [Array<GridCharacter>] the conflicting grid characters.
-      # @param incoming_character [Character] the incoming character.
-      # @param incoming_position [Integer] the desired position.
-      # @return [String] the rendered conflict view.
-      def render_conflict_view(conflict_characters, incoming_character, incoming_position)
-        ConflictBlueprint.render(nil,
-                                 view: :characters,
-                                 conflict_characters: conflict_characters,
-                                 incoming_character: incoming_character,
-                                 incoming_position: incoming_position)
-      end
-
-      ##
-      # Finds and sets the party based on parameters.
-      #
-      # Checks for the party id in params[:character][:party_id], params[:party_id], or falls back to the party
-      # associated with the current grid character. Renders a not found response if the party is missing.
-      #
-      # @return [void]
-      def find_party
-        requested_party_id = params.dig(:character, :party_id) || params.dig(:resolve, :party_id) || params[:party_id]
-        @party = if @grid_character
-                   # The party always comes from the row itself; a mismatched
-                   # party id in the request is treated as not found.
-                   @grid_character.party if requested_party_id.blank? || requested_party_id.to_s == @grid_character.party_id.to_s
-                 else
-                   Party.find_by(id: requested_party_id)
-                 end
-        render_not_found_response('party') unless @party
-      end
-
-      ##
-      # Finds and sets the grid character based on the provided parameters.
-      #
-      # Searches for a grid character by its ID and renders a not found response if it is absent.
-      #
-      # @return [void]
-      def find_grid_character
-        grid_character_id = params[:id] || params.dig(:character, :id)
-        @grid_character = GridCharacter
-                          .includes(*GridCharacter::NESTED_BLUEPRINT_PRELOADS, :substitutions)
-                          .find_by(id: grid_character_id)
-        return render_not_found_response('grid_character') unless @grid_character
-
-        preload_substitute_grids!([@grid_character])
-      end
-
-      ##
       # Finds and sets the incoming character based on the provided parameters.
       #
       # Searches for a character using the :character_id parameter and renders a not found response if it is absent.
       #
       # @return [void]
-      def find_incoming_character
+      def find_incoming_item
         character_id = character_params[:character_id]
         @incoming_character = find_by_any_id(Character, character_id)
 
         return if @incoming_character
 
-          render_unprocessable_entity_response(Api::V1::NoCharacterProvidedError.new)
-      end
-
-      ##
-      # Validates if a character position is valid.
-      #
-      # @param position [Integer] the position to validate.
-      # @return [Boolean] true if the position is valid; false otherwise.
-      def valid_character_position?(position)
-        # Main slots (0-4), extra slots (5-7) for unlimited raids
-        (0..7).cover?(position)
-      end
-
-      ##
-      # Determines if character positions should be compacted.
-      #
-      # @param old_position [Integer] the old position.
-      # @param new_position [Integer] the new position.
-      # @return [Boolean] true if compaction is needed; false otherwise.
-      def should_compact_characters?(old_position, new_position)
-        # Compact if moving from main slots (0-4) to extra (5-7) or vice versa
-        main_to_extra = (0..4).cover?(old_position) && (5..7).cover?(new_position)
-        extra_to_main = (5..7).cover?(old_position) && (0..4).cover?(new_position)
-        main_to_extra || extra_to_main
-      end
-
-      ##
-      # Compacts character positions to maintain sequential filling.
-      #
-      # @return [Boolean] true if positions were reordered; false otherwise.
-      def compact_character_positions
-        main_characters = @party.characters.where(position: 0..4).order(:position)
-
-        ActiveRecord::Base.transaction do
-          main_characters.each_with_index do |char, index|
-            char.update!(position: index) if char.position != index
-          end
-        end
-
-        true
+        render_unprocessable_entity_response(Api::V1::NoCharacterProvidedError.new)
       end
 
       ##
@@ -606,9 +305,8 @@ module Api
       #
       # @return [ActionController::Parameters] the permitted parameters.
       def character_params
-        params.require(:character).permit(
+        grid_item_params(
           :id,
-          :party_id,
           :character_id,
           :collection_character_id,
           :position,
@@ -621,23 +319,7 @@ module Api
           rings: %i[modifier strength],
           earring: %i[modifier strength],
           full_auto_skills: %w[0 1 2 3]
-        ).then { |p| permit_description(p, params[:character]) }
-      end
-
-      ##
-      # Specifies and permits the position update parameters.
-      #
-      # @return [ActionController::Parameters] the permitted parameters.
-      def position_params
-        params.permit(:position, :container)
-      end
-
-      ##
-      # Specifies and permits the swap parameters.
-      #
-      # @return [ActionController::Parameters] the permitted parameters.
-      def swap_params
-        params.permit(:source_id, :target_id)
+        )
       end
 
       ##
@@ -645,7 +327,7 @@ module Api
       #
       # @return [ActionController::Parameters] the permitted parameters.
       def resolve_params
-        params.require(:resolve).permit(:party_id, :position, :incoming, conflicting: [])
+        params.expect(resolve: [:position, :incoming, { conflicting: [] }])
       end
     end
   end

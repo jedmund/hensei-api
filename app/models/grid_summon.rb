@@ -81,6 +81,25 @@ class GridSummon < ApplicationRecord
   end
 
   ##
+  # Sets an uncap from a request: a level past the summon's max is lowered to
+  # it, and a transcendence step on a summon that can transcend raises the
+  # level to the max. A summon that can't transcend stays at step 0.
+  #
+  # @param uncap_level [Integer, String, nil]
+  # @param transcendence_step [Integer, String, nil]
+  # @return [void]
+  def apply_uncap(uncap_level:, transcendence_step:)
+    max_level = summon.max_uncap_level
+    transcending = summon.transcendence && transcendence_step.present?
+    raise_to_max = uncap_level.to_i > max_level || (transcending && transcendence_step.to_i.positive?)
+
+    assign_attributes(
+      uncap_level: raise_to_max ? max_level : uncap_level,
+      transcendence_step: transcending ? [transcendence_step.to_i, UncapTiers::MAX_TRANSCENDENCE_STEP].min : 0
+    )
+  end
+
+  ##
   # Marks this grid summon as orphaned and clears its collection link.
   #
   # @return [Boolean] true if the update succeeded

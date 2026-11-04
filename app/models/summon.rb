@@ -3,6 +3,7 @@
 class Summon < ApplicationRecord
   include PgSearch::Model
   include HasSources
+  include UncapTiers
 
   # The fetched sources live in `sources` (D35, PR 7b).
   source_attribute :wiki_raw, fetched_at: :wiki_raw_fetched_at

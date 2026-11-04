@@ -129,6 +129,18 @@ class GridCharacter < ApplicationRecord
     errors.add(:transcendence_step, 'transcendence step too low') if transcendence_step.negative?
   end
 
+  ##
+  # Sets an uncap from a request as sent; validation and
+  # clamp_transcendence_step keep it within the character's range.
+  #
+  # @param uncap_level [Integer, String, nil]
+  # @param transcendence_step [Integer, String, nil]
+  # @return [void]
+  def apply_uncap(uncap_level:, transcendence_step:)
+    self.uncap_level = uncap_level
+    self.transcendence_step = transcendence_step.to_i
+  end
+
   def clamp_transcendence_step
     return if transcendence_step.nil? || transcendence_step.negative? || character.nil?
 

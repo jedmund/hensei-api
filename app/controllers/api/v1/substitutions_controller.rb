@@ -37,7 +37,7 @@ module Api
             party: @party,
             item_fk => item_id,
             position: grid_item.position,
-            uncap_level: max_uncap_level_for(grid_type, canonical),
+            uncap_level: canonical.max_uncap_level,
             is_substitute: true
           )
 
@@ -227,36 +227,6 @@ module Api
         return nil unless GRID_TYPE_FOREIGN_KEYS.key?(grid_type)
 
         grid_type.constantize
-      end
-
-      # Derives the natural max uncap for the canonical item so a substitute is
-      # created at the same ceiling its real counterpart would use, rather than
-      # the previous hardcoded 0.
-      def max_uncap_level_for(grid_type, canonical)
-        case grid_type
-        when 'GridWeapon'
-          weapon_max_uncap(canonical)
-        when 'GridCharacter'
-          canonical.max_uncap_level
-        when 'GridSummon'
-          summon_max_uncap(canonical)
-        end
-      end
-
-      def weapon_max_uncap(weapon)
-        return 6 if weapon.transcendence
-        return 5 if weapon.ulb
-        return 4 if weapon.flb
-
-        3
-      end
-
-      def summon_max_uncap(summon)
-        return 6 if summon.transcendence
-        return 5 if summon.ulb
-        return 4 if summon.flb
-
-        3
       end
     end
   end

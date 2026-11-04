@@ -93,7 +93,6 @@ Layout/BlockEndNewline:
 # This cop supports safe autocorrection (--autocorrect).
 Layout/ElseAlignment:
   Exclude:
-    - 'app/controllers/api/v1/grid_weapons_controller.rb'
     - 'app/controllers/api/v1/search_controller.rb'
     - 'app/controllers/concerns/batch_previewable.rb'
     - 'lib/granblue/importers/base_importer.rb'
@@ -116,7 +115,6 @@ Layout/EndAlignment:
 Layout/IndentationConsistency:
   Exclude:
     - 'app/controllers/api/v1/collection_controller.rb'
-    - 'app/controllers/api/v1/grid_characters_controller.rb'
     - 'app/models/collection_character.rb'
     - 'app/models/collection_summon.rb'
     - 'app/models/collection_weapon.rb'
@@ -163,7 +161,6 @@ Layout/LineLength:
     - 'app/blueprints/api/v1/crew_gw_participation_blueprint.rb'
     - 'app/blueprints/api/v1/user_blueprint.rb'
     - 'app/controllers/api/v1/crew_gw_participations_controller.rb'
-    - 'app/controllers/api/v1/grid_weapons_controller.rb'
     - 'app/controllers/api/v1/gw_individual_scores_controller.rb'
     - 'app/controllers/api/v1/parties_controller.rb'
     - 'app/services/processors/weapon_processor.rb'
@@ -207,7 +204,6 @@ Metrics/AbcSize:
     - 'app/controllers/api/v1/crew_rosters_controller.rb'
     - 'app/controllers/api/v1/crews_controller.rb'
     - 'app/controllers/api/v1/gacha_controller.rb'
-    - 'app/controllers/api/v1/grid_weapons_controller.rb'
     - 'app/controllers/api/v1/gw_score_imports_controller.rb'
     - 'app/controllers/api/v1/home_controller.rb'
     - 'app/controllers/api/v1/import_controller.rb'
@@ -283,9 +279,6 @@ Metrics/AbcSize:
 # Configuration parameters: CountComments, Max, CountAsOne.
 Metrics/ClassLength:
   Exclude:
-    - 'app/controllers/api/v1/grid_characters_controller.rb'
-    - 'app/controllers/api/v1/grid_summons_controller.rb'
-    - 'app/controllers/api/v1/grid_weapons_controller.rb'
     - 'app/controllers/api/v1/import_controller.rb'
     - 'app/controllers/api/v1/parties_controller.rb'
     - 'app/controllers/api/v1/search_controller.rb'
@@ -1209,9 +1202,6 @@ Rails/Blank:
     - 'app/controllers/api/v1/characters_controller.rb'
     - 'app/controllers/api/v1/collection_artifacts_controller.rb'
     - 'app/controllers/api/v1/grid_artifacts_controller.rb'
-    - 'app/controllers/api/v1/grid_characters_controller.rb'
-    - 'app/controllers/api/v1/grid_summons_controller.rb'
-    - 'app/controllers/api/v1/grid_weapons_controller.rb'
     - 'app/controllers/api/v1/job_skills_controller.rb'
     - 'app/controllers/api/v1/parties_controller.rb'
     - 'app/controllers/api/v1/search_controller.rb'
@@ -1246,9 +1236,6 @@ Rails/Blank:
 # This cop supports unsafe autocorrection (--autocorrect-all).
 Rails/CompactBlank:
   Exclude:
-    - 'app/controllers/api/v1/grid_characters_controller.rb'
-    - 'app/controllers/api/v1/grid_summons_controller.rb'
-    - 'app/controllers/api/v1/grid_weapons_controller.rb'
     - 'app/services/party_query_builder.rb'
     - 'lib/granblue/extractors/summon_aura_extractor.rb'
     - 'lib/granblue/parsers/character_wiki_data.rb'
@@ -1541,7 +1528,6 @@ Rails/Presence:
   Exclude:
     - 'app/controllers/api/v1/characters_controller.rb'
     - 'app/controllers/api/v1/grid_artifacts_controller.rb'
-    - 'app/controllers/api/v1/grid_characters_controller.rb'
     - 'app/controllers/concerns/party_querying_concern.rb'
     - 'app/errors/api/v1/granblue_error.rb'
     - 'app/services/artifact_import_service.rb'
@@ -1710,9 +1696,6 @@ Rails/StrongParametersExpect:
     - 'app/controllers/api/v1/favorites_controller.rb'
     - 'app/controllers/api/v1/featured_parties_controller.rb'
     - 'app/controllers/api/v1/grid_artifacts_controller.rb'
-    - 'app/controllers/api/v1/grid_characters_controller.rb'
-    - 'app/controllers/api/v1/grid_summons_controller.rb'
-    - 'app/controllers/api/v1/grid_weapons_controller.rb'
     - 'app/controllers/api/v1/gw_crew_scores_controller.rb'
     - 'app/controllers/api/v1/gw_events_controller.rb'
     - 'app/controllers/api/v1/gw_individual_scores_controller.rb'

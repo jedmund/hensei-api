@@ -3,6 +3,7 @@
 class Weapon < ApplicationRecord
   include PgSearch::Model
   include HasSources
+  include UncapTiers
 
   # The fetched sources live in `sources` (D35, PR 7b).
   # The weapon's page is one row, keyed by its page title (wiki_en): the weapon-skill source
@@ -84,6 +85,20 @@ class Weapon < ApplicationRecord
 
   def display_resource(weapon)
     weapon.name_en
+  end
+
+  ##
+  # The uncap level a weapon starts at when placed in a grid: its max, except
+  # that an extra slot (9-11) starts a weapon with an extra prerequisite at
+  # that prerequisite.
+  #
+  # @param position [Integer, String, nil] the slot it's placed in
+  # @return [Integer]
+  def default_uncap_level(position = nil)
+    in_extra_slot = position && GridWeapon::EXTRA_POSITIONS.include?(position.to_i)
+    return [extra_prerequisite, max_uncap_level].min if in_extra_slot && extra_prerequisite.present?
+
+    max_uncap_level
   end
 
   def compatible_with_key?(key)

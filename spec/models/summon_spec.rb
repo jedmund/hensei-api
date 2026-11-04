@@ -140,4 +140,26 @@ RSpec.describe Summon, type: :model do
       expect(summon.summon_series).to be_nil
     end
   end
+
+  describe '#max_uncap_level and #max_transcendence_step' do
+    it 'reaches 3 with no uncaps' do
+      item = build(:summon, flb: false, ulb: false, transcendence: false)
+      expect([item.max_uncap_level, item.max_transcendence_step]).to eq([3, 0])
+    end
+
+    it 'reaches 4 with FLB' do
+      item = build(:summon, flb: true, ulb: false, transcendence: false)
+      expect([item.max_uncap_level, item.max_transcendence_step]).to eq([4, 0])
+    end
+
+    it 'reaches 5 with ULB' do
+      item = build(:summon, flb: true, ulb: true, transcendence: false)
+      expect([item.max_uncap_level, item.max_transcendence_step]).to eq([5, 0])
+    end
+
+    it 'reaches 6 and step 5 with transcendence' do
+      item = build(:summon, :transcendable)
+      expect([item.max_uncap_level, item.max_transcendence_step]).to eq([6, 5])
+    end
+  end
 end
