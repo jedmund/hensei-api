@@ -32,36 +32,10 @@ module BatchPreviewable
 
     begin
       # Use provided wiki_raw or fetch from wiki
-      wiki_text = if wiki_raw.present?
-                    wiki_raw
-                  else
-                    wiki = Granblue::Parsers::Wiki.new
-                    wiki.fetch(wiki_page)
-                  end
-
-      # Handle redirects (only if we fetched server-side)
-      if wiki_raw.blank?
-        redirect_match = wiki_text.match(/#REDIRECT \[\[(.*?)\]\]/)
-        if redirect_match
-          redirect_target = redirect_match[1]
-          result[:redirected_from] = wiki_page
-          result[:wiki_page] = redirect_target
-          wiki_text = wiki.fetch(redirect_target)
-        end
-      end
-
+      wiki_text = wiki_raw.presence || fetch_wiki_preview_text(wiki_page, result)
       result[:wiki_raw] = wiki_text
 
-      # Parse data from wiki text based on entity type
-      parsed_data = case entity_type
-                    when :character
-                      Granblue::Parsers::WikiDataParser.parse_character(wiki_text)
-                    when :weapon
-                      Granblue::Parsers::WikiDataParser.parse_weapon(wiki_text)
-                    when :summon
-                      Granblue::Parsers::WikiDataParser.parse_summon(wiki_text)
-                    end
-
+      parsed_data = parse_wiki_preview(wiki_text, entity_type)
       result[:granblue_id] = parsed_data[:granblue_id] if parsed_data[:granblue_id].present?
       result[:parsed_data] = parsed_data
 
@@ -81,6 +55,31 @@ module BatchPreviewable
     end
 
     result
+  end
+
+  # Fetches the page from the wiki, following one redirect. A redirect
+  # records the page it came from and the page it went to in result.
+  # @return [String] the wikitext
+  def fetch_wiki_preview_text(wiki_page, result)
+    wiki = Granblue::Parsers::Wiki.new
+    wiki_text = wiki.fetch(wiki_page)
+    redirect_match = wiki_text.match(/#REDIRECT \[\[(.*?)\]\]/)
+    return wiki_text unless redirect_match
+
+    redirect_target = redirect_match[1]
+    result[:redirected_from] = wiki_page
+    result[:wiki_page] = redirect_target
+    wiki.fetch(redirect_target)
+  end
+
+  # Parse data from wiki text based on entity type
+  # @return [Hash, nil] nil for an unknown entity type
+  def parse_wiki_preview(wiki_text, entity_type)
+    case entity_type
+    when :character then Granblue::Parsers::WikiDataParser.parse_character(wiki_text)
+    when :weapon then Granblue::Parsers::WikiDataParser.parse_weapon(wiki_text)
+    when :summon then Granblue::Parsers::WikiDataParser.parse_summon(wiki_text)
+    end
   end
 
   # Queue an image download job for the entity
