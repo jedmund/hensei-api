@@ -159,7 +159,7 @@ module Granblue
           key, value = line[1..].split('=', 2).map(&:strip)
 
           regex = /\A\{\{\{.*\|\}\}\}\z/
-          next if value =~ regex
+          next if value&.match?(regex)
 
           data[key] = value if value
         end

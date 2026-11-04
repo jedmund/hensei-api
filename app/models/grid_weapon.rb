@@ -371,14 +371,14 @@ class GridWeapon < ApplicationRecord
 
     return unless EXTRA_POSITIONS.include?(position.to_i)
 
-      unless weapon.extra
-        errors.add(:series, 'must be compatible with position')
-        return
-      end
+    unless weapon.extra
+      errors.add(:series, 'must be compatible with position')
+      return
+    end
 
-      return unless weapon.extra_prerequisite.present? && uncap_level < weapon.extra_prerequisite
+    return unless weapon.extra_prerequisite.present? && uncap_level < weapon.extra_prerequisite
 
-        errors.add(:uncap_level, 'must meet extra prerequisite')
+    errors.add(:uncap_level, 'must meet extra prerequisite')
   end
 
   ##
@@ -398,14 +398,14 @@ class GridWeapon < ApplicationRecord
     key_ids = [weapon_key1_id, weapon_key2_id, weapon_key3_id, weapon_key4_id].compact
     return unless key_ids.length != key_ids.uniq.length
 
-      errors.add(:weapon_keys, 'cannot have duplicate keys')
+    errors.add(:weapon_keys, 'cannot have duplicate keys')
   end
 
   def no_duplicate_weapon_key_slots
     slots = [weapon_key1, weapon_key2, weapon_key3, weapon_key4].compact.map(&:slot)
     return unless slots.length != slots.uniq.length
 
-      errors.add(:weapon_keys, 'cannot have multiple keys for the same slot')
+    errors.add(:weapon_keys, 'cannot have multiple keys for the same slot')
   end
 
   ##
@@ -437,7 +437,7 @@ class GridWeapon < ApplicationRecord
     # Weapon proficiency must match one of the job's proficiencies
     return if [job.proficiency1, job.proficiency2].include?(weapon_prof)
 
-      errors.add(:weapon, 'proficiency must match job proficiency for mainhand')
+    errors.add(:weapon, 'proficiency must match job proficiency for mainhand')
   end
 
   ##

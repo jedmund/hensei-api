@@ -150,27 +150,27 @@ module Processors
       grid_weapons = process_weapons(weapons_data)
 
       grid_weapons.each do |grid_weapon|
-          grid_weapon.save!
-          if grid_weapon.collection_weapon.present?
-            update_collection_from_game(grid_weapon)
-            begin
-              grid_weapon.sync_from_collection!
-            rescue ActiveRecord::RecordInvalid => e
-              Rails.logger.error "[WEAPON] Sync from collection failed, reverting: #{e.record.errors.full_messages.join(', ')}"
-              grid_weapon.reload
-            end
+        grid_weapon.save!
+        if grid_weapon.collection_weapon.present?
+          update_collection_from_game(grid_weapon)
+          begin
+            grid_weapon.sync_from_collection!
+          rescue ActiveRecord::RecordInvalid => e
+            Rails.logger.error "[WEAPON] Sync from collection failed, reverting: #{e.record.errors.full_messages.join(', ')}"
+            grid_weapon.reload
           end
-        rescue ActiveRecord::RecordInvalid => e
-          if ax_present?(grid_weapon)
-            Rails.logger.warn "[WEAPON] Dropping AX skills to save GridWeapon: #{e.record.errors.full_messages.join(', ')}"
-            add_warning('ax_skills_dropped', grid_weapon, grid_weapon.weapon)
-            clear_ax(grid_weapon)
-            retry
-          end
+        end
+      rescue ActiveRecord::RecordInvalid => e
+        if ax_present?(grid_weapon)
+          Rails.logger.warn "[WEAPON] Dropping AX skills to save GridWeapon: #{e.record.errors.full_messages.join(', ')}"
+          add_warning('ax_skills_dropped', grid_weapon, grid_weapon.weapon)
+          clear_ax(grid_weapon)
+          retry
+        end
 
-          Rails.logger.error "[WEAPON] Failed to create GridWeapon: #{e.record.errors.full_messages.join(', ')}"
-          add_warning('item_skipped', grid_weapon, grid_weapon.weapon)
-          discard_unsaved(grid_weapon, :weapons)
+        Rails.logger.error "[WEAPON] Failed to create GridWeapon: #{e.record.errors.full_messages.join(', ')}"
+        add_warning('item_skipped', grid_weapon, grid_weapon.weapon)
+        discard_unsaved(grid_weapon, :weapons)
       end
     end
 

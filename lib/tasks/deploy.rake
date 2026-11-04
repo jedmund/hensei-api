@@ -213,8 +213,8 @@ namespace :deploy do
     include LoggingHelper
 
     # Load all required files
-    Rails.root.glob("lib/post_deployment/**/*.rb").each { |file| require file }
-    Rails.root.glob("lib/granblue/**/*.rb").each { |file| require file }
+    Rails.root.glob('lib/post_deployment/**/*.rb').each { |file| require file }
+    Rails.root.glob('lib/granblue/**/*.rb').each { |file| require file }
 
     # Ensure Rails environment is loaded
     Rails.application.eager_load!

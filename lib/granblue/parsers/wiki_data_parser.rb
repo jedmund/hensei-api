@@ -301,7 +301,7 @@ module Granblue
         if value =~ %r{gamewith\.jp/article/show/(\d+)}
           ::Regexp.last_match(1)
         # If it's already just a numeric ID, return it
-        elsif value =~ /^\d+$/
+        elsif /^\d+$/.match?(value)
           value
         end
       end

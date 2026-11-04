@@ -67,9 +67,9 @@ module BatchPreviewable
 
       # Queue image download if we have a granblue_id
       result[:image_status] = if parsed_data[:granblue_id].present?
-        queue_image_download(parsed_data[:granblue_id], entity_type)
-      else
-        'no_id'
+                                queue_image_download(parsed_data[:granblue_id], entity_type)
+                              else
+                                'no_id'
                               end
     rescue Granblue::WikiError => e
       result[:status] = 'error'

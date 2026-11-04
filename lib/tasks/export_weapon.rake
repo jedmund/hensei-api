@@ -18,10 +18,10 @@ namespace :granblue do
       size = args[:size]
 
       # Include weapon model
-      Dir.glob("#{Rails.root.join("app/models/weapon.rb")}").each { |file| require file }
+      Dir.glob("#{Rails.root.join('app/models/weapon.rb')}").each { |file| require file }
 
       # Set up filepath
-      dir = "#{Rails.root.join("export/")}"
+      dir = "#{Rails.root.join('export/')}"
       filename = "#{dir}/weapon-#{size}.txt"
       FileUtils.mkdir_p(dir)
 

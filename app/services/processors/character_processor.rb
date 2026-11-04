@@ -44,18 +44,18 @@ module Processors
 
       grid_characters = process_characters(characters_data)
       grid_characters.each do |grid_character|
-          grid_character.save!
-          if grid_character.collection_character.present?
-            update_collection_from_game(grid_character)
-            begin
-              grid_character.sync_from_collection!
-            rescue ActiveRecord::RecordInvalid => e
-              Rails.logger.error "[CHARACTER] Sync from collection failed, reverting: #{e.record.errors.full_messages.join(', ')}"
-              grid_character.reload
-            end
+        grid_character.save!
+        if grid_character.collection_character.present?
+          update_collection_from_game(grid_character)
+          begin
+            grid_character.sync_from_collection!
+          rescue ActiveRecord::RecordInvalid => e
+            Rails.logger.error "[CHARACTER] Sync from collection failed, reverting: #{e.record.errors.full_messages.join(', ')}"
+            grid_character.reload
           end
-        rescue ActiveRecord::RecordInvalid => e
-          Rails.logger.error "[CHARACTER] Failed to create GridCharacter: #{e.record.errors.full_messages.join(', ')}"
+        end
+      rescue ActiveRecord::RecordInvalid => e
+        Rails.logger.error "[CHARACTER] Failed to create GridCharacter: #{e.record.errors.full_messages.join(', ')}"
       end
     end
 

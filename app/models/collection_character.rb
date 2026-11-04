@@ -92,19 +92,19 @@ class CollectionCharacter < ApplicationRecord
 
     return if awakening.object_type == 'Character'
 
-      errors.add(:awakening, 'must be a character awakening')
+    errors.add(:awakening, 'must be a character awakening')
   end
 
   def validate_awakening_level
     return unless awakening_level.present? && awakening_level > 1 && awakening_id.blank?
 
-      errors.add(:awakening_level, 'cannot be set without an awakening')
+    errors.add(:awakening_level, 'cannot be set without an awakening')
   end
 
   def validate_transcendence_requirements
     return unless transcendence_step.present? && transcendence_step > 0 && uncap_level < 5
 
-      errors.add(:transcendence_step, "requires uncap level 5 (current: #{uncap_level})")
+    errors.add(:transcendence_step, "requires uncap level 5 (current: #{uncap_level})")
   end
 
   def add_default_awakening

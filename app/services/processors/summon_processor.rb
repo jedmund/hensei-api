@@ -58,20 +58,20 @@ module Processors
       summons = [*grid_summons, friend_summon, *sub_summons].compact
 
       summons.each do |summon|
-          summon.save!
-          if summon.collection_summon.present?
-            update_collection_from_game(summon)
-            begin
-              summon.sync_from_collection!
-            rescue ActiveRecord::RecordInvalid => e
-              Rails.logger.error "[SUMMON] Sync from collection failed, reverting: #{e.record.errors.full_messages.join(', ')}"
-              summon.reload
-            end
+        summon.save!
+        if summon.collection_summon.present?
+          update_collection_from_game(summon)
+          begin
+            summon.sync_from_collection!
+          rescue ActiveRecord::RecordInvalid => e
+            Rails.logger.error "[SUMMON] Sync from collection failed, reverting: #{e.record.errors.full_messages.join(', ')}"
+            summon.reload
           end
-        rescue ActiveRecord::RecordInvalid => e
-          Rails.logger.error "[SUMMON] Failed to create GridSummon: #{e.record.errors.full_messages.join(', ')}"
-          add_warning('item_skipped', summon, summon.summon)
-          discard_unsaved(summon, :summons)
+        end
+      rescue ActiveRecord::RecordInvalid => e
+        Rails.logger.error "[SUMMON] Failed to create GridSummon: #{e.record.errors.full_messages.join(', ')}"
+        add_warning('item_skipped', summon, summon.summon)
+        discard_unsaved(summon, :summons)
       end
     end
 
@@ -89,8 +89,8 @@ module Processors
 
       return unless updates.any?
 
-        cs.update!(updates)
-        Rails.logger.info "[SUMMON] Updated collection summon #{cs.id} from game data: #{updates}"
+      cs.update!(updates)
+      Rails.logger.info "[SUMMON] Updated collection summon #{cs.id} from game data: #{updates}"
     end
 
     ##

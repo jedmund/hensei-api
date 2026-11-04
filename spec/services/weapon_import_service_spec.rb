@@ -870,8 +870,8 @@ RSpec.describe WeaponImportService, type: :service do
       it 'stores the correct element for each variant' do
         result = described_class.new(user, { 'list' => [
                                        weapon_item(game_id: 6001, image_id: '1040005500'), # Wind = 4
-          weapon_item(game_id: 6002, image_id: '1040005300'), # Water = 2
-          weapon_item(game_id: 6003, image_id: '1040005700')  # Dark = 6
+                                       weapon_item(game_id: 6002, image_id: '1040005300'), # Water = 2
+                                       weapon_item(game_id: 6003, image_id: '1040005700')  # Dark = 6
                                      ] }).import
 
         expect(result.errors).to be_empty

@@ -153,8 +153,8 @@ RSpec.describe 'Evoking Solomonis API', type: :request do
       normal = create(:solomonis_guide_effect, granblue_id: 3)
       run.replace_solomonis_guide_effects!([
                                              { solomonis_guide_effect: normal, count: 3 },
-        { solomonis_guide_effect: unique, count: 1, display_value: '80%',
-          inherited: true, note: 'carried over' }
+                                             { solomonis_guide_effect: unique, count: 1, display_value: '80%',
+                                               inherited: true, note: 'carried over' }
                                            ])
 
       get "/api/v1/parties/#{run.shortcode}", headers: headers

@@ -117,9 +117,9 @@ module Granblue
           end
         elsif @test_mode
           log_test_creation(attributes)
-            nil
-          else
-            [model_class.create!(attributes), false]
+          nil
+        else
+          [model_class.create!(attributes), false]
         end
       end
 
@@ -154,22 +154,22 @@ module Granblue
         return unless would_update
 
           # Create a test record with existing data
-          test_record = existing_record.dup
+        test_record = existing_record.dup
 
           # Validate only the columns being updated
-          validate_update_attributes(update_attributes)
+        validate_update_attributes(update_attributes)
 
           # Apply the updates and validate the resulting record
-          test_record.assign_attributes(update_attributes)
-          validate_record(test_record)
+        test_record.assign_attributes(update_attributes)
+        validate_record(test_record)
 
-          log_test_update(existing_record, attributes)
-          simulated_updated[type] << {
-            granblue_id: attributes[:granblue_id],
-            name_en: attributes[:name_en] || existing_record.name_en,
-            attributes: update_attributes,
-            operation: :update
-          }
+        log_test_update(existing_record, attributes)
+        simulated_updated[type] << {
+          granblue_id: attributes[:granblue_id],
+          name_en: attributes[:name_en] || existing_record.name_en,
+          attributes: update_attributes,
+          operation: :update
+        }
       end
 
       # Validate that all required attributes are present
@@ -186,17 +186,17 @@ module Granblue
 
         return unless missing_columns.any?
 
-          details = [
-            'Missing required columns:',
-            missing_columns.map { |col| "  • #{col}" },
-            '',
-            "Affected model: #{model_class.name}"
-          ].flatten.join("\n")
+        details = [
+          'Missing required columns:',
+          missing_columns.map { |col| "  • #{col}" },
+          '',
+          "Affected model: #{model_class.name}"
+        ].flatten.join("\n")
 
-          raise ImportError.new(
-            file_name: File.basename(@file_path),
-            details: details
-          )
+        raise ImportError.new(
+          file_name: File.basename(@file_path),
+          details: details
+        )
       end
 
       # Validate attributes for an update
@@ -219,17 +219,17 @@ module Granblue
 
         return unless missing_columns.any?
 
-          details = [
-            'Missing required values for update:',
-            missing_columns.map { |col| "  • #{col}" },
-            '',
-            "Affected model: #{model_class.name}"
-          ].flatten.join("\n")
+        details = [
+          'Missing required values for update:',
+          missing_columns.map { |col| "  • #{col}" },
+          '',
+          "Affected model: #{model_class.name}"
+        ].flatten.join("\n")
 
-          raise ImportError.new(
-            file_name: File.basename(@file_path),
-            details: details
-          )
+        raise ImportError.new(
+          file_name: File.basename(@file_path),
+          details: details
+        )
       end
 
       # Validate a record can be saved

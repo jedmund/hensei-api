@@ -182,10 +182,10 @@ module Granblue
         return unless store_locally?
 
         sizes = begin
-                  self.class::SIZES
-                rescue StandardError
-                  SIZES
-                end
+          self.class::SIZES
+        rescue StandardError
+          SIZES
+        end
         sizes.each do |size|
           FileUtils.mkdir_p(download_path(size))
         end

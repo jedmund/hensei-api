@@ -14,7 +14,7 @@ RSpec.describe Processors::JobProcessor, type: :model do
   # The master section includes the job's basic information.
   # The param section includes level data and the subskills derived from the job's associated job skills.
   let(:deck_data) do
-    file_path = Rails.root.join("spec/fixtures/deck_sample2.json")
+    file_path = Rails.root.join('spec/fixtures/deck_sample2.json')
     JSON.parse(File.read(file_path))
   end
 

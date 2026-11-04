@@ -16,10 +16,10 @@ namespace :granblue do
       # Set up options
       size = args[:size]
 
-      Dir.glob("#{Rails.root.join("app/models/job_accessory.rb")}").each { |file| require file }
+      Dir.glob("#{Rails.root.join('app/models/job_accessory.rb')}").each { |file| require file }
 
       # Set up filepath
-      dir = "#{Rails.root.join("export/")}"
+      dir = "#{Rails.root.join('export/')}"
       filename = "#{dir}/accessory-#{size}.txt"
       FileUtils.mkdir_p(dir)
 
