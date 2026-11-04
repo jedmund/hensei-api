@@ -1175,21 +1175,6 @@ Rails/DurationArithmetic:
   Exclude:
     - 'spec/scripts/fetch_gacha_rates_spec.rb'
 
-# Offense count: 11
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: Whitelist, AllowedMethods, AllowedReceivers.
-# Whitelist: find_by_sql, find_by_token_for
-# AllowedMethods: find_by_sql, find_by_token_for
-# AllowedReceivers: Gem::Specification, page
-Rails/DynamicFindBy:
-  Exclude:
-    - 'app/controllers/api/v1/job_accessories_controller.rb'
-    - 'app/controllers/api/v1/job_skills_controller.rb'
-    - 'app/controllers/api/v1/jobs_controller.rb'
-    - 'app/services/artifact_import_service.rb'
-    - 'spec/models/job_spec.rb'
-    - 'spec/models/weapon_stat_modifier_spec.rb'
-
 # Offense count: 21
 # This cop supports safe autocorrection (--autocorrect).
 Rails/EagerEvaluationLogMessage:
