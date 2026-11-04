@@ -66,8 +66,6 @@ FactoryBot/CreateList:
 Layout/ArrayAlignment:
   Exclude:
     - 'app/controllers/api/v1/collection_artifacts_controller.rb'
-    - 'app/controllers/api/v1/collection_characters_controller.rb'
-    - 'app/controllers/api/v1/collection_weapons_controller.rb'
     - 'app/models/party.rb'
     - 'spec/models/grid_characters_spec.rb'
     - 'spec/requests/api/v1/character_skill_refreshes_spec.rb'
@@ -116,10 +114,7 @@ Layout/EndAlignment:
 # SupportedStyles: normal, indented_internal_methods
 Layout/IndentationConsistency:
   Exclude:
-    - 'app/controllers/api/v1/collection_characters_controller.rb'
     - 'app/controllers/api/v1/collection_controller.rb'
-    - 'app/controllers/api/v1/collection_summons_controller.rb'
-    - 'app/controllers/api/v1/collection_weapons_controller.rb'
     - 'app/models/collection_character.rb'
     - 'app/models/collection_summon.rb'
     - 'app/models/collection_weapon.rb'
@@ -205,9 +200,6 @@ Metrics/AbcSize:
   Exclude:
     - 'app/controllers/api/v1/characters_controller.rb'
     - 'app/controllers/api/v1/collection_artifacts_controller.rb'
-    - 'app/controllers/api/v1/collection_characters_controller.rb'
-    - 'app/controllers/api/v1/collection_summons_controller.rb'
-    - 'app/controllers/api/v1/collection_weapons_controller.rb'
     - 'app/controllers/api/v1/crew_gw_participations_controller.rb'
     - 'app/controllers/api/v1/crew_rosters_controller.rb'
     - 'app/controllers/api/v1/crews_controller.rb'
@@ -312,9 +304,6 @@ Metrics/ClassLength:
 Metrics/CyclomaticComplexity:
   Exclude:
     - 'app/controllers/api/v1/characters_controller.rb'
-    - 'app/controllers/api/v1/collection_characters_controller.rb'
-    - 'app/controllers/api/v1/collection_summons_controller.rb'
-    - 'app/controllers/api/v1/collection_weapons_controller.rb'
     - 'app/controllers/api/v1/crew_rosters_controller.rb'
     - 'app/controllers/api/v1/home_controller.rb'
     - 'app/controllers/api/v1/import_controller.rb'
@@ -383,7 +372,6 @@ Metrics/CyclomaticComplexity:
 # Configuration parameters: CountComments, Max, CountAsOne, AllowedMethods, AllowedPatterns.
 Metrics/MethodLength:
   Exclude:
-    - 'app/controllers/api/v1/collection_characters_controller.rb'
     - 'app/controllers/api/v1/import_controller.rb'
     - 'app/controllers/api/v1/parties_controller.rb'
     - 'app/controllers/api/v1/search_controller.rb'
@@ -423,9 +411,6 @@ Metrics/ParameterLists:
 Metrics/PerceivedComplexity:
   Exclude:
     - 'app/controllers/api/v1/characters_controller.rb'
-    - 'app/controllers/api/v1/collection_characters_controller.rb'
-    - 'app/controllers/api/v1/collection_summons_controller.rb'
-    - 'app/controllers/api/v1/collection_weapons_controller.rb'
     - 'app/controllers/api/v1/crew_rosters_controller.rb'
     - 'app/controllers/api/v1/home_controller.rb'
     - 'app/controllers/api/v1/import_controller.rb'
@@ -1216,9 +1201,6 @@ Rails/Blank:
     - 'app/controllers/api/v1/api_controller.rb'
     - 'app/controllers/api/v1/characters_controller.rb'
     - 'app/controllers/api/v1/collection_artifacts_controller.rb'
-    - 'app/controllers/api/v1/collection_characters_controller.rb'
-    - 'app/controllers/api/v1/collection_summons_controller.rb'
-    - 'app/controllers/api/v1/collection_weapons_controller.rb'
     - 'app/controllers/api/v1/grid_artifacts_controller.rb'
     - 'app/controllers/api/v1/job_skills_controller.rb'
     - 'app/controllers/api/v1/parties_controller.rb'
@@ -1699,11 +1681,8 @@ Rails/StrongParametersExpect:
     - 'app/controllers/api/v1/character_series_controller.rb'
     - 'app/controllers/api/v1/characters_controller.rb'
     - 'app/controllers/api/v1/collection_artifacts_controller.rb'
-    - 'app/controllers/api/v1/collection_characters_controller.rb'
     - 'app/controllers/api/v1/collection_controller.rb'
     - 'app/controllers/api/v1/collection_job_accessories_controller.rb'
-    - 'app/controllers/api/v1/collection_summons_controller.rb'
-    - 'app/controllers/api/v1/collection_weapons_controller.rb'
     - 'app/controllers/api/v1/crew_gw_participations_controller.rb'
     - 'app/controllers/api/v1/crew_invitations_controller.rb'
     - 'app/controllers/api/v1/crew_memberships_controller.rb'
@@ -1926,7 +1905,6 @@ Style/PreferredHashMethods:
 # SupportedStyles: compact, exploded
 Style/RaiseArgs:
   Exclude:
-    - 'app/controllers/api/v1/collection_characters_controller.rb'
     - 'app/controllers/api/v1/collection_job_accessories_controller.rb'
     - 'app/controllers/api/v1/jobs_controller.rb'
 
