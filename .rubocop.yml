@@ -129,6 +129,12 @@ Rails/SkipsModelValidations:
   Exclude:
     - 'spec/**/*'
 
+# The API returns English messages by design and the clients localize them;
+# the account mailers are English-only too. Moving these strings into
+# config/locales would add indirection without a second locale to serve.
+Rails/I18nLocaleTexts:
+  Enabled: false
+
 # --- RSpec ---
 # A request spec checks the status, the body and the database, so several
 # expectations and helpers per example are normal here

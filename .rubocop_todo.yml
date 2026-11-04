@@ -1238,25 +1238,6 @@ Rails/HasManyOrHasOneDependent:
     - 'app/models/user.rb'
     - 'app/models/weapon.rb'
 
-# Offense count: 24
-Rails/I18nLocaleTexts:
-  Exclude:
-    - 'app/mailers/account_deletion_mailer.rb'
-    - 'app/mailers/email_verification_mailer.rb'
-    - 'app/mailers/password_reset_mailer.rb'
-    - 'app/models/collection_character.rb'
-    - 'app/models/collection_job_accessory.rb'
-    - 'app/models/crew_gw_participation.rb'
-    - 'app/models/crew_invitation.rb'
-    - 'app/models/difficulty.rb'
-    - 'app/models/event.rb'
-    - 'app/models/expedition_guide_effect.rb'
-    - 'app/models/gw_individual_score.rb'
-    - 'app/models/party.rb'
-    - 'app/models/party_share.rb'
-    - 'app/models/playlist.rb'
-    - 'app/models/user.rb'
-
 # Offense count: 23
 # This cop supports unsafe autocorrection (--autocorrect-all).
 Rails/IndexWith:
