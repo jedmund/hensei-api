@@ -443,13 +443,6 @@ Performance/RegexpMatch:
     - 'lib/granblue/parsers/weapon_parser.rb'
     - 'lib/granblue/parsers/wiki_data_parser.rb'
 
-# Offense count: 3
-Rails/UniqueValidationWithoutIndex:
-  Exclude:
-    - 'app/models/user.rb'
-    - 'app/models/weapon_skill_datum.rb'
-    - 'app/models/weapon_skill_effect.rb'
-
 # Offense count: 1
 # This cop supports unsafe autocorrection (--autocorrect-all).
 Style/ArrayIntersect:

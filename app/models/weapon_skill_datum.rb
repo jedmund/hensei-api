@@ -18,7 +18,10 @@ class WeaponSkillDatum < ApplicationRecord
   validates :size, inclusion: { in: SIZE_VALUES }, allow_nil: true # nil = sizeless (Shape B)
   validates :formula_type, presence: true, inclusion: { in: FORMULA_TYPES }
 
-  validates :modifier, uniqueness: { scope: %i[boost_type series size weapon_skill_version_id] }
+  # Enforced in the database by two partial unique indexes, which the cop can't
+  # read: index_wsd_canonical_uniqueness (no version) and
+  # index_wsd_versioned_uniqueness (per version).
+  validates :modifier, uniqueness: { scope: %i[boost_type series size weapon_skill_version_id] } # rubocop:disable Rails/UniqueValidationWithoutIndex
 
   scope :canonical, -> { where(weapon_skill_version_id: nil) }
 
