@@ -13,24 +13,11 @@ module Api
       before_action :set_collection_artifact_for_write, only: %i[update destroy]
 
       def index
-        @collection_artifacts = @target_user.collection_artifacts.includes(:artifact)
+        scope = filter_by_skills(filter_by_attributes(@target_user.collection_artifacts.includes(:artifact)))
+        scope = scope.by_name(params[:search]) if params[:search].present?
+        scope = scope.sorted_by(params[:sort], current_user&.language || 'en')
 
-        # Apply filters (array_param splits comma-separated values for OR logic)
-        @collection_artifacts = @collection_artifacts.where(artifact_id: params[:artifact_id]) if params[:artifact_id]
-        @collection_artifacts = @collection_artifacts.where(element: array_param(:element)) if params[:element]
-        @collection_artifacts = @collection_artifacts.by_proficiency(array_param(:proficiency)) if params[:proficiency].present?
-        @collection_artifacts = @collection_artifacts.joins(:artifact).where(artifacts: { rarity: array_param(:rarity) }) if params[:rarity]
-
-        # Skill filters - each slot uses OR logic, slots combined with AND logic
-        @collection_artifacts = @collection_artifacts.with_skill_in_slot(1, params[:skill1]) if params[:skill1].present?
-        @collection_artifacts = @collection_artifacts.with_skill_in_slot(2, params[:skill2]) if params[:skill2].present?
-        @collection_artifacts = @collection_artifacts.with_skill_in_slot(3, params[:skill3]) if params[:skill3].present?
-        @collection_artifacts = @collection_artifacts.with_skill_in_slot(4, params[:skill4]) if params[:skill4].present?
-        @collection_artifacts = @collection_artifacts.by_name(params[:search]) if params[:search].present?
-
-        @collection_artifacts = @collection_artifacts.sorted_by(params[:sort], current_user&.language || 'en')
-
-        @collection_artifacts = @collection_artifacts.paginate(page: params[:page], per_page: collection_page_size)
+        @collection_artifacts = scope.paginate(page: params[:page], per_page: collection_page_size)
 
         render json: Api::V1::CollectionArtifactBlueprint.render(
           @collection_artifacts,
@@ -244,6 +231,24 @@ module Api
 
       def batch_destroy_params
         params.permit(ids: [])
+      end
+
+      # array_param splits comma-separated values, which match any of them.
+      # artifact_id, element and rarity apply whenever given, even blank.
+      def filter_by_attributes(scope)
+        scope = scope.where(artifact_id: params[:artifact_id]) if params[:artifact_id]
+        scope = scope.where(element: array_param(:element)) if params[:element]
+        scope = scope.by_proficiency(array_param(:proficiency)) if params[:proficiency].present?
+        scope = scope.joins(:artifact).where(artifacts: { rarity: array_param(:rarity) }) if params[:rarity]
+        scope
+      end
+
+      # Each slot matches any of its modifiers; the slots must all match
+      def filter_by_skills(scope)
+        (1..4).reduce(scope) do |result, slot|
+          modifiers = params[:"skill#{slot}"]
+          modifiers.present? ? result.with_skill_in_slot(slot, modifiers) : result
+        end
       end
 
       def array_param(key)
