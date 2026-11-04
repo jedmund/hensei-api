@@ -29,25 +29,11 @@ module GachaSimulation
     end
 
     def draw(count)
-      counts = Hash.new(0)
-      ordered = []
-      ssr_order = []
-      totals = { 'R' => 0, 'SR' => 0, 'SSR' => 0 }
-      ordinary = cumulative('ordinary')
-      guaranteed = cumulative('guaranteed')
-      count.times do |i|
-        distribution = @config['purchase'] == 'ten' && ((i + 1) % 10).zero? ? guaranteed : ordinary
-        value = @random.rand
-        item = (distribution.bsearch { |entry| entry[0] > value } || distribution.last)[1]
-        counts[item['identity']] += 1
-        totals[%w[R SR SSR][item['rarity'] - 1]] += 1
-        ordered << item if count <= 300
-        ssr_order << item['identity'] if item['rarity'] == 3 && count <= SSR_ORDER_LIMIT
-      end
-      items = @compiled['ordinary'].map { |e| e['item'] }.uniq { |i| i['identity'] }
-      result = { 'draws' => count.to_s, 'totals' => totals.transform_values(&:to_s), 'ordered' => count <= 300 ? ordered : nil,
-                 'ssr_order' => count <= SSR_ORDER_LIMIT ? ssr_order : nil,
-                 'items' => items.filter_map { |item| item.merge('count' => counts[item['identity']].to_s) if counts[item['identity']].positive? } }
+      tally = sample(count)
+      result = { 'draws' => count.to_s, 'totals' => tally[:totals].transform_values(&:to_s),
+                 'ordered' => count <= 300 ? tally[:ordered] : nil,
+                 'ssr_order' => count <= SSR_ORDER_LIMIT ? tally[:ssr_order] : nil,
+                 'items' => drawn_items(tally[:counts]) }
       metadata.merge(result).merge('cost' => ExchangeRate.cost(count))
     end
 
@@ -85,6 +71,38 @@ module GachaSimulation
     end
 
     private
+
+    # Draws count items in order, one random number each; with ten-part purchases,
+    # every 10th draw comes from the guaranteed table.
+    def sample(count)
+      tally = { counts: Hash.new(0), ordered: [], ssr_order: [], totals: { 'R' => 0, 'SR' => 0, 'SSR' => 0 } }
+      ordinary = cumulative('ordinary')
+      guaranteed = cumulative('guaranteed')
+      count.times do |i|
+        distribution = @config['purchase'] == 'ten' && ((i + 1) % 10).zero? ? guaranteed : ordinary
+        record(tally, pick(distribution), count)
+      end
+      tally
+    end
+
+    def pick(distribution)
+      value = @random.rand
+      (distribution.bsearch { |entry| entry[0] > value } || distribution.last)[1]
+    end
+
+    # Small runs keep every item in order, and runs up to SSR_ORDER_LIMIT each SSR's identity.
+    def record(tally, item, count)
+      tally[:counts][item['identity']] += 1
+      tally[:totals][%w[R SR SSR][item['rarity'] - 1]] += 1
+      tally[:ordered] << item if count <= 300
+      tally[:ssr_order] << item['identity'] if item['rarity'] == 3 && count <= SSR_ORDER_LIMIT
+    end
+
+    # Each item drawn at least once, in catalogue order, with its count.
+    def drawn_items(counts)
+      items = @compiled['ordinary'].map { |e| e['item'] }.uniq { |i| i['identity'] }
+      items.filter_map { |item| item.merge('count' => counts[item['identity']].to_s) if counts[item['identity']].positive? }
+    end
 
     def metadata
       common = { 'seed' => @seed, 'configuration' => @config, 'catalogue_fingerprint' => @compiled['fingerprint'],
