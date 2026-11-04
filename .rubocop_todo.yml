@@ -59,7 +59,7 @@ FactoryBot/CreateList:
     - 'spec/requests/api/v1/home_spec.rb'
     - 'spec/services/support_summon_import_service_spec.rb'
 
-# Offense count: 24
+# Offense count: 16
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: EnforcedStyle, IndentationWidth.
 # SupportedStyles: with_first_element, with_fixed_indentation
@@ -81,13 +81,7 @@ Layout/BeginEndAlignment:
   Exclude:
     - 'lib/granblue/downloaders/base_downloader.rb'
 
-# Offense count: 16
-# This cop supports safe autocorrection (--autocorrect).
-Layout/BlockEndNewline:
-  Exclude:
-    - 'spec/models/grid_summons_spec.rb'
-
-# Offense count: 10
+# Offense count: 6
 # This cop supports safe autocorrection (--autocorrect).
 Layout/ElseAlignment:
   Exclude:
@@ -97,7 +91,7 @@ Layout/ElseAlignment:
     - 'lib/post_deployment/search_indexer.rb'
     - 'lib/tasks/characters.rake'
 
-# Offense count: 70
+# Offense count: 48
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: normal, indented_internal_methods
@@ -111,7 +105,6 @@ Layout/IndentationConsistency:
     - 'app/models/concerns/artifact_skill_validations.rb'
     - 'app/models/crew_membership.rb'
     - 'app/models/grid_artifact.rb'
-    - 'app/models/grid_character.rb'
     - 'app/models/grid_weapon.rb'
     - 'app/models/grid_weapon_bullet.rb'
     - 'app/models/gw_individual_score.rb'
@@ -124,9 +117,8 @@ Layout/IndentationConsistency:
     - 'lib/post_deployment/data_importer.rb'
     - 'lib/post_deployment/database_migrator.rb'
     - 'lib/post_deployment/search_indexer.rb'
-    - 'spec/models/grid_summons_spec.rb'
 
-# Offense count: 12
+# Offense count: 6
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: Width, EnforcedStyleAlignWith, AllowedPatterns.
 # SupportedStylesAlignWith: start_of_line, relative_to_receiver
@@ -139,7 +131,7 @@ Layout/IndentationWidth:
     - 'app/services/processors/weapon_processor.rb'
     - 'lib/post_deployment/search_indexer.rb'
 
-# Offense count: 24
+# Offense count: 22
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: Max, AllowHeredoc, AllowURI, AllowQualifiedName, URISchemes, AllowRBSInlineAnnotation, AllowCopDirectives, AllowedPatterns, SplitStrings.
 # URISchemes: http, https
@@ -158,12 +150,6 @@ Layout/LineLength:
     - 'spec/services/artifact_import_service_spec.rb'
     - 'spec/services/aws_service_spec.rb'
 
-# Offense count: 16
-# This cop supports safe autocorrection (--autocorrect).
-Layout/MultilineBlockLayout:
-  Exclude:
-    - 'spec/models/grid_summons_spec.rb'
-
 # Offense count: 5
 # This cop supports safe autocorrection (--autocorrect).
 Layout/RescueEnsureAlignment:
@@ -180,7 +166,7 @@ Layout/SpaceBeforeComment:
   Exclude:
     - 'lib/granblue/parsers/character_parser.rb'
 
-# Offense count: 106
+# Offense count: 101
 # Configuration parameters: AllowedMethods, AllowedPatterns, CountRepeatedAttributes, Max.
 Metrics/AbcSize:
   Exclude:
@@ -188,7 +174,6 @@ Metrics/AbcSize:
     - 'app/controllers/api/v1/collection_artifacts_controller.rb'
     - 'app/controllers/api/v1/crew_gw_participations_controller.rb'
     - 'app/controllers/api/v1/crew_rosters_controller.rb'
-    - 'app/controllers/api/v1/crews_controller.rb'
     - 'app/controllers/api/v1/gacha_controller.rb'
     - 'app/controllers/api/v1/gw_score_imports_controller.rb'
     - 'app/controllers/api/v1/home_controller.rb'
@@ -261,7 +246,7 @@ Metrics/AbcSize:
     - 'lib/weapon_skills/source_store/transfer.rb'
     - 'script/fetch_gacha_rates.rb'
 
-# Offense count: 22
+# Offense count: 18
 # Configuration parameters: CountComments, Max, CountAsOne.
 Metrics/ClassLength:
   Exclude:
@@ -284,7 +269,7 @@ Metrics/ClassLength:
     - 'lib/granblue/parsers/character_skills/builder.rb'
     - 'lib/granblue/parsers/wiki_data_parser.rb'
 
-# Offense count: 88
+# Offense count: 82
 # Configuration parameters: AllowedMethods, AllowedPatterns, Max.
 Metrics/CyclomaticComplexity:
   Exclude:
@@ -352,7 +337,7 @@ Metrics/CyclomaticComplexity:
     - 'lib/weapon_skills/version_text/backfill.rb'
     - 'script/fetch_gacha_rates.rb'
 
-# Offense count: 30
+# Offense count: 29
 # Configuration parameters: CountComments, Max, CountAsOne, AllowedMethods, AllowedPatterns.
 Metrics/MethodLength:
   Exclude:
@@ -390,7 +375,7 @@ Metrics/ParameterLists:
     - 'lib/weapon_skills/build/structure/comparison.rb'
     - 'lib/weapon_skills/source_store/transfer.rb'
 
-# Offense count: 93
+# Offense count: 87
 # Configuration parameters: AllowedMethods, AllowedPatterns, Max.
 Metrics/PerceivedComplexity:
   Exclude:
@@ -590,7 +575,7 @@ RSpec/ChangeByZero:
     - 'spec/requests/api/v1/grid_characters_spec.rb'
     - 'spec/requests/api/v1/grid_weapons_spec.rb'
 
-# Offense count: 226
+# Offense count: 214
 # Configuration parameters: Prefixes, AllowedPatterns.
 # Prefixes: when, with, without
 RSpec/ContextWording:
@@ -735,7 +720,7 @@ RSpec/ExpectInHook:
   Exclude:
     - 'spec/scripts/fetch_gacha_rates_spec.rb'
 
-# Offense count: 3
+# Offense count: 2
 # This cop supports safe autocorrection (--autocorrect).
 RSpec/HooksBeforeExamples:
   Exclude:
@@ -895,7 +880,7 @@ RSpec/MatchWithSimpleRegex:
     - 'spec/requests/api/v1/entity_reparse_spec.rb'
     - 'spec/requests/api/v1/grid_character_roles_spec.rb'
 
-# Offense count: 17
+# Offense count: 13
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: have_received, receive
 RSpec/MessageSpies:
@@ -941,7 +926,7 @@ RSpec/NestedGroups:
   Exclude:
     - 'spec/models/grid_weapon_spec.rb'
 
-# Offense count: 2
+# Offense count: 1
 # This cop supports unsafe autocorrection (--autocorrect-all).
 RSpec/Output:
   Exclude:
@@ -1067,7 +1052,7 @@ RSpec/SubjectStub:
     - 'spec/data/prefix_event_kamigame_paths_spec.rb'
     - 'spec/data/raise_transcended_dark_opus_caps_spec.rb'
 
-# Offense count: 22
+# Offense count: 18
 # This cop supports unsafe autocorrection (--autocorrect-all).
 RSpec/VerifiedDoubleReference:
   Exclude:
@@ -1126,7 +1111,7 @@ Rails/ActionOrder:
     - 'app/controllers/api/v1/parties_controller.rb'
     - 'app/controllers/api/v1/users_controller.rb'
 
-# Offense count: 9
+# Offense count: 8
 # This cop supports safe autocorrection (--autocorrect).
 Rails/ActiveRecordCallbacksOrder:
   Exclude:
@@ -1157,7 +1142,7 @@ Rails/ArelStar:
   Exclude:
     - 'lib/weapon_skills/build/rows.rb'
 
-# Offense count: 105
+# Offense count: 85
 # This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: NilOrEmpty, NotPresent, UnlessPresent.
 Rails/Blank:
@@ -1199,7 +1184,7 @@ Rails/Blank:
     - 'app/services/weapon_import_service.rb'
     - 'lib/weapon_skills/build/structure/tiers.rb'
 
-# Offense count: 6
+# Offense count: 3
 # This cop supports unsafe autocorrection (--autocorrect-all).
 Rails/CompactBlank:
   Exclude:
@@ -1283,7 +1268,7 @@ Rails/FindEach:
     - 'lib/tasks/export_weapon.rake'
     - 'spec/services/party_difficulty/weapon_tier_match_spec.rb'
 
-# Offense count: 14
+# Offense count: 11
 Rails/HasManyOrHasOneDependent:
   Exclude:
     - 'app/models/awakening.rb'
@@ -1347,7 +1332,7 @@ Rails/InverseOf:
     - 'app/models/user.rb'
     - 'app/models/weapon.rb'
 
-# Offense count: 42
+# Offense count: 43
 # This cop supports unsafe autocorrection (--autocorrect-all).
 Rails/NegateInclude:
   Exclude:
@@ -1488,7 +1473,7 @@ Rails/Pluck:
     - 'spec/services/solomonis/guidebook_importer_spec.rb'
     - 'spec/services/weapon_import_service_spec.rb'
 
-# Offense count: 13
+# Offense count: 12
 # This cop supports safe autocorrection (--autocorrect).
 Rails/Presence:
   Exclude:
@@ -1519,7 +1504,7 @@ Rails/RedundantActiveRecordAllMethod:
     - 'lib/tasks/export_job.rake'
     - 'spec/requests/api/v1/stickers_spec.rb'
 
-# Offense count: 4
+# Offense count: 2
 # This cop supports safe autocorrection (--autocorrect).
 Rails/RedundantAllowNil:
   Exclude:
@@ -1635,7 +1620,7 @@ Rails/SquishedSQLHeredocs:
     - 'lib/tasks/database.rake'
     - 'spec/data/clear_gacha_rateups_spec.rb'
 
-# Offense count: 118
+# Offense count: 98
 # This cop supports unsafe autocorrection (--autocorrect-all).
 Rails/StrongParametersExpect:
   Exclude:
@@ -1730,7 +1715,7 @@ Rails/WhereEquals:
     - 'app/controllers/api/v1/users_controller.rb'
     - 'app/services/party_query_builder.rb'
 
-# Offense count: 3
+# Offense count: 2
 # This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: exists, where
@@ -1850,7 +1835,7 @@ Style/PreferredHashMethods:
   Exclude:
     - 'app/services/processors/weapon_processor.rb'
 
-# Offense count: 3
+# Offense count: 2
 # This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: EnforcedStyle, AllowedCompactTypes.
 # SupportedStyles: compact, exploded
@@ -1935,7 +1920,7 @@ Style/StringLiteralsInInterpolation:
     - 'lib/tasks/export_summon.rake'
     - 'lib/tasks/export_weapon.rake'
 
-# Offense count: 48
+# Offense count: 46
 # This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: AllowMethodsWithArguments, AllowedMethods, AllowedPatterns, AllowComments.
 # AllowedMethods: define_method, mail, respond_to
