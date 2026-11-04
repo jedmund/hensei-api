@@ -23,7 +23,7 @@ namespace :granblue do
                         job: find.call(Job, data['job']), raid: data['raid'] && Raid.find_by(id: data.dig('raid', 'id')),
                         visibility: 1)
       party.save!(validate: false)
-      party.update_column(:shortcode, shortcode)
+      party.update_column(:shortcode, shortcode) # rubocop:disable Rails/SkipsModelValidations -- keeps the source party's shortcode
 
       Array(data['weapons']).each do |w|
         weapon = find.call(Weapon, w['weapon']) or abort "unknown weapon #{w.dig('weapon', 'name', 'en')}"

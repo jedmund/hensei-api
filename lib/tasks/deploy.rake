@@ -61,7 +61,7 @@ namespace :deploy do
 
       promotions = promotions_from_obtain(obtain)
       if promotions.present?
-        weapon.update_columns(promotions: promotions, updated_at: Time.current)
+        weapon.update_columns(promotions: promotions, updated_at: Time.current) # rubocop:disable Rails/SkipsModelValidations -- one-off backfill
         updated += 1
       end
     end
@@ -95,7 +95,7 @@ namespace :deploy do
 
       promotions = promotions_from_obtain(obtain)
       if promotions.present?
-        summon.update_columns(promotions: promotions, updated_at: Time.current)
+        summon.update_columns(promotions: promotions, updated_at: Time.current) # rubocop:disable Rails/SkipsModelValidations -- one-off backfill
         updated += 1
       end
     end
@@ -129,7 +129,7 @@ namespace :deploy do
       gacha_available = gacha_available_from_wiki(wiki_series, obtain)
 
       if series.present? || season.present?
-        character.update_columns(
+        character.update_columns( # rubocop:disable Rails/SkipsModelValidations -- one-off backfill
           series: series,
           season: season,
           gacha_available: gacha_available,

@@ -189,6 +189,8 @@ class GridSummon < ApplicationRecord
     self.uncap_level ||= 0
   end
 
+  # Hand-rolled counter cache: one SQL increment, no Party callbacks.
+  # rubocop:disable Rails/SkipsModelValidations
   def increment_party_counter
     Party.increment_counter(:summons_count, party_id)
   end
@@ -196,6 +198,7 @@ class GridSummon < ApplicationRecord
   def decrement_party_counter
     Party.decrement_counter(:summons_count, party_id)
   end
+  # rubocop:enable Rails/SkipsModelValidations
 
   def recompute_party_boost!
     return if is_substitute?

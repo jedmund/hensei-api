@@ -100,6 +100,7 @@ class PhantomPlayer < ApplicationRecord
 
     return unless joined_at.present? && (membership.joined_at.nil? || joined_at < membership.joined_at)
 
-      membership.update_columns(joined_at: joined_at)
+    # rubocop:disable-next Rails/SkipsModelValidations -- a claim mustn't fail on the membership's role limits
+    membership.update_columns(joined_at: joined_at)
   end
 end

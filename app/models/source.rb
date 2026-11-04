@@ -143,6 +143,7 @@ class Source < ApplicationRecord
       if source&.sha256 == sha
         # updated_at too: the row was confirmed now.
         if fetched_at && (source.fetched_at.nil? || fetched_at > source.fetched_at)
+          # rubocop:disable-next Rails/SkipsModelValidations -- same body: confirm the fetch without running the owner hooks
           source.update_columns(fetched_at: fetched_at, updated_at: Time.current)
         end
         return PutResult.new(status: :unchanged, source: source)

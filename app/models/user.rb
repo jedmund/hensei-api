@@ -219,6 +219,10 @@ class User < ApplicationRecord
     crew_role == 'captain'
   end
 
+  # Token and verification columns are written directly: a reset or a
+  # verification mustn't fail on an unrelated validation (say, an old
+  # username that predates the format rules).
+  # rubocop:disable Rails/SkipsModelValidations
   def generate_reset_token!
     raw_token = SecureRandom.urlsafe_base64(32)
     update_columns(
@@ -269,6 +273,7 @@ class User < ApplicationRecord
       email_verification_sent_at: nil
     )
   end
+  # rubocop:enable Rails/SkipsModelValidations
 
   def verification_token_cooldown?
     email_verification_sent_at.present? && email_verification_sent_at > VERIFICATION_TOKEN_COOLDOWN.ago

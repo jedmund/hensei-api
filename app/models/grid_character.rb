@@ -355,6 +355,8 @@ class GridCharacter < ApplicationRecord
     fields.flat_map { |key| SYNC_FIELD_MAP[key] || [] }.uniq
   end
 
+  # Hand-rolled counter cache: one SQL increment, no Party callbacks.
+  # rubocop:disable Rails/SkipsModelValidations
   def increment_party_counter
     Party.increment_counter(:characters_count, party_id)
   end
@@ -362,6 +364,7 @@ class GridCharacter < ApplicationRecord
   def decrement_party_counter
     Party.decrement_counter(:characters_count, party_id)
   end
+  # rubocop:enable Rails/SkipsModelValidations
 
   # Evoking Solomonis parties hold the route Evoker and up to 4 allies. Whether
   # the route Evoker is actually in the grid is a completeness check, not

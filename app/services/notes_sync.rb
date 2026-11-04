@@ -81,6 +81,7 @@ module NotesSync
     return false unless syncable?(item)
 
     ActiveRecord::Base.transaction do
+      # rubocop:disable-next Rails/SkipsModelValidations -- flag only, like the siblings below
       item.update_column(:notes_synced, true) unless item.notes_synced?
       siblings(item).update_all(notes_synced: true, updated_at: Time.current)
       propagate_description!(item)
@@ -97,6 +98,7 @@ module NotesSync
     return false unless syncable?(item)
 
     ActiveRecord::Base.transaction do
+      # rubocop:disable-next Rails/SkipsModelValidations -- flag only, like the siblings below
       item.update_column(:notes_synced, false) if item.notes_synced?
       siblings(item).update_all(notes_synced: false, updated_at: Time.current)
     end

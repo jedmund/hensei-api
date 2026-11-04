@@ -469,6 +469,8 @@ class GridWeapon < ApplicationRecord
     self.uncap_level ||= 0
   end
 
+  # Hand-rolled counter cache: one SQL increment, no Party callbacks.
+  # rubocop:disable Rails/SkipsModelValidations
   def increment_party_counter
     Party.increment_counter(:weapons_count, party_id)
   end
@@ -476,6 +478,7 @@ class GridWeapon < ApplicationRecord
   def decrement_party_counter
     Party.decrement_counter(:weapons_count, party_id)
   end
+  # rubocop:enable Rails/SkipsModelValidations
 
   def set_default_exorcism_level
     return unless weapon.present?

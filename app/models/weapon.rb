@@ -361,6 +361,7 @@ class Weapon < ApplicationRecord
         updates = {}
         updates[:forge_chain_id] = root_chain_id if weapon.forge_chain_id != root_chain_id
         updates[:forge_order] = index if weapon.forge_order != index
+        # rubocop:disable-next Rails/SkipsModelValidations -- fixes the other chain rows from this weapon's save; their callbacks must not rerun
         weapon.update_columns(updates.merge(updated_at: Time.current)) if updates.any?
       end
     elsif forge_chain_id.present?

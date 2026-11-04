@@ -280,7 +280,7 @@ class Party < ApplicationRecord
   #
   # @return [Boolean] true if the update succeeded.
   def mark_updated!
-    result = update_column(:last_updated, Time.current)
+    result = update_column(:last_updated, Time.current) # rubocop:disable Rails/SkipsModelValidations -- bumps last_updated only, not updated_at
     enqueue_difficulty_recompute!
     result
   end
@@ -342,6 +342,7 @@ class Party < ApplicationRecord
                  SUMMON_SERIES_MOD[friend_summon.summon_series&.slug])
   end
 
+  # rubocop:disable Rails/SkipsModelValidations -- derived columns written from grid callbacks; a save would rerun the party callbacks
   def recompute_boost!
     result = mod_and_side
     new_mod = result&.dig(:mod)
@@ -353,6 +354,7 @@ class Party < ApplicationRecord
     new_side = result&.dig(:side)
     update_column(:boost_side, new_side) if boost_side != new_side
   end
+  # rubocop:enable Rails/SkipsModelValidations
 
   ##
   # Checks if the party has any orphaned grid items.
@@ -404,6 +406,7 @@ class Party < ApplicationRecord
   # Finds the main weapon (position -1) and updates the party's element if it differs.
   #
   # @return [void]
+  # rubocop:disable Rails/SkipsModelValidations -- runs in after_commit; a save would commit again and rerun these callbacks
   def update_element!
     # Evoking Solomonis parties take their element from the route Evoker.
     return if solomonis?
@@ -423,6 +426,7 @@ class Party < ApplicationRecord
     new_extra = weapons.any? { |gw| GridWeapon::EXTRA_POSITIONS.include?(gw.position.to_i) }
     update_column(:extra, new_extra) if extra != new_extra
   end
+  # rubocop:enable Rails/SkipsModelValidations
 
   ##
   # Sets a unique shortcode for the party before creation.

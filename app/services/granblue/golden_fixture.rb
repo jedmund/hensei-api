@@ -75,6 +75,7 @@ module Granblue
         ADJUSTMENTS.fetch(party.shortcode, []).each do |adj|
           raise Error, "unsupported adjustment table #{adj['table']}" unless adj['table'] == 'grid_weapons'
 
+          # rubocop:disable-next Rails/SkipsModelValidations -- fixture values, stored as given
           party.weapons.find_by!(position: adj['position']).update_columns(adj['set'])
         end
       end
