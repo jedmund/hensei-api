@@ -13,7 +13,7 @@ module GridDamage
     def for_party(party, element:)
       totals = { optimus: 0.0, omega: 0.0, taboo: 0.0, elemental: 0.0 }
       exo_fraction = odious_exorcism_fraction(party, element)
-      party.summons.includes(:summon).each do |gs|
+      party.summons.includes(:summon).each do |gs| # rubocop:disable Rails/FindEach -- a party has only a few grid rows to load
         slot = slot_for(gs)
         next unless slot && gs.summon
 

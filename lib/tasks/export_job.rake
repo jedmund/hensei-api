@@ -30,7 +30,7 @@ namespace :granblue do
 
       # Write to file
       File.open(filename, 'w') do |f|
-        Job.all.each do |w|
+        Job.find_each do |w|
           if size == 'icon'
             f.write("#{build_job_icon_url(w.granblue_id.to_s)} \n")
           elsif size == 'portrait'

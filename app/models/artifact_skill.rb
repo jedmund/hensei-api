@@ -42,7 +42,7 @@ class ArtifactSkill < ApplicationRecord
     def cached_by_game_name
       @game_name_cache ||= begin
         cache = {}
-        all.each do |skill|
+        find_each do |skill|
           # Use game names for matching, fall back to display names if not set
           en_key = skill.game_name_en.presence || skill.name_en
           jp_key = skill.game_name_jp.presence || skill.name_jp

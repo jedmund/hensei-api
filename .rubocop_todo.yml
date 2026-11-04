@@ -1124,17 +1124,6 @@ Rails/FindEach:
   Exclude:
     - 'app/controllers/api/v1/crew_rosters_controller.rb'
     - 'app/controllers/api/v1/crews_controller.rb'
-    - 'app/models/artifact_skill.rb'
-    - 'app/services/grid_damage/character_auras.rb'
-    - 'app/services/grid_damage/effects.rb'
-    - 'app/services/grid_damage/key_skills.rb'
-    - 'app/services/grid_damage/summon_auras.rb'
-    - 'app/services/grid_damage/weapon_contributions.rb'
-    - 'lib/tasks/export_accessories.rake'
-    - 'lib/tasks/export_character.rake'
-    - 'lib/tasks/export_job.rake'
-    - 'lib/tasks/export_summon.rake'
-    - 'lib/tasks/export_weapon.rake'
     - 'spec/services/party_difficulty/weapon_tier_match_spec.rb'
 
 # Offense count: 11

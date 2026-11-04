@@ -16,7 +16,7 @@ module GridDamage
       return [] if by_slug.empty?
 
       out = []
-      party.weapons.includes(:weapon).each do |gw|
+      party.weapons.includes(:weapon).each do |gw| # rubocop:disable Rails/FindEach -- a party has only a few grid rows to load
         w = gw.weapon
         next unless w
 
