@@ -10,9 +10,7 @@ module PartyAuthorizationConcern
     if @party.user.present?
       render_unauthorized_response unless current_user.present? && @party.user == current_user
     else
-      provided_edit_key = edit_key.to_s.strip.force_encoding('UTF-8')
-      party_edit_key = @party.edit_key.to_s.strip.force_encoding('UTF-8')
-      render_unauthorized_response unless valid_edit_key?(provided_edit_key, party_edit_key)
+      render_unauthorized_response unless @party.edit_key_matches?(edit_key)
     end
   end
 
@@ -28,12 +26,5 @@ module PartyAuthorizationConcern
       return true if current_user.nil? && (@party.edit_key != edit_key)
     end
     false
-  end
-
-  # Verifies that the provided edit key matches the party's edit key.
-  def valid_edit_key?(provided_edit_key, party_edit_key)
-    provided_edit_key.present? &&
-      provided_edit_key.bytesize == party_edit_key.bytesize &&
-      ActiveSupport::SecurityUtils.secure_compare(provided_edit_key, party_edit_key)
   end
 end

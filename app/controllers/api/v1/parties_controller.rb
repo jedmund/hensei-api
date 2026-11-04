@@ -46,7 +46,7 @@ module Api
         'solomonis_expedition.route_evoker' => 'solomonis.route_evoker_id'
       }.freeze
 
-      before_action :set_from_slug, except: %w[create destroy update index favorites grid_update unlink_collection sync_all migrate preview_migrate]
+      before_action :set_from_slug, except: %w[create destroy update index favorites grid_update unlink_collection sync_all]
       before_action :set, only: %w[update destroy grid_update]
       before_action :authorize_party!, only: %w[update destroy grid_update]
       before_action :ensure_party_viewable!, only: %w[show skill_boosts remix]
@@ -143,117 +143,6 @@ module Api
             Api::V1::PartyDeletionFailedError.new(@party.errors.full_messages)
           )
         end
-      end
-
-      # Migrates anonymous parties to the authenticated user's account.
-      def migrate
-        raise Api::V1::UnauthorizedError unless current_user
-
-        entries = resolve_edit_key_entries
-        return render json: { error: 'Too many parties (max 100)' }, status: :unprocessable_content if entries.nil?
-
-        results = []
-        migrated_count = 0
-
-        ActiveRecord::Base.transaction do
-          entries.each do |entry|
-            shortcode = entry[:shortcode]
-            party = Party.find_by(shortcode: shortcode) || Party.find_by(id: shortcode)
-
-            if party.nil?
-              results << { shortcode: shortcode, status: 'not_found' }
-            elsif party.user_id.present?
-              results << { shortcode: shortcode, status: claimed_status(party) }
-            elsif !valid_edit_key?(entry[:edit_key].to_s.strip.force_encoding('UTF-8'),
-                                   party.edit_key.to_s.strip.force_encoding('UTF-8'))
-              results << { shortcode: shortcode, status: 'invalid_key' }
-            else
-              party.update!(user_id: current_user.id, edit_key: nil)
-              migrated_count += 1
-              results << { shortcode: shortcode, status: 'migrated' }
-            end
-          end
-
-          # Clean up deposited edit keys for migrated or already-claimed parties
-          claimed_shortcodes = results.select { |r| r[:status].in?(%w[migrated already_claimed]) }.map { |r| r[:shortcode] }
-          current_user.user_edit_keys.where(shortcode: claimed_shortcodes).delete_all if claimed_shortcodes.any?
-        end
-
-        render json: { results: results, migrated_count: migrated_count }, status: :ok
-      end
-
-      # Returns a preview of what migrate would do, without modifying any data.
-      def preview_migrate
-        raise Api::V1::UnauthorizedError unless current_user
-
-        entries = resolve_edit_key_entries
-        return render json: { error: 'Too many parties (max 100)' }, status: :unprocessable_content if entries.nil?
-
-        identifiers = entries.map { |e| e[:shortcode] }.uniq
-        uuid_pattern = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/i
-        uuid_ids, non_uuid_ids = identifiers.partition { |i| i.match?(uuid_pattern) }
-
-        query = Party.includes(
-          { raid: :group }, :job,
-          { characters: { character: :character_series_records } },
-          { weapons: { weapon: %i[weapon_series weapon_series_variant] } },
-          { summons: { summon: :summon_series } }
-        )
-        conditions = []
-        binds = []
-        if non_uuid_ids.any?
-          conditions << 'shortcode IN (?)'
-          binds << non_uuid_ids
-        end
-        if uuid_ids.any?
-          conditions << 'shortcode IN (?)'
-          binds << uuid_ids
-          conditions << 'id IN (?)'
-          binds << uuid_ids
-        end
-        parties = conditions.any? ? query.where(conditions.join(' OR '), *binds) : Party.none
-
-        # Build lookup by both id and shortcode so either format resolves
-        party_lookup = {}
-        parties.each do |p|
-          party_lookup[p.shortcode] = p
-          party_lookup[p.id] = p
-        end
-
-        # Each party renders on its own, so their stickers are looked up together
-        # here. Without current_user so `favorited` keeps its signed-out value.
-        sticker_options = PartyStickerSummary.batch_options(parties.to_a, current_user)
-
-        # Deduplicate: skip entries that resolve to an already-seen party
-        seen_party_ids = Set.new
-        results = []
-
-        entries.each do |entry|
-          party = party_lookup[entry[:shortcode]]
-          next if party && seen_party_ids.include?(party.id)
-
-          seen_party_ids.add(party.id) if party
-
-          result = if party.nil?
-                     { party: nil, status: 'not_found' }
-                   elsif party.user_id.present?
-                     if party.viewable_by?(current_user, admin_mode: admin_mode)
-                       { party: PartyBlueprint.render_as_hash(party, view: :preview, **sticker_options),
-                         status: 'already_claimed' }
-                     else
-                       { party: nil, status: 'not_found' }
-                     end
-                   elsif !valid_edit_key?(entry[:edit_key].to_s.strip.force_encoding('UTF-8'),
-                                          party.edit_key.to_s.strip.force_encoding('UTF-8'))
-                     { party: nil, status: 'invalid_key' }
-                   else
-                     { party: PartyBlueprint.render_as_hash(party, view: :preview, **sticker_options), status: 'ready' }
-                   end
-
-          results << result
-        end
-
-        render json: { parties: results }, status: :ok
       end
 
       # Extended Party Actions
@@ -430,8 +319,7 @@ module Api
         return true if @party.viewable_by?(current_user, admin_mode: admin_mode)
         return false unless @party.user_id.nil?
 
-        valid_edit_key?(edit_key.to_s.strip.force_encoding('UTF-8'),
-                        @party.edit_key.to_s.strip.force_encoding('UTF-8'))
+        @party.edit_key_matches?(edit_key)
       end
 
       # Sanitized battle state for skill_boosts: clamp HP/turn/max HP, cast Arcarum,
@@ -447,27 +335,6 @@ module Api
         foe = nil unless foe == 'null' || GridDamage::Calculator::ELEMENT_WORD.value?(foe)
         foe ||= GridDamage::Calculator::ADVANTAGED_FOE[GridDamage::ElementScope.panel_element(@party)]
         { hp_percent: hp, ally_max_hp: ally_max_hp, turn: turn, foe_element: foe, arcarum: arcarum }.compact
-      end
-
-      # Resolves edit key entries from params or the current user's deposited keys.
-      # Returns nil if there are too many entries (> 100).
-      def resolve_edit_key_entries
-        entries = if params[:parties].present?
-                    params.require(:parties).map { |p| p.permit(:shortcode, :edit_key) }
-                  else
-                    current_user.user_edit_keys.map { |uek| { shortcode: uek.shortcode, edit_key: uek.edit_key } }
-                  end
-
-        return nil if entries.size > 100
-
-        entries
-      end
-
-      # A claimed party only confirms itself (and previews) to users who can
-      # view it; someone else's private party reports not_found, matching
-      # GET /parties/:shortcode, so its existence isn't revealed here either.
-      def claimed_status(party)
-        party.viewable_by?(current_user, admin_mode: admin_mode) ? 'already_claimed' : 'not_found'
       end
 
       # Loads the party by its shortcode.

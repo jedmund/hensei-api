@@ -575,6 +575,29 @@ RSpec.describe Party, type: :model do
     end
   end
 
+  describe '#edit_key_matches?' do
+    let(:party) { build(:party, edit_key: 'secret-key') }
+
+    it 'matches the same key, ignoring surrounding whitespace' do
+      expect(party.edit_key_matches?('secret-key')).to be true
+      expect(party.edit_key_matches?(" secret-key\n")).to be true
+    end
+
+    it 'refuses a different, shorter or blank key' do
+      expect(party.edit_key_matches?('secret-kez')).to be false
+      expect(party.edit_key_matches?('secret')).to be false
+      expect(party.edit_key_matches?('')).to be false
+      expect(party.edit_key_matches?(nil)).to be false
+    end
+
+    it 'never matches a party without a key' do
+      party.edit_key = nil
+
+      expect(party.edit_key_matches?('')).to be false
+      expect(party.edit_key_matches?('anything')).to be false
+    end
+  end
+
   describe '#viewable_by?' do
     let(:owner) { create(:user) }
     let(:viewer) { create(:user) }

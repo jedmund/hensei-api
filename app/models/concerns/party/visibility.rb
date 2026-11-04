@@ -91,4 +91,18 @@ module Party::Visibility
 
     false
   end
+
+  ##
+  # Whether a provided edit key is this party's. Both keys are compared with
+  # surrounding whitespace trimmed, in constant time; a blank key never matches.
+  #
+  # @param provided [String, nil] the key the client sent.
+  # @return [Boolean]
+  def edit_key_matches?(provided)
+    provided = provided.to_s.strip.force_encoding('UTF-8')
+    stored = edit_key.to_s.strip.force_encoding('UTF-8')
+
+    provided.present? && provided.bytesize == stored.bytesize &&
+      ActiveSupport::SecurityUtils.secure_compare(provided, stored)
+  end
 end
