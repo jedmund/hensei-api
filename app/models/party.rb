@@ -70,6 +70,9 @@
 class Party < ApplicationRecord
   include GranblueEnums
   include SolomonisParty
+  include Party::Visibility
+  include Party::Ranking
+  include Party::CollectionLinks
 
   alias_attribute :ultimate_mastery, :ultimate_mastery_level
 
@@ -129,18 +132,23 @@ class Party < ApplicationRecord
              class_name: 'Guidebook',
              optional: true
 
+  # The filtered views of the grid; the all_* associations below own the rows
+  # and destroy them.
   has_many :characters, -> { where(is_substitute: false) },
            foreign_key: 'party_id',
+           dependent: nil,
            class_name: 'GridCharacter',
            inverse_of: :party
 
   has_many :weapons, -> { where(is_substitute: false) },
            foreign_key: 'party_id',
+           dependent: nil,
            class_name: 'GridWeapon',
            inverse_of: :party
 
   has_many :summons, -> { where(is_substitute: false) },
            foreign_key: 'party_id',
+           dependent: nil,
            class_name: 'GridSummon',
            inverse_of: :party
 
@@ -182,20 +190,20 @@ class Party < ApplicationRecord
   accepts_nested_attributes_for :all_summons
   accepts_nested_attributes_for :all_weapons
 
-  attr_writer :_source_party_for_remap
-
   before_create :set_shortcode
   before_create :set_edit_key
 
   after_commit :update_element!, on: %i[create update]
   after_commit :update_extra!, on: %i[create update]
-  after_commit :enqueue_difficulty_recompute_if_scoring_changed!, on: %i[create update]
 
-  # Columns whose value actually affects the difficulty score. Edits to other
-  # columns (description, shortcode, boost_mod, element, …) do not need to
-  # re-trigger the scoring engine, so the after_commit guard skips them.
-  SCORING_COLUMNS = %w[weapons_count characters_count summons_count job_id accessory_id
-                       ultimate_mastery_level].freeze
+  # Included here, after the associations and the commit hooks above, so
+  # their callbacks keep their place in the chains: the remix after_create
+  # follows the associations' autosave hooks, the difficulty recompute is the
+  # last after_commit, and the loadout validations follow the associated-record
+  # validations.
+  include Party::RemixSubstitutions
+  include Party::DifficultyRecompute
+  include Party::LoadoutValidations
 
   # Amoeba configuration
   amoeba do
@@ -223,98 +231,13 @@ class Party < ApplicationRecord
     include_association :party_blessings
   end
 
-  after_create :create_remapped_substitutions
-
-  ##
-  # Parties the given user may view. The SQL counterpart of #viewable_by?;
-  # the two must stay in agreement. Composes onto association scopes such as
-  # `party.remixes` or `playlist.parties`.
-  #
-  # @param user [User, nil] the viewer.
-  # @param admin_mode [Boolean] whether an admin viewer is in admin mode.
-  scope :viewable_by, lambda { |user, admin_mode: false|
-    visible = where(visibility: [1, 2])
-
-    if user.nil?
-      visible
-    elsif user.admin? && admin_mode
-      all
-    else
-      visible = visible.or(where(user_id: user.id))
-      crew = user.crew
-      if crew
-        shared_ids = PartyShare.where(shareable_type: 'Crew', shareable_id: crew.id).select(:party_id)
-        visible = visible.or(where(id: shared_ids))
-      end
-      visible
-    end
-  }
-
-  # The Gallery's default quality bar, shared with Home's cards. A team needs
-  # at least this many weapons and summons…
-  QUALITY_MIN_WEAPONS = 5
-  QUALITY_MIN_SUMMONS = 2
-  # …and a name other than a default one: Untitled/無題, "New Team" (what the
-  # web app names new teams), and up to five remixes of each. Lowercase,
-  # since names are compared case-insensitively.
-  LOW_QUALITY_NAMES = ['untitled', '無題', 'new team'].flat_map do |name|
-    (0..5).flat_map { |n| ["#{'remix of ' * n}#{name}", "#{name}#{'のリミックス' * n}"] }
-  end.uniq.freeze
-
-  # SQL condition: the team's name isn't a default one (NULL names fail it).
-  def self.quality_name_sql
-    "LOWER(parties.name) NOT IN (#{LOW_QUALITY_NAMES.map { |name| connection.quote(name) }.join(',')})"
-  end
-
-  ##
-  # Teams that meet the Gallery's default quality bar: an owner, a name that
-  # isn't a default, and the minimum weapons and summons. Evoking Solomonis
-  # teams are exempt from the minimums, since they start with three weapons
-  # and one summon and unlock more during a run.
-  scope :quality, lambda {
-    filled = where(weapons_count: QUALITY_MIN_WEAPONS.., summons_count: QUALITY_MIN_SUMMONS..)
-    where.not(user_id: nil)
-         .where(quality_name_sql)
-         .merge(filled.or(where(raid_id: Raid.solomonis_zones.select(:id))))
-  }
-
-  # A team's Rising rank halves for every this much of its age, so new teams
-  # rank well above older ones with the same score
-  RISING_AGE_HALF_LIFE = 14.days
-
-  ##
-  # Rising: public teams with a participation score (which already decays
-  # with the age of each sticker, remix and favorite), ranked by that score
-  # discounted by the team's own age, then by id. Shared by Home's Rising
-  # card and the Gallery's `sort=rising`, so the two always agree.
-  #
-  # @param now [Time] the time team ages are measured from.
-  scope :rising, lambda { |now: Time.current|
-    where(visibility: 1).where('parties.participation_score > 0')
-                        .order(Arel.sql(rising_rank_sql(now)), id: :asc)
-  }
-
-  def self.rising_rank_sql(now)
-    sanitize_sql_array([
-                         'parties.participation_score * POWER(0.5, ' \
-                         'GREATEST(EXTRACT(EPOCH FROM (? - parties.created_at)), 0) / ?) DESC',
-      now, RISING_AGE_HALF_LIFE.to_i
-                       ])
-  end
-
   # ActiveRecord Validations
-  validate :skills_are_unique
-  validate :guidebooks_are_unique
-  validate :validate_full_auto_skills
-
   validates :name,
             profanity: { languages: %i[en ja], tier: :moderate, message: 'contains inappropriate language' },
-            allow_nil: true,
             allow_blank: true
 
   validates :description,
             profanity: { languages: %i[en ja], tier: :moderate, message: 'contains inappropriate language' },
-            allow_nil: true,
             allow_blank: true
   validates :description, rich_text_description: true, if: :description_changed?
 
@@ -363,23 +286,6 @@ class Party < ApplicationRecord
   end
 
   ##
-  # Enqueues a background job to recompute the party's difficulty score.
-  # Callers that bypass callbacks (update_column, counter-cache writes) must
-  # invoke this directly; the after_commit hook on the model uses the guarded
-  # variant below to avoid recomputing on unrelated edits.
-  #
-  # @return [void]
-  def enqueue_difficulty_recompute!
-    PartyDifficulty::ScoreJob.perform_later(id) if id.present?
-  end
-
-  def enqueue_difficulty_recompute_if_scoring_changed!
-    return unless previously_new_record? || saved_changes.keys.intersect?(SCORING_COLUMNS)
-
-    enqueue_difficulty_recompute!
-  end
-
-  ##
   # Returns true iff any grid item in this party has at least one substitution.
   #
   # Uses a single EXISTS query over substitutions, scoped by polymorphic
@@ -388,14 +294,14 @@ class Party < ApplicationRecord
   # work in SubstituteGridPreloading.
   #
   # @return [Boolean]
-  def has_substitutions?
-    return @has_substitutions if defined?(@has_substitutions)
+  def substitutions?
+    return @substitutions if defined?(@substitutions)
 
-    @has_substitutions = Substitution
-                         .where(grid_type: 'GridCharacter', grid_id: GridCharacter.where(party_id: id).select(:id))
-                         .or(Substitution.where(grid_type: 'GridWeapon', grid_id: GridWeapon.where(party_id: id).select(:id)))
-                         .or(Substitution.where(grid_type: 'GridSummon', grid_id: GridSummon.where(party_id: id).select(:id)))
-                         .exists?
+    @substitutions = Substitution
+                     .where(grid_type: 'GridCharacter', grid_id: GridCharacter.where(party_id: id).select(:id))
+                     .or(Substitution.where(grid_type: 'GridWeapon', grid_id: GridWeapon.where(party_id: id).select(:id)))
+                     .or(Substitution.where(grid_type: 'GridSummon', grid_id: GridSummon.where(party_id: id).select(:id)))
+                     .exists?
   end
 
   ##
@@ -415,98 +321,6 @@ class Party < ApplicationRecord
   end
 
   ##
-  # Determines if the party is public.
-  #
-  # @return [Boolean] true if the party is public; false otherwise.
-  def public?
-    visibility == 1
-  end
-
-  ##
-  # Determines if the party is unlisted.
-  #
-  # @return [Boolean] true if the party is unlisted; false otherwise.
-  def unlisted?
-    visibility == 2
-  end
-
-  ##
-  # Determines if the party is private.
-  #
-  # @return [Boolean] true if the party is private; false otherwise.
-  def private?
-    visibility == 3
-  end
-
-  ##
-  # Checks if the party is shared with a specific crew.
-  #
-  # @param crew [Crew] the crew to check.
-  # @return [Boolean] true if shared with the crew; false otherwise.
-  def shared_with_crew?(crew)
-    return false unless crew
-
-    party_shares.exists?(shareable_type: 'Crew', shareable_id: crew.id)
-  end
-
-  ##
-  # Checks if a user can view this party based on visibility and sharing rules.
-  # A user can view if:
-  # - The party is public
-  # - The party is unlisted (accessible via direct link)
-  # - They own the party
-  # - They are an admin
-  # - The party is shared with a crew they belong to
-  #
-  # @param user [User, nil] the user to check.
-  # @return [Boolean] true if the user can view the party; false otherwise.
-  def viewable_by?(user, admin_mode: false)
-    return true if public?
-    return true if unlisted?
-    return true if user && user_id == user.id
-    return true if user&.admin? && admin_mode
-    return true if user&.crew && shared_with_crew?(user.crew)
-
-    false
-  end
-
-  ##
-  # Drops collection links on an unsaved remix copy that don't point into
-  # the remixer's own collection, so a remix only keeps sync with the
-  # remixer's items. Each link is checked against its own item's owner.
-  # Works on the in-memory grid items amoeba built; call before saving.
-  #
-  # @param user [User, nil] the user the copy will belong to.
-  # @return [void]
-  def keep_only_collection_links_of!(user)
-    characters = all_characters.to_a
-    weapons = all_weapons.to_a
-    summons = all_summons.to_a
-    artifacts = characters.filter_map(&:grid_artifact)
-
-    kept_character_ids = owned_collection_ids(CollectionCharacter, characters, :collection_character_id, user)
-    kept_weapon_ids = owned_collection_ids(CollectionWeapon, weapons, :collection_weapon_id, user)
-    kept_summon_ids = owned_collection_ids(CollectionSummon, summons, :collection_summon_id, user)
-    kept_artifact_ids = owned_collection_ids(CollectionArtifact, artifacts, :collection_artifact_id, user)
-
-    characters.each do |gc|
-      gc.collection_character_id = nil unless kept_character_ids.include?(gc.collection_character_id)
-    end
-    [[weapons, :collection_weapon_id, kept_weapon_ids],
-     [summons, :collection_summon_id, kept_summon_ids],
-     [artifacts, :collection_artifact_id, kept_artifact_ids]].each do |rows, column, kept|
-      rows.each do |row|
-        next if row[column].nil? || kept.include?(row[column])
-
-        row[column] = nil
-        row.orphaned = false
-      end
-    end
-
-    self.collection_source_user_id = nil unless user && collection_source_user_id == user.id
-  end
-
-  ##
   # Checks if the party is favorited by a given user.
   #
   # @param user [User, nil] the user to check for favoritism.
@@ -520,22 +334,12 @@ class Party < ApplicationRecord
   end
 
   def mod_and_side
-    main_summon = summons.detect { |gs| gs.main? }&.summon
-    friend_summon = summons.detect { |gs| gs.friend? }&.summon
+    main_summon = summons.detect(&:main?)&.summon
+    friend_summon = summons.detect(&:friend?)&.summon
     return nil unless main_summon && friend_summon
 
-    main_type = SUMMON_SERIES_MOD[main_summon.summon_series&.slug]
-    friend_type = SUMMON_SERIES_MOD[friend_summon.summon_series&.slug]
-
-    if main_type && main_type == friend_type
-      { mod: main_type, side: 'double' }
-    elsif main_type
-      { mod: main_type, side: 'single' }
-    elsif friend_type
-      { mod: friend_type, side: 'single' }
-    else
-      { mod: 'unboosted', side: 'none' }
-    end
+    summon_boost(SUMMON_SERIES_MOD[main_summon.summon_series&.slug],
+                 SUMMON_SERIES_MOD[friend_summon.summon_series&.slug])
   end
 
   def recompute_boost!
@@ -557,152 +361,41 @@ class Party < ApplicationRecord
   # indicating the user no longer has that item in their game inventory.
   #
   # @return [Boolean] true if the party has orphaned weapons, summons, or artifacts.
-  def has_orphaned_items?
+  def orphaned_items?
     if weapons.loaded? && summons.loaded? && characters.loaded?
-      weapons.any?(&:orphaned?) ||
-        summons.any?(&:orphaned?) ||
-        characters.any? { |c| c.grid_artifact&.orphaned? }
+      loaded_items_orphaned?
     else
       weapons.orphaned.exists? ||
         summons.orphaned.exists? ||
-        characters.joins(:grid_artifact).where(grid_artifacts: { orphaned: true }).exists?
+        characters.joins(:grid_artifact).exists?(grid_artifacts: { orphaned: true })
     end
   end
 
   private
 
-  #########################
-  # Uniqueness Validation Helpers
-  #########################
-
   ##
-  # Validates uniqueness for a given set of associations.
+  # The boost a main and friend summon series give together.
   #
-  # @param associations [Array<Object, nil>] an array of associated objects.
-  # @param attribute_names [Array<Symbol>] the corresponding attribute names for each association.
-  # @param error_key [Symbol] the key for a generic error.
-  # @return [void]
-  def validate_uniqueness_of_associations(associations, attribute_names, error_key)
-    filtered = associations.compact
-    return if filtered.uniq.length == filtered.length
-
-    associations.each_with_index do |assoc, index|
-      next if assoc.nil?
-
-      errors.add(attribute_names[index], 'must be unique') if associations[0...index].include?(assoc)
-    end
-    errors.add(error_key, 'must be unique')
-  end
-
-  ##
-  # Validates that the selected skills are unique.
-  #
-  # @return [void]
-  def skills_are_unique
-    validate_uniqueness_of_associations([skill0, skill1, skill2, skill3],
-                                        %i[skill0 skill1 skill2 skill3],
-                                        :job_skills)
-  end
-
-  ##
-  # Validates that the selected guidebooks are unique.
-  #
-  # @return [void]
-  def guidebooks_are_unique
-    validate_uniqueness_of_associations([guidebook1, guidebook2, guidebook3],
-                                        %i[guidebook1 guidebook2 guidebook3],
-                                        :guidebooks)
-  end
-
-  # full_auto_skills maps an MC ability slot ("0".."3") to whether it is used in
-  # Full Auto. Reject unknown slots or non-boolean values.
-  FULL_AUTO_SLOTS = %w[0 1 2 3].freeze
-  private_constant :FULL_AUTO_SLOTS
-  FULL_AUTO_VALUES = [true, false].freeze
-  private_constant :FULL_AUTO_VALUES
-
-  ##
-  # Validates the per-slot MC Full Auto toggles.
-  #
-  # @return [void]
-  def validate_full_auto_skills
-    return if full_auto_skills.blank?
-
-    unless full_auto_skills.is_a?(Hash)
-      errors.add(:full_auto_skills, 'must be an object')
-      return
-    end
-
-    full_auto_skills.each do |slot, value|
-      errors.add(:full_auto_skills, "invalid slot #{slot}") unless FULL_AUTO_SLOTS.include?(slot.to_s)
-      errors.add(:full_auto_skills, "invalid value for slot #{slot}") unless FULL_AUTO_VALUES.include?(value)
+  # @param main_type [String, nil] the main summon's mod ('omega', 'primal', 'odious').
+  # @param friend_type [String, nil] the friend summon's mod.
+  # @return [Hash] the mod and the side ('double', 'single' or 'none').
+  def summon_boost(main_type, friend_type)
+    if main_type && main_type == friend_type
+      { mod: main_type, side: 'double' }
+    elsif main_type
+      { mod: main_type, side: 'single' }
+    elsif friend_type
+      { mod: friend_type, side: 'single' }
+    else
+      { mod: 'unboosted', side: 'none' }
     end
   end
 
-  #########################
-  # Miscellaneous Helpers
-  #########################
-
-  ##
-  # Recreates substitution join records after an amoeba remix.
-  #
-  # Maps old grid item IDs to new ones by matching on item FK + position + is_substitute,
-  # then creates Substitution records pointing to the new grid items.
-  #
-  # @return [void]
-  # Ids among the rows' links that point at the user's own collection items.
-  def owned_collection_ids(model, rows, column, user)
-    ids = rows.filter_map { |row| row[column] }.uniq
-    return Set.new if ids.empty? || user.nil?
-
-    model.where(id: ids, user_id: user.id).pluck(:id).to_set
-  end
-
-  def create_remapped_substitutions
-    return unless @_source_party_for_remap
-
-    remap_substitutions_for('GridCharacter', @_source_party_for_remap.all_characters, all_characters, :character_id)
-    remap_substitutions_for('GridWeapon', @_source_party_for_remap.all_weapons, all_weapons, :weapon_id)
-    remap_substitutions_for('GridSummon', @_source_party_for_remap.all_summons, all_summons, :summon_id)
-  end
-
-  def remap_substitutions_for(grid_type, old_items, new_items, item_fk)
-    new_index = new_items.index_by { |ni| [ni.send(item_fk), ni.position, ni.is_substitute] }
-    old_by_id = old_items.index_by(&:id)
-
-    old_items.each do |old_item|
-      old_item.substitutions.each do |sub|
-        new_grid = new_index[[old_item.send(item_fk), old_item.position, old_item.is_substitute]]
-        old_sub_grid = old_by_id[sub.substitute_grid_id]
-
-        unless old_sub_grid
-          Rails.logger.warn(
-            "[Party#remap_substitutions_for] skip: substitute grid #{sub.substitute_grid_id} " \
-            "missing from source party=#{@_source_party_for_remap&.id} type=#{grid_type}"
-          )
-          next
-        end
-
-        new_sub_grid = new_index[[old_sub_grid.send(item_fk), old_sub_grid.position, old_sub_grid.is_substitute]]
-
-        unless new_grid && new_sub_grid
-          Rails.logger.warn(
-            "[Party#remap_substitutions_for] skip: no new mapping for sub=#{sub.id} " \
-            "source=#{@_source_party_for_remap&.id} target=#{id} type=#{grid_type} " \
-            "missing=#{new_grid.nil? ? 'new_grid' : 'new_sub_grid'}"
-          )
-          next
-        end
-
-        Substitution.create!(
-          grid_type: grid_type,
-          grid_id: new_grid.id,
-          substitute_grid_type: grid_type,
-          substitute_grid_id: new_sub_grid.id,
-          position: sub.position
-        )
-      end
-    end
+  # #orphaned_items? for a party whose grid is already loaded.
+  def loaded_items_orphaned?
+    weapons.any?(&:orphaned?) ||
+      summons.any?(&:orphaned?) ||
+      characters.any? { |c| c.grid_artifact&.orphaned? }
   end
 
   ##

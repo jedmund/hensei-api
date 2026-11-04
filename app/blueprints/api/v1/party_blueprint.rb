@@ -256,7 +256,7 @@ module Api
         end
 
         field :has_orphaned_items do |party|
-          party.has_orphaned_items?
+          party.orphaned_items?
         end
       end
 

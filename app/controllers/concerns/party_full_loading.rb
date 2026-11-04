@@ -31,7 +31,7 @@ module PartyFullLoading
   # party, so they round-trip through this before serializing.
   def load_full_party(id)
     party = Party.includes(full_party_preloads).find_by(id: id)
-    return party unless party&.has_substitutions?
+    return party unless party&.substitutions?
 
     preload_substitute_grids!(party.characters + party.weapons + party.summons)
     party

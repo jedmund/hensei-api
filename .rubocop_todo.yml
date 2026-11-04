@@ -66,7 +66,6 @@ FactoryBot/CreateList:
 Layout/ArrayAlignment:
   Exclude:
     - 'app/controllers/api/v1/collection_artifacts_controller.rb'
-    - 'app/models/party.rb'
     - 'spec/models/grid_characters_spec.rb'
     - 'spec/requests/api/v1/character_skill_refreshes_spec.rb'
     - 'spec/requests/api/v1/solomonis_spec.rb'
@@ -87,7 +86,6 @@ Layout/BeginEndAlignment:
 Layout/BlockEndNewline:
   Exclude:
     - 'spec/models/grid_summons_spec.rb'
-    - 'spec/models/party_spec.rb'
 
 # Offense count: 10
 # This cop supports safe autocorrection (--autocorrect).
@@ -98,15 +96,6 @@ Layout/ElseAlignment:
     - 'lib/granblue/importers/base_importer.rb'
     - 'lib/post_deployment/search_indexer.rb'
     - 'lib/tasks/characters.rake'
-    - 'spec/models/party_spec.rb'
-
-# Offense count: 3
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyleAlignWith.
-# SupportedStylesAlignWith: keyword, variable, start_of_line
-Layout/EndAlignment:
-  Exclude:
-    - 'spec/models/party_spec.rb'
 
 # Offense count: 70
 # This cop supports safe autocorrection (--autocorrect).
@@ -136,7 +125,6 @@ Layout/IndentationConsistency:
     - 'lib/post_deployment/database_migrator.rb'
     - 'lib/post_deployment/search_indexer.rb'
     - 'spec/models/grid_summons_spec.rb'
-    - 'spec/models/party_spec.rb'
 
 # Offense count: 12
 # This cop supports safe autocorrection (--autocorrect).
@@ -150,7 +138,6 @@ Layout/IndentationWidth:
     - 'app/services/processors/summon_processor.rb'
     - 'app/services/processors/weapon_processor.rb'
     - 'lib/post_deployment/search_indexer.rb'
-    - 'spec/models/party_spec.rb'
 
 # Offense count: 24
 # This cop supports safe autocorrection (--autocorrect).
@@ -176,7 +163,6 @@ Layout/LineLength:
 Layout/MultilineBlockLayout:
   Exclude:
     - 'spec/models/grid_summons_spec.rb'
-    - 'spec/models/party_spec.rb'
 
 # Offense count: 5
 # This cop supports safe autocorrection (--autocorrect).
@@ -285,7 +271,6 @@ Metrics/ClassLength:
     - 'app/controllers/concerns/admin_collection/query.rb'
     - 'app/models/grid_character.rb'
     - 'app/models/grid_weapon.rb'
-    - 'app/models/party.rb'
     - 'app/models/weapon.rb'
     - 'app/services/character_import_service.rb'
     - 'app/services/dataminer.rb'
@@ -318,7 +303,6 @@ Metrics/CyclomaticComplexity:
     - 'app/models/difficulty.rb'
     - 'app/models/grid_weapon.rb'
     - 'app/models/job_skill.rb'
-    - 'app/models/party.rb'
     - 'app/services/character_image_download_service.rb'
     - 'app/services/dataminer.rb'
     - 'app/services/gacha_simulation/banner_import.rb'
@@ -425,7 +409,6 @@ Metrics/PerceivedComplexity:
     - 'app/models/difficulty.rb'
     - 'app/models/grid_weapon.rb'
     - 'app/models/job_skill.rb'
-    - 'app/models/party.rb'
     - 'app/models/weapon.rb'
     - 'app/services/character_image_download_service.rb'
     - 'app/services/character_import_service.rb'
@@ -499,16 +482,6 @@ Naming/MemoizedInstanceVariableName:
 Naming/MethodParameterName:
   Exclude:
     - 'app/services/dataminer.rb'
-
-# Offense count: 2
-# Configuration parameters: NamePrefix, ForbiddenPrefixes, AllowedMethods, MethodDefinitionMacros, UseSorbetSigs.
-# NamePrefix: is_, has_, have_, does_
-# ForbiddenPrefixes: is_, has_, have_, does_
-# AllowedMethods: is_a?
-# MethodDefinitionMacros: define_method, define_singleton_method
-Naming/PredicatePrefix:
-  Exclude:
-    - 'app/models/party.rb'
 
 # Offense count: 13
 # Configuration parameters: EnforcedStyle, CheckMethodNames, CheckSymbols, AllowedIdentifiers, AllowedPatterns.
@@ -636,7 +609,6 @@ RSpec/ContextWording:
     - 'spec/models/grid_substitution_behavior_spec.rb'
     - 'spec/models/grid_summons_spec.rb'
     - 'spec/models/grid_weapon_spec.rb'
-    - 'spec/models/party_spec.rb'
     - 'spec/models/phantom_player_spec.rb'
     - 'spec/models/support_summon_spec.rb'
     - 'spec/models/weapon_skill_datum_spec.rb'
@@ -768,7 +740,6 @@ RSpec/ExpectInHook:
 RSpec/HooksBeforeExamples:
   Exclude:
     - 'spec/models/grid_characters_spec.rb'
-    - 'spec/models/party_spec.rb'
     - 'spec/services/processors/summon_processor_spec.rb'
 
 # Offense count: 3
@@ -933,7 +904,6 @@ RSpec/MessageSpies:
     - 'spec/lib/granblue/extractors/key_skill_extractor_spec.rb'
     - 'spec/lib/granblue/parsers/wiki_spec.rb'
     - 'spec/lib/tasks/database_restore_spec.rb'
-    - 'spec/models/party_spec.rb'
     - 'spec/models/weapon_skill_version_spec.rb'
     - 'spec/requests/api/v1/stickers_spec.rb'
     - 'spec/services/gacha_simulation/cache_and_cost_spec.rb'
@@ -975,7 +945,6 @@ RSpec/NestedGroups:
 # This cop supports unsafe autocorrection (--autocorrect-all).
 RSpec/Output:
   Exclude:
-    - 'spec/models/party_spec.rb'
     - 'spec/services/processors/summon_processor_spec.rb'
 
 # Offense count: 1
@@ -1103,7 +1072,6 @@ RSpec/SubjectStub:
 RSpec/VerifiedDoubleReference:
   Exclude:
     - 'spec/lib/granblue/parsers/character_skills/effect_parser_spec.rb'
-    - 'spec/models/party_spec.rb'
 
 # Offense count: 39
 # Configuration parameters: IgnoreNameless, IgnoreSymbolicNames.
@@ -1168,7 +1136,6 @@ Rails/ActiveRecordCallbacksOrder:
     - 'app/models/difficulty_component.rb'
     - 'app/models/difficulty_rule.rb'
     - 'app/models/grid_weapon.rb'
-    - 'app/models/party.rb'
     - 'app/models/source.rb'
     - 'app/models/weapon.rb'
 
@@ -1323,7 +1290,6 @@ Rails/HasManyOrHasOneDependent:
     - 'app/models/character.rb'
     - 'app/models/crew.rb'
     - 'app/models/job.rb'
-    - 'app/models/party.rb'
     - 'app/models/user.rb'
     - 'app/models/weapon.rb'
 
@@ -1557,7 +1523,6 @@ Rails/RedundantActiveRecordAllMethod:
 # This cop supports safe autocorrection (--autocorrect).
 Rails/RedundantAllowNil:
   Exclude:
-    - 'app/models/party.rb'
     - 'app/models/user.rb'
 
 # Offense count: 2
@@ -1773,7 +1738,6 @@ Rails/WhereExists:
   Exclude:
     - 'app/controllers/api/v1/raids_controller.rb'
     - 'app/models/concerns/solomonis_party_seals.rb'
-    - 'app/models/party.rb'
 
 # Offense count: 1
 # This cop supports safe autocorrection (--autocorrect).
@@ -1835,14 +1799,6 @@ Style/DoubleNegation:
   Exclude:
     - 'lib/granblue/transformers/base_transformer.rb'
 
-# Offense count: 1
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: AllowedReceivers.
-# AllowedReceivers: Thread.current
-Style/HashEachMethods:
-  Exclude:
-    - 'spec/models/party_spec.rb'
-
 # Offense count: 3
 # Configuration parameters: MinBranchesCount.
 Style/HashLikeCase:
@@ -1863,11 +1819,6 @@ Style/IfUnlessModifier:
 Style/InverseMethods:
   Exclude:
     - 'lib/granblue/importers/base_importer.rb'
-
-# Offense count: 1
-Style/MixinUsage:
-  Exclude:
-    - 'spec/models/party_spec.rb'
 
 # Offense count: 12
 # This cop supports unsafe autocorrection (--autocorrect-all).
@@ -2008,7 +1959,6 @@ Style/SymbolProc:
     - 'app/blueprints/api/v1/summon_blueprint.rb'
     - 'app/blueprints/api/v1/user_blueprint.rb'
     - 'app/blueprints/api/v1/weapon_blueprint.rb'
-    - 'app/models/party.rb'
     - 'app/services/grid_damage/grid_composition.rb'
     - 'spec/factories/weapon_keys.rb'
     - 'spec/lib/granblue/downloaders/remote_file_spec.rb'
