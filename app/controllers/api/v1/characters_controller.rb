@@ -21,6 +21,11 @@ module Api
         { nicknames_en: [], nicknames_jp: [], character_id: [], series: [] }
       ].freeze
 
+      # download_image's poses, plus the style variant of style swaps
+      IMAGE_TRANSFORMATIONS = %w[01 02 03 04 style].freeze
+      # 0 is Gran, 1 is Djeeta
+      IMAGE_GENDERS = [0, 1].freeze
+
       before_action :set, only: %i[show related download_image download_images download_status update raw fetch_wiki reparse]
       before_action :ensure_editor_role, only: %i[create update validate download_image download_images download_status fetch_wiki reparse
                                                   batch_preview raw]
@@ -93,39 +98,11 @@ module Api
 
         transformation = params[:transformation]
         element = params[:element].presence&.to_i
-        gender = params[:gender].present? ? params[:gender].to_i : 0
-        force = params[:force] == true
-
-        # Validate transformation for characters (01, 02, 03, 04, or style for style swaps)
-        valid_transformations = %w[01 02 03 04 style]
-        if transformation.present? && valid_transformations.exclude?(transformation)
-          return render json: { error: "Invalid transformation. Must be one of: #{valid_transformations.join(', ')}" }, status: :unprocessable_content
-        end
-
-        # Validate element for null-element characters
-        return render json: { error: 'Invalid element. Must be 1-6' }, status: :unprocessable_content if element.present? && !(1..6).cover?(element)
-
-        # Validate gender (0=Gran, 1=Djeeta)
-        return render json: { error: 'Invalid gender. Must be 0 (Gran) or 1 (Djeeta)' }, status: :unprocessable_content unless [0, 1].include?(gender)
+        error = image_option_error(transformation, element)
+        return render json: { error: error }, status: :unprocessable_content if error
 
         begin
-          downloader = Granblue::Downloaders::CharacterDownloader.new(
-            @character.granblue_id,
-            storage: :s3,
-            force: force,
-            verbose: true
-          )
-
-          if transformation == 'style' || (@character.style_swap? && transformation.blank?)
-            # Style swap: fetch from _st2 URL and store as _style
-            downloader.send(:download_style_variant, size)
-          else
-            pose = transformation.presence || '01'
-            variant_id = "#{@character.granblue_id}_#{pose}"
-            variant_id = "#{variant_id}_0#{element}" if element.present?
-            variant_id = "#{variant_id}_#{gender}" if params[:gender].present?
-            downloader.send(:download_variant, variant_id, size)
-          end
+          download_character_image(size, transformation, element)
 
           render json: {
             success: true,
@@ -258,6 +235,46 @@ module Api
       end
 
       private
+
+      # The 422 message for download_image's options, or nil when they're valid.
+      # element is for null-element characters.
+      def image_option_error(transformation, element)
+        if transformation.present? && IMAGE_TRANSFORMATIONS.exclude?(transformation)
+          "Invalid transformation. Must be one of: #{IMAGE_TRANSFORMATIONS.join(', ')}"
+        elsif element.present? && !(1..6).cover?(element)
+          'Invalid element. Must be 1-6'
+        elsif IMAGE_GENDERS.exclude?(image_gender)
+          'Invalid gender. Must be 0 (Gran) or 1 (Djeeta)'
+        end
+      end
+
+      def image_gender
+        params[:gender].present? ? params[:gender].to_i : 0
+      end
+
+      def download_character_image(size, transformation, element)
+        downloader = Granblue::Downloaders::CharacterDownloader.new(
+          @character.granblue_id,
+          storage: :s3,
+          force: params[:force] == true,
+          verbose: true
+        )
+
+        if transformation == 'style' || (@character.style_swap? && transformation.blank?)
+          # Style swap: fetch from _st2 URL and store as _style
+          downloader.send(:download_style_variant, size)
+        else
+          downloader.send(:download_variant, image_variant_id(transformation, element), size)
+        end
+      end
+
+      # The pose, then the element and gender suffixes when they were given
+      def image_variant_id(transformation, element)
+        variant_id = "#{@character.granblue_id}_#{transformation.presence || '01'}"
+        variant_id = "#{variant_id}_0#{element}" if element.present?
+        variant_id = "#{variant_id}_#{image_gender}" if params[:gender].present?
+        variant_id
+      end
 
       def boolean_param(key)
         ActiveModel::Type::Boolean.new.cast(params[key]) || false
