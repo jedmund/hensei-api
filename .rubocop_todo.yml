@@ -1152,15 +1152,6 @@ Rails/CompactBlank:
     - 'lib/granblue/extractors/summon_aura_extractor.rb'
     - 'lib/granblue/parsers/character_wiki_data.rb'
 
-# Offense count: 6
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: EnforcedStyle, AllowToTime.
-# SupportedStyles: strict, flexible
-Rails/Date:
-  Exclude:
-    - 'app/services/gacha_simulation/exchange_rate.rb'
-    - 'spec/services/gacha_simulation/cache_and_cost_spec.rb'
-
 # Offense count: 2
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: EnforceForPrefixed.
@@ -1529,17 +1520,6 @@ Rails/StrongParametersExpect:
     - 'app/controllers/api/v1/weapon_skill_versions_controller.rb'
     - 'app/controllers/api/v1/weapon_stat_modifiers_controller.rb'
     - 'app/controllers/api/v1/weapons_controller.rb'
-
-# Offense count: 10
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: strict, flexible
-Rails/TimeZone:
-  Exclude:
-    - 'app/services/processors/summon_processor.rb'
-    - 'lib/tasks/database.rake'
-    - 'lib/tasks/download_all_images.rake'
-    - 'lib/tasks/download_images.rake'
 
 # Offense count: 3
 Rails/UniqueValidationWithoutIndex:

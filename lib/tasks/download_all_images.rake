@@ -17,7 +17,7 @@ namespace :granblue do
     require 'parallel'
     require 'logger'
 
-    timestamp = Time.now.strftime('%Y%m%d_%H%M%S')
+    timestamp = Time.now.getlocal.strftime('%Y%m%d_%H%M%S')
     log_path = Rails.root.join('log', "download_#{args[:object]}_#{timestamp}.log")
     logger = Logger.new(log_path)
     logger.level = Logger::INFO

@@ -16,7 +16,7 @@ namespace :db do
 
     backup_dir = File.expand_path('backups')
     FileUtils.mkdir_p(backup_dir)
-    backup_file = File.join(backup_dir, "#{Time.now.strftime('%Y%m%d_%H%M%S')}-prod-backup.tar")
+    backup_file = File.join(backup_dir, "#{Time.now.getlocal.strftime('%Y%m%d_%H%M%S')}-prod-backup.tar")
 
     cmd = %W[
       pg_dump -h #{remote_host} -p #{remote_port} -U #{remote_user} -d #{remote_db} -F t
