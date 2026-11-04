@@ -51,6 +51,7 @@ RSpec.describe Substitution, type: :model do
       sw = create(:grid_weapon, party: party, weapon: other_weapon, is_substitute: true)
       sub = build(:substitution, grid: gw, substitute_grid: sw, position: 0)
       expect(sub).to be_valid
+      expect(sub.errors[:substitute_grid_type]).to be_empty
     end
 
     it 'rejects self-substitution' do
@@ -87,7 +88,7 @@ RSpec.describe Substitution, type: :model do
       sw = create(:grid_weapon, party: party, weapon: other_weapon, is_substitute: true)
       create(:substitution, grid: gw, substitute_grid: sw, position: 0)
 
-      expect { gw.destroy }.to change(Substitution, :count).by(-1)
+      expect { gw.destroy }.to change(described_class, :count).by(-1)
     end
 
     it 'destroys substitutions when substitute grid item is destroyed' do
@@ -95,7 +96,7 @@ RSpec.describe Substitution, type: :model do
       sw = create(:grid_weapon, party: party, weapon: other_weapon, is_substitute: true)
       create(:substitution, grid: gw, substitute_grid: sw, position: 0)
 
-      expect { sw.destroy }.to change(Substitution, :count).by(-1)
+      expect { sw.destroy }.to change(described_class, :count).by(-1)
     end
 
     it 'destroys all substitutions and substitute rows when the party is destroyed' do
@@ -104,7 +105,7 @@ RSpec.describe Substitution, type: :model do
       create(:substitution, grid: gw, substitute_grid: sw, position: 0)
 
       expect { party.destroy }
-        .to change(Substitution, :count).by(-1)
+        .to change(described_class, :count).by(-1)
         .and change(GridWeapon.where(is_substitute: true), :count).by(-1)
     end
   end

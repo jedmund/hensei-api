@@ -10,7 +10,7 @@ RSpec.describe WeaponSkillDatum, type: :model do
     it { is_expected.to validate_presence_of(:boost_type) }
     it { is_expected.to validate_presence_of(:formula_type) }
 
-    context 'series validation' do
+    describe 'series validation' do
       it 'allows nil series' do
         datum = build(:weapon_skill_datum, series: nil)
         expect(datum).to be_valid
@@ -29,7 +29,7 @@ RSpec.describe WeaponSkillDatum, type: :model do
       end
     end
 
-    context 'size validation' do
+    describe 'size validation' do
       described_class::SIZE_VALUES.each do |value|
         it "allows size '#{value}'" do
           datum = build(:weapon_skill_datum, size: value)
@@ -48,7 +48,7 @@ RSpec.describe WeaponSkillDatum, type: :model do
       end
     end
 
-    context 'formula_type validation' do
+    describe 'formula_type validation' do
       described_class::FORMULA_TYPES.each do |value|
         it "allows formula_type '#{value}'" do
           datum = build(:weapon_skill_datum, formula_type: value)
@@ -62,7 +62,7 @@ RSpec.describe WeaponSkillDatum, type: :model do
       end
     end
 
-    context 'uniqueness' do
+    describe 'uniqueness' do
       it 'validates uniqueness of modifier scoped to [boost_type, series, size]' do
         create(:weapon_skill_datum, modifier: 'UniqueMod', boost_type: 'atk', series: 'normal', size: 'big')
         duplicate = build(:weapon_skill_datum, modifier: 'UniqueMod', boost_type: 'atk', series: 'normal', size: 'big')
@@ -91,7 +91,7 @@ RSpec.describe WeaponSkillDatum, type: :model do
   end
 
   describe '.for_skill' do
-    context 'modifier-only lookup (no series, no size)' do
+    context 'with a modifier-only lookup (no series, no size)' do
       let!(:datum) { create(:weapon_skill_datum, modifier: 'SephiraMod', series: nil, size: 'big') }
 
       it 'returns records matching the modifier' do
@@ -134,7 +134,7 @@ RSpec.describe WeaponSkillDatum, type: :model do
       end
     end
 
-    context 'normal → normal_omega fallback' do
+    context 'when falling back from normal to normal_omega' do
       let!(:normal_omega_datum) do
         create(:weapon_skill_datum, modifier: 'FallbackMod', series: 'normal_omega', size: 'big')
       end
@@ -165,7 +165,7 @@ RSpec.describe WeaponSkillDatum, type: :model do
       end
     end
 
-    context 'omega → normal_omega fallback' do
+    context 'when falling back from omega to normal_omega' do
       let!(:normal_omega_datum) do
         create(:weapon_skill_datum, modifier: 'OmegaFB', series: 'normal_omega', size: 'big')
       end
@@ -176,8 +176,8 @@ RSpec.describe WeaponSkillDatum, type: :model do
       end
     end
 
-    context 'no fallback for ex series' do
-      let!(:normal_omega_datum) do
+    context 'with ex series (no fallback)' do
+      before do
         create(:weapon_skill_datum, modifier: 'ExNoFB', series: 'normal_omega', size: 'big')
       end
 
@@ -187,7 +187,7 @@ RSpec.describe WeaponSkillDatum, type: :model do
       end
     end
 
-    context 'EX Crux' do
+    context 'with EX Crux' do
       let!(:normal_crux) do
         create(:weapon_skill_datum, modifier: 'Crux', boost_type: 'ca_supp',
                                     series: 'normal', size: 'big', sl15: 105_000)
@@ -206,8 +206,8 @@ RSpec.describe WeaponSkillDatum, type: :model do
       end
     end
 
-    context 'no fallback for odious series' do
-      let!(:normal_omega_datum) do
+    context 'with odious series (no fallback)' do
+      before do
         create(:weapon_skill_datum, modifier: 'OdiousNoFB', series: 'normal_omega', size: 'big')
       end
 
@@ -217,7 +217,7 @@ RSpec.describe WeaponSkillDatum, type: :model do
       end
     end
 
-    context 'nil series (series-agnostic lookup)' do
+    context 'with nil series (series-agnostic lookup)' do
       let!(:normal_omega_datum) do
         create(:weapon_skill_datum, modifier: 'NilNoFB', series: 'normal_omega', size: 'big',
                                     boost_type: 'atk')
@@ -233,7 +233,7 @@ RSpec.describe WeaponSkillDatum, type: :model do
       end
     end
 
-    context 'one row per boost_type (the double-count guard)' do
+    context 'with one row per boost_type (the double-count guard)' do
       it 'never returns multiple sizes of one boost for a sizeless lookup' do
         %w[small medium big].each do |size|
           create(:weapon_skill_datum, modifier: 'MultiSize', series: 'normal', size: size)

@@ -3,17 +3,19 @@
 require 'rails_helper'
 
 RSpec.describe 'Draconic Teluma effect data' do
-  REDUCTIONS = { # rubocop:disable Lint/ConstantDefinitionInBlock
-    'teluma-inferno' => 'fire',
-    'teluma-abyss' => 'water',
-    'teluma-crag' => 'earth',
-    'teluma-tempest' => 'wind',
-    'teluma-aureole' => 'light',
-    'teluma-malice' => 'dark'
-  }.freeze
+  let(:reductions) do
+    {
+      'teluma-inferno' => 'fire',
+      'teluma-abyss' => 'water',
+      'teluma-crag' => 'earth',
+      'teluma-tempest' => 'wind',
+      'teluma-aureole' => 'light',
+      'teluma-malice' => 'dark'
+    }.freeze
+  end
 
   let(:effects) do
-    payload = JSON.parse(File.read(Rails.root.join("data/weapon_skill_effects.json")))
+    payload = JSON.parse(Rails.root.join("data/weapon_skill_effects.json").read)
     payload.fetch('effects')
   end
 
@@ -33,7 +35,7 @@ RSpec.describe 'Draconic Teluma effect data' do
   end
 
   it 'models all six elemental reductions with SL15 and SL20 values' do
-    REDUCTIONS.each do |slug, element|
+    reductions.each do |slug, element|
       row = key_rows(slug).sole
       aggregate_failures(slug) do
         expect(row).to include('boost_type' => 'elem_reduc', 'scaling_kind' => 'weapon_skill_curve')
@@ -57,7 +59,7 @@ RSpec.describe 'Draconic Teluma effect data' do
     { 'teluma-optimus' => 'normal', 'teluma-omega' => 'omega' }.each do |slug, series|
       rows = key_rows(slug)
       aggregate_failures(slug) do
-        expect(rows.map { |row| row['boost_type'] }).to contain_exactly('atk', 'hp')
+        expect(rows.pluck('boost_type')).to contain_exactly('atk', 'hp')
         expect(rows).to all(include('scaling_kind' => 'weapon_skill_curve', 'frame_rule' => 'teluma'))
         expect(rows).to all(satisfy do |row|
           row.dig('condition', 'curve') == { 'modifier' => 'Majesty', 'series' => series, 'size' => 'big' }

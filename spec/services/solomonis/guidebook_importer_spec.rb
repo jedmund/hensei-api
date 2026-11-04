@@ -51,7 +51,7 @@ RSpec.describe Solomonis::GuidebookImporter do
     create(:solomonis_guide_effect, granblue_id: 1, name_en: 'ATK +20%')
     importer = described_class.new([entry('num' => 2), entry('num' => 5)])
 
-    expect(importer.call.map { |e| e[:count] }).to eq([2])
+    expect(importer.call.pluck(:count)).to eq([2])
     expect(importer.warnings).to eq(['Guidebook effect 1 is listed 2 times; kept the first'])
   end
 

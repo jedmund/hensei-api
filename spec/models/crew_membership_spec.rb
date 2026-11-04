@@ -30,8 +30,8 @@ RSpec.describe CrewMembership, type: :model do
         active = create(:crew_membership, crew: crew)
         retired = create(:crew_membership, :retired, crew: crew)
 
-        expect(CrewMembership.active).to include(active)
-        expect(CrewMembership.active).not_to include(retired)
+        expect(described_class.active).to include(active)
+        expect(described_class.active).not_to include(retired)
       end
     end
 
@@ -40,30 +40,30 @@ RSpec.describe CrewMembership, type: :model do
         active = create(:crew_membership, crew: crew)
         retired = create(:crew_membership, :retired, crew: crew)
 
-        expect(CrewMembership.retired).to include(retired)
-        expect(CrewMembership.retired).not_to include(active)
+        expect(described_class.retired).to include(retired)
+        expect(described_class.retired).not_to include(active)
       end
     end
   end
 
   describe 'one active crew per user validation' do
-    let(:crew1) { create(:crew) }
-    let(:crew2) { create(:crew) }
+    let(:first_crew) { create(:crew) }
+    let(:second_crew) { create(:crew) }
     let(:user) { create(:user) }
 
     it 'prevents user from joining multiple active crews' do
-      create(:crew_membership, crew: crew1, user: user)
-      membership2 = build(:crew_membership, crew: crew2, user: user)
+      create(:crew_membership, crew: first_crew, user: user)
+      membership2 = build(:crew_membership, crew: second_crew, user: user)
 
       expect(membership2).not_to be_valid
       expect(membership2.errors[:user]).to include('can only be in one active crew')
     end
 
     it 'allows user to join new crew after retiring from old one' do
-      membership1 = create(:crew_membership, crew: crew1, user: user)
+      membership1 = create(:crew_membership, crew: first_crew, user: user)
       membership1.retire!
 
-      membership2 = build(:crew_membership, crew: crew2, user: user)
+      membership2 = build(:crew_membership, crew: second_crew, user: user)
       expect(membership2).to be_valid
     end
   end

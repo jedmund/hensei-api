@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe RaidImageDownloadService do
-  let(:raid) { double('Raid', slug: 'proto-bahamut', enemy_id: '301061', summon_id: '2040056000', quest_id: '303141') }
-  let(:downloader_double) { double('RaidDownloader', download: nil) }
+  let(:raid) { instance_double(Raid, slug: 'proto-bahamut', enemy_id: '301061', summon_id: '2040056000', quest_id: '303141') }
+  let(:downloader_double) { instance_double(Granblue::Downloaders::RaidDownloader, download: nil) }
 
   before do
     allow(Granblue::Downloaders::RaidDownloader).to receive(:new).and_return(downloader_double)
@@ -16,7 +16,7 @@ RSpec.describe RaidImageDownloadService do
       expect(result.success?).to be true
     end
 
-    context 'manifest building' do
+    describe 'manifest building' do
       it 'includes icon from enemy_id' do
         result = described_class.new(raid).download
         expect(result.images['icon']).to eq(['301061.png'])
@@ -37,7 +37,7 @@ RSpec.describe RaidImageDownloadService do
       end
 
       it 'omits keys for nil IDs' do
-        raid_no_enemy = double('Raid', slug: 'test', enemy_id: nil, summon_id: nil, quest_id: '100')
+        raid_no_enemy = instance_double(Raid, slug: 'test', enemy_id: nil, summon_id: nil, quest_id: '100')
         result = described_class.new(raid_no_enemy).download
 
         aggregate_failures do

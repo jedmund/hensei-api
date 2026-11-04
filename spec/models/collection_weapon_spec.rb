@@ -12,10 +12,10 @@ RSpec.describe CollectionWeapon, type: :model do
   end
 
   describe 'validations' do
+    subject { build(:collection_weapon, user: user, weapon: weapon) }
+
     let(:user) { create(:user) }
     let(:weapon) { create(:weapon) }
-
-    subject { build(:collection_weapon, user: user, weapon: weapon) }
 
     describe 'basic validations' do
       it { is_expected.to validate_inclusion_of(:uncap_level).in_range(0..6) }
@@ -167,7 +167,7 @@ RSpec.describe CollectionWeapon, type: :model do
       create(:weapon_key_series, weapon_key: emblem_key, weapon_series: ccw_series)
     end
 
-    context 'replica CCW with emblem key' do
+    context 'with a replica CCW and emblem key' do
       let(:weapon) { create(:weapon, weapon_series: ccw_series, weapon_series_variant: replica_variant) }
 
       it 'is valid' do
@@ -176,7 +176,7 @@ RSpec.describe CollectionWeapon, type: :model do
       end
     end
 
-    context 'forge CCW with emblem key' do
+    context 'with a forge CCW and emblem key' do
       let(:weapon) { create(:weapon, weapon_series: ccw_series, weapon_series_variant: forge_variant) }
 
       it 'is invalid because the forge variant disables weapon keys' do
@@ -186,7 +186,7 @@ RSpec.describe CollectionWeapon, type: :model do
       end
     end
 
-    context 'variant overrides element_changeable to false' do
+    context 'when the variant overrides element_changeable to false' do
       let(:variant) { create(:weapon_series_variant, weapon_series: ccw_series, element_changeable: false) }
       let(:weapon) { create(:weapon, weapon_series: ccw_series, weapon_series_variant: variant) }
 
@@ -197,7 +197,7 @@ RSpec.describe CollectionWeapon, type: :model do
       end
     end
 
-    context 'weapon without variant inherits series capabilities' do
+    context 'when the weapon has no variant' do
       let(:weapon) { create(:weapon, weapon_series: ccw_series) }
 
       it 'allows element change from series' do
@@ -228,8 +228,8 @@ RSpec.describe CollectionWeapon, type: :model do
 
     describe '.by_element' do
       it 'returns weapons matching weapon.element' do
-        expect(CollectionWeapon.by_element(0)).to include(fire_collection)
-        expect(CollectionWeapon.by_element(0)).not_to include(water_collection)
+        expect(described_class.by_element(0)).to include(fire_collection)
+        expect(described_class.by_element(0)).not_to include(water_collection)
       end
 
       it 'returns element-changeable weapons by collection_weapon.element override' do
@@ -238,42 +238,42 @@ RSpec.describe CollectionWeapon, type: :model do
         null_element_weapon = create(:weapon, element: 0, weapon_series: ec_series)
         cw_with_override = create(:collection_weapon, weapon: null_element_weapon, element: 4)
 
-        expect(CollectionWeapon.by_element(4)).to include(cw_with_override)
+        expect(described_class.by_element(4)).to include(cw_with_override)
         # Should NOT appear under element 0 since override takes precedence
-        expect(CollectionWeapon.by_element(0)).not_to include(cw_with_override)
+        expect(described_class.by_element(0)).not_to include(cw_with_override)
       end
 
       it 'falls back to weapon.element when collection_weapon.element is nil' do
         null_override = create(:collection_weapon, weapon: fire_weapon, element: nil)
-        expect(CollectionWeapon.by_element(0)).to include(null_override)
+        expect(described_class.by_element(0)).to include(null_override)
       end
     end
 
     describe '.by_rarity' do
       it 'returns weapons of specified rarity' do
-        expect(CollectionWeapon.by_rarity(3)).to include(ssr_collection)
-        expect(CollectionWeapon.by_rarity(3)).not_to include(sr_collection)
+        expect(described_class.by_rarity(3)).to include(ssr_collection)
+        expect(described_class.by_rarity(3)).not_to include(sr_collection)
       end
     end
 
     describe '.transcended' do
       it 'returns only transcended weapons' do
-        expect(CollectionWeapon.transcended).to include(transcended)
-        expect(CollectionWeapon.transcended).not_to include(fire_collection)
+        expect(described_class.transcended).to include(transcended)
+        expect(described_class.transcended).not_to include(fire_collection)
       end
     end
 
     describe '.with_awakening' do
       it 'returns only weapons with awakening' do
-        expect(CollectionWeapon.with_awakening).to include(with_awakening)
-        expect(CollectionWeapon.with_awakening).not_to include(fire_collection)
+        expect(described_class.with_awakening).to include(with_awakening)
+        expect(described_class.with_awakening).not_to include(fire_collection)
       end
     end
 
     describe '.with_keys' do
       it 'returns only weapons with keys' do
-        expect(CollectionWeapon.with_keys).to include(with_keys)
-        expect(CollectionWeapon.with_keys).not_to include(fire_collection)
+        expect(described_class.with_keys).to include(with_keys)
+        expect(described_class.with_keys).not_to include(fire_collection)
       end
     end
   end

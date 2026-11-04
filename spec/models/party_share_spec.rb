@@ -27,12 +27,12 @@ RSpec.describe PartyShare, type: :model do
     end
 
     it 'allows same party to be shared with different crews' do
-      crew2 = create(:crew)
+      second_crew = create(:crew)
       # Retire from first crew to respect one-active-crew-per-user
       CrewMembership.find_by(crew: crew, user: user).retire!
-      create(:crew_membership, crew: crew2, user: user)
+      create(:crew_membership, crew: second_crew, user: user)
 
-      share2 = build(:party_share, party: party, shareable: crew2, shared_by: user)
+      share2 = build(:party_share, party: party, shareable: second_crew, shared_by: user)
 
       expect(share2).to be_valid
     end
@@ -55,7 +55,7 @@ RSpec.describe PartyShare, type: :model do
     end
 
     it 'prevents non-owner from sharing the party' do
-      share = PartyShare.new(party: party, shareable: crew, shared_by: other_user)
+      share = described_class.new(party: party, shareable: crew, shared_by: other_user)
       expect(share).not_to be_valid
       expect(share.errors[:shared_by]).to include('must be the party owner')
     end
@@ -73,7 +73,7 @@ RSpec.describe PartyShare, type: :model do
     end
 
     it 'prevents sharing to a crew the user does not belong to' do
-      share = PartyShare.new(party: party, shareable: crew, shared_by: user)
+      share = described_class.new(party: party, shareable: crew, shared_by: user)
       expect(share).not_to be_valid
       expect(share.errors[:shareable]).to include('you must be a member of this crew')
     end
@@ -82,42 +82,42 @@ RSpec.describe PartyShare, type: :model do
       membership = create(:crew_membership, crew: crew, user: user)
       membership.retire!
 
-      share = PartyShare.new(party: party, shareable: crew, shared_by: user)
+      share = described_class.new(party: party, shareable: crew, shared_by: user)
       expect(share).not_to be_valid
     end
   end
 
   describe 'scopes' do
-    let(:crew1) { create(:crew) }
-    let(:crew2) { create(:crew) }
-    let(:user1) { create(:user) }
-    let(:user2) { create(:user) }
-    let(:party1) { create(:party, user: user1) }
-    let(:party2) { create(:party, user: user2) }
+    let(:first_crew) { create(:crew) }
+    let(:second_crew) { create(:crew) }
+    let(:first_user) { create(:user) }
+    let(:second_user) { create(:user) }
+    let(:first_party) { create(:party, user: first_user) }
+    let(:second_party) { create(:party, user: second_user) }
 
     before do
-      create(:crew_membership, crew: crew1, user: user1)
-      create(:crew_membership, crew: crew2, user: user2)
+      create(:crew_membership, crew: first_crew, user: first_user)
+      create(:crew_membership, crew: second_crew, user: second_user)
     end
 
     describe '.for_crew' do
       it 'returns shares for a specific crew' do
-        share1 = create(:party_share, party: party1, shareable: crew1, shared_by: user1)
-        share2 = create(:party_share, party: party2, shareable: crew2, shared_by: user2)
+        share1 = create(:party_share, party: first_party, shareable: first_crew, shared_by: first_user)
+        share2 = create(:party_share, party: second_party, shareable: second_crew, shared_by: second_user)
 
-        expect(PartyShare.for_crew(crew1)).to include(share1)
-        expect(PartyShare.for_crew(crew1)).not_to include(share2)
+        expect(described_class.for_crew(first_crew)).to include(share1)
+        expect(described_class.for_crew(first_crew)).not_to include(share2)
       end
     end
 
     describe '.for_party' do
       it 'returns shares for a specific party' do
-        party3 = create(:party, user: user1)
-        share1 = create(:party_share, party: party1, shareable: crew1, shared_by: user1)
-        share2 = create(:party_share, party: party3, shareable: crew1, shared_by: user1)
+        party3 = create(:party, user: first_user)
+        share1 = create(:party_share, party: first_party, shareable: first_crew, shared_by: first_user)
+        share2 = create(:party_share, party: party3, shareable: first_crew, shared_by: first_user)
 
-        expect(PartyShare.for_party(party1)).to include(share1)
-        expect(PartyShare.for_party(party1)).not_to include(share2)
+        expect(described_class.for_party(first_party)).to include(share1)
+        expect(described_class.for_party(first_party)).not_to include(share2)
       end
     end
   end

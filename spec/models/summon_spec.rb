@@ -102,13 +102,13 @@ RSpec.describe Summon, type: :model do
     let!(:premium_summon) { create(:summon, promotions: [premium_value]) }
 
     it '.by_promotion filters by promotion value' do
-      expect(Summon.by_promotion(flash_value)).to include(flash_summon)
-      expect(Summon.by_promotion(flash_value)).not_to include(legend_summon, premium_summon)
+      expect(described_class.by_promotion(flash_value)).to include(flash_summon)
+      expect(described_class.by_promotion(flash_value)).not_to include(legend_summon, premium_summon)
     end
 
     it '.in_premium returns summons with Premium promotion' do
-      expect(Summon.in_premium).to include(premium_summon)
-      expect(Summon.in_premium).not_to include(flash_summon, legend_summon)
+      expect(described_class.in_premium).to include(premium_summon)
+      expect(described_class.in_premium).not_to include(flash_summon, legend_summon)
     end
   end
 

@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe WeaponImageDownloadService do
-  let(:weapon) { double('Weapon', granblue_id: '1040001000', transcendence: false, element_variant_ids: nil) }
-  let(:downloader_double) { double('WeaponDownloader', download: nil) }
+  let(:weapon) { instance_double(Weapon, granblue_id: '1040001000', transcendence: false, element_variant_ids: nil) }
+  let(:downloader_double) { instance_double(Granblue::Downloaders::WeaponDownloader, download: nil) }
 
   before do
     allow(Granblue::Downloaders::WeaponDownloader).to receive(:new).and_return(downloader_double)
@@ -17,7 +17,7 @@ RSpec.describe WeaponImageDownloadService do
       expect(result.success?).to be true
     end
 
-    context 'variant building' do
+    describe 'variant building' do
       it 'includes base variant without suffix' do
         result = described_class.new(weapon).download
         expect(result.images['main']).to include('1040001000.jpg')

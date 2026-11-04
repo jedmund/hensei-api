@@ -4,13 +4,13 @@ require 'rails_helper'
 
 RSpec.describe Artifact, type: :model do
   describe 'validations' do
-    subject { build(:artifact) }
+    subject(:artifact) { build(:artifact) }
 
     it { is_expected.to validate_presence_of(:granblue_id) }
 
     it 'validates uniqueness of granblue_id' do
       create(:artifact)
-      duplicate = build(:artifact, granblue_id: Artifact.first.granblue_id)
+      duplicate = build(:artifact, granblue_id: described_class.first.granblue_id)
       expect(duplicate).not_to be_valid
       expect(duplicate.errors[:granblue_id]).to include('has already been taken')
     end
@@ -19,22 +19,22 @@ RSpec.describe Artifact, type: :model do
     it { is_expected.to validate_presence_of(:rarity) }
 
     context 'when standard artifact' do
-      subject { build(:artifact, rarity: :standard) }
+      subject(:artifact) { build(:artifact, rarity: :standard) }
 
       it { is_expected.to validate_presence_of(:proficiency) }
     end
 
     context 'when quirk artifact' do
-      subject { build(:artifact, :quirk) }
+      subject(:artifact) { build(:artifact, :quirk) }
 
       it 'requires proficiency to be nil' do
-        subject.proficiency = :sabre
-        expect(subject).not_to be_valid
-        expect(subject.errors[:proficiency]).to include('must be blank')
+        artifact.proficiency = :sabre
+        expect(artifact).not_to be_valid
+        expect(artifact.errors[:proficiency]).to include('must be blank')
       end
 
       it 'is valid without proficiency' do
-        expect(subject).to be_valid
+        expect(artifact).to be_valid
       end
     end
   end
@@ -46,7 +46,7 @@ RSpec.describe Artifact, type: :model do
 
   describe 'enums' do
     it 'defines proficiency enum' do
-      expect(Artifact.proficiencies).to include(
+      expect(described_class.proficiencies).to include(
         'sabre' => 1,
         'dagger' => 2,
         'spear' => 3
@@ -54,7 +54,7 @@ RSpec.describe Artifact, type: :model do
     end
 
     it 'defines rarity enum' do
-      expect(Artifact.rarities).to eq('standard' => 0, 'quirk' => 1)
+      expect(described_class.rarities).to eq('standard' => 0, 'quirk' => 1)
     end
   end
 
@@ -63,10 +63,10 @@ RSpec.describe Artifact, type: :model do
     let!(:quirk_artifact) { create(:artifact, :quirk) }
 
     it 'filters by rarity' do
-      expect(Artifact.standard).to include(standard_artifact)
-      expect(Artifact.standard).not_to include(quirk_artifact)
-      expect(Artifact.quirk).to include(quirk_artifact)
-      expect(Artifact.quirk).not_to include(standard_artifact)
+      expect(described_class.standard).to include(standard_artifact)
+      expect(described_class.standard).not_to include(quirk_artifact)
+      expect(described_class.quirk).to include(quirk_artifact)
+      expect(described_class.quirk).not_to include(standard_artifact)
     end
   end
 

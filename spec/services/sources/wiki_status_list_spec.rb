@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Sources::WikiStatusList do
-  let(:body) { File.read(Rails.root.join('spec/fixtures/wiki/status_list_extract.lua')) }
+  let(:body) { Rails.root.join('spec/fixtures/wiki/status_list_extract.lua').read }
   let(:wiki) { instance_double(Granblue::Parsers::Wiki, fetch_raw: body) }
   let(:slept) { [] }
 

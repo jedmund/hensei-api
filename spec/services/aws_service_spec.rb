@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe AwsService do
-  let(:s3_client_double) { double('Aws::S3::Client') }
+  let(:s3_client_double) { instance_double(Aws::S3::Client) }
 
   before do
     allow(Aws::S3::Client).to receive(:new).and_return(s3_client_double)

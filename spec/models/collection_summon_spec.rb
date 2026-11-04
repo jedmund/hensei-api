@@ -7,10 +7,10 @@ RSpec.describe CollectionSummon, type: :model do
   end
 
   describe 'validations' do
+    subject { build(:collection_summon, user: user, summon: summon) }
+
     let(:user) { create(:user) }
     let(:summon) { create(:summon) }
-
-    subject { build(:collection_summon, user: user, summon: summon) }
 
     describe 'basic validations' do
       it { is_expected.to validate_inclusion_of(:uncap_level).in_range(0..6) }
@@ -66,22 +66,22 @@ RSpec.describe CollectionSummon, type: :model do
 
     describe '.by_element' do
       it 'returns summons of specified element' do
-        expect(CollectionSummon.by_element(1)).to include(fire_collection)
-        expect(CollectionSummon.by_element(1)).not_to include(water_collection)
+        expect(described_class.by_element(1)).to include(fire_collection)
+        expect(described_class.by_element(1)).not_to include(water_collection)
       end
     end
 
     describe '.by_rarity' do
       it 'returns summons of specified rarity' do
-        expect(CollectionSummon.by_rarity(3)).to include(ssr_collection)
-        expect(CollectionSummon.by_rarity(3)).not_to include(sr_collection)
+        expect(described_class.by_rarity(3)).to include(ssr_collection)
+        expect(described_class.by_rarity(3)).not_to include(sr_collection)
       end
     end
 
     describe '.transcended' do
       it 'returns only transcended summons' do
-        expect(CollectionSummon.transcended).to include(transcended)
-        expect(CollectionSummon.transcended).not_to include(fire_collection)
+        expect(described_class.transcended).to include(transcended)
+        expect(described_class.transcended).not_to include(fire_collection)
       end
     end
 
@@ -90,8 +90,8 @@ RSpec.describe CollectionSummon, type: :model do
       let!(:partial_uncapped) { create(:collection_summon, uncap_level: 3) }
 
       it 'returns only max uncapped summons' do
-        expect(CollectionSummon.max_uncapped).to include(max_uncapped)
-        expect(CollectionSummon.max_uncapped).not_to include(partial_uncapped)
+        expect(described_class.max_uncapped).to include(max_uncapped)
+        expect(described_class.max_uncapped).not_to include(partial_uncapped)
       end
     end
 
@@ -118,7 +118,7 @@ RSpec.describe CollectionSummon, type: :model do
           mid_uncap.id,
           low_uncap.id
         ]
-        ordered = CollectionSummon.sorted_by('uncap_desc').where(id: scoped_ids).pluck(:id)
+        ordered = described_class.sorted_by('uncap_desc').where(id: scoped_ids).pluck(:id)
         expect(ordered).to eq(scoped_ids)
       end
 
@@ -130,7 +130,7 @@ RSpec.describe CollectionSummon, type: :model do
           max_uncap_transcendable_no_step.id,
           max_uncap_transc.id
         ]
-        ordered = CollectionSummon.sorted_by('uncap_asc').where(id: scoped_ids).pluck(:id)
+        ordered = described_class.sorted_by('uncap_asc').where(id: scoped_ids).pluck(:id)
         expect(ordered).to eq(scoped_ids)
       end
     end

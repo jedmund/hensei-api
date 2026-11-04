@@ -10,13 +10,13 @@ RSpec.describe GridArtifact, type: :model do
   end
 
   describe 'validations' do
-    subject { build(:grid_artifact, skill1: {}, skill2: {}, skill3: {}, skill4: {}) }
+    subject(:grid_artifact) { build(:grid_artifact, skill1: {}, skill2: {}, skill3: {}, skill4: {}) }
 
     it { is_expected.to validate_presence_of(:element) }
 
     it 'validates presence of level' do
-      subject.level = nil
-      expect(subject).not_to be_valid
+      grid_artifact.level = nil
+      expect(grid_artifact).not_to be_valid
     end
 
     it 'validates level is between 1 and 5' do
@@ -34,7 +34,7 @@ RSpec.describe GridArtifact, type: :model do
 
   describe 'enums' do
     it 'defines element enum with all 6 elements' do
-      expect(GridArtifact.elements).to eq(
+      expect(described_class.elements).to eq(
         'fire' => 1,
         'water' => 2,
         'earth' => 3,
@@ -45,7 +45,7 @@ RSpec.describe GridArtifact, type: :model do
     end
 
     it 'defines proficiency enum' do
-      expect(GridArtifact.proficiencies).to include(
+      expect(described_class.proficiencies).to include(
         'sabre' => 1,
         'spear' => 3,
         'melee' => 7
@@ -89,7 +89,7 @@ RSpec.describe GridArtifact, type: :model do
   end
 
   describe '#effective_proficiency' do
-    context 'for standard artifact' do
+    context 'with a standard artifact' do
       let(:artifact) { create(:artifact, proficiency: :spear) }
 
       it 'returns proficiency from base artifact' do
@@ -101,7 +101,7 @@ RSpec.describe GridArtifact, type: :model do
       end
     end
 
-    context 'for quirk artifact' do
+    context 'with a quirk artifact' do
       let(:artifact) { create(:artifact, :quirk) }
 
       it 'returns proficiency from instance' do
@@ -133,7 +133,7 @@ RSpec.describe GridArtifact, type: :model do
     let(:grid_artifact) { create(:grid_artifact, grid_character: grid_character) }
 
     it 'can be duplicated via amoeba' do
-      expect(GridArtifact).to respond_to(:amoeba_block)
+      expect(described_class).to respond_to(:amoeba_block)
     end
   end
 

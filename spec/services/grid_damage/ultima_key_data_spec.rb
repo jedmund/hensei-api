@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe 'Ultima key effect data' do
   let(:effects) do
-    payload = JSON.parse(File.read(Rails.root.join("data/weapon_skill_effects.json")))
+    payload = JSON.parse(Rails.root.join("data/weapon_skill_effects.json").read)
     payload.fetch('effects')
   end
 
@@ -14,7 +14,7 @@ RSpec.describe 'Ultima key effect data' do
 
   it 'models Rubell ATK and HP at each documented skill-level anchor' do
     rows = effects.select { |row| row['key_slug'].nil? && row['modifier'] == 'Rubell' }
-    expect(rows.map { |row| row['boost_type'] }).to contain_exactly('atk', 'hp')
+    expect(rows.pluck('boost_type')).to contain_exactly('atk', 'hp')
 
     expect(rows.index_by { |row| row['boost_type'] }.transform_values { |row| row.dig('condition', 'curve') })
       .to eq(
@@ -38,7 +38,7 @@ RSpec.describe 'Ultima key effect data' do
     expected.each do |slug, boost_types|
       rows = key_rows(slug)
       aggregate_failures(slug) do
-        expect(rows.map { |row| row['boost_type'] }).to match_array(boost_types)
+        expect(rows.pluck('boost_type')).to match_array(boost_types)
         expect(rows).to all(satisfy { |row| row.dig('condition', 'type') == 'weapon_specialty' })
       end
     end

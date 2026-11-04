@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe AxSkillValidation do
   %i[collection_weapon grid_weapon].each do |factory|
-    context "on #{factory}" do
+    describe "on #{factory}" do
       let(:standard_weapon) { create(:weapon, :with_ax) }
       let(:plain_weapon) { create(:weapon) }
       let(:primary) { create(:weapon_stat_modifier, :ax_atk) }

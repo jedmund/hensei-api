@@ -53,7 +53,7 @@ RSpec.describe SupportSummonImportService do
     end
 
     it 'maps all 7 GBF section indices correctly' do
-      summons = Array.new(7) { create(:summon) }
+      summons = create_list(:summon, 7)
       items = (0..6).map do |gbf_section|
         { 'gbf_section' => gbf_section, 'position' => 0, 'granblue_id' => summons[gbf_section].granblue_id, 'level' => 100 }
       end

@@ -4,10 +4,12 @@ require 'rails_helper'
 
 # Phase 1 — scaling-value evaluators, validated against the gbf.wiki formulas.
 RSpec.describe GridDamage::Scaling do
-  Datum = Struct.new(:formula_type, :sl1, :sl10, :sl15, :sl20, :sl25, :coefficient, :max_value, :size, # rubocop:disable Lint/ConstantDefinitionInBlock, Lint/StructNewOverride
-                     keyword_init: true)
+  let(:datum_struct) do
+    Struct.new(:formula_type, :sl1, :sl10, :sl15, :sl20, :sl25, :coefficient, :max_value, :size, # rubocop:disable Lint/StructNewOverride -- the formulas name a column `size`
+               keyword_init: true)
+  end
 
-  def datum(**attrs) = Datum.new(**attrs)
+  def datum(**attrs) = datum_struct.new(**attrs)
 
   describe 'flat (SL interpolation)' do
     let(:d) { datum(formula_type: 'flat', sl1: 2.0, sl10: 11.0, sl15: 15.0) }

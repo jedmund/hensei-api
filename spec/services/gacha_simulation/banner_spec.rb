@@ -22,7 +22,7 @@ RSpec.describe GachaSimulation::Banner do
     expect(ordinary['1040000001']).to be_within(BigDecimal('1e-30')).of(BigDecimal('0.003'))
     expect(ordinary['1020000002']).to be_within(BigDecimal('1e-30')).of(BigDecimal('0.41'))
     guaranteed = probabilities(result['guaranteed'])
-    expect(guaranteed.keys.map { |id| id[2] }.uniq).to contain_exactly('4', '3')
+    expect(guaranteed.keys.pluck(2).uniq).to contain_exactly('4', '3')
     expect(guaranteed['1030000001']).to be_within(BigDecimal('1e-30')).of(BigDecimal('0.97') / 3)
     expect(result['config']['banner']).to eq('211960')
     expect(result['banner']).to include('game_id' => '211960', 'live' => true)

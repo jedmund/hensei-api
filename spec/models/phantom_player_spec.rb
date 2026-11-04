@@ -15,7 +15,8 @@ RSpec.describe PhantomPlayer, type: :model do
 
     describe 'granblue_id uniqueness within crew' do
       let(:crew) { create(:crew) }
-      let!(:existing) { create(:phantom_player, crew: crew, granblue_id: '12345678') }
+
+      before { create(:phantom_player, crew: crew, granblue_id: '12345678') }
 
       it 'rejects duplicate granblue_id in same crew' do
         phantom = build(:phantom_player, crew: crew, granblue_id: '12345678')
@@ -67,26 +68,32 @@ RSpec.describe PhantomPlayer, type: :model do
   describe 'scopes' do
     let(:crew) { create(:crew) }
     let(:member) { create(:user) }
-    let!(:membership) { create(:crew_membership, crew: crew, user: member, role: :member) }
-    let!(:unclaimed) { create(:phantom_player, crew: crew) }
-    let!(:claimed) { create(:phantom_player, crew: crew, claimed_by: member) }
-    let!(:confirmed) { create(:phantom_player, crew: crew, claimed_by: member, claim_confirmed: true) }
+    let(:unclaimed) { create(:phantom_player, crew: crew) }
+    let(:claimed) { create(:phantom_player, crew: crew, claimed_by: member) }
+    let(:confirmed) { create(:phantom_player, crew: crew, claimed_by: member, claim_confirmed: true) }
+
+    before do
+      create(:crew_membership, crew: crew, user: member, role: :member)
+      unclaimed
+      claimed
+      confirmed
+    end
 
     describe '.unclaimed' do
       it 'returns only unclaimed phantoms' do
-        expect(PhantomPlayer.unclaimed).to contain_exactly(unclaimed)
+        expect(described_class.unclaimed).to contain_exactly(unclaimed)
       end
     end
 
     describe '.claimed' do
       it 'returns claimed phantoms (confirmed or not)' do
-        expect(PhantomPlayer.claimed).to contain_exactly(claimed, confirmed)
+        expect(described_class.claimed).to contain_exactly(claimed, confirmed)
       end
     end
 
     describe '.pending_confirmation' do
       it 'returns claimed but unconfirmed phantoms' do
-        expect(PhantomPlayer.pending_confirmation).to contain_exactly(claimed)
+        expect(described_class.pending_confirmation).to contain_exactly(claimed)
       end
     end
   end
@@ -95,7 +102,8 @@ RSpec.describe PhantomPlayer, type: :model do
     let(:crew) { create(:crew) }
     let(:phantom) { create(:phantom_player, crew: crew) }
     let(:member) { create(:user) }
-    let!(:membership) { create(:crew_membership, crew: crew, user: member, role: :member) }
+
+    before { create(:crew_membership, crew: crew, user: member, role: :member) }
 
     it 'assigns the phantom to the user' do
       phantom.assign_to(member)
@@ -146,7 +154,7 @@ RSpec.describe PhantomPlayer, type: :model do
       end
     end
 
-    context 'joined_at transfer' do
+    describe 'joined_at transfer' do
       it "copies the phantom's joined_at to the membership when earlier" do
         earlier = 1.year.ago
         phantom.update!(joined_at: earlier)
@@ -170,8 +178,9 @@ RSpec.describe PhantomPlayer, type: :model do
   describe '#unassign!' do
     let(:crew) { create(:crew) }
     let(:member) { create(:user) }
-    let!(:membership) { create(:crew_membership, crew: crew, user: member, role: :member) }
     let(:phantom) { create(:phantom_player, crew: crew, claimed_by: member) }
+
+    before { create(:crew_membership, crew: crew, user: member, role: :member) }
 
     it 'removes the assignment' do
       phantom.unassign!

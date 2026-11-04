@@ -9,7 +9,7 @@ RSpec.describe 'Fetching wiki pages without storing them' do
     let(:hook) { instance_double(Proc, call: nil) }
 
     it 'returns the text and leaves the record alone' do
-      allow_any_instance_of(Granblue::Parsers::Wiki).to receive(:fetch).with('Old Title').and_return('{{New}}')
+      on_new_instances(Granblue::Parsers::Wiki) { |client| allow(client).to receive(:fetch).with('Old Title').and_return('{{New}}') }
 
       page = described_class.new.fetch(character, before_request: hook)
 
@@ -19,9 +19,10 @@ RSpec.describe 'Fetching wiki pages without storing them' do
     end
 
     it 'follows a redirect and reports the title it landed on' do
-      allow_any_instance_of(Granblue::Parsers::Wiki).to receive(:fetch).with('Old Title')
-                                                                       .and_return('#REDIRECT [[New Title]]')
-      allow_any_instance_of(Granblue::Parsers::Wiki).to receive(:fetch).with('New Title').and_return('{{New}}')
+      on_new_instances(Granblue::Parsers::Wiki) do |client|
+        allow(client).to receive(:fetch).with('Old Title').and_return('#REDIRECT [[New Title]]')
+        allow(client).to receive(:fetch).with('New Title').and_return('{{New}}')
+      end
 
       page = described_class.new.fetch(character, before_request: hook)
 
@@ -36,9 +37,10 @@ RSpec.describe 'Fetching wiki pages without storing them' do
     end
 
     it 'still stores on fetch_and_store, redirect included' do
-      allow_any_instance_of(Granblue::Parsers::Wiki).to receive(:fetch).with('Old Title')
-                                                                       .and_return('#REDIRECT [[New Title]]')
-      allow_any_instance_of(Granblue::Parsers::Wiki).to receive(:fetch).with('New Title').and_return('{{New}}')
+      on_new_instances(Granblue::Parsers::Wiki) do |client|
+        allow(client).to receive(:fetch).with('Old Title').and_return('#REDIRECT [[New Title]]')
+        allow(client).to receive(:fetch).with('New Title').and_return('{{New}}')
+      end
 
       expect(described_class.new.fetch_and_store(character)).to eq('{{New}}')
       expect(character.reload).to have_attributes(wiki_en: 'New Title', wiki_raw: '{{New}}')

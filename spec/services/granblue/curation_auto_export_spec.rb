@@ -30,7 +30,7 @@ RSpec.describe Granblue::CurationAutoExport do
 
     described_class.flush!
 
-    expect(exported('effects').map { |row| row['modifier'] }).to eq(['Axe Voltage II'])
+    expect(exported('effects').pluck('modifier')).to eq(['Axe Voltage II'])
   end
 
   it 'ignores rows nobody curated' do

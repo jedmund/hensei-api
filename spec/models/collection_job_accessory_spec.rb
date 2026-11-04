@@ -7,11 +7,11 @@ RSpec.describe CollectionJobAccessory, type: :model do
   end
 
   describe 'validations' do
+    subject { build(:collection_job_accessory, user: user, job_accessory: job_accessory) }
+
     let(:user) { create(:user) }
     let(:job) { create(:job) }
     let(:job_accessory) { create(:job_accessory, job: job) }
-
-    subject { build(:collection_job_accessory, user: user, job_accessory: job_accessory) }
 
     describe 'uniqueness validation' do
       it { is_expected.to validate_uniqueness_of(:job_accessory_id).scoped_to(:user_id).ignoring_case_sensitivity.with_message('already exists in your collection') }
@@ -30,15 +30,15 @@ RSpec.describe CollectionJobAccessory, type: :model do
 
     describe '.by_job' do
       it 'returns accessories for specified job' do
-        expect(CollectionJobAccessory.by_job(warrior_job.id)).to include(warrior_collection)
-        expect(CollectionJobAccessory.by_job(warrior_job.id)).not_to include(sage_collection)
+        expect(described_class.by_job(warrior_job.id)).to include(warrior_collection)
+        expect(described_class.by_job(warrior_job.id)).not_to include(sage_collection)
       end
     end
 
     describe '.by_job_accessory' do
       it 'returns collection entries for specified accessory' do
-        expect(CollectionJobAccessory.by_job_accessory(warrior_accessory.id)).to include(warrior_collection)
-        expect(CollectionJobAccessory.by_job_accessory(warrior_accessory.id)).not_to include(sage_collection)
+        expect(described_class.by_job_accessory(warrior_accessory.id)).to include(warrior_collection)
+        expect(described_class.by_job_accessory(warrior_accessory.id)).not_to include(sage_collection)
       end
     end
   end

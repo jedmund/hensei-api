@@ -13,16 +13,8 @@
 require 'rails_helper'
 
 RSpec.describe GridCharacter, type: :model do
-  # Association tests using shoulda-matchers.
-  it { is_expected.to belong_to(:character) }
-  it { is_expected.to belong_to(:party) }
-  it { is_expected.to belong_to(:awakening).optional }
-  it { is_expected.to belong_to(:collection_character).optional }
-
   # Use the canonical "Balanced" awakening already loaded from CSV.
-  before(:all) do
-    @balanced_awakening = Awakening.find_by!(slug: 'character-balanced')
-  end
+  let(:balanced_awakening) { Awakening.find_by!(slug: 'character-balanced') }
 
   # Use canonical records loaded from CSV for our character.
   let(:party) { create(:party) }
@@ -41,35 +33,40 @@ RSpec.describe GridCharacter, type: :model do
     }
   end
 
+  # Association tests using shoulda-matchers.
+  it { is_expected.to belong_to(:character) }
+  it { is_expected.to belong_to(:party) }
+  it { is_expected.to belong_to(:awakening).optional }
+  it { is_expected.to belong_to(:collection_character).optional }
   it { is_expected.to have_one(:grid_artifact).dependent(:destroy) }
 
   describe 'Validations and Associations' do
     context 'with valid attributes' do
-      subject { build(:grid_character, valid_attributes) }
+      subject(:grid_character) { build(:grid_character, valid_attributes) }
 
       it 'is valid' do
-        expect(subject).to be_valid
+        expect(grid_character).to be_valid
       end
     end
 
     context 'without a party' do
-      subject { build(:grid_character, valid_attributes.merge(party: nil)) }
+      subject(:grid_character) { build(:grid_character, valid_attributes.merge(party: nil)) }
 
       it 'is invalid' do
-        subject.valid?
-        expect(subject.errors[:party]).to include("can't be blank")
+        grid_character.valid?
+        expect(grid_character.errors[:party]).to include("can't be blank")
       end
     end
   end
 
   describe 'Callbacks' do
-    context 'before_validation :apply_new_rings' do
+    describe 'before_validation :apply_new_rings' do
       it 'sets the ring attributes when new_rings is provided' do
         grid_char = build(
           :grid_character,
           valid_attributes.merge(new_rings: [
                                    { 'modifier' => '1', 'strength' => 300 },
-            { 'modifier' => '2', 'strength' => 150 }
+                                   { 'modifier' => '2', 'strength' => 150 }
                                  ])
         )
         grid_char.valid? # triggers the before_validation callback
@@ -81,7 +78,7 @@ RSpec.describe GridCharacter, type: :model do
       end
     end
 
-    context 'before_validation :apply_new_awakening' do
+    describe 'before_validation :apply_new_awakening' do
       it 'sets awakening_id and awakening_level when new_awakening is provided using a canonical awakening' do
         # Use an existing awakening from the CSV data.
         canonical_awakening = Awakening.find_by!(slug: 'character-def')
@@ -93,11 +90,11 @@ RSpec.describe GridCharacter, type: :model do
       end
     end
 
-    context 'before_save :add_awakening' do
+    describe 'before_save :add_awakening' do
       it 'sets the awakening to the balanced canonical awakening if none is provided' do
         grid_char = build(:grid_character, valid_attributes.merge(awakening: nil))
         grid_char.save!
-        expect(grid_char.awakening).to eq(@balanced_awakening)
+        expect(grid_char.awakening).to eq(balanced_awakening)
       end
 
       it 'does not override an existing awakening' do
@@ -110,118 +107,114 @@ RSpec.describe GridCharacter, type: :model do
   end
 
   describe 'Update Validations (on :update)' do
-    before do
-      # Persist a valid GridCharacter record.
-      @grid_char = create(:grid_character, valid_attributes)
-    end
+    # Persist a valid GridCharacter record.
+    let!(:grid_char) { create(:grid_character, valid_attributes) }
 
-    context 'validate_awakening_level' do
+    describe 'validate_awakening_level' do
       it 'adds an error if awakening_level is below 1' do
-        @grid_char.awakening_level = 0
-        @grid_char.valid?(:update)
-        expect(@grid_char.errors[:awakening]).to include('awakening level too low')
+        grid_char.awakening_level = 0
+        grid_char.valid?(:update)
+        expect(grid_char.errors[:awakening]).to include('awakening level too low')
       end
 
       it 'adds an error if awakening_level is above 10' do
-        @grid_char.awakening_level = 11
-        @grid_char.valid?(:update)
-        expect(@grid_char.errors[:awakening]).to include('awakening level too high')
+        grid_char.awakening_level = 11
+        grid_char.valid?(:update)
+        expect(grid_char.errors[:awakening]).to include('awakening level too high')
       end
     end
 
-    context 'transcendence validation' do
+    describe 'transcendence validation' do
       it 'clamps a positive stage to zero when the character cannot transcend' do
-        @grid_char.character.update!(transcendence: false)
-        @grid_char.transcendence_step = 1
-        @grid_char.valid?(:update)
-        expect(@grid_char.transcendence_step).to eq(0)
+        grid_char.character.update!(transcendence: false)
+        grid_char.transcendence_step = 1
+        grid_char.valid?(:update)
+        expect(grid_char.transcendence_step).to eq(0)
       end
 
       it 'clamps transcendence_step to the character released-stage cap' do
-        @grid_char.character.update!(transcendence: true, max_transcendence_stage: 2)
-        @grid_char.transcendence_step = 5
-        @grid_char.valid?(:update)
-        expect(@grid_char.transcendence_step).to eq(2)
+        grid_char.character.update!(transcendence: true, max_transcendence_stage: 2)
+        grid_char.transcendence_step = 5
+        grid_char.valid?(:update)
+        expect(grid_char.transcendence_step).to eq(2)
       end
 
       it 'adds an error if transcendence_step is negative when character.transcendence is true' do
-        @grid_char.character.update!(transcendence: true, max_transcendence_stage: 5)
-        @grid_char.transcendence_step = -1
-        @grid_char.valid?(:update)
-        expect(@grid_char.errors[:transcendence_step]).to include('transcendence step too low')
+        grid_char.character.update!(transcendence: true, max_transcendence_stage: 5)
+        grid_char.transcendence_step = -1
+        grid_char.valid?(:update)
+        expect(grid_char.errors[:transcendence_step]).to include('transcendence step too low')
       end
     end
 
-    context 'over_mastery_attack_matches_hp validation' do
+    describe 'over_mastery_attack_matches_hp validation' do
       it 'adds an error if ring1 and ring2 values are inconsistent' do
-        @grid_char.ring1 = { modifier: '1', strength: 300 }
+        grid_char.ring1 = { modifier: '1', strength: 300 }
         # Expected: ring2 strength should be half of 300 (i.e. 150)
-        @grid_char.ring2 = { modifier: '2', strength: 100 }
-        @grid_char.valid?(:update)
-        expect(@grid_char.errors[:over_mastery]).to include('over mastery attack and hp values do not match')
+        grid_char.ring2 = { modifier: '2', strength: 100 }
+        grid_char.valid?(:update)
+        expect(grid_char.errors[:over_mastery]).to include('over mastery attack and hp values do not match')
       end
 
       it 'is valid if ring2 strength equals half of ring1 strength' do
-        @grid_char.ring1 = { modifier: '1', strength: 300 }
-        @grid_char.ring2 = { modifier: '2', strength: 150 }
-        @grid_char.valid?(:update)
-        expect(@grid_char.errors[:over_mastery]).to be_empty
+        grid_char.ring1 = { modifier: '1', strength: 300 }
+        grid_char.ring2 = { modifier: '2', strength: 150 }
+        grid_char.valid?(:update)
+        expect(grid_char.errors[:over_mastery]).to be_empty
       end
     end
 
-    context 'individual over mastery values' do
+    describe 'individual over mastery values' do
       before do
-        @grid_char.ring1 = { 'modifier' => 1, 'strength' => 3000 }
-        @grid_char.ring2 = { 'modifier' => 2, 'strength' => 1500 }
+        grid_char.ring1 = { 'modifier' => 1, 'strength' => 3000 }
+        grid_char.ring2 = { 'modifier' => 2, 'strength' => 1500 }
       end
 
       it 'accepts a strength from the modifier value table' do
-        @grid_char.ring3 = { 'modifier' => 9, 'strength' => 30 }
-        @grid_char.valid?(:update)
-        expect(@grid_char.errors[:ring3]).to be_empty
+        grid_char.ring3 = { 'modifier' => 9, 'strength' => 30 }
+        grid_char.valid?(:update)
+        expect(grid_char.errors[:ring3]).to be_empty
       end
 
       it 'rejects a strength outside the modifier value table' do
-        @grid_char.ring3 = { 'modifier' => 9, 'strength' => 31 }
-        @grid_char.valid?(:update)
-        expect(@grid_char.errors[:ring3]).to include('invalid value')
+        grid_char.ring3 = { 'modifier' => 9, 'strength' => 31 }
+        grid_char.valid?(:update)
+        expect(grid_char.errors[:ring3]).to include('invalid value')
       end
 
       it 'rejects an unknown modifier' do
-        @grid_char.ring4 = { 'modifier' => 99, 'strength' => 10 }
-        @grid_char.valid?(:update)
-        expect(@grid_char.errors[:ring4]).to include('invalid value')
+        grid_char.ring4 = { 'modifier' => 99, 'strength' => 10 }
+        grid_char.valid?(:update)
+        expect(grid_char.errors[:ring4]).to include('invalid value')
       end
 
       it 'accepts numeric strings' do
-        @grid_char.ring3 = { 'modifier' => '4', 'strength' => '15' }
-        @grid_char.valid?(:update)
-        expect(@grid_char.errors[:ring3]).to be_empty
+        grid_char.ring3 = { 'modifier' => '4', 'strength' => '15' }
+        grid_char.valid?(:update)
+        expect(grid_char.errors[:ring3]).to be_empty
       end
 
       it 'adds an error instead of raising for a non-hash ring' do
-        @grid_char.ring3 = '{modifier: nil, strength: nil}'
-        expect { @grid_char.valid?(:update) }.not_to raise_error
-        expect(@grid_char.errors[:ring3]).to include('is malformed')
+        grid_char.ring3 = '{modifier: nil, strength: nil}'
+        expect { grid_char.valid?(:update) }.not_to raise_error
+        expect(grid_char.errors[:ring3]).to include('is malformed')
       end
     end
   end
 
   describe 'validate_aetherial_mastery_value (on :update)' do
-    before do
-      @grid_char = create(:grid_character, valid_attributes)
-    end
+    let!(:grid_char) { create(:grid_character, valid_attributes) }
 
     it 'allows a valid earring value within range' do
-      @grid_char.earring = { 'modifier' => '3', 'strength' => 20 }
-      @grid_char.valid?(:update)
-      expect(@grid_char.errors[:earring]).to be_empty
+      grid_char.earring = { 'modifier' => '3', 'strength' => 20 }
+      grid_char.valid?(:update)
+      expect(grid_char.errors[:earring]).to be_empty
     end
 
     it 'skips validation when earring modifier is nil' do
-      @grid_char.earring = { 'modifier' => nil, 'strength' => nil }
-      @grid_char.valid?(:update)
-      expect(@grid_char.errors[:earring]).to be_empty
+      grid_char.earring = { 'modifier' => nil, 'strength' => nil }
+      grid_char.valid?(:update)
+      expect(grid_char.errors[:earring]).to be_empty
     end
   end
 
@@ -265,171 +258,172 @@ RSpec.describe GridCharacter, type: :model do
              ring3: { 'modifier' => nil, 'strength' => nil },
              ring4: { 'modifier' => nil, 'strength' => nil },
              earring: { 'modifier' => '3', 'strength' => 20 },
-             awakening: @balanced_awakening,
+             awakening: balanced_awakening,
              awakening_level: 7)
     end
 
     describe '#sync_from_collection!' do
       context 'when collection_character is linked' do
+        let(:grid_char) do
+          create(:grid_character,
+                 valid_attributes.merge(collection_character: collection_character, uncap_level: 3, transcendence_step: 0))
+        end
+
         before do
           character.update!(transcendence: true, max_transcendence_stage: 5) # Enable transcendence
-          @grid_char = create(:grid_character,
-                              valid_attributes.merge(
-                                collection_character: collection_character,
-                                uncap_level: 3,
-                                transcendence_step: 0
-                              ))
+          grid_char
         end
 
         it 'copies all customizations from collection' do
-          expect(@grid_char.sync_from_collection!).to be true
-          @grid_char.reload
+          expect(grid_char.sync_from_collection!).to be true
+          grid_char.reload
 
-          expect(@grid_char.uncap_level).to eq(5)
-          expect(@grid_char.transcendence_step).to eq(3)
-          expect(@grid_char.perpetuity).to be true
-          expect(@grid_char.ring1).to eq({ 'modifier' => '1', 'strength' => 1500 })
-          expect(@grid_char.ring2).to eq({ 'modifier' => '2', 'strength' => 750 })
-          expect(@grid_char.awakening_level).to eq(7)
+          expect(grid_char.uncap_level).to eq(5)
+          expect(grid_char.transcendence_step).to eq(3)
+          expect(grid_char.perpetuity).to be true
+          expect(grid_char.ring1).to eq({ 'modifier' => '1', 'strength' => 1500 })
+          expect(grid_char.ring2).to eq({ 'modifier' => '2', 'strength' => 750 })
+          expect(grid_char.awakening_level).to eq(7)
         end
       end
 
       context 'when no collection_character is linked' do
-        before do
-          @grid_char = create(:grid_character, valid_attributes)
-        end
+        let!(:grid_char) { create(:grid_character, valid_attributes) }
 
         it 'returns false and does not change anything' do
-          original_uncap = @grid_char.uncap_level
-          expect(@grid_char.sync_from_collection!).to be false
-          expect(@grid_char.uncap_level).to eq(original_uncap)
+          original_uncap = grid_char.uncap_level
+          expect(grid_char.sync_from_collection!).to be false
+          expect(grid_char.uncap_level).to eq(original_uncap)
         end
       end
     end
 
     describe '#out_of_sync?' do
       context 'when collection_character is linked' do
+        let(:grid_char) do
+          create(:grid_character, valid_attributes.merge(collection_character: collection_character))
+        end
+
         before do
           character.update!(transcendence: true, max_transcendence_stage: 5)
-          @grid_char = create(:grid_character,
-                              valid_attributes.merge(collection_character: collection_character))
+          grid_char
         end
 
         it 'returns true when uncap_level differs' do
-          @grid_char.update!(uncap_level: 4)
-          expect(@grid_char.out_of_sync?).to be true
+          grid_char.update!(uncap_level: 4)
+          expect(grid_char.out_of_sync?).to be true
         end
 
         it 'returns true when transcendence_step differs' do
-          @grid_char.update!(transcendence_step: 1)
-          expect(@grid_char.out_of_sync?).to be true
+          grid_char.update!(transcendence_step: 1)
+          expect(grid_char.out_of_sync?).to be true
         end
 
         it 'returns true when perpetuity differs' do
-          @grid_char.update!(perpetuity: false)
-          expect(@grid_char.out_of_sync?).to be true
+          grid_char.update!(perpetuity: false)
+          expect(grid_char.out_of_sync?).to be true
         end
 
         it 'returns false when all values match' do
-          @grid_char.sync_from_collection!
-          expect(@grid_char.out_of_sync?).to be false
+          grid_char.sync_from_collection!
+          expect(grid_char.out_of_sync?).to be false
         end
       end
 
       context 'when no collection_character is linked' do
-        before do
-          @grid_char = create(:grid_character, valid_attributes)
-        end
+        let!(:grid_char) { create(:grid_character, valid_attributes) }
 
         it 'returns false' do
-          expect(@grid_char.out_of_sync?).to be false
+          expect(grid_char.out_of_sync?).to be false
         end
       end
     end
 
     describe '#sync_from_collection! with fields' do
+      let(:grid_char) do
+        create(:grid_character, valid_attributes.merge(collection_character: collection_character))
+      end
+
       before do
         character.update!(transcendence: true, max_transcendence_stage: 5)
-        @grid_char = create(:grid_character,
-                            valid_attributes.merge(collection_character: collection_character))
         # Start in sync, then drift simple value fields (no inter-field validators)
-        @grid_char.sync_from_collection!
-        @grid_char.update_columns(uncap_level: 3, perpetuity: false, awakening_level: 1)
-        @grid_char.reload
+        grid_char.sync_from_collection!
+        grid_char.update_columns(uncap_level: 3, perpetuity: false, awakening_level: 1)
+        grid_char.reload
       end
 
       it 'only updates columns mapped from the supplied keys' do
-        @grid_char.sync_from_collection!(fields: ['uncapLevel'])
-        @grid_char.reload
+        grid_char.sync_from_collection!(fields: ['uncapLevel'])
+        grid_char.reload
 
-        expect(@grid_char.uncap_level).to eq(collection_character.uncap_level)
+        expect(grid_char.uncap_level).to eq(collection_character.uncap_level)
         # Other drifted fields stay drifted
-        expect(@grid_char.perpetuity).to be false
-        expect(@grid_char.awakening_level).to eq(1)
+        expect(grid_char.perpetuity).to be false
+        expect(grid_char.awakening_level).to eq(1)
       end
 
       it 'handles multiple keys in one call' do
-        @grid_char.sync_from_collection!(fields: %w[uncapLevel perpetuity])
-        @grid_char.reload
+        grid_char.sync_from_collection!(fields: %w[uncapLevel perpetuity])
+        grid_char.reload
 
-        expect(@grid_char.uncap_level).to eq(collection_character.uncap_level)
-        expect(@grid_char.perpetuity).to eq(collection_character.perpetuity)
-        expect(@grid_char.awakening_level).to eq(1) # untouched
+        expect(grid_char.uncap_level).to eq(collection_character.uncap_level)
+        expect(grid_char.perpetuity).to eq(collection_character.perpetuity)
+        expect(grid_char.awakening_level).to eq(1) # untouched
       end
 
       it 'is a no-op when no supplied key maps to a known field' do
-        @grid_char.sync_from_collection!(fields: ['bogus'])
-        @grid_char.reload
+        grid_char.sync_from_collection!(fields: ['bogus'])
+        grid_char.reload
 
-        expect(@grid_char.uncap_level).to eq(3)
-        expect(@grid_char.perpetuity).to be false
+        expect(grid_char.uncap_level).to eq(3)
+        expect(grid_char.perpetuity).to be false
       end
     end
 
     describe '#out_of_sync_fields' do
       context 'when collection_character is linked' do
+        let(:grid_char) do
+          create(:grid_character, valid_attributes.merge(collection_character: collection_character))
+        end
+
         before do
           character.update!(transcendence: true, max_transcendence_stage: 5)
-          @grid_char = create(:grid_character,
-                              valid_attributes.merge(collection_character: collection_character))
-          @grid_char.sync_from_collection!
-          @grid_char.reload
+          grid_char.sync_from_collection!
+          grid_char.reload
         end
 
         it 'returns [] when everything matches' do
-          expect(@grid_char.out_of_sync_fields).to eq([])
+          expect(grid_char.out_of_sync_fields).to eq([])
         end
 
         it 'reports a single value drift by camelCase key' do
-          @grid_char.update!(uncap_level: 4)
-          expect(@grid_char.out_of_sync_fields).to eq(['uncapLevel'])
+          grid_char.update!(uncap_level: 4)
+          expect(grid_char.out_of_sync_fields).to eq(['uncapLevel'])
         end
 
         it 'reports multiple drifts together' do
-          @grid_char.update!(uncap_level: 4, perpetuity: false)
-          expect(@grid_char.out_of_sync_fields).to include('uncapLevel', 'perpetuity')
+          grid_char.update!(uncap_level: 4, perpetuity: false)
+          expect(grid_char.out_of_sync_fields).to include('uncapLevel', 'perpetuity')
         end
 
         it 'reports ring drift with dotted overMastery keys' do
           # Skip validations: we only care about field drift detection here, not
           # the over-mastery ratio rule.
-          @grid_char.update_columns(ring2: { 'modifier' => '2', 'strength' => 1 })
-          expect(@grid_char.reload.out_of_sync_fields).to eq(['overMastery.1'])
+          grid_char.update_columns(ring2: { 'modifier' => '2', 'strength' => 1 })
+          expect(grid_char.reload.out_of_sync_fields).to eq(['overMastery.1'])
         end
 
         it 'reports earring drift as aetherialMastery' do
-          @grid_char.update_columns(earring: { 'modifier' => '3', 'strength' => 1 })
-          expect(@grid_char.reload.out_of_sync_fields).to eq(['aetherialMastery'])
+          grid_char.update_columns(earring: { 'modifier' => '3', 'strength' => 1 })
+          expect(grid_char.reload.out_of_sync_fields).to eq(['aetherialMastery'])
         end
       end
 
       context 'when no collection_character is linked' do
-        before do
-          @grid_char = create(:grid_character, valid_attributes)
-        end
+        let!(:grid_char) { create(:grid_character, valid_attributes) }
 
         it 'returns []' do
-          expect(@grid_char.out_of_sync_fields).to eq([])
+          expect(grid_char.out_of_sync_fields).to eq([])
         end
       end
     end

@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe Processors::JobProcessor, type: :model do
+  subject(:job_processor) { described_class.new(party, deck_data, language: 'en') }
+
   let(:party) { create(:party) }
   # Use a job that has associated job skills.
   # In our seed/canonical data this job (by its ID) has several associated skills.
@@ -16,15 +18,13 @@ RSpec.describe Processors::JobProcessor, type: :model do
     JSON.parse(File.read(file_path))
   end
 
-  subject { described_class.new(party, deck_data, language: 'en') }
-
   context 'with valid job data' do
     it 'assigns the job to the party' do
       # Before processing, the party should not have a job.
       expect(party.job).to be_nil
 
       # Process the job data.
-      subject.process
+      job_processor.process
       party.reload
 
       # The party's job should now be set to the job_record.
@@ -36,7 +36,7 @@ RSpec.describe Processors::JobProcessor, type: :model do
       expect(party.job).to be_nil
 
       # Process the job data.
-      subject.process
+      job_processor.process
       party.reload
 
       main_skill = party.job.skills.where(main: true).first
@@ -48,7 +48,7 @@ RSpec.describe Processors::JobProcessor, type: :model do
       expect(party.job).to be_nil
 
       # Process the job data.
-      subject.process
+      job_processor.process
       party.reload
 
       # We assume that the processor assigns up to four subskills to party attributes,
@@ -62,7 +62,7 @@ RSpec.describe Processors::JobProcessor, type: :model do
 
     it 'assigns the correct accessory to the party' do
       # Process the job data.
-      subject.process
+      job_processor.process
       party.reload
 
       expect(party.accessory.granblue_id).to eq(1.to_s)
@@ -70,12 +70,12 @@ RSpec.describe Processors::JobProcessor, type: :model do
   end
 
   context 'with invalid job data' do
+    subject(:job_processor) { described_class.new(party, invalid_data, language: 'en') }
+
     let(:invalid_data) { 'invalid data' }
 
-    subject { described_class.new(party, invalid_data, language: 'en') }
-
     it 'logs an error and does not assign a job' do
-      expect { subject.process }.not_to(change { party.reload.job })
+      expect { job_processor.process }.not_to(change { party.reload.job })
     end
   end
 end

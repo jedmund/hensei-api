@@ -208,7 +208,7 @@ RSpec.describe GridDamage::Calculator do
     expect(described_class.boost_list(party, state: state)['e_atk']).to have_attributes(total: 40.0, capped: true)
   end
 
-  context 'boost_level (≥280) key effects — the two-pass activation' do
+  describe 'boost_level (≥280) key effects — the two-pass activation' do
     def add_keyed_weapon(position:)
       key = create(:weapon_key, slug: 'test-pendulum')
       WeaponSkillEffect.create!(key_slug: 'test-pendulum', modifier: 'Test Pendulum',

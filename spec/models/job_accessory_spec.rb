@@ -10,7 +10,7 @@ RSpec.describe JobAccessory, type: :model do
   describe 'equality' do
     it 'considers two job accessories with the same id as equal' do
       accessory = create(:job_accessory)
-      expect(accessory).to eq(accessory)
+      expect(described_class.find(accessory.id)).to eq(accessory)
     end
 
     it 'considers two different job accessories as not equal' do

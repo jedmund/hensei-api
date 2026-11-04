@@ -152,13 +152,13 @@ RSpec.describe Character, type: :model do
     let!(:standard_char) { create(:character, season: nil) }
 
     it '.by_season filters by season value' do
-      expect(Character.by_season(GranblueEnums::CHARACTER_SEASONS[:Summer])).to include(summer_char)
-      expect(Character.by_season(GranblueEnums::CHARACTER_SEASONS[:Summer])).not_to include(halloween_char, standard_char)
+      expect(described_class.by_season(GranblueEnums::CHARACTER_SEASONS[:Summer])).to include(summer_char)
+      expect(described_class.by_season(GranblueEnums::CHARACTER_SEASONS[:Summer])).not_to include(halloween_char, standard_char)
     end
 
     it '.seasonal returns non-standard seasonal characters' do
-      expect(Character.seasonal).to include(summer_char, halloween_char)
-      expect(Character.seasonal).not_to include(standard_char)
+      expect(described_class.seasonal).to include(summer_char, halloween_char)
+      expect(described_class.seasonal).not_to include(standard_char)
     end
 
     describe '.by_series' do
@@ -177,19 +177,19 @@ RSpec.describe Character, type: :model do
       end
 
       it 'filters by single series' do
-        results = Character.by_series([grand_series.id])
+        results = described_class.by_series([grand_series.id])
         expect(results).to include(grand_char, both_char)
         expect(results).not_to include(eternal_char, no_series_char)
       end
 
       it 'filters by multiple series (OR logic)' do
-        results = Character.by_series([grand_series.id, eternal_series.id])
+        results = described_class.by_series([grand_series.id, eternal_series.id])
         expect(results).to include(grand_char, eternal_char, both_char)
         expect(results).not_to include(no_series_char)
       end
 
       it 'does not return duplicates for characters in multiple matched series' do
-        results = Character.by_series([grand_series.id, eternal_series.id])
+        results = described_class.by_series([grand_series.id, eternal_series.id])
         expect(results.where(id: both_char.id).count).to eq(1)
       end
     end
@@ -198,7 +198,7 @@ RSpec.describe Character, type: :model do
   describe 'search' do
     it 'can search by English name' do
       character = create(:character, name_en: 'Unique Character Name')
-      results = Character.en_search('Unique Character')
+      results = described_class.en_search('Unique Character')
       expect(results).to include(character)
     end
   end
@@ -235,7 +235,7 @@ RSpec.describe Character, type: :model do
       expect(character.character_series_memberships).to be_empty
     end
 
-    context 'on a persisted character' do
+    context 'with a persisted character' do
       let(:character) { create(:character) }
       let!(:grand) { create(:character_series, slug: "grand-sync-#{SecureRandom.hex(4)}") }
       let!(:eternal) { create(:character_series, slug: "eternal-sync-#{SecureRandom.hex(4)}") }
@@ -277,16 +277,18 @@ RSpec.describe Character, type: :model do
   describe '.by_series' do
     let(:series) { create(:character_series) }
     let!(:member) { create(:character, name_en: 'Grimnir Test') }
-    let!(:non_member) { create(:character, name_en: 'Grimnir Other') }
 
-    before { create(:character_series_membership, character: member, character_series: series) }
+    before do
+      create(:character, name_en: 'Grimnir Other')
+      create(:character_series_membership, character: member, character_series: series)
+    end
 
     it 'filters to characters in the series' do
-      expect(Character.by_series([series.id])).to contain_exactly(member)
+      expect(described_class.by_series([series.id])).to contain_exactly(member)
     end
 
     it 'can be combined with a ranked text search' do
-      expect(Character.en_search('Grimnir').by_series([series.id]).to_a).to eq([member])
+      expect(described_class.en_search('Grimnir').by_series([series.id]).to_a).to eq([member])
     end
   end
 end

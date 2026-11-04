@@ -29,7 +29,7 @@ RSpec.describe GridSummon, type: :model do
     let(:default_summon) { Summon.find_by!(granblue_id: '2040433000') }
 
     context 'with valid attributes' do
-      subject do
+      subject(:grid_summon) do
         build(:grid_summon,
               party: party,
               summon: default_summon,
@@ -42,7 +42,7 @@ RSpec.describe GridSummon, type: :model do
       end
 
       it 'is valid' do
-        expect(subject).to be_valid
+        expect(grid_summon).to be_valid
       end
     end
 
@@ -55,7 +55,7 @@ RSpec.describe GridSummon, type: :model do
                             uncap_level: 3,
                             transcendence_step: 0)
         expect(grid_summon).not_to be_valid
-        expect(grid_summon.errors[:position].join).to match(/can't be blank/)
+        expect(grid_summon.errors[:position].join).to include("can't be blank")
       end
 
       it 'is invalid without a party' do
@@ -77,7 +77,7 @@ RSpec.describe GridSummon, type: :model do
                             uncap_level: 3,
                             transcendence_step: 0)
         expect(grid_summon).not_to be_valid
-        expect(grid_summon.errors[:summon].join).to match(/must exist/)
+        expect(grid_summon.errors[:summon].join).to include('must exist')
       end
     end
 
@@ -105,7 +105,7 @@ RSpec.describe GridSummon, type: :model do
       end
     end
 
-    context 'custom validations based on Summon flags' do
+    describe 'custom validations based on Summon flags' do
       context 'when the summon does not have FLB flag' do
         let(:summon_without_flb) { default_summon.tap { |s| s.flb = false } }
 
@@ -117,7 +117,7 @@ RSpec.describe GridSummon, type: :model do
                               uncap_level: 4,
                               transcendence_step: 0)
           expect(grid_summon).not_to be_valid
-          expect(grid_summon.errors[:uncap_level].join).to match(/cannot be greater than 3/)
+          expect(grid_summon.errors[:uncap_level].join).to include('cannot be greater than 3')
         end
 
         it 'is valid if uncap_level is 3 or less' do
@@ -147,7 +147,7 @@ RSpec.describe GridSummon, type: :model do
                               uncap_level: 5,
                               transcendence_step: 0)
           expect(grid_summon).not_to be_valid
-          expect(grid_summon.errors[:uncap_level].join).to match(/cannot be greater than 4/)
+          expect(grid_summon.errors[:uncap_level].join).to include('cannot be greater than 4')
         end
 
         it 'is valid if uncap_level is 4 or less' do
@@ -179,7 +179,7 @@ RSpec.describe GridSummon, type: :model do
                               uncap_level: 6,
                               transcendence_step: 0)
           expect(grid_summon).not_to be_valid
-          expect(grid_summon.errors[:uncap_level].join).to match(/cannot be greater than 5/)
+          expect(grid_summon.errors[:uncap_level].join).to include('cannot be greater than 5')
         end
 
         it 'is invalid if transcendence_step is greater than 0' do
@@ -190,7 +190,7 @@ RSpec.describe GridSummon, type: :model do
                               uncap_level: 5,
                               transcendence_step: 1)
           expect(grid_summon).not_to be_valid
-          expect(grid_summon.errors[:transcendence_step].join).to match(/must be 0/)
+          expect(grid_summon.errors[:transcendence_step].join).to include('must be 0')
         end
 
         it 'is valid if uncap_level is 5 or less and transcendence_step is 0' do
@@ -234,7 +234,7 @@ RSpec.describe GridSummon, type: :model do
                           uncap_level: 3,
                           transcendence_step: 0)
       expect(grid_summon).not_to be_valid
-      expect(grid_summon.errors[:position].join).to match(/subaura/)
+      expect(grid_summon.errors[:position].join).to include('subaura')
     end
 
     it 'allows sub summons with subaura' do
@@ -249,10 +249,7 @@ RSpec.describe GridSummon, type: :model do
   end
 
   describe 'default values' do
-    let(:party) { create(:party) }
-    let(:summon) { Summon.find_by!(granblue_id: '2040433000') }
-
-    subject do
+    subject(:grid_summon) do
       build(:grid_summon,
             party: party,
             summon: summon,
@@ -261,16 +258,19 @@ RSpec.describe GridSummon, type: :model do
             transcendence_step: 0)
     end
 
+    let(:party) { create(:party) }
+    let(:summon) { Summon.find_by!(granblue_id: '2040433000') }
+
     it 'defaults quick_summon to false' do
-      expect(subject.quick_summon).to be_falsey
+      expect(grid_summon.quick_summon).to be_falsey
     end
 
     it 'defaults main to false' do
-      expect(subject.main).to be_falsey
+      expect(grid_summon.main).to be_falsey
     end
 
     it 'defaults friend to false' do
-      expect(subject.friend).to be_falsey
+      expect(grid_summon.friend).to be_falsey
     end
   end
 
@@ -291,8 +291,8 @@ RSpec.describe GridSummon, type: :model do
       it 'returns only orphaned grid summons' do
         orphaned_gs
         normal_gs
-        expect(GridSummon.orphaned).to include(orphaned_gs)
-        expect(GridSummon.orphaned).not_to include(normal_gs)
+        expect(described_class.orphaned).to include(orphaned_gs)
+        expect(described_class.orphaned).not_to include(normal_gs)
       end
     end
 
@@ -300,8 +300,8 @@ RSpec.describe GridSummon, type: :model do
       it 'returns only non-orphaned grid summons' do
         orphaned_gs
         normal_gs
-        expect(GridSummon.not_orphaned).to include(normal_gs)
-        expect(GridSummon.not_orphaned).not_to include(orphaned_gs)
+        expect(described_class.not_orphaned).to include(normal_gs)
+        expect(described_class.not_orphaned).not_to include(orphaned_gs)
       end
     end
   end
@@ -501,9 +501,9 @@ RSpec.describe GridSummon, type: :model do
 
     it 'updates party boost columns when a main summon is created' do
       party = create(:party)
-      GridSummon.create!(party: party, summon: bahamut, position: 4, main: false, friend: true, uncap_level: 3, transcendence_step: 0)
+      described_class.create!(party: party, summon: bahamut, position: 4, main: false, friend: true, uncap_level: 3, transcendence_step: 0)
 
-      GridSummon.create!(party: party, summon: colossus, position: -1, main: true, friend: false, uncap_level: 3, transcendence_step: 0)
+      described_class.create!(party: party, summon: colossus, position: -1, main: true, friend: false, uncap_level: 3, transcendence_step: 0)
 
       party.reload
       expect(party.boost_mod).to eq('omega')
@@ -514,7 +514,7 @@ RSpec.describe GridSummon, type: :model do
       party = create(:party)
       party.update_columns(boost_mod: 'omega', boost_side: 'double')
 
-      GridSummon.create!(party: party, summon: bahamut, position: 1, main: false, friend: false, uncap_level: 3, transcendence_step: 0)
+      described_class.create!(party: party, summon: bahamut, position: 1, main: false, friend: false, uncap_level: 3, transcendence_step: 0)
 
       party.reload
       expect(party.boost_mod).to eq('omega')
@@ -523,8 +523,8 @@ RSpec.describe GridSummon, type: :model do
 
     it 'skips the recompute when the party is destroyed with its main and friend summons' do
       party = create(:party)
-      GridSummon.create!(party: party, summon: colossus, position: -1, main: true, friend: false, uncap_level: 3, transcendence_step: 0)
-      GridSummon.create!(party: party, summon: bahamut, position: 4, main: false, friend: true, uncap_level: 3, transcendence_step: 0)
+      described_class.create!(party: party, summon: colossus, position: -1, main: true, friend: false, uncap_level: 3, transcendence_step: 0)
+      described_class.create!(party: party, summon: bahamut, position: 4, main: false, friend: true, uncap_level: 3, transcendence_step: 0)
 
       expect { party.reload.destroy! }.not_to raise_error
       expect(Party.exists?(party.id)).to be false

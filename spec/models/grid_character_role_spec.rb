@@ -29,7 +29,7 @@ RSpec.describe GridCharacterRole, type: :model do
     it 'leaves sort_order nil when not assigned at the model level' do
       # Controller is responsible for defaulting via next_sort_order; the model
       # itself does not default sort_order. Lock that contract.
-      role = GridCharacterRole.create!(name_en: 'Sortless', name_jp: nil, sort_order: nil)
+      role = described_class.create!(name_en: 'Sortless', name_jp: nil, sort_order: nil)
       expect(role.sort_order).to be_nil
     end
   end

@@ -583,7 +583,7 @@ RSpec.describe CharacterImportService, type: :service do
       end
     end
 
-    context 'assigns default awakening via model callback' do
+    describe 'assigns default awakening via model callback' do
       let(:game_data) do
         {
           'list' => [
@@ -623,7 +623,7 @@ RSpec.describe CharacterImportService, type: :service do
       }
     end
 
-    context 'game inventory format' do
+    context 'with the game inventory format' do
       it 'returns an empty array when the record is unchanged' do
         described_class.new(user, { 'list' => [game_item(granblue_id: standard_character.granblue_id, game_id: 1, evolution: '4')] }).import
 
@@ -661,7 +661,7 @@ RSpec.describe CharacterImportService, type: :service do
       end
     end
 
-    context 'extension stats format' do
+    context 'with the extension stats format' do
       before do
         # Seed an owned character
         described_class.new(user, { 'list' => [game_item(granblue_id: standard_character.granblue_id, game_id: 10, evolution: '4')] }).import
@@ -676,7 +676,7 @@ RSpec.describe CharacterImportService, type: :service do
         updates = described_class.new(user, { 'list' => [stats_item] }).preview_updates
 
         expect(updates.size).to eq(1)
-        fields = updates.first[:changes].map { |c| c[:field] }
+        fields = updates.first[:changes].pluck(:field)
         expect(fields).to include('ring1')
       end
 

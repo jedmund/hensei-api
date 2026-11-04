@@ -9,15 +9,15 @@ RSpec.describe WeaponSkill, type: :model do
   end
 
   describe 'validations' do
-    let(:weapon) { create(:weapon) }
-
     subject { build(:weapon_skill, weapon: weapon, position: 0) }
+
+    let(:weapon) { create(:weapon) }
 
     it { is_expected.to validate_presence_of(:weapon_granblue_id) }
     it { is_expected.to validate_presence_of(:position) }
     it { is_expected.to validate_numericality_of(:position).only_integer.is_greater_than_or_equal_to(0) }
 
-    context 'position uniqueness' do
+    describe 'position uniqueness' do
       it 'validates uniqueness scoped to weapon' do
         create(:weapon_skill, weapon: weapon, position: 0)
         duplicate = build(:weapon_skill, weapon: weapon, position: 0)

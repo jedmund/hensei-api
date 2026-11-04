@@ -32,16 +32,13 @@ RSpec.describe Granblue::WeaponSkillDataOwnershipAuditor do
     }
   end
 
-  around do |example|
-    Dir.mktmpdir do |dir|
-      @root = Pathname(dir)
-      example.run
-    end
-  end
+  let(:root) { Pathname(Dir.mktmpdir) }
+
+  after { FileUtils.rm_rf(root) }
 
   it 'passes when null effect rows are documentation or explicitly classified gaps' do
     write_dataset(
-      root: @root,
+      root: root,
       data: [row(modifier: 'Bloodshed', boost_type: 'hp_dmg')],
       effects: [
         row(modifier: 'Bloodshed', boost_type: 'hp_dmg', scaling_kind: 'documentation', total_cap: 40.0),
@@ -59,7 +56,7 @@ RSpec.describe Granblue::WeaponSkillDataOwnershipAuditor do
       ]
     )
 
-    result = described_class.run(root: @root)
+    result = described_class.run(root: root)
 
     expect(result).to be_ok
     expect(result.findings).to be_empty
@@ -67,20 +64,20 @@ RSpec.describe Granblue::WeaponSkillDataOwnershipAuditor do
 
   it 'allows documentation rows without treating them as numeric owners' do
     write_dataset(
-      root: @root,
+      root: root,
       data: [row(modifier: 'Essence', boost_type: 'atk')],
       effects: [row(modifier: 'Essence', boost_type: 'atk', scaling_kind: 'documentation')],
       boost_types: [boost_type('atk')]
     )
 
-    result = described_class.run(root: @root)
+    result = described_class.run(root: root)
 
     expect(result).to be_ok
   end
 
   it 'allows conditional effect deltas on top of baseline data rows' do
     write_dataset(
-      root: @root,
+      root: root,
       data: [row(modifier: 'Sephira Manus', boost_type: 'da')],
       effects: [
         row(
@@ -94,14 +91,14 @@ RSpec.describe Granblue::WeaponSkillDataOwnershipAuditor do
       boost_types: [boost_type('da')]
     )
 
-    result = described_class.run(root: @root)
+    result = described_class.run(root: root)
 
     expect(result).to be_ok
   end
 
   it 'allows a null scalar value when an inline weapon-skill curve owns the values' do
     write_dataset(
-      root: @root,
+      root: root,
       effects: [
         row(
           modifier: 'Preemptive Blade',
@@ -116,19 +113,19 @@ RSpec.describe Granblue::WeaponSkillDataOwnershipAuditor do
       boost_types: [boost_type('atk')]
     )
 
-    result = described_class.run(root: @root)
+    result = described_class.run(root: root)
 
     expect(result).to be_ok
   end
 
   it 'fails an unclassified scalar-like null effect row' do
     write_dataset(
-      root: @root,
+      root: root,
       effects: [row(modifier: 'Mystery', boost_type: 'atk', scaling_kind: 'static')],
       boost_types: [boost_type('atk')]
     )
 
-    result = described_class.run(root: @root)
+    result = described_class.run(root: root)
 
     expect(result).not_to be_ok
     expect(result.findings.map(&:code)).to include('unclassified_null_effect')
@@ -136,13 +133,13 @@ RSpec.describe Granblue::WeaponSkillDataOwnershipAuditor do
 
   it 'fails a cap stranded on a null effect when weapon_skill_data owns the value' do
     write_dataset(
-      root: @root,
+      root: root,
       data: [row(modifier: 'Bloodshed', boost_type: 'hp_dmg')],
       effects: [row(modifier: 'Bloodshed', boost_type: 'hp_dmg', scaling_kind: 'static', total_cap: 40.0)],
       boost_types: [boost_type('hp_dmg')]
     )
 
-    result = described_class.run(root: @root)
+    result = described_class.run(root: root)
 
     expect(result).not_to be_ok
     expect(result.findings.map(&:code)).to include('stranded_null_effect_cap')
@@ -150,7 +147,7 @@ RSpec.describe Granblue::WeaponSkillDataOwnershipAuditor do
 
   it 'allows table-valued specialty scaling with values in condition.specialties' do
     write_dataset(
-      root: @root,
+      root: root,
       effects: [
         row(
           modifier: "Pillar-Smasher's Conviction",
@@ -162,19 +159,19 @@ RSpec.describe Granblue::WeaponSkillDataOwnershipAuditor do
       boost_types: [boost_type('atk')]
     )
 
-    result = described_class.run(root: @root)
+    result = described_class.run(root: root)
 
     expect(result).to be_ok
   end
 
   it 'fails boost types emitted by data/effects but missing from the registry' do
     write_dataset(
-      root: @root,
+      root: root,
       data: [row(modifier: 'Might', boost_type: 'atk')],
       boost_types: []
     )
 
-    result = described_class.run(root: @root)
+    result = described_class.run(root: root)
 
     expect(result).not_to be_ok
     expect(result.findings.map(&:code)).to include('unregistered_boost_type')
@@ -182,7 +179,7 @@ RSpec.describe Granblue::WeaponSkillDataOwnershipAuditor do
 
   it 'fails legacy or invalid count bases' do
     write_dataset(
-      root: @root,
+      root: root,
       effects: [
         row(modifier: 'Voltage', boost_type: 'ex_atk_sp', scaling_kind: 'per_grid_count',
             value: 4.0, count_basis: 'weapon_type'),
@@ -194,7 +191,7 @@ RSpec.describe Granblue::WeaponSkillDataOwnershipAuditor do
       boost_types: [boost_type('ex_atk_sp'), boost_type('atk')]
     )
 
-    result = described_class.run(root: @root)
+    result = described_class.run(root: root)
 
     expect(result).not_to be_ok
     expect(result.findings.map(&:code)).to include('invalid_count_basis', 'invalid_condition_count_basis')
@@ -202,7 +199,7 @@ RSpec.describe Granblue::WeaponSkillDataOwnershipAuditor do
 
   it 'fails legacy or tautological count conditions' do
     write_dataset(
-      root: @root,
+      root: root,
       effects: [
         row(modifier: 'Heroic Tale', boost_type: 'atk', scaling_kind: 'conditional_flat',
             value: 20.0, condition: { 'type' => 'weapon_group_count', 'gte' => 0, 'all' => true }),
@@ -213,7 +210,7 @@ RSpec.describe Granblue::WeaponSkillDataOwnershipAuditor do
       boost_types: [boost_type('atk'), boost_type('dmg_cap')]
     )
 
-    result = described_class.run(root: @root)
+    result = described_class.run(root: root)
 
     expect(result).not_to be_ok
     expect(result.findings.count { |finding| finding.code == 'invalid_count_condition' }).to eq(2)

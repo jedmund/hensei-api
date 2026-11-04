@@ -243,8 +243,8 @@ RSpec.describe CrewInvitation, type: :model do
       let!(:expired_invitation) { create(:crew_invitation, :expired_by_time, crew: crew, user: other_user, invited_by: captain) }
 
       it 'returns only active invitations' do
-        expect(CrewInvitation.active).to include(active_invitation)
-        expect(CrewInvitation.active).not_to include(expired_invitation)
+        expect(described_class.active).to include(active_invitation)
+        expect(described_class.active).not_to include(expired_invitation)
       end
     end
   end

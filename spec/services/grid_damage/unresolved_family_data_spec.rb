@@ -39,7 +39,7 @@ RSpec.describe 'source-complete unresolved family data' do
                                  'applies_to' => 'mc_only')
     expect(covert).to include('boost_type' => 'ca_dmg', 'value' => 20.0,
                               'applies_to' => 'mc_only')
-    expect(staff.map { |row| row['boost_type'] }).to contain_exactly('da', 'ta')
+    expect(staff.pluck('boost_type')).to contain_exactly('da', 'ta')
     expect(staff).to all(include('value' => 1.0, 'count_basis' => 'same_weapon_type',
                                  'count_cap' => 10, 'stacking' => 'highest_only'))
   end

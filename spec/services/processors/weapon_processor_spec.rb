@@ -123,6 +123,8 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
 
   # Excerpts from a real party-deck response (deck "Gold3")
   describe 'augment skills and skill levels from a real deck' do
+    subject(:weapon_processor) { described_class.new(party, deck) }
+
     let!(:befoulment_modifier) { create(:weapon_stat_modifier, :befoul_atk_down) }
     let!(:ax_atk_modifier) { WeaponStatModifier.find_by(game_skill_id: 1589) || create(:weapon_stat_modifier, :ax_atk) }
     let!(:ax_skill_cap_modifier) { create(:weapon_stat_modifier, :ax_skill_cap) }
@@ -177,10 +179,8 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
       }
     end
 
-    subject { described_class.new(party, deck) }
-
     it "stores the Odious weapon's befoulment, permeation, exorcision and skill levels" do
-      subject.process
+      weapon_processor.process
 
       grid_weapon = party.weapons.find_by(weapon: odious_weapon)
       expect(grid_weapon.befoulment_modifier).to eq(befoulment_modifier)
@@ -190,11 +190,11 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
       expect(grid_weapon.exorcism_level).to eq(5)
       expect(grid_weapon.skill_level).to eq(15)
       expect(grid_weapon.ax_modifier1_id).to be_nil
-      expect(subject.warnings).to be_empty
+      expect(weapon_processor.warnings).to be_empty
     end
 
     it "stores the AX weapon's Skill DMG Cap roll and skill level" do
-      subject.process
+      weapon_processor.process
 
       grid_weapon = party.weapons.find_by(weapon: ax_weapon)
       expect(grid_weapon.ax_modifier1).to eq(ax_atk_modifier)
@@ -209,7 +209,7 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
       odious_copy = create(:collection_weapon, user: party.user, weapon: odious_weapon, game_id: '54321')
       ax_copy = create(:collection_weapon, user: party.user, weapon: ax_weapon, game_id: '65432')
 
-      subject.process
+      weapon_processor.process
 
       grid_weapon = party.weapons.find_by(weapon: odious_weapon)
       expect(grid_weapon.collection_weapon).to eq(odious_copy)
@@ -232,7 +232,7 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
       odious_copy = create(:collection_weapon, user: party.user, weapon: odious_weapon, game_id: '54321',
                                                befoulment_permeation: 4, skill_level: 12)
 
-      subject.process
+      weapon_processor.process
 
       grid_weapon = party.weapons.find_by(weapon: odious_weapon)
       expect(grid_weapon.befoulment_permeation).to eq(4)
@@ -284,8 +284,10 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
     end
 
     context 'when the raw key is provided via KEY_MAPPING' do
-      xit 'assigns the mapped WeaponKey (requires weapon_series seed data for weapon key mapping)' do
-        skill_ids = [deck_weapon['skill1'], deck_weapon['skill2'], deck_weapon['skill3']].compact.map { |s| s['id'] }
+      it 'assigns the mapped WeaponKey' do
+        skip 'requires weapon_series seed data for weapon key mapping'
+
+        skill_ids = [deck_weapon['skill1'], deck_weapon['skill2'], deck_weapon['skill3']].compact.pluck('id')
         processor.send(:process_weapon_keys, grid_weapon, skill_ids)
         expect(grid_weapon.weapon_key1_id).to be_nil
         expect(grid_weapon.weapon_key2_id).to eq(WeaponKey.find_by(slug: 'pendulum-beta').id)
@@ -302,6 +304,8 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
   end
 
   describe 'AX skills survive collection sync' do
+    subject(:weapon_processor) { described_class.new(party, deck_data) }
+
     # Weapon 10 in deck_sample2 is Celeste Zaghnal Omega with augment_skill_info skill_id=1589 (ax_atk)
     let(:deck_data) do
       file_path = Rails.root.join("spec/fixtures/deck_sample2.json")
@@ -313,16 +317,14 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
         create(:weapon_stat_modifier, :ax_atk)
     end
 
-    let!(:ax_weapon) do
+    before do
       weapon = Weapon.find_by!(granblue_id: '1040301400')
       weapon.update!(weapon_series: create(:weapon_series, :with_ax_skills))
       weapon
     end
 
-    subject { described_class.new(party, deck_data) }
-
     it 'preserves AX skills on grid weapon after collection sync' do
-      subject.process
+      weapon_processor.process
 
       # Weapon 10 maps to position 8 (key 10, position = 10 - 2 = 8)
       grid_weapon = party.weapons.find_by(position: 8)
@@ -333,7 +335,9 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
   end
 
   describe 'weapons that fail validation' do
-    let!(:ax_atk_modifier) do
+    subject(:weapon_processor) { described_class.new(party, invalid_ax_deck) }
+
+    before do
       WeaponStatModifier.find_by(game_skill_id: 1589) ||
         create(:weapon_stat_modifier, :ax_atk)
     end
@@ -360,17 +364,15 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
       }
     end
 
-    subject { described_class.new(party, invalid_ax_deck) }
-
     it 'does not leave the invalid record on the party association' do
-      subject.process
+      weapon_processor.process
 
       expect(party.weapons.select(&:new_record?)).to be_empty
       expect { party.update!(name: 'Renamed') }.not_to raise_error
     end
 
     it 'keeps the weapon and drops its invalid AX skills' do
-      expect { subject.process }.to change(GridWeapon, :count).by(1)
+      expect { weapon_processor.process }.to change(GridWeapon, :count).by(1)
 
       grid_weapon = party.weapons.find_by(position: -1)
       expect(grid_weapon.weapon).to eq(ax_weapon)
@@ -379,9 +381,9 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
     end
 
     it 'reports the dropped AX skills as a warning' do
-      subject.process
+      weapon_processor.process
 
-      expect(subject.warnings).to contain_exactly(
+      expect(weapon_processor.warnings).to contain_exactly(
         a_hash_including(code: 'ax_skills_dropped', type: 'weapon', position: -1, granblue_id: '1040399900')
       )
     end
@@ -446,20 +448,20 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
   end
 
   describe 'processing a complete canonical deck' do
+    subject(:weapon_processor) { described_class.new(party, deck_data) }
+
     let(:deck_data) do
       file_path = Rails.root.join("spec/fixtures/deck_sample2.json")
       JSON.parse(File.read(file_path))
     end
 
-    subject { described_class.new(party, deck_data) }
-
     it 'processes the deck and creates the expected number of GridWeapon records' do
       # Assume the canonical records are already loaded (via canonical.rb).
-      expect { subject.process }.to change(GridWeapon, :count).by(13)
+      expect { weapon_processor.process }.to change(GridWeapon, :count).by(13)
     end
 
     it 'creates the correct main weapon' do
-      subject.process
+      weapon_processor.process
       # In this canonical deck, the main weapon (slot 1) should be Parazonium.
       main_weapon = party.weapons.find_by(position: -1)
       expect(main_weapon).not_to be_nil

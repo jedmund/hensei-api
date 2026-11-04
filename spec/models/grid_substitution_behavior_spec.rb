@@ -80,7 +80,7 @@ RSpec.describe 'Grid model substitution behavior', type: :model do
   end
 
   describe 'validation guards for substitutes' do
-    context 'GridWeapon' do
+    describe 'GridWeapon' do
       let(:default_series) { create(:weapon_series, extra: false) }
       let(:limited_weapon) { create(:weapon, limit: true, weapon_series: default_series) }
 
@@ -99,7 +99,7 @@ RSpec.describe 'Grid model substitution behavior', type: :model do
       end
     end
 
-    context 'GridCharacter' do
+    describe 'GridCharacter' do
       it 'skips awakening validation for substitute characters on update' do
         gc = create(:grid_character, party: party, position: 0, is_substitute: true)
         # Setting awakening_level to 0 would normally fail validate_awakening_level

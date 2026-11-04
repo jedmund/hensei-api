@@ -28,49 +28,39 @@ RSpec.describe WeaponImportService, type: :service do
     weapon
   end
 
-  # Create weapon awakenings
-  let!(:awakening_atk) do
+  let(:awakening_atk) do
     Awakening.find_by(slug: 'weapon-atk', object_type: 'Weapon') ||
       create(:awakening, :for_weapon, slug: 'weapon-atk', name_en: 'Attack')
   end
 
-  let!(:awakening_def) do
-    Awakening.find_by(slug: 'weapon-def', object_type: 'Weapon') ||
-      create(:awakening, :for_weapon, slug: 'weapon-def', name_en: 'Defense')
-  end
-
-  let!(:awakening_special) do
-    Awakening.find_by(slug: 'weapon-special', object_type: 'Weapon') ||
-      create(:awakening, :for_weapon, slug: 'weapon-special', name_en: 'Special')
-  end
-
-  let!(:awakening_ca) do
-    Awakening.find_by(slug: 'weapon-ca', object_type: 'Weapon') ||
-      create(:awakening, :for_weapon, slug: 'weapon-ca', name_en: 'C.A.')
-  end
-
-  let!(:awakening_skill) do
-    Awakening.find_by(slug: 'weapon-skill', object_type: 'Weapon') ||
-      create(:awakening, :for_weapon, slug: 'weapon-skill', name_en: 'Skill DMG')
-  end
-
-  let!(:awakening_heal) do
-    Awakening.find_by(slug: 'weapon-heal', object_type: 'Weapon') ||
-      create(:awakening, :for_weapon, slug: 'weapon-heal', name_en: 'Healing')
-  end
-
-  # Create weapon stat modifiers for AX skill tests
-  let!(:ax_atk_modifier) do
+  # Weapon stat modifiers for AX skill tests
+  let(:ax_atk_modifier) do
     WeaponStatModifier.find_by(slug: 'ax_atk') ||
       create(:weapon_stat_modifier, :ax_atk)
   end
 
-  let!(:ax_ca_dmg_modifier) do
+  let(:ax_ca_dmg_modifier) do
     WeaponStatModifier.find_by(slug: 'ax_ca_dmg') ||
       create(:weapon_stat_modifier, :ax_ca_dmg)
   end
 
+  # One hook, in the original creation order: awakenings, AX modifiers, then weapons
   before do
+    awakening_atk
+    Awakening.find_by(slug: 'weapon-def', object_type: 'Weapon') ||
+      create(:awakening, :for_weapon, slug: 'weapon-def', name_en: 'Defense')
+    Awakening.find_by(slug: 'weapon-special', object_type: 'Weapon') ||
+      create(:awakening, :for_weapon, slug: 'weapon-special', name_en: 'Special')
+    Awakening.find_by(slug: 'weapon-ca', object_type: 'Weapon') ||
+      create(:awakening, :for_weapon, slug: 'weapon-ca', name_en: 'C.A.')
+    Awakening.find_by(slug: 'weapon-skill', object_type: 'Weapon') ||
+      create(:awakening, :for_weapon, slug: 'weapon-skill', name_en: 'Skill DMG')
+    Awakening.find_by(slug: 'weapon-heal', object_type: 'Weapon') ||
+      create(:awakening, :for_weapon, slug: 'weapon-heal', name_en: 'Healing')
+
+    ax_atk_modifier
+    ax_ca_dmg_modifier
+
     standard_weapon
     transcendable_weapon
     awakened_weapon
@@ -778,8 +768,9 @@ RSpec.describe WeaponImportService, type: :service do
     let(:fire_weapon) { create(:weapon, element: 1) }
     let(:water_weapon) { create(:weapon, element: 2) }
     let!(:fire_copy) { create(:collection_weapon, user: user, weapon: fire_weapon, game_id: '8001') }
-    let!(:water_copy) { create(:collection_weapon, user: user, weapon: water_weapon, game_id: '8002') }
     let(:game_data) { { 'list' => [{ 'param' => { 'id' => '8999' }, 'master' => { 'id' => fire_weapon.granblue_id } }] } }
+
+    before { create(:collection_weapon, user: user, weapon: water_weapon, game_id: '8002') }
 
     it "scopes deletions to the game's element ids" do
       service = described_class.new(user, game_data, filter: { 'element_ids' => [1] })
@@ -836,7 +827,7 @@ RSpec.describe WeaponImportService, type: :service do
 
     before { ccw_weapon }
 
-    context 'variant resolution' do
+    describe 'variant resolution' do
       it 'resolves a non-base variant ID to the base weapon record' do
         # Wind variant 1040005500 does NOT exist as a granblue_id in the weapons table.
         # It should be resolved to the Skofnung record via element_variant_ids JSONB.
@@ -875,7 +866,7 @@ RSpec.describe WeaponImportService, type: :service do
       end
     end
 
-    context 'element assignment' do
+    describe 'element assignment' do
       it 'stores the correct element for each variant' do
         result = described_class.new(user, { 'list' => [
                                        weapon_item(game_id: 6001, image_id: '1040005500'), # Wind = 4
@@ -917,7 +908,7 @@ RSpec.describe WeaponImportService, type: :service do
       end
     end
 
-    context 'multiple variants of the same weapon' do
+    context 'with multiple variants of the same weapon' do
       it 'creates separate collection records for each element variant' do
         data = { 'list' => [
           weapon_item(game_id: 7001, image_id: '1040005500'), # Wind
@@ -953,11 +944,11 @@ RSpec.describe WeaponImportService, type: :service do
         second_result = described_class.new(user, data).import
         expect(second_result.created.size).to eq(0)
         expect(second_result.skipped.size).to eq(2)
-        expect(second_result.skipped.map { |s| s[:reason] }).to all(eq('Already exists'))
+        expect(second_result.skipped.pluck(:reason)).to all(eq('Already exists'))
       end
     end
 
-    context 'updating existing element variants' do
+    context 'when updating existing element variants' do
       it 'updates uncap_level on existing variant when update_existing is true' do
         # First import at uncap 3
         described_class.new(user, { 'list' => [
@@ -978,7 +969,7 @@ RSpec.describe WeaponImportService, type: :service do
       end
     end
 
-    context 'mixed import with regular and element-changeable weapons' do
+    context 'with a mix of regular and element-changeable weapons' do
       it 'correctly handles both types in a single import' do
         data = { 'list' => [
           weapon_item(game_id: 9001, image_id: standard_weapon.granblue_id),
@@ -1074,19 +1065,19 @@ RSpec.describe WeaponImportService, type: :service do
       updates = described_class.new(user, { 'list' => [item_awakened] }).preview_updates
 
       expect(updates.size).to eq(1)
-      fields = updates.first[:changes].map { |c| c[:field] }
+      fields = updates.first[:changes].pluck(:field)
       expect(fields).to include('awakening_id', 'awakening_level')
     end
   end
 
   describe 'result entries' do
+    let(:weapon) { create(:weapon) }
+
     # Errors go back to the extension verbatim, so their keys are part of the API.
     def game_item(game_id, granblue_id, **param)
       { 'param' => { 'id' => game_id, 'image_id' => granblue_id, 'evolution' => 3, 'phase' => 0, **param },
         'master' => { 'id' => granblue_id } }
     end
-
-    let(:weapon) { create(:weapon) }
 
     it 'records skips by game id' do
       create(:collection_weapon, user: user, weapon: weapon, game_id: '1')
