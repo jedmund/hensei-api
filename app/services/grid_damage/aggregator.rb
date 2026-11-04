@@ -89,32 +89,34 @@ module GridDamage
       ungrouped + pooled
     end
 
+    # How one boost_type totals: its stacking rule and its grid cap (flat or percent).
+    BoostRule = Data.define(:boost_type, :rule, :cap, :flat)
+
     def build_result(group, meta)
-      boost_type = group.first.boost_type
-      rule = meta&.stacking_rule || 'additive'
-      cap = meta&.grid_cap&.to_f
-      flat = meta&.cap_is_flat || false
+      boost = BoostRule.new(boost_type: group.first.boost_type, rule: meta&.stacking_rule || 'additive',
+                            cap: meta&.grid_cap&.to_f, flat: meta&.cap_is_flat || false)
       sources = source_map(group)
 
-      case rule
+      case boost.rule
       when 'multiplicative_by_series'
         by_series = group.group_by(&:series).transform_values { |g| sum(g) }
-        Result.new(boost_type: boost_type, rule: rule, by_series: by_series, total: by_series.values.sum,
-                   raw: by_series.values.sum, cap: nil, cap_is_flat: flat, capped: false,
+        Result.new(boost_type: boost.boost_type, rule: boost.rule, by_series: by_series, total: by_series.values.sum,
+                   raw: by_series.values.sum, cap: nil, cap_is_flat: boost.flat, capped: false,
                    source_map: sources)
       when 'highest_only'
-        capped(boost_type, rule, group.map(&:value).max, cap, flat, sources)
+        capped(boost, group.map(&:value).max, sources)
       else
-        capped(boost_type, rule, sum(group), cap, flat, sources)
+        capped(boost, sum(group), sources)
       end
     end
 
     # A negative cap is a floor: befoulment Hit lines stop at -99% (-90% for HP).
-    def capped(boost_type, rule, raw, cap, flat, sources = {})
+    def capped(boost, raw, sources = {})
+      cap = boost.cap
       over = !cap.nil? && (cap.negative? ? raw < cap : raw > cap)
       total = over ? cap : raw
-      Result.new(boost_type: boost_type, rule: rule, total: total, by_series: nil, raw: raw, cap: cap,
-                 cap_is_flat: flat, capped: over, source_map: sources)
+      Result.new(boost_type: boost.boost_type, rule: boost.rule, total: total, by_series: nil, raw: raw, cap: cap,
+                 cap_is_flat: boost.flat, capped: over, source_map: sources)
     end
 
     def source_map(group)

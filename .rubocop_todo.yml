@@ -178,7 +178,6 @@ Metrics/MethodLength:
 Metrics/ParameterLists:
   Exclude:
     - 'app/services/gacha_simulation/probability.rb'
-    - 'app/services/grid_damage/aggregator.rb'
     - 'app/services/party_sticker_summary.rb'
     - 'lib/character_skills/status_verb_rules.rb'
     - 'lib/granblue/extractors/weapon_skill_data_extractor.rb'
