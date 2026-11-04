@@ -1,18 +1,19 @@
 # frozen_string_literal: true
 
 ##
-# Service for importing weapons from game JSON data.
-# Parses the game's weapon inventory data and creates CollectionWeapon records.
+# Imports weapons from the game's weapon list into the user's CollectionWeapon
+# records. The shared flow is CollectionImport::Inventory; this class finds the
+# weapon (element-changeable weapons included) and maps uncap, transcendence,
+# awakening, AX skills and befoulment.
 #
 # @example Import weapons for a user
-#   service = WeaponImportService.new(user, game_data)
-#   result = service.import
-#   if result.success?
-#     puts "Imported #{result.created.size} weapons"
-#   end
+#   result = WeaponImportService.new(user, game_data, update_existing: true).import
+#   result.created.size # => weapons added
 #
-class WeaponImportService
-  Result = Struct.new(:success?, :created, :updated, :skipped, :errors, :reconciliation, keyword_init: true)
+class WeaponImportService < CollectionImport::Inventory
+  include CollectionImport::GameItems
+
+  collection_import :weapon, grid_model: GridWeapon
 
   # Game awakening form to our slug mapping
   AWAKENING_FORM_MAPPING = {
@@ -25,291 +26,46 @@ class WeaponImportService
   }.freeze
 
   def initialize(user, game_data, options = {})
-    @user = user
-    @game_data = game_data
-    @update_existing = options[:update_existing] || false
-    @is_full_inventory = options[:is_full_inventory] || false
-    @reconcile_deletions = options[:reconcile_deletions] || false
-    @filter = CollectionImportFilter.from(options[:filter])
-    @conflict_resolutions = options[:conflict_resolutions] || {}
-    @created = []
-    @updated = []
-    @skipped = []
-    @errors = []
+    super
     @awakening_cache = {}
     @augment_parser = Granblue::AugmentSkillParser.new(log_tag: 'WeaponImportService')
-    @processed_game_ids = []
-  end
-
-  ##
-  # Previews what would be deleted in a sync operation.
-  # Does not modify any data, just returns items that would be removed.
-  # When a filter is active, only considers items matching that filter.
-  #
-  # @return [Array<CollectionWeapon>] Collection weapons that would be deleted
-  def preview_deletions
-    items = extract_items
-    return [] if items.empty?
-
-    # Extract all game_ids from the import data
-    game_ids = items.filter_map do |item|
-      param = item['param'] || {}
-      param['id'].to_s if param['id'].present?
-    end
-
-    return [] if game_ids.empty?
-
-    # Find collection weapons with game_ids NOT in the import
-    # Scoped to filter criteria if present
-    scope = @user.collection_weapons
-                 .includes(:weapon)
-                 .where.not(game_id: nil)
-                 .where.not(game_id: game_ids)
-
-    apply_filter_scope(scope)
-  end
-
-  ##
-  # Imports weapons from game data.
-  #
-  # @return [Result] Import result with counts and errors
-  def import
-    items = extract_items
-    if items.empty?
-      return Result.new(
-        success?: false,
-        created: [],
-        updated: [],
-        skipped: [],
-        errors: ['No weapon items found in data'],
-        reconciliation: nil
-      )
-    end
-
-    ActiveRecord::Base.transaction do
-      items.each_with_index do |item, index|
-        import_item(item, index)
-      rescue StandardError => e
-        @errors << { index: index, game_id: item.dig('param', 'id'), error: e.message }
-      end
-    end
-
-    # Handle deletion reconciliation if requested
-    reconciliation_result = nil
-    reconciliation_result = reconcile_deletions if @reconcile_deletions && @is_full_inventory && @processed_game_ids.any?
-
-    Result.new(
-      success?: @errors.empty?,
-      created: @created,
-      updated: @updated,
-      skipped: @skipped,
-      errors: @errors,
-      reconciliation: reconciliation_result
-    )
-  end
-
-  ##
-  # Dry-run: returns the diff that `import` (with update_existing: true) would apply
-  # to each already-owned CollectionWeapon. Non-owned weapons are skipped.
-  #
-  # @return [Array<Hash>] one entry per changed record: { game_id:, granblue_id:, changes: [...] }
-  def preview_updates
-    items = extract_items
-    return [] if items.empty?
-
-    updates = []
-
-    items.each do |item|
-      param = item['param'] || {}
-      master = item['master'] || {}
-
-      game_id = param['id']
-      next unless game_id.present?
-
-      image_id = param['image_id'].to_s.split('_').first if param['image_id'].present?
-      granblue_id = image_id || master['id']
-      next unless granblue_id.present?
-
-      weapon, resolved_element = find_weapon(granblue_id)
-      next unless weapon
-
-      existing = @user.collection_weapons.find_by(game_id: game_id.to_s)
-      next unless existing
-
-      attrs = build_collection_weapon_attrs(item, weapon, resolved_element)
-      existing.assign_attributes(attrs)
-      next if existing.changes.empty?
-
-      updates << {
-        game_id: game_id.to_s,
-        granblue_id: weapon.granblue_id,
-        changes: CollectionImport::ChangeFormatter.format(existing.changes)
-      }
-    end
-
-    updates
   end
 
   private
 
-  def extract_items
-    return @game_data if @game_data.is_a?(Array)
-    return @game_data['list'] if @game_data.is_a?(Hash) && @game_data['list'].is_a?(Array)
-
-    []
+  # Element-changeable weapons arrive under element-variant ids that differ from
+  # the base granblue_id; those are found through element_variant_ids.
+  def find_catalog(item)
+    id = granblue_id(item).to_s
+    Weapon.find_by(granblue_id: id) ||
+      Weapon.where('EXISTS (SELECT 1 FROM jsonb_each_text(element_variant_ids) AS kv WHERE kv.value = ?)', id).first
   end
 
-  def import_item(item, _index)
-    param = item['param'] || {}
-    master = item['master'] || {}
-
-    # The weapon's granblue_id can be in param.image_id or master.id
-    # image_id may have a suffix like "_03" for Dark Opus weapons, so strip it
-    image_id = param['image_id'].to_s.split('_').first if param['image_id'].present?
-    granblue_id = image_id || master['id']
-    game_id = param['id']
-
-    # Track this game_id as processed (for reconciliation)
-    @processed_game_ids << game_id.to_s if game_id.present?
-
-    weapon, resolved_element = find_weapon(granblue_id)
-    unless weapon
-      @errors << { game_id: game_id, granblue_id: granblue_id, error: 'Weapon not found' }
-      return
-    end
-
-    # Check for existing collection weapon with same game ID
-    existing = @user.collection_weapons.find_by(game_id: game_id.to_s)
-    found_via_conflict = false
-
-    # If no match by game_id, check for conflict resolutions (null game_id records)
-    if !existing && game_id.present? && @conflict_resolutions.present?
-      resolution = @conflict_resolutions[game_id.to_s]
-      if resolution == 'import'
-        existing = @user.collection_weapons.find_by(weapon_id: weapon.id, game_id: nil)
-        found_via_conflict = true
-      elsif resolution == 'skip'
-        @skipped << { game_id: game_id, reason: 'Skipped by user' }
-        return
-      end
-    end
-
-    if existing
-      if @update_existing || found_via_conflict
-        update_existing_weapon(existing, item, weapon, resolved_element)
-      else
-        @skipped << { game_id: game_id, reason: 'Already exists' }
-      end
-      return
-    end
-
-    create_collection_weapon(item, weapon, resolved_element)
-  end
-
-  # Finds a Weapon record for the given granblue_id.
-  # For element-changeable weapons, the game sends element-variant IDs that differ
-  # from the base granblue_id stored in our DB. We resolve these via element_variant_ids JSONB.
-  #
-  # @param granblue_id [String] the game's weapon ID (may be a variant ID)
-  # @return [Array<Weapon, Integer>] the weapon and resolved element, or [nil, nil]
-  def find_weapon(granblue_id)
-    id_str = granblue_id.to_s
-
-    # Direct match (works for non-element-changeable weapons and base variants)
-    weapon = Weapon.find_by(granblue_id: id_str)
-    if weapon
-      # For element-changeable weapons, the base granblue_id may also be a variant ID
-      element = resolve_element_from_variants(weapon, id_str)
-      return [weapon, element]
-    end
-
-    # Reverse-lookup via element_variant_ids JSONB
-    weapon = Weapon.where(
-      'EXISTS (SELECT 1 FROM jsonb_each_text(element_variant_ids) AS kv WHERE kv.value = ?)',
-      id_str
-    ).first
-    return [nil, nil] unless weapon
-
-    element = resolve_element_from_variants(weapon, id_str)
-    [weapon, element]
-  end
-
-  def resolve_element_from_variants(weapon, variant_id)
-    return nil unless weapon.element_variant_ids.present?
+  # The element of the variant the game id names, or nil for a weapon without variants.
+  def variant_element(weapon, variant_id)
+    return nil if weapon.element_variant_ids.blank?
 
     weapon.element_variant_ids.find { |_k, v| v == variant_id }&.first&.to_i
   end
 
-  def create_collection_weapon(item, weapon, resolved_element = nil)
-    attrs = build_collection_weapon_attrs(item, weapon, resolved_element)
-
-    collection_weapon = @user.collection_weapons.build(attrs)
-
-    if collection_weapon.save
-      @created << collection_weapon
-    else
-      @errors << {
-        game_id: item.dig('param', 'id'),
-        granblue_id: weapon.granblue_id,
-        error: collection_weapon.errors.full_messages.join(', ')
-      }
-    end
-  end
-
-  def update_existing_weapon(existing, item, weapon, resolved_element = nil)
-    attrs = build_collection_weapon_attrs(item, weapon, resolved_element)
-
-    if existing.update(attrs)
-      @updated << existing
-    else
-      @errors << {
-        game_id: item.dig('param', 'id'),
-        granblue_id: weapon.granblue_id,
-        error: existing.errors.full_messages.join(', ')
-      }
-    end
-  end
-
-  def build_collection_weapon_attrs(item, weapon, resolved_element = nil)
-    param = item['param'] || {}
-
-    uncap = parse_uncap_level(param['evolution'])
-    transcendence = parse_transcendence_step(param['phase'])
-
-    # Transcended weapons have uncap_level 6 (beyond the normal 0-5 range)
-    uncap = 6 if transcendence > 0 && uncap >= 5
-
+  def build_attrs(item, weapon)
+    param = game_params(item)
     attrs = {
       weapon: weapon,
-      game_id: param['id'].present? ? param['id'].to_s : nil,
-      uncap_level: uncap,
-      transcendence_step: transcendence,
-      element: resolved_element
+      game_id: game_id_attr(item),
+      **game_uncap(param['evolution'], param['phase']),
+      element: variant_element(weapon, granblue_id(item).to_s)
     }
 
-    # Parse awakening if present
     awakening_attrs = parse_awakening(param['arousal'])
     attrs.merge!(awakening_attrs) if awakening_attrs
 
     # Befoulment and exorcism level for Odious weapons, AX skills otherwise
     attrs.merge!(@augment_parser.attributes(param))
-
-    attrs
-  end
-
-  def parse_uncap_level(evolution)
-    value = evolution.to_i
-    value.clamp(0, 5)
-  end
-
-  def parse_transcendence_step(phase)
-    value = phase.to_i
-    value.clamp(0, 10)
   end
 
   ##
   # Parses awakening data from game format.
-  # Game arousal data contains level and form info.
   #
   # @param arousal [Hash] The game's arousal (awakening) data
   # @return [Hash, nil] Awakening attributes or nil if no awakening
@@ -317,14 +73,10 @@ class WeaponImportService
     return nil if arousal.blank? || arousal['is_arousal_weapon'] != true
     return nil if arousal['level'].blank?
 
-    form = arousal['form'].to_i
-    awakening = find_awakening_by_form(form)
+    awakening = find_awakening_by_form(arousal['form'].to_i)
     return nil unless awakening
 
-    {
-      awakening_id: awakening.id,
-      awakening_level: arousal['level'].to_i.clamp(1, 20)
-    }
+    { awakening_id: awakening.id, awakening_level: arousal['level'].to_i.clamp(1, 20) }
   end
 
   def find_awakening_by_form(form)
@@ -334,65 +86,16 @@ class WeaponImportService
     @awakening_cache[slug] ||= Awakening.find_by(slug: slug, object_type: 'Weapon')
   end
 
-  ##
-  # Reconciles deletions by removing collection weapons not in the processed list.
-  # Only called when @is_full_inventory and @reconcile_deletions are both true.
-  # When a filter is active, only deletes items matching that filter.
-  #
-  # @return [Hash] Reconciliation result with deleted count and orphaned grid item IDs
-  def reconcile_deletions
-    # Find collection weapons with game_ids NOT in our processed list
-    # Scoped to filter criteria if present
-    scope = @user.collection_weapons
-                 .where.not(game_id: nil)
-                 .where.not(game_id: @processed_game_ids)
-
-    scope = apply_filter_scope(scope)
-
-    deleted_count = 0
-    orphaned_grid_item_ids = []
-
-    scope.find_each do |coll_weapon|
-      # Collect IDs of grid items that will be orphaned
-      grid_weapon_ids = GridWeapon.where(collection_weapon_id: coll_weapon.id).pluck(:id)
-      orphaned_grid_item_ids.concat(grid_weapon_ids)
-
-      # The before_destroy callback on CollectionWeapon will mark grid items as orphaned
-      coll_weapon.destroy
-      deleted_count += 1
-    end
-
-    {
-      deleted: deleted_count,
-      orphaned_grid_items: orphaned_grid_item_ids
-    }
-  end
-
-  ##
-  # Applies element and proficiency filters to a collection weapons scope.
-  # Used to scope deletion checks to only items matching the current game filter.
-  #
-  # @param scope [ActiveRecord::Relation] The collection weapons relation to filter
-  # @return [ActiveRecord::Relation] Filtered relation
-  def apply_filter_scope(scope)
-    return scope unless @filter.present?
-
-    # Element: check collection_weapon.element first (for element-changeable weapons),
-    # fall back to weapon.element if nil
-    if @filter.elements.present?
-      elements = @filter.elements
+  # Element: the copy's element first (element-changeable weapons), else the
+  # weapon's. Proficiency: the weapon's.
+  def filter_scope(scope, filter)
+    if filter.elements.present?
       scope = scope.joins(:weapon).where(
         'collection_weapons.element IN (?) OR (collection_weapons.element IS NULL AND weapons.element IN (?))',
-        elements, elements
+        filter.elements, filter.elements
       )
     end
-
-    # Proficiency: join through weapon
-    if @filter.proficiencies.present?
-      proficiencies = @filter.proficiencies
-      scope = scope.joins(:weapon).where(weapons: { proficiency: proficiencies })
-    end
-
+    scope = scope.joins(:weapon).where(weapons: { proficiency: filter.proficiencies }) if filter.proficiencies.present?
     scope
   end
 end
