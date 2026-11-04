@@ -6,20 +6,6 @@ RSpec.describe 'Admin raids collection', type: :request do
   let(:path) { '/api/v1/admin/raids' }
   let(:editor_headers) { auth_headers(create(:user, role: 7)) }
 
-  def auth_headers(account)
-    token = Doorkeeper::AccessToken.create!(resource_owner_id: account.id, expires_in: 30.days, scopes: 'public')
-    { 'Authorization' => "Bearer #{token.token}" }
-  end
-
-  def fetch(params = {}, headers = editor_headers)
-    get path, params: params, headers: headers
-    response.parsed_body
-  end
-
-  def slugs(body = response.parsed_body)
-    body['results'].map { |r| r['slug'] }
-  end
-
   let(:omega) { create(:raid_group, name_en: 'Omega', section: 1, order: 2, hl: false, extra: false) }
   let(:primarchs) { create(:raid_group, name_en: 'Primarchs', section: 1, order: 1, hl: true, extra: true) }
   let(:farming) { create(:raid_group, name_en: 'Farming', section: 0, order: 0, hl: false, extra: false) }
@@ -39,6 +25,20 @@ RSpec.describe 'Admin raids collection', type: :request do
   let!(:angel) do
     create(:raid, group: farming, slug: 'angel-halo', name_en: 'Angel Halo', name_jp: 'エンジェル・ヘイロー',
                   element: 0, level: nil, player_count: 1, extra: true)
+  end
+
+  def auth_headers(account)
+    token = Doorkeeper::AccessToken.create!(resource_owner_id: account.id, expires_in: 30.days, scopes: 'public')
+    { 'Authorization' => "Bearer #{token.token}" }
+  end
+
+  def fetch(params = {}, headers = editor_headers)
+    get path, params: params, headers: headers
+    response.parsed_body
+  end
+
+  def slugs(body = response.parsed_body)
+    body['results'].map { |r| r['slug'] }
   end
 
   before do

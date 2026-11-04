@@ -7,25 +7,6 @@ RSpec.describe 'Admin summons collection', type: :request do
   let(:editor) { create(:user, role: 7) }
   let(:editor_headers) { auth_headers(editor) }
 
-  def auth_headers(account)
-    token = Doorkeeper::AccessToken.create!(resource_owner_id: account.id, expires_in: 30.days, scopes: 'public')
-    { 'Authorization' => "Bearer #{token.token}" }
-  end
-
-  def fetch(params = {}, headers = editor_headers)
-    get path, params: params, headers: headers
-    response.parsed_body
-  end
-
-  def names(body = response.parsed_body)
-    body['results'].map { |r| r['name_en'] }
-  end
-
-  # The factory sets flb_date; latest_date is GREATEST of all four dates.
-  def summon(**attrs)
-    create(:summon, flb_date: nil, ulb_date: nil, transcendence_date: nil, **attrs)
-  end
-
   let(:providence) { SummonSeries.find_by(slug: 'providence') || create(:summon_series, :providence) }
   let(:magna) { SummonSeries.find_by(slug: 'magna') || create(:summon_series, :magna) }
 
@@ -48,6 +29,25 @@ RSpec.describe 'Admin summons collection', type: :request do
     summon(name_en: 'Delta Stone', name_jp: 'デルタ', granblue_id: '2040000004', element: 3, rarity: 3,
            summon_series: providence, limit: true, max_level: 200, release_date: Date.new(2025, 1, 1),
            updated_at: Time.zone.parse('2026-02-01 00:00'))
+  end
+
+  def auth_headers(account)
+    token = Doorkeeper::AccessToken.create!(resource_owner_id: account.id, expires_in: 30.days, scopes: 'public')
+    { 'Authorization' => "Bearer #{token.token}" }
+  end
+
+  def fetch(params = {}, headers = editor_headers)
+    get path, params: params, headers: headers
+    response.parsed_body
+  end
+
+  def names(body = response.parsed_body)
+    body['results'].map { |r| r['name_en'] }
+  end
+
+  # The factory sets flb_date; latest_date is GREATEST of all four dates.
+  def summon(**attrs)
+    create(:summon, flb_date: nil, ulb_date: nil, transcendence_date: nil, **attrs)
   end
 
   before do
@@ -230,7 +230,7 @@ RSpec.describe 'Admin summons collection', type: :request do
         'id' => alpha.id, 'name_en' => 'Alpha Stone', 'aura_count' => 2,
         'series_name_en' => providence.name_en, 'max_level' => 250
       )
-      expect(body['results'].map { |r| r['aura_count'] }).to eq([2, 0, 0, 1])
+      expect(body['results'].pluck('aura_count')).to eq([2, 0, 0, 1])
     end
 
     it 'preloads series instead of querying per row' do

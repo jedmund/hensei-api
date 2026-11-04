@@ -48,13 +48,13 @@ module Api
       private
 
       def set_collection_job_accessory
-        @collection_job_accessory = current_user.collection_job_accessories.find(params[:id])
+        @collection_job_accessory = current_user.collection_job_accessories.find(params.expect(:id))
       rescue ActiveRecord::RecordNotFound
         raise CollectionErrors::CollectionItemNotFound.new('job accessory', params[:id])
       end
 
       def collection_job_accessory_params
-        params.require(:collection_job_accessory).permit(:job_accessory_id)
+        params.expect(collection_job_accessory: [:job_accessory_id])
       end
     end
   end

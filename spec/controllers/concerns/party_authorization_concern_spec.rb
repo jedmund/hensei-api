@@ -4,7 +4,7 @@ require 'rails_helper'
 
 # Dummy controller that includes the PartyAuthorizationConcern.
 # This allows us to test its instance methods in isolation.
-class DummyAuthorizationController < ActionController::Base
+class DummyAuthorizationController < ApplicationController
   include PartyAuthorizationConcern
 
   attr_accessor :party, :current_user, :edit_key
@@ -19,7 +19,7 @@ class DummyAuthorizationController < ActionController::Base
   end
 end
 
-RSpec.describe DummyAuthorizationController, type: :controller do
+RSpec.describe PartyAuthorizationConcern, type: :controller do
   let(:dummy_controller) { DummyAuthorizationController.new }
   let(:user) { create(:user) }
   let(:other_user) { create(:user) }
@@ -32,7 +32,7 @@ RSpec.describe DummyAuthorizationController, type: :controller do
         dummy_controller.party = owned_party
       end
 
-      context 'and current_user matches party.user' do
+      context 'when current_user matches party.user' do
         before { dummy_controller.current_user = user }
 
         it 'does not call render_unauthorized_response' do
@@ -41,7 +41,7 @@ RSpec.describe DummyAuthorizationController, type: :controller do
         end
       end
 
-      context 'and current_user is missing or does not match' do
+      context 'when current_user is missing or does not match' do
         before { dummy_controller.current_user = other_user }
 
         it 'calls render_unauthorized_response' do
@@ -82,7 +82,7 @@ RSpec.describe DummyAuthorizationController, type: :controller do
         dummy_controller.party = owned_party
       end
 
-      context 'and current_user matches party.user' do
+      context 'when current_user matches party.user' do
         before { dummy_controller.current_user = user }
 
         it 'returns false' do
@@ -90,7 +90,7 @@ RSpec.describe DummyAuthorizationController, type: :controller do
         end
       end
 
-      context 'and current_user does not match party.user' do
+      context 'when current_user does not match party.user' do
         before { dummy_controller.current_user = other_user }
 
         it 'returns true' do
@@ -104,7 +104,7 @@ RSpec.describe DummyAuthorizationController, type: :controller do
         dummy_controller.party = anonymous_party
       end
 
-      context 'and the provided edit_key matches' do
+      context 'when the provided edit_key matches' do
         before { dummy_controller.edit_key = 'anonkey' }
 
         it 'returns false' do
@@ -112,7 +112,7 @@ RSpec.describe DummyAuthorizationController, type: :controller do
         end
       end
 
-      context 'and the provided edit_key does not match' do
+      context 'when the provided edit_key does not match' do
         before { dummy_controller.edit_key = 'wrongkey' }
 
         it 'returns true' do

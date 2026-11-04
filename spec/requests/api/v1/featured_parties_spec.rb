@@ -11,7 +11,7 @@ RSpec.describe 'Api::V1::FeaturedParties', type: :request do
   let(:event) { create(:event) }
 
   def json_response
-    JSON.parse(response.body)
+    response.parsed_body
   end
 
   describe 'GET /api/v1/featured_parties' do
@@ -22,18 +22,18 @@ RSpec.describe 'Api::V1::FeaturedParties', type: :request do
     it "lists an event's picks by position" do
       get '/api/v1/featured_parties', params: { event_id: event.id }, headers: editor_headers
       expect(response).to have_http_status(:ok)
-      expect(json_response['featured_parties'].map { |p| p['id'] }).to eq([first.id, second.id])
+      expect(json_response['featured_parties'].pluck('id')).to eq([first.id, second.id])
       expect(json_response['featured_parties'].first['party']['id']).to eq(first.party_id)
     end
 
     it 'lists all picks without event_id' do
       get '/api/v1/featured_parties', headers: editor_headers
-      expect(json_response['featured_parties'].map { |p| p['id'] }).to eq([eventless.id, first.id, second.id])
+      expect(json_response['featured_parties'].pluck('id')).to eq([eventless.id, first.id, second.id])
     end
 
     it 'filters by party_id to show where a team is featured' do
       get '/api/v1/featured_parties', params: { party_id: first.party_id }, headers: editor_headers
-      expect(json_response['featured_parties'].map { |p| p['id'] }).to eq([first.id])
+      expect(json_response['featured_parties'].pluck('id')).to eq([first.id])
     end
 
     it 'returns 401 for non-editors' do
@@ -130,7 +130,7 @@ RSpec.describe 'Api::V1::FeaturedParties', type: :request do
       pick = create(:featured_party, event: event)
       get '/api/v1/featured_parties', params: { party_id: pick.party_id }, headers: curator_headers
       expect(response).to have_http_status(:ok)
-      expect(json_response['featured_parties'].map { |p| p['id'] }).to eq([pick.id])
+      expect(json_response['featured_parties'].pluck('id')).to eq([pick.id])
     end
 
     it 'creates picks for running and upcoming events and general picks' do

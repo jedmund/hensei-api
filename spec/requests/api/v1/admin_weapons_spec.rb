@@ -7,20 +7,6 @@ RSpec.describe 'Admin weapons collection', type: :request do
   let(:editor) { create(:user, role: 7) }
   let(:editor_headers) { auth_headers(editor) }
 
-  def auth_headers(account)
-    token = Doorkeeper::AccessToken.create!(resource_owner_id: account.id, expires_in: 30.days, scopes: 'public')
-    { 'Authorization' => "Bearer #{token.token}" }
-  end
-
-  def fetch(params = {}, headers = editor_headers)
-    get path, params: params, headers: headers
-    response.parsed_body
-  end
-
-  def names(body = response.parsed_body)
-    body['results'].map { |r| r['name_en'] }
-  end
-
   # The canonical seed data includes these series and some weapons.
   let(:opus) { WeaponSeries.find_by(slug: 'dark-opus') || create(:weapon_series, :opus) }
   let(:grand) { WeaponSeries.find_by(slug: 'grand') || create(:weapon_series, :grand) }
@@ -44,6 +30,20 @@ RSpec.describe 'Admin weapons collection', type: :request do
     create(:weapon, name_en: 'Delta Bow', name_jp: 'デルタ', granblue_id: '1040000004', element: 3, rarity: 3,
                     proficiency: 5, weapon_series: opus, release_date: Date.new(2025, 1, 1), flb_date: nil,
                     updated_at: Time.zone.parse('2026-02-01 00:00'))
+  end
+
+  def auth_headers(account)
+    token = Doorkeeper::AccessToken.create!(resource_owner_id: account.id, expires_in: 30.days, scopes: 'public')
+    { 'Authorization' => "Bearer #{token.token}" }
+  end
+
+  def fetch(params = {}, headers = editor_headers)
+    get path, params: params, headers: headers
+    response.parsed_body
+  end
+
+  def names(body = response.parsed_body)
+    body['results'].map { |r| r['name_en'] }
   end
 
   before do
@@ -241,7 +241,7 @@ RSpec.describe 'Admin weapons collection', type: :request do
       expect(body['results'].first).to eq(
         'id' => alpha.id, 'name_en' => 'Alpha Blade', 'skill_count' => 2, 'series_name_en' => opus.name_en
       )
-      expect(body['results'].map { |r| r['skill_count'] }).to eq([2, 0, 0, 1])
+      expect(body['results'].pluck('skill_count')).to eq([2, 0, 0, 1])
     end
 
     it 'preloads series instead of querying per row' do

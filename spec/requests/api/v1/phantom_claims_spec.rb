@@ -24,8 +24,8 @@ RSpec.describe 'Api::V1::PhantomClaims', type: :request do
       claim = json.first
       expect(claim['id']).to eq(phantom.id)
       expect(claim['name']).to eq(phantom.name)
-      expect(claim['claim_confirmed']).to eq(false)
-      expect(claim['claimed']).to eq(true)
+      expect(claim['claim_confirmed']).to be(false)
+      expect(claim['claimed']).to be(true)
       expect(claim['crew']).to be_present
       expect(claim['crew']['id']).to eq(crew.id)
       expect(claim['claimed_by']).to be_present

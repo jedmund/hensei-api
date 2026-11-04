@@ -27,8 +27,8 @@ RSpec.describe 'Character refresh (C6)', type: :request do
   end
 
   def stub_wiki(text, title: 'Vikala')
-    allow_any_instance_of(Granblue::WikiFetcher).to receive(:fetch) do |_, _entity, **|
-      Granblue::WikiFetcher::Page.new(title: title, text: text)
+    on_new_instances(Granblue::WikiFetcher) do |fetcher|
+      allow(fetcher).to receive(:fetch) { |_entity, **| Granblue::WikiFetcher::Page.new(title: title, text: text) }
     end
   end
 
@@ -106,15 +106,18 @@ RSpec.describe 'Character refresh (C6)', type: :request do
     end
 
     it 'fetches the Japanese page too when asked' do
-      allow_any_instance_of(Granblue::Downloaders::JpWikiDownloader).to receive(:fetch).and_return('<html>jp</html>')
+      on_new_instances(Granblue::Downloaders::JpWikiDownloader) do |downloader|
+        allow(downloader).to receive(:fetch).and_return('<html>jp</html>')
+      end
       refresh = preview(refetch_jp: true)['refresh']
       expect(refresh['wiki_jp_changed']).to be(true)
       expect(character.reload.wiki_raw_jp).to be_nil
     end
 
     it 'reports versions whose icon falls back to the wiki stem' do
-      allow_any_instance_of(Granblue::Parsers::CharacterSkills::Builder).to receive(:game_icon_for)
-        .and_return({ game_icon: '9999_1', game_icon_source: 'wiki' })
+      on_new_instances(Granblue::Parsers::CharacterSkills::Builder) do |builder|
+        allow(builder).to receive(:game_icon_for).and_return({ game_icon: '9999_1', game_icon_source: 'wiki' })
+      end
       refresh = preview['refresh']
       expect(refresh['icon_fallbacks']).to include(
         { 'kind' => 'ability', 'position' => 1, 'ordinal' => 1, 'name' => { 'en' => 'Ring the Dormouse', 'ja' => anything } }
@@ -127,14 +130,16 @@ RSpec.describe 'Character refresh (C6)', type: :request do
     end
 
     it 'is a 502 when the wiki fails' do
-      allow_any_instance_of(Granblue::WikiFetcher).to receive(:fetch)
-        .and_raise(Granblue::WikiError.new(code: 502, message: 'Server error', page: 'Vikala'))
+      on_new_instances(Granblue::WikiFetcher) do |fetcher|
+        allow(fetcher).to receive(:fetch)
+          .and_raise(Granblue::WikiError.new(code: 502, message: 'Server error', page: 'Vikala'))
+      end
       preview
       expect(response).to have_http_status(:bad_gateway)
     end
 
     it 'is a 502, not a 500, when the wiki times out' do
-      allow_any_instance_of(Granblue::WikiFetcher).to receive(:fetch).and_call_original
+      on_new_instances(Granblue::WikiFetcher) { |fetcher| allow(fetcher).to receive(:fetch).and_call_original }
       stub_request(:get, %r{\Ahttps://gbf\.wiki/api\.php}).to_timeout
       preview
       expect(response).to have_http_status(:bad_gateway)
@@ -160,12 +165,14 @@ RSpec.describe 'Character refresh (C6)', type: :request do
       expect(character.wiki_raw_fetched_at).to be_present
       expect(character.character_skill_build_fingerprint).to be_present
       expect(ring_cooldown).to eq(9)
-      expect(enqueued_jobs.map { |job| job['job_class'] }).not_to include('CharacterSkills::BuildJob')
+      expect(enqueued_jobs.pluck('job_class')).not_to include('CharacterSkills::BuildJob')
     end
 
     it 'writes the Japanese page when it was previewed' do
       stub_wiki(fetched_text)
-      allow_any_instance_of(Granblue::Downloaders::JpWikiDownloader).to receive(:fetch).and_return('<html>jp</html>')
+      on_new_instances(Granblue::Downloaders::JpWikiDownloader) do |downloader|
+        allow(downloader).to receive(:fetch).and_return('<html>jp</html>')
+      end
       token = preview(refetch_jp: true)['refresh']['preview_token']
       apply(token)
       expect(response.parsed_body['refresh']['wiki_jp_changed']).to be(true)
@@ -248,8 +255,13 @@ RSpec.describe 'Character refresh (C6)', type: :request do
     end
 
     it 'rebuilds from the stored text without fetching' do
-      expect_any_instance_of(Granblue::WikiFetcher).not_to receive(:fetch)
+      fetchers = []
+      on_new_instances(Granblue::WikiFetcher) do |fetcher|
+        allow(fetcher).to receive(:fetch)
+        fetchers << fetcher
+      end
       reparse({ refetch: false, refetch_jp: false, preview: false, preview_token: nil })
+      expect(fetchers).to all(have_received(:fetch).exactly(0).times)
       expect(response).to have_http_status(:ok)
       expect(response.parsed_body['refresh']).to include('written' => true, 'wiki_changed' => false, 'changes' => [],
                                                          'fetched_at' => nil)

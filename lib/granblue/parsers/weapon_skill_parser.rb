@@ -341,7 +341,7 @@ module Granblue
           # except families that legitimately attach to non-aura prefixes (Ultima
           # base skills are "<weapon-type word> Rubell": Baculum/Ensis/…).
           modifier = words.last
-          if KNOWN_MODIFIERS.include?(modifier) && !FLAT_MULTI_WORD_MODIFIERS.include?(modifier)
+          if KNOWN_MODIFIERS.include?(modifier) && FLAT_MULTI_WORD_MODIFIERS.exclude?(modifier)
             aura = words[0..-2].join(' ')
             if ALL_KNOWN_AURAS.include?(aura) || ANY_PREFIX_FAMILIES.include?(modifier)
               return {

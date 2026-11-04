@@ -45,7 +45,7 @@ module CharacterSkills
       return if members.one? && members.first[:name] == canonical && @proposals[canonical].flags.empty?
 
       flags = (members.flat_map { |m| @proposals[m[:name]].flags } + direction_flags(members)).uniq
-      Group.new(canonical: canonical, statuses: members, flags: flags, categories: members.map { |m| m[:category] }.uniq,
+      Group.new(canonical: canonical, statuses: members, flags: flags, categories: members.pluck(:category).uniq,
                 rules: members.flat_map { |m| @proposals[m[:name]].rules }.uniq)
     end
 

@@ -49,7 +49,7 @@ module Api
                  :promotion_names, :uncap, :subaura, :limit, :support_eligible
 
         field :series do |s|
-          next nil unless s.summon_series.present?
+          next nil if s.summon_series.blank?
 
           { id: s.summon_series_id, slug: s.summon_series.slug }
         end

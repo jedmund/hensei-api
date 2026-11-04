@@ -128,7 +128,7 @@ module PostDeployment
       error_message = format_error_message(error)
       log_formatted_error(error_message)
       @test_transaction&.rollback
-      exit(1)
+      exit(1) # rubocop:disable Rails/Exit -- rake deploy:post_deployment must exit nonzero so the deploy fails
     end
 
     def format_error_message(error)

@@ -50,7 +50,7 @@ module Api
 
       # Checked and clamped by PartySticker
       def placement_params
-        params.require(:placement).permit(:x, :y, :rotation)
+        params.expect(placement: %i[x y rotation])
       end
 
       def own_party?

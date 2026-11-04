@@ -167,7 +167,7 @@ RSpec.describe 'GridCharacters API', type: :request do
         }
         expect do
           post '/api/v1/grid_characters/resolve', params: resolve_params.to_json, headers: headers
-        end.to change(GridCharacter, :count).by(0) # one record is destroyed and one is created
+        end.not_to change(GridCharacter, :count) # one record is destroyed and one is created
         expect(response).to have_http_status(:created)
         json_response = response.parsed_body
         expect(json_response['grid_character']).to include('position' => 4)
@@ -373,7 +373,7 @@ RSpec.describe 'GridCharacters API', type: :request do
 
     it 'resolves conflicts by replacing the existing grid character' do
       expect(GridCharacter.exists?(conflicting_character.id)).to be true
-      expect { post_resolve }.to change(GridCharacter, :count).by(0) # one record deleted, one created
+      expect { post_resolve }.not_to change(GridCharacter, :count) # one record deleted, one created
       expect(response).to have_http_status(:created)
       json_response = response.parsed_body
       expect(json_response['grid_character']).to include('position' => 4)
@@ -651,8 +651,8 @@ RSpec.describe 'GridCharacters API', type: :request do
       expect(response).to have_http_status(:ok)
       expect(grid_character.reload.grid_character_role_ids).to contain_exactly(role_a.id, role_b.id)
 
-      body = JSON.parse(response.body)
-      expect(body['grid_character']['roles'].map { |r| r['id'] }).to eq([role_a.id, role_b.id])
+      body = response.parsed_body
+      expect(body['grid_character']['roles'].pluck('id')).to eq([role_a.id, role_b.id])
     end
 
     it 'rejects more than three roles' do
@@ -693,7 +693,7 @@ RSpec.describe 'GridCharacters API', type: :request do
           headers: headers
 
       expect(response).to have_http_status(:ok)
-      body = JSON.parse(response.body)
+      body = response.parsed_body
       subs = body['grid_character']['substitutions']
       expect(subs.size).to eq(2)
       expect(subs.find { |s| s['position'] == 0 }['grid_character']['owned']).to be true

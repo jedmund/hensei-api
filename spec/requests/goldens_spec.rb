@@ -8,12 +8,15 @@ require 'rails_helper'
 # those tables, loads one fixture, and checks one reference with PanelValidator.
 # Refresh a fixture with `bin/rails granblue:export_golden_fixture shortcode=XXXXXX`.
 RSpec.describe 'Golden panel references' do
-  fixture_codes = Granblue::GoldenFixture.shortcodes
-  references = fixture_codes.to_h { |code| [code, Granblue::GoldenFixture.references_for(code)] }
+  # Built at load time because the examples below are generated from it
+  references = Granblue::GoldenFixture.shortcodes.index_with { |code| Granblue::GoldenFixture.references_for(code) }
 
   it 'has a fixture for every golden party' do
+    fixture_codes = Granblue::GoldenFixture.shortcodes
     expect(fixture_codes).not_to be_empty
-    references.each { |code, refs| expect(refs).not_to be_empty, "#{code} has no panel reference" }
+    fixture_codes.each do |code|
+      expect(Granblue::GoldenFixture.references_for(code)).not_to be_empty, "#{code} has no panel reference"
+    end
   end
 
   references.each do |code, refs|
@@ -37,7 +40,7 @@ RSpec.describe 'Golden panel references' do
       end
     end
 
-    fixture_codes.each do |code|
+    references.each_key do |code|
       it "#{code} carries no user data or free text" do
         fixture = Granblue::GoldenFixture.read(code)
 
@@ -65,7 +68,7 @@ RSpec.describe 'Golden panel references' do
   end
 
   describe 'loading party rows into an existing catalogue' do
-    let(:code) { fixture_codes.first }
+    let(:code) { Granblue::GoldenFixture.shortcodes.first }
     let(:fixture) { Granblue::GoldenFixture.read(code) }
 
     it 'replaces the party and keeps the catalogue' do

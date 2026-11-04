@@ -13,7 +13,7 @@ module CharacterSkills
     end
 
     def call
-      results = Character.without_skill_build { KINDS.to_h { |kind| [kind, sanitize(kind)] } }
+      results = Character.without_skill_build { KINDS.index_with { |kind| sanitize(kind) } }
       results.each { |kind, (checked, cleaned)| @io.puts "#{kind}: #{checked} checked, #{cleaned} cleaned" }
       results
     end

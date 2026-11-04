@@ -74,11 +74,11 @@ module Api
       private
 
       def set_crew
-        @crew = Crew.find(params[:crew_id])
+        @crew = Crew.find(params.expect(:crew_id))
       end
 
       def set_invitation
-        @invitation = CrewInvitation.find(params[:id])
+        @invitation = CrewInvitation.find(params.expect(:id))
       end
     end
   end

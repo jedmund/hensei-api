@@ -53,7 +53,7 @@ namespace :granblue do
     rows = WeaponSkillFamily.order(:name).map do |f|
       f.attributes.slice('name', 'aura_boostable', 'boosts', 'icon_stems', 'color').compact
     end
-    File.write(Rails.root.join('data/weapon_skill_families.json'), "#{JSON.pretty_generate(rows)}\n")
+    Rails.root.join('data/weapon_skill_families.json').write("#{JSON.pretty_generate(rows)}\n")
     puts "Exported #{rows.size} weapon skill families"
   end
 end

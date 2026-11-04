@@ -27,9 +27,9 @@ module PartyParticipation
 
     def candidate_scope(cutoff)
       Party.where('participation_score > 0')
-           .or(Party.where(id: PartySticker.where('created_at >= ?', cutoff).select(:party_id)))
-           .or(Party.where(id: Favorite.where('created_at >= ?', cutoff).select(:party_id)))
-           .or(Party.where(id: Party.where('created_at >= ?', cutoff)
+           .or(Party.where(id: PartySticker.where(created_at: cutoff..).select(:party_id)))
+           .or(Party.where(id: Favorite.where(created_at: cutoff..).select(:party_id)))
+           .or(Party.where(id: Party.where(created_at: cutoff..)
                                     .where.not(source_party_id: nil).select(:source_party_id)))
     end
   end

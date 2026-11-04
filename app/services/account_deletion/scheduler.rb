@@ -13,6 +13,7 @@ module AccountDeletion
         scheduled = user.with_lock do
           next false if user.deletion_scheduled?
 
+          # rubocop:disable-next Rails/SkipsModelValidations -- must not fail on unrelated validations
           user.update_columns(deletion_scheduled_at: User::DELETION_GRACE_PERIOD.from_now)
           true
         end
@@ -26,7 +27,7 @@ module AccountDeletion
         cancelled = user.with_lock do
           next false unless user.deletion_scheduled?
 
-          user.update_columns(deletion_scheduled_at: nil)
+          user.update_columns(deletion_scheduled_at: nil) # rubocop:disable Rails/SkipsModelValidations -- must not fail on unrelated validations
           true
         end
 

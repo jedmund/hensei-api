@@ -48,7 +48,7 @@ RSpec.describe 'Entity reparse endpoints', type: :request do
       post "/api/v1/summons/#{summon.id}/reparse", headers: editor_headers
 
       expect(response).to have_http_status(:unprocessable_content)
-      expect(response.parsed_body['error']).to match(/made no auras/)
+      expect(response.parsed_body['error']).to include('made no auras')
       expect(SummonAura.exists?(kept.id)).to be(true)
     end
 

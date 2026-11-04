@@ -17,7 +17,7 @@ class DummyQueryClass
   end
 end
 
-RSpec.describe DummyQueryClass do
+RSpec.describe PartyQueryingConcern do
   let(:dummy) { DummyQueryClass.new }
 
   describe '#remixed_name' do

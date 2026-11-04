@@ -47,23 +47,23 @@ module Granblue
           master = weapon_data['master']
           param = weapon_data['param']
 
-          Rails.logger.debug "[TRANSFORM] Processing weapon: #{master['name']}"
+          Rails.logger.debug { "[TRANSFORM] Processing weapon: #{master['name']}" }
 
           # Transform base weapon attributes (ID, name, uncap level, etc)
           weapon = transform_base_attributes(master, param)
-          Rails.logger.debug "[TRANSFORM] Base weapon attributes: #{weapon}"
+          Rails.logger.debug { "[TRANSFORM] Base weapon attributes: #{weapon}" }
 
           # Add awakening data if present
           weapon.merge!(transform_awakening(param))
-          Rails.logger.debug "[TRANSFORM] After awakening: #{weapon[:awakening] if weapon[:awakening]}"
+          Rails.logger.debug { "[TRANSFORM] After awakening: #{weapon[:awakening] if weapon[:awakening]}" }
 
           # Add AX skills if present
           weapon.merge!(transform_ax_skills(param))
-          Rails.logger.debug "[TRANSFORM] After AX skills: #{weapon[:ax] if weapon[:ax]}"
+          Rails.logger.debug { "[TRANSFORM] After AX skills: #{weapon[:ax] if weapon[:ax]}" }
 
           # Add weapon keys if present
           weapon.merge!(transform_weapon_keys(weapon_data))
-          Rails.logger.debug "[TRANSFORM] After weapon keys: #{weapon[:keys] if weapon[:keys]}"
+          Rails.logger.debug { "[TRANSFORM] After weapon keys: #{weapon[:keys] if weapon[:keys]}" }
 
           # Only add weapons with valid IDs
           weapons << weapon unless master['id'].nil?
@@ -101,13 +101,13 @@ module Granblue
         level = param['level'].to_i
         uncap = calculate_uncap_level(level)
         weapon[:uncap] = uncap
-        Rails.logger.debug "[TRANSFORM] Calculated uncap level: #{uncap}"
+        Rails.logger.debug { "[TRANSFORM] Calculated uncap level: #{uncap}" }
 
         # Add transcendence if applicable
         if uncap > 5
           trans = calculate_transcendence_level(level)
           weapon[:transcend] = trans
-          Rails.logger.debug "[TRANSFORM] Added transcendence level: #{trans}"
+          Rails.logger.debug { "[TRANSFORM] Added transcendence level: #{trans}" }
         end
 
         weapon
@@ -143,7 +143,7 @@ module Granblue
             val: augment['show_value']
           }
           ax << ax_skill
-          Rails.logger.debug "[TRANSFORM] Added AX skill: #{ax_skill}"
+          Rails.logger.debug { "[TRANSFORM] Added AX skill: #{ax_skill}" }
         end
 
         { ax: ax }
@@ -160,7 +160,7 @@ module Granblue
         %w[skill1 skill2 skill3].each do |skill_key|
           if weapon_data[skill_key]&.[]('id')
             keys << weapon_data[skill_key]['id']
-            Rails.logger.debug "[TRANSFORM] Added weapon key: #{weapon_data[skill_key]['id']}"
+            Rails.logger.debug { "[TRANSFORM] Added weapon key: #{weapon_data[skill_key]['id']}" }
           end
         end
 

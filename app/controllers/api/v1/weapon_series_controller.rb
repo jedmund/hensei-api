@@ -60,11 +60,11 @@ module Api
 
       def set_weapon_series
         # Support lookup by slug or UUID
-        @weapon_series = WeaponSeries.find_by(slug: params[:id]) || WeaponSeries.find(params[:id])
+        @weapon_series = WeaponSeries.find_by(slug: params[:id]) || WeaponSeries.find(params.expect(:id))
       end
 
       def weapon_series_params
-        params.require(:weapon_series).permit(*PERMITTED)
+        params.expect(weapon_series: [*PERMITTED])
       end
     end
   end

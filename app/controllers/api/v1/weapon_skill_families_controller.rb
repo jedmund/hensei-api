@@ -118,7 +118,7 @@ module Api
 
       def apply_filters(families)
         if params[:q].present?
-          q = params[:q].downcase
+          q = params.expect(:q).downcase
           families = families.select do |f|
             f[:modifier].downcase.include?(q) ||
               f[:display_name]&.values&.any? { |n| n&.downcase&.include?(q) }

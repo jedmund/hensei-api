@@ -44,7 +44,7 @@ module CollectionArtifacts
     end
 
     def clear_range(last_id, upper)
-      after(last_id).where('id <= ?', upper).where('raw_data IS NOT NULL').update_all('raw_data = NULL')
+      after(last_id).where(id: ..upper).where.not(raw_data: nil).update_all('raw_data = NULL')
     end
   end
 end

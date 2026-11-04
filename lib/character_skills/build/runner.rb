@@ -206,6 +206,7 @@ module CharacterSkills
         # leaves the surrounding (shadow) transaction usable.
         ActiveRecord::Base.transaction(requires_new: true) do
           report = writer.call
+          # rubocop:disable-next Rails/SkipsModelValidations -- build bookkeeping; no character callbacks
           character.update_columns(character_skill_build_fingerprint: fingerprint) if @mode == 'write'
         end
         @summary.counts.merge!(report)

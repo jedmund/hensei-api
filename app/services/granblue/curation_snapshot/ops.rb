@@ -140,7 +140,7 @@ module Granblue
         return :satisfied if matches?(version, attrs)
 
         # update_columns: skip callbacks and the curation stamp; ops carry no database stamp.
-        version.update_columns(attrs.merge('updated_at' => Time.current))
+        version.update_columns(attrs.merge('updated_at' => Time.current)) # rubocop:disable Rails/SkipsModelValidations -- see the comment above
         :applied
       end
 

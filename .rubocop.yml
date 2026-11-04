@@ -105,12 +105,19 @@ Naming/PredicateMethod:
     - update_mention_for_entity
 
 # --- Rails ---
+# A standalone cron script: plain Ruby with no gems and no Rails, so
+# Time.zone, index_with and friends don't exist there.
+Rails:
+  Exclude:
+    - 'script/fetch_gacha_rates.rb'
+
 # Bulk relation writes (update_all, insert_all, upsert_all, touch_all) exist to
 # change many rows in one statement without loading models, so skipping
 # callbacks there is always deliberate. The cop still flags single-record skips
 # (update_column(s), update_attribute, touch, toggle!, counters), where
 # bypassing a validation or callback by accident is the real risk.
-# Specs set up state with update_column and friends on purpose.
+# Specs set up state with update_column and friends on purpose, and rake
+# tasks are one-off backfills that skip callbacks on purpose.
 Rails/SkipsModelValidations:
   ForbiddenMethods:
     - decrement!
@@ -128,6 +135,31 @@ Rails/SkipsModelValidations:
     - upsert
   Exclude:
     - 'spec/**/*'
+    - 'lib/tasks/**/*'
+
+# The API returns English messages by design and the clients localize them;
+# the account mailers are English-only too. Moving these strings into
+# config/locales would add indirection without a second locale to serve.
+Rails/I18nLocaleTexts:
+  Enabled: false
+
+# These are hand-written finders (several id formats or a name lookup), not
+# dynamic attribute finders; find_by(route_id:) and friends would break them.
+Rails/DynamicFindBy:
+  AllowedMethods:
+    - find_by_sql
+    - find_by_token_for
+    - find_by_game_name
+    - find_by_game_skill_id
+    - find_by_route_id
+
+# The post-deployment tools are the console UI of `rake deploy:post_deployment`
+# and `rake granblue:import_data`; they print progress to the terminal on
+# purpose. (Rake files themselves aren't checked: the cop only reads *.rb.)
+Rails/Output:
+  Exclude:
+    - 'lib/logging_helper.rb'
+    - 'lib/post_deployment/**/*'
 
 # --- RSpec ---
 # A request spec checks the status, the body and the database, so several
@@ -149,3 +181,29 @@ RSpec/NestedGroups:
 # `type:` metadata this cop calls redundant is what sets the spec type
 RSpecRails/InferredSpecType:
   Enabled: false
+
+# "as an editor" names who makes a request and "for a style row" what a
+# spec covers, which read better than forcing a "when"
+RSpec/ContextWording:
+  Prefixes:
+    - when
+    - with
+    - without
+    - as
+    - for
+
+# Shared contexts define let! records that the including specs reference,
+# which this cop can't see from the support file
+RSpec/LetSetup:
+  Exclude:
+    - 'spec/support/**/*'
+
+# Cross-cutting specs (golden snapshots, data integrity, rake tasks, config
+# files) describe a behavior, not one class
+RSpec/DescribeClass:
+  Enabled: false
+
+# Data migration specs stub the migration's own `say` output (and check it)
+RSpec/SubjectStub:
+  Exclude:
+    - 'spec/data/**/*'

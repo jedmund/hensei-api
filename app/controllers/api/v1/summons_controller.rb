@@ -85,7 +85,7 @@ module Api
 
         # Validate transformation for summons (none, 02, 03, 04)
         valid_transformations = [nil, '', '02', '03', '04']
-        if transformation.present? && !valid_transformations.include?(transformation)
+        if transformation.present? && valid_transformations.exclude?(transformation)
           return render json: { error: 'Invalid transformation. Must be one of: 02, 03, 04 (or empty for base)' }, status: :unprocessable_content
         end
 
@@ -187,7 +187,7 @@ module Api
       # POST /summons/:id/fetch_wiki
       # Fetches and stores wiki data for this summon
       def fetch_wiki
-        return render json: { error: 'No wiki page configured for this summon' }, status: :unprocessable_content unless @summon.wiki_en.present?
+        return render json: { error: 'No wiki page configured for this summon' }, status: :unprocessable_content if @summon.wiki_en.blank?
 
         begin
           Granblue::WikiFetcher.new.fetch_and_store(@summon)
@@ -231,7 +231,7 @@ module Api
       end
 
       def summon_params
-        params.require(:summon).permit(*PERMITTED)
+        params.expect(summon: [*PERMITTED])
       end
     end
   end

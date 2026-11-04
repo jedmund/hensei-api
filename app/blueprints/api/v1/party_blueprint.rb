@@ -60,7 +60,7 @@ module Api
       # first time on a previously-empty component can *lower* the score if
       # that component's raw_score is below the existing composite.
       field :difficulty do |party|
-        next nil unless party.difficulty_score.present?
+        next nil if party.difficulty_score.blank?
 
         {
           tier: party.difficulty ? DifficultyBlueprint.render_as_hash(party.difficulty, view: :nested) : nil,

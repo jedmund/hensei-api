@@ -8,11 +8,6 @@ RSpec.describe 'Weapon skill admin API', type: :request do
   let(:editor_headers) { auth_headers(editor) }
   let(:user_headers) { auth_headers(user) }
 
-  def auth_headers(account)
-    token = Doorkeeper::AccessToken.create!(resource_owner_id: account.id, expires_in: 30.days, scopes: 'public')
-    { 'Authorization' => "Bearer #{token.token}", 'Content-Type' => 'application/json' }
-  end
-
   let!(:datum) do
     WeaponSkillDatum.create!(modifier: 'Spectest', boost_type: 'atk', series: 'normal',
                              size: 'big', formula_type: 'flat', sl15: 18.0)
@@ -20,6 +15,11 @@ RSpec.describe 'Weapon skill admin API', type: :request do
   let!(:effect) do
     WeaponSkillEffect.create!(modifier: 'Spectest', boost_type: 'dmg_cap', scaling_kind: 'static',
                               value: 10.0, stacking: 'additive')
+  end
+
+  def auth_headers(account)
+    token = Doorkeeper::AccessToken.create!(resource_owner_id: account.id, expires_in: 30.days, scopes: 'public')
+    { 'Authorization' => "Bearer #{token.token}", 'Content-Type' => 'application/json' }
   end
 
   describe 'GET /api/v1/weapon_skill_families' do
@@ -34,7 +34,7 @@ RSpec.describe 'Weapon skill admin API', type: :request do
 
     it 'filters by boost_type' do
       get '/api/v1/weapon_skill_families', params: { boost_type: 'dmg_cap' }
-      mods = response.parsed_body['weapon_skill_families'].map { |f| f['modifier'] }
+      mods = response.parsed_body['weapon_skill_families'].pluck('modifier')
       expect(mods).to include('Spectest')
       get '/api/v1/weapon_skill_families', params: { boost_type: 'nope' }
       expect(response.parsed_body['weapon_skill_families']).to be_empty
@@ -67,6 +67,9 @@ RSpec.describe 'Weapon skill admin API', type: :request do
       WeaponSkillDatum.create!(modifier: 'Enmity', boost_type: 'atk', series: 'normal',
                                size: 'big', formula_type: 'enmity', sl15: 10.0)
     end
+    let(:pinned_in) { make_version(skill_modifier: nil, modifier_override: 'Might', name: 'Pinned In') }
+    let(:moved_in) { make_version(skill_modifier: 'Enmity', modifier_override: 'Might', name: 'Moved In') }
+    let(:derived) { make_version(skill_modifier: 'Might', modifier_override: nil, name: 'Derived') }
 
     def make_version(skill_modifier:, modifier_override:, name:)
       weapon = create(:weapon)
@@ -75,10 +78,12 @@ RSpec.describe 'Weapon skill admin API', type: :request do
                                  skill_modifier: skill_modifier, modifier_override: modifier_override)
     end
 
-    let!(:pinned_in) { make_version(skill_modifier: nil, modifier_override: 'Might', name: 'Pinned In') }
-    let!(:moved_in) { make_version(skill_modifier: 'Enmity', modifier_override: 'Might', name: 'Moved In') }
-    let!(:pinned_out) { make_version(skill_modifier: 'Might', modifier_override: 'none', name: 'Pinned Out') }
-    let!(:derived) { make_version(skill_modifier: 'Might', modifier_override: nil, name: 'Derived') }
+    before do
+      pinned_in
+      moved_in
+      make_version(skill_modifier: 'Might', modifier_override: 'none', name: 'Pinned Out')
+      derived
+    end
 
     def family(modifier)
       get '/api/v1/weapon_skill_families'
@@ -96,14 +101,14 @@ RSpec.describe 'Weapon skill admin API', type: :request do
       make_version(skill_modifier: 'Garrison', modifier_override: 'none', name: 'Gone')
 
       get '/api/v1/weapon_skill_families'
-      mods = response.parsed_body['weapon_skill_families'].map { |f| f['modifier'] }
+      mods = response.parsed_body['weapon_skill_families'].pluck('modifier')
       expect(mods).not_to include('Garrison')
     end
 
     it 'shows the resolved family members' do
       get '/api/v1/weapon_skill_families/Might'
       fam = response.parsed_body['weapon_skill_family']
-      expect(fam['versions'].map { |v| v['id'] }).to contain_exactly(pinned_in.id, moved_in.id, derived.id)
+      expect(fam['versions'].pluck('id')).to contain_exactly(pinned_in.id, moved_in.id, derived.id)
       expect(fam['usage']).to include('version_count' => 3)
 
       get '/api/v1/weapon_skill_families/Enmity'

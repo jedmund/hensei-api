@@ -43,7 +43,7 @@ RSpec.describe 'General API rate limits', type: :request do
 
       it 'does not limit paths outside the rule' do
         3.times { get '/api/v1/raids', headers: { 'CF-Connecting-IP' => '203.0.113.9' } }
-        expect(response.status).not_to eq(429)
+        expect(response).not_to have_http_status(:too_many_requests)
       end
     end
 

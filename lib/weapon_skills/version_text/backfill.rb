@@ -102,6 +102,7 @@ module WeaponSkills
           record(granblue_id, v, text, page)
           next if @dry_run
 
+          # rubocop:disable-next Rails/SkipsModelValidations -- text backfill only; no version callbacks
           v.update_columns(description_en: text[:en], description_jp: text[:jp], updated_at: Time.current)
           @result.written += 1
         end

@@ -113,7 +113,7 @@ module Granblue
         limited = tokens.filter_map { |token| LIMITED_PROMOTIONS[token] }
         limited << 10 if premium && tokens.include?('collab')
         limited << 4 if tokens.include?('flash')
-        limited << 5 if tokens.include?('legend') || tokens.include?('zodiac') || (tokens.include?('gala') && !tokens.include?('flash'))
+        limited << 5 if tokens.include?('legend') || tokens.include?('zodiac') || (tokens.include?('gala') && tokens.exclude?('flash'))
         return limited.uniq.sort if limited.any?
 
         return [] if tokens.include?('collab')
@@ -165,7 +165,7 @@ module Granblue
         page = Granblue::WikiTitle.normalize(page)
         return stored_page(page, kind) if store
 
-        ap "--> Fetching #{page}" if @debug
+        Rails.logger.info "--> Fetching #{page}" if @debug
 
         # The title goes in as a query parameter, encoded by HTTParty.
         response = WikiHttp.with_timeouts(page) do

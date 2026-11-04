@@ -21,8 +21,10 @@ RSpec.describe 'JobSkills API', type: :request do
   let(:job) { create(:job) }
 
   describe 'GET /api/v1/jobs/skills' do
-    let!(:skill1) { create(:job_skill, job: job) }
-    let!(:skill2) { create(:job_skill, job: job) }
+    before do
+      create(:job_skill, job: job)
+      create(:job_skill, job: job)
+    end
 
     it 'returns all job skills' do
       get '/api/v1/jobs/skills'
@@ -35,9 +37,12 @@ RSpec.describe 'JobSkills API', type: :request do
   end
 
   describe 'GET /api/v1/jobs/:id/skills' do
-    let!(:job_skill) { create(:job_skill, job: job, name_en: 'Rage') }
     let(:other_job) { create(:job) }
-    let!(:other_skill) { create(:job_skill, job: other_job, name_en: 'Other') }
+
+    before do
+      create(:job_skill, job: job, name_en: 'Rage')
+      create(:job_skill, job: other_job, name_en: 'Other')
+    end
 
     it 'returns skills belonging to the specified job' do
       get "/api/v1/jobs/#{job.granblue_id}/skills"
@@ -57,10 +62,13 @@ RSpec.describe 'JobSkills API', type: :request do
   end
 
   describe 'GET /api/v1/jobs/:id/emp_skills' do
-    let!(:emp_skill) { create(:job_skill, :emp_skill, job: job, name_en: 'EMP Skill') }
-    let!(:non_emp_skill) { create(:job_skill, job: job, name_en: 'Regular Skill') }
     let(:other_job) { create(:job) }
-    let!(:other_emp) { create(:job_skill, :emp_skill, job: other_job, name_en: 'Other EMP') }
+
+    before do
+      create(:job_skill, :emp_skill, job: job, name_en: 'EMP Skill')
+      create(:job_skill, job: job, name_en: 'Regular Skill')
+      create(:job_skill, :emp_skill, job: other_job, name_en: 'Other EMP')
+    end
 
     it 'returns EMP skills from other jobs, excluding the specified job' do
       get "/api/v1/jobs/#{job.id}/emp_skills"

@@ -19,8 +19,8 @@ RSpec.describe 'Api::V1::JobAccessories', type: :request do
   end
 
   describe 'GET /api/v1/job_accessories' do
-    let!(:accessory1) { create(:job_accessory, accessory_type: 1) }
-    let!(:accessory2) { create(:job_accessory, accessory_type: 2) }
+    let!(:first_accessory) { create(:job_accessory, accessory_type: 1) }
+    let!(:second_accessory) { create(:job_accessory, accessory_type: 2) }
 
     it 'returns all accessories with correct fields' do
       get '/api/v1/job_accessories'
@@ -29,9 +29,9 @@ RSpec.describe 'Api::V1::JobAccessories', type: :request do
       json = response.parsed_body
       expect(json.length).to be >= 2
 
-      entry = json.find { |a| a['id'] == accessory1.id }
-      expect(entry['name']['en']).to eq(accessory1.name_en)
-      expect(entry['granblue_id']).to eq(accessory1.granblue_id)
+      entry = json.find { |a| a['id'] == first_accessory.id }
+      expect(entry['name']['en']).to eq(first_accessory.name_en)
+      expect(entry['granblue_id']).to eq(first_accessory.granblue_id)
       expect(entry['accessory_type']).to eq(1)
     end
 
@@ -43,9 +43,9 @@ RSpec.describe 'Api::V1::JobAccessories', type: :request do
       json.each do |a|
         expect(a['accessory_type']).to eq(1)
       end
-      ids = json.map { |a| a['id'] }
-      expect(ids).to include(accessory1.id)
-      expect(ids).not_to include(accessory2.id)
+      ids = json.pluck('id')
+      expect(ids).to include(first_accessory.id)
+      expect(ids).not_to include(second_accessory.id)
     end
   end
 

@@ -17,7 +17,7 @@ module Api
         return unless validate_collection_access!(collection_artifact_param)
 
         # Check if grid_character already has an artifact
-        @grid_character.grid_artifact.destroy if @grid_character.grid_artifact.present?
+        @grid_character.grid_artifact.presence&.destroy
 
         @grid_artifact = GridArtifact.new(
           grid_artifact_params.merge(
@@ -57,7 +57,7 @@ module Api
 
       # POST /grid_artifacts/:id/sync
       def sync
-        unless @grid_artifact.collection_artifact.present?
+        if @grid_artifact.collection_artifact.blank?
           return render_unprocessable_entity_response(
             Api::V1::GranblueError.new('No collection artifact linked')
           )
@@ -113,13 +113,15 @@ module Api
       # out of the permit list (update would otherwise repoint the artifact at
       # any character id, including one in another user's party).
       def grid_artifact_params
-        params.require(:grid_artifact).permit(
-          :collection_artifact_id,
-          :element, :proficiency, :level, :reroll_slot,
-          skill1: %i[modifier quality level],
-          skill2: %i[modifier quality level],
-          skill3: %i[modifier quality level],
-          skill4: %i[modifier quality level]
+        params.expect(
+          grid_artifact: [
+            :collection_artifact_id,
+            :element, :proficiency, :level, :reroll_slot,
+            { skill1: %i[modifier quality level],
+              skill2: %i[modifier quality level],
+              skill3: %i[modifier quality level],
+              skill4: %i[modifier quality level] }
+          ]
         )
       end
     end

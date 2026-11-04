@@ -61,20 +61,20 @@ class CrewInvitation < ApplicationRecord
   end
 
   def user_not_in_crew
-    return unless user&.crew.present?
+    return if user&.crew.blank?
 
     errors.add(:user, 'is already in a crew')
   end
 
   def inviter_is_officer
-    return unless invited_by.present?
+    return if invited_by.blank?
     return if invited_by.crew&.id == crew_id && invited_by.crew_officer?
 
     errors.add(:invited_by, 'must be an officer of the crew')
   end
 
   def phantom_belongs_to_crew
-    return unless phantom_player.present?
+    return if phantom_player.blank?
     return if phantom_player.crew_id == crew_id
 
     errors.add(:phantom_player, 'must belong to the same crew')

@@ -10,7 +10,8 @@ RSpec.describe 'Crew access rules', type: :request do
 
   let(:crew) { create(:crew) }
   let(:captain) { create(:user) }
-  let!(:captain_membership) { create(:crew_membership, crew: crew, user: captain, role: :captain) }
+
+  before { create(:crew_membership, crew: crew, user: captain, role: :captain) }
 
   describe 'member collections in rosters' do
     let(:weapon) { Weapon.first || create(:weapon) }

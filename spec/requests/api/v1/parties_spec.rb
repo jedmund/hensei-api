@@ -110,7 +110,7 @@ RSpec.describe 'Parties API', type: :request do
       end
     end
 
-    context 'viewer_collection' do
+    context 'with viewer_collection' do
       let(:weapon) { create(:weapon, granblue_id: '1040099001') }
       let(:character) { create(:character, granblue_id: '3040099001') }
       let(:summon) { create(:summon, granblue_id: '2040099001') }
@@ -150,7 +150,7 @@ RSpec.describe 'Parties API', type: :request do
 
         vc = response.parsed_body.dig('party', 'viewer_collection')
         expect(vc['weapons'].length).to eq(3)
-        uncap_levels = vc['weapons'].map { |w| w['uncap_level'] }
+        uncap_levels = vc['weapons'].pluck('uncap_level')
         expect(uncap_levels).to contain_exactly(3, 4, 5)
       end
 
@@ -237,7 +237,7 @@ RSpec.describe 'Parties API', type: :request do
       end
     end
 
-    context 'source_collection' do
+    context 'with source_collection' do
       let(:weapon) { create(:weapon, granblue_id: '1040098001') }
       let(:source_user) { create(:user, collection_privacy: :everyone) }
 
@@ -410,35 +410,35 @@ RSpec.describe 'Parties API', type: :request do
   end
 
   describe 'POST /api/v1/parties/migrate' do
-    let!(:anon_party1) { create(:party, user: nil, name: 'Anon 1') }
-    let!(:anon_party2) { create(:party, user: nil, name: 'Anon 2') }
+    let!(:first_anon_party) { create(:party, user: nil, name: 'Anon 1') }
+    let!(:second_anon_party) { create(:party, user: nil, name: 'Anon 2') }
 
     before do
-      anon_party1.update_columns(edit_key: 'key1')
-      anon_party2.update_columns(edit_key: 'key2')
+      first_anon_party.update_columns(edit_key: 'key1')
+      second_anon_party.update_columns(edit_key: 'key2')
     end
 
     it 'migrates anonymous parties with valid edit keys' do
       post '/api/v1/parties/migrate',
            params: { parties: [
-             { shortcode: anon_party1.shortcode, edit_key: 'key1' },
-             { shortcode: anon_party2.shortcode, edit_key: 'key2' }
+             { shortcode: first_anon_party.shortcode, edit_key: 'key1' },
+             { shortcode: second_anon_party.shortcode, edit_key: 'key2' }
            ] }.to_json,
            headers: headers
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
       expect(json['migrated_count']).to eq(2)
-      expect(json['results'].map { |r| r['status'] }).to all(eq('migrated'))
+      expect(json['results'].pluck('status')).to all(eq('migrated'))
 
-      anon_party1.reload
-      expect(anon_party1.user_id).to eq(user.id)
-      expect(anon_party1.edit_key).to be_nil
+      first_anon_party.reload
+      expect(first_anon_party.user_id).to eq(user.id)
+      expect(first_anon_party.edit_key).to be_nil
     end
 
     it 'rejects unauthenticated requests' do
       post '/api/v1/parties/migrate',
-           params: { parties: [{ shortcode: anon_party1.shortcode, edit_key: 'key1' }] }.to_json,
+           params: { parties: [{ shortcode: first_anon_party.shortcode, edit_key: 'key1' }] }.to_json,
            headers: { 'Content-Type' => 'application/json' }
 
       expect(response).to have_http_status(:unauthorized)
@@ -470,12 +470,12 @@ RSpec.describe 'Parties API', type: :request do
 
     it 'returns invalid_key for wrong edit key' do
       post '/api/v1/parties/migrate',
-           params: { parties: [{ shortcode: anon_party1.shortcode, edit_key: 'wrong' }] }.to_json,
+           params: { parties: [{ shortcode: first_anon_party.shortcode, edit_key: 'wrong' }] }.to_json,
            headers: headers
 
       expect(response).to have_http_status(:ok)
       expect(response.parsed_body['results'].first['status']).to eq('invalid_key')
-      expect(anon_party1.reload.user_id).to be_nil
+      expect(first_anon_party.reload.user_id).to be_nil
     end
 
     it 'returns not_found for bad shortcode' do
@@ -488,7 +488,7 @@ RSpec.describe 'Parties API', type: :request do
     end
 
     it 'falls back to server-stored edit keys when no parties param' do
-      user.user_edit_keys.create!(edit_key: 'key1', shortcode: anon_party1.shortcode)
+      user.user_edit_keys.create!(edit_key: 'key1', shortcode: first_anon_party.shortcode)
 
       post '/api/v1/parties/migrate', params: {}.to_json, headers: headers
 
@@ -498,10 +498,10 @@ RSpec.describe 'Parties API', type: :request do
     end
 
     it 'cleans up deposited edit keys after migration' do
-      user.user_edit_keys.create!(edit_key: 'key1', shortcode: anon_party1.shortcode)
+      user.user_edit_keys.create!(edit_key: 'key1', shortcode: first_anon_party.shortcode)
 
       post '/api/v1/parties/migrate',
-           params: { parties: [{ shortcode: anon_party1.shortcode, edit_key: 'key1' }] }.to_json,
+           params: { parties: [{ shortcode: first_anon_party.shortcode, edit_key: 'key1' }] }.to_json,
            headers: headers
 
       expect(response).to have_http_status(:ok)
@@ -510,31 +510,31 @@ RSpec.describe 'Parties API', type: :request do
   end
 
   describe 'POST /api/v1/parties/preview_migrate' do
-    let!(:anon_party1) { create(:party, user: nil, name: 'Anon 1') }
-    let!(:anon_party2) { create(:party, user: nil, name: 'Anon 2') }
+    let!(:first_anon_party) { create(:party, user: nil, name: 'Anon 1') }
+    let!(:second_anon_party) { create(:party, user: nil, name: 'Anon 2') }
 
     before do
-      anon_party1.update_columns(edit_key: 'key1')
-      anon_party2.update_columns(edit_key: 'key2')
+      first_anon_party.update_columns(edit_key: 'key1')
+      second_anon_party.update_columns(edit_key: 'key2')
     end
 
     it 'returns preview data for valid edit keys without modifying parties' do
       post '/api/v1/parties/preview_migrate',
            params: { parties: [
-             { shortcode: anon_party1.shortcode, edit_key: 'key1' },
-             { shortcode: anon_party2.shortcode, edit_key: 'key2' }
+             { shortcode: first_anon_party.shortcode, edit_key: 'key1' },
+             { shortcode: second_anon_party.shortcode, edit_key: 'key2' }
            ] }.to_json,
            headers: headers
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
       expect(json['parties'].length).to eq(2)
-      expect(json['parties'].map { |r| r['status'] }).to all(eq('ready'))
+      expect(json['parties'].pluck('status')).to all(eq('ready'))
       expect(json['parties'].first['party']).to be_present
 
-      anon_party1.reload
-      expect(anon_party1.user_id).to be_nil
-      expect(anon_party1.edit_key).to eq('key1')
+      first_anon_party.reload
+      expect(first_anon_party.user_id).to be_nil
+      expect(first_anon_party.edit_key).to eq('key1')
     end
 
     it 'returns already_claimed for parties that already have a user_id' do
@@ -590,7 +590,7 @@ RSpec.describe 'Parties API', type: :request do
 
     it 'returns invalid_key for wrong edit key' do
       post '/api/v1/parties/preview_migrate',
-           params: { parties: [{ shortcode: anon_party1.shortcode, edit_key: 'wrong' }] }.to_json,
+           params: { parties: [{ shortcode: first_anon_party.shortcode, edit_key: 'wrong' }] }.to_json,
            headers: headers
 
       expect(response).to have_http_status(:ok)
@@ -600,7 +600,7 @@ RSpec.describe 'Parties API', type: :request do
 
     it 'requires authentication' do
       post '/api/v1/parties/preview_migrate',
-           params: { parties: [{ shortcode: anon_party1.shortcode, edit_key: 'key1' }] }.to_json,
+           params: { parties: [{ shortcode: first_anon_party.shortcode, edit_key: 'key1' }] }.to_json,
            headers: { 'Content-Type' => 'application/json' }
 
       expect(response).to have_http_status(:unauthorized)
@@ -618,7 +618,7 @@ RSpec.describe 'Parties API', type: :request do
 
       expect(response).to have_http_status(:ok)
       remixes = response.parsed_body['party']['remixes']
-      names = remixes.map { |r| r['name'] }
+      names = remixes.pluck('name')
       expect(names).to include('Shown remix')
       expect(names).not_to include('Hidden remix')
     end
@@ -646,7 +646,7 @@ RSpec.describe 'Parties API', type: :request do
           headers: { 'Authorization' => "Bearer #{admin_token.token}", 'X-Admin-Mode' => 'true' }
 
       expect(response).to have_http_status(:ok)
-      names = response.parsed_body['party']['remixes'].map { |r| r['name'] }
+      names = response.parsed_body['party']['remixes'].pluck('name')
       expect(names).to include('Admin remix')
     end
   end
@@ -704,7 +704,7 @@ RSpec.describe 'Parties API', type: :request do
         get '/api/v1/parties', headers: headers
         expect(response).to have_http_status(:ok)
 
-        party_ids = response.parsed_body['results'].map { |p| p['id'] }
+        party_ids = response.parsed_body['results'].pluck('id')
         expect(party_ids).to include(good_party.id)
         expect(party_ids).not_to include(bad_party.id)
       end
@@ -713,7 +713,7 @@ RSpec.describe 'Parties API', type: :request do
         get '/api/v1/parties', headers: headers
         expect(response).to have_http_status(:ok)
 
-        party_ids = response.parsed_body['results'].map { |p| p['id'] }
+        party_ids = response.parsed_body['results'].pluck('id')
         expect(party_ids).to include(mc_only_party.id)
       end
     end

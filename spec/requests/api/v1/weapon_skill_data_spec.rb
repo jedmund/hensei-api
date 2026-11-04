@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe 'Api::V1::WeaponSkillData', type: :request do
-  let!(:datum1) { create(:weapon_skill_datum, series: 'normal', size: 'big') }
-  let!(:datum2) { create(:weapon_skill_datum, series: 'omega', size: 'small') }
+  let!(:normal_datum) { create(:weapon_skill_datum, series: 'normal', size: 'big') }
+  let!(:omega_datum) { create(:weapon_skill_datum, series: 'omega', size: 'small') }
 
   describe 'GET /api/v1/weapon_skill_data' do
     it 'returns all weapon skill data with correct fields' do
@@ -14,28 +14,28 @@ RSpec.describe 'Api::V1::WeaponSkillData', type: :request do
       json = response.parsed_body['weapon_skill_data']
       expect(json.length).to be >= 2
 
-      entry = json.find { |d| d['id'] == datum1.id }
-      expect(entry['modifier']).to eq(datum1.modifier)
-      expect(entry['boost_type']).to eq(datum1.boost_type)
+      entry = json.find { |d| d['id'] == normal_datum.id }
+      expect(entry['modifier']).to eq(normal_datum.modifier)
+      expect(entry['boost_type']).to eq(normal_datum.boost_type)
       expect(entry['series']).to eq('normal')
       expect(entry['size']).to eq('big')
-      expect(entry['formula_type']).to eq(datum1.formula_type)
-      expect(entry['sl1']).to eq(datum1.sl1.to_f)
-      expect(entry['sl10']).to eq(datum1.sl10.to_f)
-      expect(entry['aura_boostable']).to eq(datum1.aura_boostable)
+      expect(entry['formula_type']).to eq(normal_datum.formula_type)
+      expect(entry['sl1']).to eq(normal_datum.sl1.to_f)
+      expect(entry['sl10']).to eq(normal_datum.sl10.to_f)
+      expect(entry['aura_boostable']).to eq(normal_datum.aura_boostable)
     end
 
     it 'filters by modifier and excludes non-matching' do
-      get '/api/v1/weapon_skill_data', params: { modifier: datum1.modifier }
+      get '/api/v1/weapon_skill_data', params: { modifier: normal_datum.modifier }
       expect(response).to have_http_status(:ok)
 
       json = response.parsed_body['weapon_skill_data']
       json.each do |d|
-        expect(d['modifier']).to eq(datum1.modifier)
+        expect(d['modifier']).to eq(normal_datum.modifier)
       end
-      ids = json.map { |d| d['id'] }
-      expect(ids).to include(datum1.id)
-      expect(ids).not_to include(datum2.id)
+      ids = json.pluck('id')
+      expect(ids).to include(normal_datum.id)
+      expect(ids).not_to include(omega_datum.id)
     end
 
     it 'filters by series' do
@@ -46,9 +46,9 @@ RSpec.describe 'Api::V1::WeaponSkillData', type: :request do
       json.each do |d|
         expect(d['series']).to eq('omega')
       end
-      ids = json.map { |d| d['id'] }
-      expect(ids).to include(datum2.id)
-      expect(ids).not_to include(datum1.id)
+      ids = json.pluck('id')
+      expect(ids).to include(omega_datum.id)
+      expect(ids).not_to include(normal_datum.id)
     end
 
     it 'filters by size' do
@@ -64,15 +64,15 @@ RSpec.describe 'Api::V1::WeaponSkillData', type: :request do
 
   describe 'GET /api/v1/weapon_skill_data/:id' do
     it 'returns the correct weapon skill datum' do
-      get "/api/v1/weapon_skill_data/#{datum1.id}"
+      get "/api/v1/weapon_skill_data/#{normal_datum.id}"
       expect(response).to have_http_status(:ok)
 
       json = response.parsed_body
-      expect(json['id']).to eq(datum1.id)
-      expect(json['modifier']).to eq(datum1.modifier)
-      expect(json['boost_type']).to eq(datum1.boost_type)
-      expect(json['series']).to eq(datum1.series)
-      expect(json['size']).to eq(datum1.size)
+      expect(json['id']).to eq(normal_datum.id)
+      expect(json['modifier']).to eq(normal_datum.modifier)
+      expect(json['boost_type']).to eq(normal_datum.boost_type)
+      expect(json['series']).to eq(normal_datum.series)
+      expect(json['size']).to eq(normal_datum.size)
     end
 
     it 'returns 404 for non-existent id' do

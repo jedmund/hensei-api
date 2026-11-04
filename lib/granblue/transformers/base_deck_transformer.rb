@@ -47,7 +47,7 @@ module Granblue
         }
 
         Rails.logger.info '[TRANSFORM] Completed transformation'
-        Rails.logger.debug "[TRANSFORM] Result: #{result}"
+        Rails.logger.debug { "[TRANSFORM] Result: #{result}" }
 
         result
       end

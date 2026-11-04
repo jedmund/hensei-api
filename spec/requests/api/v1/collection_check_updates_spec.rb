@@ -96,7 +96,7 @@ RSpec.describe 'Collection - check_updates', type: :request do
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
       expect(json['updates'].size).to eq(1)
-      expect(json['updates'].first['changes'].map { |c| c['field'] }).to include('uncap_level')
+      expect(json['updates'].first['changes'].pluck('field')).to include('uncap_level')
     end
   end
 
@@ -131,7 +131,7 @@ RSpec.describe 'Collection - check_updates', type: :request do
       json = response.parsed_body
       expect(json['updates'].size).to eq(1)
       expect(json['updates'].first['granblue_id']).to eq(character.granblue_id)
-      expect(json['updates'].first['changes'].map { |c| c['field'] }).to include('uncap_level')
+      expect(json['updates'].first['changes'].pluck('field')).to include('uncap_level')
     end
 
     it 'returns an entry for a changed character (stats format)' do

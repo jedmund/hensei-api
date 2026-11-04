@@ -73,7 +73,7 @@ class HomeFeed
   def self.previous_event(event)
     scope = Event.approved
                  .where(kind: event.kind)
-                 .where('ends_at <= ?', event.starts_at)
+                 .where(ends_at: ..event.starts_at)
                  .where.not(id: event.id)
 
     if event.element_themed?
@@ -104,7 +104,7 @@ class HomeFeed
 
   def upcoming_sections
     events.upcoming(@now)
-          .where('starts_at <= ?', @now + UPCOMING_WINDOW)
+          .where(starts_at: ..(@now + UPCOMING_WINDOW))
           .order(:starts_at)
           .limit(UPCOMING_LIMIT)
           .map do |event|

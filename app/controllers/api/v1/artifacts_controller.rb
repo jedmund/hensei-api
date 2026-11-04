@@ -74,7 +74,7 @@ module Api
       private
 
       def set_artifact
-        @artifact = Artifact.find(params[:id])
+        @artifact = Artifact.find(params.expect(:id))
       rescue ActiveRecord::RecordNotFound
         render_not_found_response('artifact')
       end
