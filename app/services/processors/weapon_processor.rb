@@ -150,27 +150,27 @@ module Processors
       grid_weapons = process_weapons(weapons_data)
 
       grid_weapons.each do |grid_weapon|
-          grid_weapon.save!
-          if grid_weapon.collection_weapon.present?
-            update_collection_from_game(grid_weapon)
-            begin
-              grid_weapon.sync_from_collection!
-            rescue ActiveRecord::RecordInvalid => e
-              Rails.logger.error "[WEAPON] Sync from collection failed, reverting: #{e.record.errors.full_messages.join(', ')}"
-              grid_weapon.reload
-            end
+        grid_weapon.save!
+        if grid_weapon.collection_weapon.present?
+          update_collection_from_game(grid_weapon)
+          begin
+            grid_weapon.sync_from_collection!
+          rescue ActiveRecord::RecordInvalid => e
+            Rails.logger.error "[WEAPON] Sync from collection failed, reverting: #{e.record.errors.full_messages.join(', ')}"
+            grid_weapon.reload
           end
-        rescue ActiveRecord::RecordInvalid => e
-          if ax_present?(grid_weapon)
-            Rails.logger.warn "[WEAPON] Dropping AX skills to save GridWeapon: #{e.record.errors.full_messages.join(', ')}"
-            add_warning('ax_skills_dropped', grid_weapon, grid_weapon.weapon)
-            clear_ax(grid_weapon)
-            retry
-          end
+        end
+      rescue ActiveRecord::RecordInvalid => e
+        if ax_present?(grid_weapon)
+          Rails.logger.warn "[WEAPON] Dropping AX skills to save GridWeapon: #{e.record.errors.full_messages.join(', ')}"
+          add_warning('ax_skills_dropped', grid_weapon, grid_weapon.weapon)
+          clear_ax(grid_weapon)
+          retry
+        end
 
-          Rails.logger.error "[WEAPON] Failed to create GridWeapon: #{e.record.errors.full_messages.join(', ')}"
-          add_warning('item_skipped', grid_weapon, grid_weapon.weapon)
-          discard_unsaved(grid_weapon, :weapons)
+        Rails.logger.error "[WEAPON] Failed to create GridWeapon: #{e.record.errors.full_messages.join(', ')}"
+        add_warning('item_skipped', grid_weapon, grid_weapon.weapon)
+        discard_unsaved(grid_weapon, :weapons)
       end
     end
 
@@ -236,7 +236,7 @@ module Processors
     # @param weapons_data [Hash] the raw weapons data (keyed by slot number).
     # @return [Array<GridWeapon>]
     def process_weapons(weapons_data)
-      weapons_data.map do |key, raw_weapon|
+      weapons_data.filter_map do |key, raw_weapon|
         next if raw_weapon.nil? || raw_weapon['param'].nil? || raw_weapon['master'].nil?
 
         position = key.to_i == 1 ? -1 : key.to_i - 2
@@ -306,7 +306,7 @@ module Processors
         process_augment_skills(grid_weapon, raw_weapon['param'])
 
         grid_weapon
-      end.compact
+      end
     end
 
     ##
@@ -437,7 +437,7 @@ module Processors
 
       return nil if raw_data.nil?
       return nil unless raw_data.is_a?(Hash)
-      return nil unless raw_data.has_key?('form')
+      return nil unless raw_data.key?('form')
 
       id = raw_data['form'].to_s
       return unless AWAKENING_MAPPING.key?(id)
@@ -477,7 +477,8 @@ module Processors
                      .where(name_en: weapon_name)
                      .first
       if weapon
-        Rails.logger.info "[WEAPON] Resolved element-changeable weapon '#{weapon_name}' (game id #{weapon_id}) via name fallback to #{weapon.granblue_id}"
+        Rails.logger.info "[WEAPON] Resolved element-changeable weapon '#{weapon_name}' (game id #{weapon_id}) " \
+                          "via name fallback to #{weapon.granblue_id}"
       end
       weapon
     end

@@ -10,14 +10,14 @@ module LoggingHelper
   end
 
   def log_error(message)
-    puts "#{message}"
+    puts message
   end
 
   def log_warning(message)
     puts "⚠️ #{message}"
   end
 
-  def log_divider(character = '+', leading_newline = true, trailing_newlines = 1)
+  def log_divider(character = '+', leading_newline: true, trailing_newlines: 1)
     output = ''
     output += "\n" if leading_newline
     output += character * 60
@@ -25,9 +25,9 @@ module LoggingHelper
     log_step output
   end
 
-  def log_header(title, character = '+', leading_newline = true)
-    log_divider(character, leading_newline, 0)
+  def log_header(title, character = '+', leading_newline: true)
+    log_divider(character, leading_newline: leading_newline, trailing_newlines: 0)
     log_step title
-    log_divider(character, false)
+    log_divider(character, leading_newline: false)
   end
 end

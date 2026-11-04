@@ -24,7 +24,7 @@ namespace :granblue do
 
     # Load downloader classes
     require_relative '../granblue/downloaders/base_downloader'
-    Rails.root.glob("lib/granblue/downloaders/*.rb").each { |file| require file }
+    Rails.root.glob('lib/granblue/downloaders/*.rb').each { |file| require file }
 
     object = args[:object]
     specified_size = args[:size]

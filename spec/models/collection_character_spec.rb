@@ -25,7 +25,10 @@ RSpec.describe CollectionCharacter, type: :model do
     end
 
     describe 'uniqueness validation' do
-      it { is_expected.to validate_uniqueness_of(:character_id).scoped_to(:user_id).ignoring_case_sensitivity.with_message('already exists in your collection') }
+      it do
+        expect(collection_character).to validate_uniqueness_of(:character_id).scoped_to(:user_id).ignoring_case_sensitivity
+                                                                             .with_message('already exists in your collection')
+      end
     end
 
     describe 'ring validations' do

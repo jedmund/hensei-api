@@ -56,7 +56,9 @@ module Api
           scores = if participation.gw_individual_scores.loaded?
                      participation.gw_individual_scores.sort_by(&:round)
                    else
-                     participation.gw_individual_scores.includes({ crew_membership: { user: { active_crew_membership: :crew } } }, :phantom_player).order(:round)
+                     participation.gw_individual_scores
+                                  .includes({ crew_membership: { user: { active_crew_membership: :crew } } }, :phantom_player)
+                                  .order(:round)
                    end
 
           GwIndividualScoreBlueprint.render_as_hash(

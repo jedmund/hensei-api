@@ -264,7 +264,7 @@ module Api
         requested_size = per_page_header.to_i
         return default if requested_size <= 0
 
-        [[requested_size, MAX_PER_PAGE].min, MIN_PER_PAGE].max
+        requested_size.clamp(MIN_PER_PAGE, MAX_PER_PAGE)
       end
 
       # Returns the requested page size for search operations
@@ -280,7 +280,7 @@ module Api
         requested = raw.to_i
         return default if requested <= 0
 
-        [[requested, MAX_PER_PAGE].min, MIN_PER_PAGE].max
+        requested.clamp(MIN_PER_PAGE, MAX_PER_PAGE)
       end
 
       def n_plus_one_detection

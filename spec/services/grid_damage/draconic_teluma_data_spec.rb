@@ -15,7 +15,7 @@ RSpec.describe 'Draconic Teluma effect data' do
   end
 
   let(:effects) do
-    payload = JSON.parse(Rails.root.join("data/weapon_skill_effects.json").read)
+    payload = JSON.parse(Rails.root.join('data/weapon_skill_effects.json').read)
     payload.fetch('effects')
   end
 

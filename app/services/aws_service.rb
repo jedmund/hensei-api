@@ -11,7 +11,7 @@ class AwsService
     Rails.logger.debug { "Environment: #{Rails.env}" }
 
     # Static keys (Rails credentials or env vars) win; production uses them.
-    creds = get_credentials
+    creds = resolve_credentials
     if creds
       Rails.logger.debug { "Credentials source: #{creds[:source]}" }
       @s3_client = Aws::S3::Client.new(
@@ -58,16 +58,16 @@ class AwsService
 
   private
 
-  def get_credentials
+  def resolve_credentials
     # Try Rails credentials first
-    rails_creds = Rails.application.credentials.dig(:aws)
+    rails_creds = Rails.application.credentials[:aws]
     if rails_creds&.dig(:access_key_id)
       Rails.logger.debug 'Using Rails credentials'
       return rails_creds.merge(source: 'rails_credentials')
     end
 
     # Try string keys
-    rails_creds = Rails.application.credentials.dig('aws')
+    rails_creds = Rails.application.credentials['aws']
     if rails_creds&.dig('access_key_id')
       Rails.logger.debug 'Using Rails credentials (string keys)'
       return {

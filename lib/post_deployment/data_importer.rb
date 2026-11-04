@@ -15,19 +15,19 @@ module PostDeployment
       @total_changes = { new: {}, updated: {} }
     end
 
-    def process_all_files(&block)
-      files = Rails.root.glob("db/seed/updates/*.csv")
+    def process_all_files(&)
+      files = Rails.root.glob('db/seed/updates/*.csv')
 
       files.each do |file|
         if (result = import_csv(file))
           merge_results(result)
-          block.call(result) if block_given?
+          yield(result) if block_given?
         end
       end
 
       return unless @processed_files.any?
 
-        print_summary
+      print_summary
     end
 
     private

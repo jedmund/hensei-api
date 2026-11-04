@@ -18,7 +18,7 @@ RSpec.describe Granblue::Downloaders::RemoteFile do
   it 'yields the IO when given a block' do
     stub_request(:get, url).to_return(status: 200, body: 'jpeg-bytes')
 
-    expect(described_class.open(url) { |io| io.read }).to eq('jpeg-bytes')
+    expect(described_class.open(url, &:read)).to eq('jpeg-bytes')
   end
 
   it 'raises an OpenURI::HTTPError for a missing image, as open-uri did' do

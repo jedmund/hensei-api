@@ -67,7 +67,7 @@ module Granblue
           return []
         end
 
-        results = skills.map { |skill| skill['name'] if skill.is_a?(Hash) }.compact
+        results = skills.filter_map { |skill| skill['name'] if skill.is_a?(Hash) }
         Rails.logger.info "[TRANSFORM] Found #{results.length} subskills"
         results
       end

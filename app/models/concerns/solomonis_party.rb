@@ -145,7 +145,7 @@ module SolomonisParty
       errors.clear
       errors.add(:guide_effects, 'are only for Evoking Solomonis parties') unless solomonis?
       errors.add(:guide_effects, 'list an effect more than once') if effect_ids.uniq.size != effect_ids.size
-      errors.add(:guide_effects, 'can have only one inherited effect') if entries.count { |e| e[:inherited] } > 1
+      errors.add(:guide_effects, 'can have only one inherited effect') if entries.many? { |e| e[:inherited] }
       raise ActiveRecord::RecordInvalid, self if errors.any?
 
       expedition_guide_effects.delete_all

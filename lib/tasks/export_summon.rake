@@ -18,10 +18,10 @@ namespace :granblue do
       size = args[:size]
 
       # Include character model
-      Dir.glob("#{Rails.root.join("app/models/summon.rb")}").each { |file| require file }
+      Dir.glob(Rails.root.join('app/models/summon.rb').to_s).each { |file| require file }
 
       # Set up filepath
-      dir = "#{Rails.root.join("export/")}"
+      dir = Rails.root.join('export/').to_s
       filename = "#{dir}/summon-#{size}.txt"
       FileUtils.mkdir_p(dir)
 
@@ -32,7 +32,7 @@ namespace :granblue do
           f.write("#{build_summon_url(s.granblue_id.to_s, size)} \n")
 
           # Download second images only for Providence ULBs and Primal summons
-          if series == 3 || (series == 0 && s.ulb)
+          if series == 3 || (series.zero? && s.ulb)
             f.write("#{build_summon_url("#{s.granblue_id}_02",
                                         size)} \n")
           end

@@ -472,7 +472,7 @@ class PartyQueryBuilder
   # Stub method for privacy filtering.
   # Here we assume that if the current user is not an admin, only public parties (visibility = 1) are returned.
   def privacy
-    return nil if @current_user && @current_user.admin?
+    return nil if @current_user&.admin?
 
     'visibility = 1'
   end

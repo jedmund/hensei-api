@@ -186,18 +186,16 @@ module Granblue
         'https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/npc'
       end
 
+      DIRECTORY_FOR_SIZE = { main: 'f', grid: 'm', square: 's', detail: 'detail' }.freeze
+      private_constant :DIRECTORY_FOR_SIZE
+
       # Gets directory name for a size variant
       #
       # @param size [String] Image size variant
       # @return [String] Directory name in game asset URL structure
       # @note Maps "main" -> "f", "grid" -> "m", "square" -> "s"
       def directory_for_size(size)
-        case size.to_s
-        when 'main' then 'f'
-        when 'grid' then 'm'
-        when 'square' then 's'
-        when 'detail' then 'detail'
-        end
+        DIRECTORY_FOR_SIZE[size.to_s.to_sym]
       end
     end
   end

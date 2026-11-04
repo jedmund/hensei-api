@@ -66,7 +66,7 @@ module Granblue
 
         master = obj['master']
         param = obj['param']
-        Rails.logger.debug { "[TRANSFORM] Extracted master: #{!!master}, param: #{!!param}" }
+        Rails.logger.debug { "[TRANSFORM] Extracted master: #{!master.nil?}, param: #{!param.nil?}" }
 
         [master, param]
       end

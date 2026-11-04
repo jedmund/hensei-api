@@ -208,13 +208,14 @@ namespace :deploy do
     %w[premium flash legend classic grand zodiac valentine summer halloween holiday formal].any? { |g| obtain.include?(g) }
   end
 
-  desc 'Post-deployment tasks: Run migrations, import data, download images, and rebuild search indices. Options: TEST=true for test mode, VERBOSE=true for verbose output, STORAGE=local|s3|both'
+  desc 'Post-deployment tasks: Run migrations, import data, download images, and rebuild search indices. ' \
+       'Options: TEST=true for test mode, VERBOSE=true for verbose output, STORAGE=local|s3|both'
   task post_deployment: :environment do
     include LoggingHelper
 
     # Load all required files
-    Rails.root.glob("lib/post_deployment/**/*.rb").each { |file| require file }
-    Rails.root.glob("lib/granblue/**/*.rb").each { |file| require file }
+    Rails.root.glob('lib/post_deployment/**/*.rb').each { |file| require file }
+    Rails.root.glob('lib/granblue/**/*.rb').each { |file| require file }
 
     # Ensure Rails environment is loaded
     Rails.application.eager_load!

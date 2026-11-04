@@ -114,7 +114,7 @@ module PostDeployment
 
       return unless initial_data_version != final_data_version
 
-        log_step "Migrated data from version #{initial_data_version} to #{final_data_version}"
+      log_step "Migrated data from version #{initial_data_version} to #{final_data_version}"
     end
   end
 end

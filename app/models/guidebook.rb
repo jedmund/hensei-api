@@ -32,6 +32,6 @@ class Guidebook < ApplicationRecord
   end
 
   def ==(other)
-    self.class == other.class && granblue_id === other.granblue_id
+    self.class == other.class && granblue_id == other.granblue_id
   end
 end

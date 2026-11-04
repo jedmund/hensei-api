@@ -88,6 +88,18 @@ Style/HashSyntax:
 Style/NumericLiterals:
   Enabled: false
 
+# GwCrewScore's round enum keys (finals_day_1…4) are stored and sent to clients
+# as is, so they keep their snake_case numbers.
+Naming/VariableNumber:
+  AllowedPatterns:
+    - '\Afinals_day_\d\z'
+
+# Blueprinter calls field blocks with (object, options), so `&:method` would
+# pass options to the method as an argument and raise.
+Style/SymbolProc:
+  Exclude:
+    - 'app/blueprints/**/*'
+
 # Many boolean-returning methods here are commands that report success
 # (sync_to_collection!, persist, handle_fetch_success), not predicates;
 # renaming them with `?` would misdescribe them.

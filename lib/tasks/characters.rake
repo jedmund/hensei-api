@@ -46,11 +46,11 @@ module CharacterNameInference
     # Check known character lists (base name without suffix)
     base_name = name.gsub(/\s*\([^)]+\)/, '').strip
 
-    series << GranblueEnums::CHARACTER_SERIES[:Eternal] if ETERNALS.any? { |e| base_name == e }
+    series << GranblueEnums::CHARACTER_SERIES[:Eternal] if ETERNALS.any?(base_name)
 
-    series << GranblueEnums::CHARACTER_SERIES[:Evoker] if EVOKERS.any? { |e| base_name == e }
+    series << GranblueEnums::CHARACTER_SERIES[:Evoker] if EVOKERS.any?(base_name)
 
-    series << GranblueEnums::CHARACTER_SERIES[:Zodiac] if ZODIACS.any? { |z| base_name == z }
+    series << GranblueEnums::CHARACTER_SERIES[:Zodiac] if ZODIACS.any?(base_name)
 
     # Default to Standard if no series detected and not a special type
     series << GranblueEnums::CHARACTER_SERIES[:Standard] if series.empty?
@@ -69,7 +69,7 @@ module CharacterNameInference
     ]
 
     # If any series is non-gachable, the character is not gachable
-    (series & non_gachable).empty?
+    !series.intersect?(non_gachable)
   end
 end
 
@@ -93,8 +93,8 @@ namespace :characters do
         updated += 1
       elsif character.update(season: season, series: series, gacha_available: gacha_available)
         updated += 1
-        else
-          puts "Failed to update #{character.name_en}: #{character.errors.full_messages.join(', ')}"
+      else
+        puts "Failed to update #{character.name_en}: #{character.errors.full_messages.join(', ')}"
       end
     end
 
@@ -103,7 +103,7 @@ namespace :characters do
   end
   desc 'Export characters to CSV for season/series mapping'
   task export_for_mapping: :environment do
-    output_path = ENV['OUTPUT'] || Rails.root.join("export/characters_for_mapping.csv")
+    output_path = ENV['OUTPUT'] || Rails.root.join('export/characters_for_mapping.csv')
     FileUtils.mkdir_p(File.dirname(output_path))
 
     headers = %w[id granblue_id name_en name_jp rarity element season series gacha_available]
@@ -164,8 +164,8 @@ namespace :characters do
         updated += 1
       elsif character.update(season: season, series: series, gacha_available: gacha_available)
         updated += 1
-        else
-          errors << "Failed to update #{character.name_en} (#{character.id}): #{character.errors.full_messages.join(', ')}"
+      else
+        errors << "Failed to update #{character.name_en} (#{character.id}): #{character.errors.full_messages.join(', ')}"
       end
     end
 

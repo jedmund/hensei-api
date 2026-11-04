@@ -40,7 +40,7 @@ class ArtifactSkill < ApplicationRecord
     end
 
     def cached_by_game_name
-      @game_name_cache ||= begin
+      @cached_by_game_name ||= begin
         cache = {}
         find_each do |skill|
           # Use game names for matching, fall back to display names if not set
@@ -70,7 +70,7 @@ class ArtifactSkill < ApplicationRecord
 
     def clear_cache!
       @cached_skills = nil
-      @game_name_cache = nil
+      @cached_by_game_name = nil
     end
   end
 

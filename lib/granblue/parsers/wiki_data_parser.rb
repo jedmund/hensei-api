@@ -64,7 +64,7 @@ module Granblue
         # The |series= field can be comma-separated (e.g., "evoker,summer")
         if data['series'].present?
           series_values = data['series'].to_s.downcase.split(',').map(&:strip)
-          series = series_values.map { |s| Wiki.character_series[s] }.compact
+          series = series_values.filter_map { |s| Wiki.character_series[s] }
           suggestions[:series] = series.uniq.sort if series.any?
         end
 
@@ -133,7 +133,7 @@ module Granblue
         suggestions[:name_en] = data['name'] if data['name'].present?
         suggestions[:name_jp] = data['jpname'] if data['jpname'].present?
         # Strip _note suffix from null element weapon IDs
-        suggestions[:granblue_id] = data['id'].sub(/_note\z/, '') if data['id'].present?
+        suggestions[:granblue_id] = data['id'].delete_suffix('_note') if data['id'].present?
 
         # Rarity
         suggestions[:rarity] = rarity_from(data['rarity'], data['id'])
@@ -301,7 +301,7 @@ module Granblue
         if value =~ %r{gamewith\.jp/article/show/(\d+)}
           ::Regexp.last_match(1)
         # If it's already just a numeric ID, return it
-        elsif value =~ /^\d+$/
+        elsif /^\d+$/.match?(value)
           value
         end
       end

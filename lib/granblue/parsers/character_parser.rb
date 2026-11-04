@@ -261,22 +261,22 @@ module Granblue
         # Seasonal series based on page name or obtain field
         page_name = @character.wiki_en.to_s.downcase
         if (page_name.include?('summer') || page_name.include?('(swimsuit)')) && series.exclude?(9)
-          series << 9# Summer
+          series << 9 # Summer
         end
         if page_name.include?('yukata') && series.exclude?(10)
-          series << 10# Yukata
+          series << 10 # Yukata
         end
         if page_name.include?('valentine') && series.exclude?(11)
-          series << 11# Valentine
+          series << 11 # Valentine
         end
         if page_name.include?('halloween') && series.exclude?(12)
-          series << 12# Halloween
+          series << 12 # Halloween
         end
         if (page_name.include?('(formal)') || page_name.include?('formal ')) && series.exclude?(13)
-          series << 13# Formal
+          series << 13 # Formal
         end
         if (page_name.include?('holiday') || page_name.include?('(holiday)')) && series.exclude?(14)
-          series << 14# Holiday
+          series << 14 # Holiday
         end
 
         series.uniq.sort

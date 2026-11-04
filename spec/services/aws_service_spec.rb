@@ -13,12 +13,12 @@ RSpec.describe AwsService do
   describe '#initialize' do
     context 'with Rails credentials (symbol keys)' do
       before do
-        allow(Rails.application.credentials).to receive(:dig).with(:aws).and_return({
-                                                                                      region: 'us-east-1',
-                                                                                      access_key_id: 'AKIA_TEST',
-                                                                                      secret_access_key: 'secret',
-                                                                                      bucket_name: 'test-bucket'
-                                                                                    })
+        allow(Rails.application.credentials).to receive(:[]).with(:aws).and_return({
+                                                                                     region: 'us-east-1',
+                                                                                     access_key_id: 'AKIA_TEST',
+                                                                                     secret_access_key: 'secret',
+                                                                                     bucket_name: 'test-bucket'
+                                                                                   })
       end
 
       it 'initializes successfully' do
@@ -37,13 +37,13 @@ RSpec.describe AwsService do
 
     context 'with Rails credentials (string keys)' do
       before do
-        allow(Rails.application.credentials).to receive(:dig).with(:aws).and_return(nil)
-        allow(Rails.application.credentials).to receive(:dig).with('aws').and_return({
-                                                                                       'region' => 'eu-west-1',
-                                                                                       'access_key_id' => 'AKIA_STRING',
-                                                                                       'secret_access_key' => 'secret2',
-                                                                                       'bucket_name' => 'string-bucket'
-                                                                                     })
+        allow(Rails.application.credentials).to receive(:[]).with(:aws).and_return(nil)
+        allow(Rails.application.credentials).to receive(:[]).with('aws').and_return({
+                                                                                      'region' => 'eu-west-1',
+                                                                                      'access_key_id' => 'AKIA_STRING',
+                                                                                      'secret_access_key' => 'secret2',
+                                                                                      'bucket_name' => 'string-bucket'
+                                                                                    })
       end
 
       it 'initializes with string key credentials' do
@@ -54,7 +54,7 @@ RSpec.describe AwsService do
 
     context 'with environment variables' do
       before do
-        allow(Rails.application.credentials).to receive(:dig).and_return(nil)
+        allow(Rails.application.credentials).to receive(:[]).and_return(nil)
         stub_const('ENV', ENV.to_h.merge(
                             'AWS_ACCESS_KEY_ID' => 'AKIA_ENV',
                             'AWS_SECRET_ACCESS_KEY' => 'env_secret',
@@ -73,7 +73,7 @@ RSpec.describe AwsService do
       let(:chain_credentials) { instance_double(Aws::Credentials, set?: true) }
 
       before do
-        allow(Rails.application.credentials).to receive(:dig).and_return(nil)
+        allow(Rails.application.credentials).to receive(:[]).and_return(nil)
         stub_const('ENV', {})
         allow(s3_client_double).to receive(:config).and_return(double(credentials: chain_credentials))
       end
@@ -94,7 +94,7 @@ RSpec.describe AwsService do
 
     context 'with temporary credentials in environment variables' do
       before do
-        allow(Rails.application.credentials).to receive(:dig).and_return(nil)
+        allow(Rails.application.credentials).to receive(:[]).and_return(nil)
         stub_const('ENV', { 'AWS_ACCESS_KEY_ID' => 'ASIA_TEMP', 'AWS_SECRET_ACCESS_KEY' => 'secret',
                             'AWS_SESSION_TOKEN' => 'token', 'AWS_REGION' => 'us-west-2' })
       end
@@ -110,9 +110,9 @@ RSpec.describe AwsService do
 
   describe '#upload_stream' do
     let(:service) do
-      allow(Rails.application.credentials).to receive(:dig).with(:aws).and_return({
-                                                                                    region: 'us-east-1', access_key_id: 'key', secret_access_key: 'secret', bucket_name: 'bucket'
-                                                                                  })
+      allow(Rails.application.credentials).to receive(:[]).with(:aws).and_return(
+        { region: 'us-east-1', access_key_id: 'key', secret_access_key: 'secret', bucket_name: 'bucket' }
+      )
       described_class.new
     end
 
@@ -130,9 +130,9 @@ RSpec.describe AwsService do
 
   describe '#file_exists?' do
     let(:service) do
-      allow(Rails.application.credentials).to receive(:dig).with(:aws).and_return({
-                                                                                    region: 'us-east-1', access_key_id: 'key', secret_access_key: 'secret', bucket_name: 'bucket'
-                                                                                  })
+      allow(Rails.application.credentials).to receive(:[]).with(:aws).and_return(
+        { region: 'us-east-1', access_key_id: 'key', secret_access_key: 'secret', bucket_name: 'bucket' }
+      )
       described_class.new
     end
 

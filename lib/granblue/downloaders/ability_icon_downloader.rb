@@ -54,7 +54,7 @@ module Granblue
       end
 
       def download_path(_size)
-        "#{Rails.root.join("download/#{object_type}")}"
+        Rails.root.join("download/#{object_type}").to_s
       end
 
       def base_url

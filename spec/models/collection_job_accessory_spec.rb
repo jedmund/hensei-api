@@ -7,14 +7,17 @@ RSpec.describe CollectionJobAccessory, type: :model do
   end
 
   describe 'validations' do
-    subject { build(:collection_job_accessory, user: user, job_accessory: job_accessory) }
+    subject(:collection_job_accessory) { build(:collection_job_accessory, user: user, job_accessory: job_accessory) }
 
     let(:user) { create(:user) }
     let(:job) { create(:job) }
     let(:job_accessory) { create(:job_accessory, job: job) }
 
     describe 'uniqueness validation' do
-      it { is_expected.to validate_uniqueness_of(:job_accessory_id).scoped_to(:user_id).ignoring_case_sensitivity.with_message('already exists in your collection') }
+      it do
+        expect(collection_job_accessory).to validate_uniqueness_of(:job_accessory_id).scoped_to(:user_id).ignoring_case_sensitivity
+                                                                                     .with_message('already exists in your collection')
+      end
     end
   end
 

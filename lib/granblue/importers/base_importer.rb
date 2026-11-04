@@ -117,9 +117,9 @@ module Granblue
           end
         elsif @test_mode
           log_test_creation(attributes)
-            nil
-          else
-            [model_class.create!(attributes), false]
+          nil
+        else
+          [model_class.create!(attributes), false]
         end
       end
 
@@ -153,30 +153,30 @@ module Granblue
 
         return unless would_update
 
-          # Create a test record with existing data
-          test_record = existing_record.dup
+        # Create a test record with existing data
+        test_record = existing_record.dup
 
-          # Validate only the columns being updated
-          validate_update_attributes(update_attributes)
+        # Validate only the columns being updated
+        validate_update_attributes(update_attributes)
 
-          # Apply the updates and validate the resulting record
-          test_record.assign_attributes(update_attributes)
-          validate_record(test_record)
+        # Apply the updates and validate the resulting record
+        test_record.assign_attributes(update_attributes)
+        validate_record(test_record)
 
-          log_test_update(existing_record, attributes)
-          simulated_updated[type] << {
-            granblue_id: attributes[:granblue_id],
-            name_en: attributes[:name_en] || existing_record.name_en,
-            attributes: update_attributes,
-            operation: :update
-          }
+        log_test_update(existing_record, attributes)
+        simulated_updated[type] << {
+          granblue_id: attributes[:granblue_id],
+          name_en: attributes[:name_en] || existing_record.name_en,
+          attributes: update_attributes,
+          operation: :update
+        }
       end
 
       # Validate that all required attributes are present
       # @param attributes [Hash] Attributes to validate
       # @raise [ImportError] If required attributes are missing
       def validate_required_attributes(attributes)
-        required_columns = model_class.columns.select { |c| !c.null }.map(&:name)
+        required_columns = model_class.columns.reject(&:null).map(&:name)
 
         missing_columns = required_columns.select do |column|
           attributes[column.to_sym].nil? &&
@@ -186,17 +186,17 @@ module Granblue
 
         return unless missing_columns.any?
 
-          details = [
-            'Missing required columns:',
-            missing_columns.map { |col| "  • #{col}" },
-            '',
-            "Affected model: #{model_class.name}"
-          ].flatten.join("\n")
+        details = [
+          'Missing required columns:',
+          missing_columns.map { |col| "  • #{col}" },
+          '',
+          "Affected model: #{model_class.name}"
+        ].flatten.join("\n")
 
-          raise ImportError.new(
-            file_name: File.basename(@file_path),
-            details: details
-          )
+        raise ImportError.new(
+          file_name: File.basename(@file_path),
+          details: details
+        )
       end
 
       # Validate attributes for an update
@@ -204,7 +204,7 @@ module Granblue
       # @raise [ImportError] If required attributes are missing
       def validate_update_attributes(update_attributes)
         # Get the list of columns that cannot be null in the database
-        required_columns = model_class.columns.select { |c| !c.null }.map(&:name)
+        required_columns = model_class.columns.reject(&:null).map(&:name)
 
         # For updates, we only need to validate the attributes that are being updated
         update_columns = update_attributes.keys.map(&:to_s)
@@ -219,17 +219,17 @@ module Granblue
 
         return unless missing_columns.any?
 
-          details = [
-            'Missing required values for update:',
-            missing_columns.map { |col| "  • #{col}" },
-            '',
-            "Affected model: #{model_class.name}"
-          ].flatten.join("\n")
+        details = [
+          'Missing required values for update:',
+          missing_columns.map { |col| "  • #{col}" },
+          '',
+          "Affected model: #{model_class.name}"
+        ].flatten.join("\n")
 
-          raise ImportError.new(
-            file_name: File.basename(@file_path),
-            details: details
-          )
+        raise ImportError.new(
+          file_name: File.basename(@file_path),
+          details: details
+        )
       end
 
       # Validate a record can be saved

@@ -6,7 +6,7 @@ FactoryBot.define do
     notes { nil }
 
     trait :with_granblue_id do
-      sequence(:granblue_id) { |n| "#{10000000 + n}" }
+      sequence(:granblue_id) { |n| (10000000 + n).to_s }
     end
 
     trait :claimed do

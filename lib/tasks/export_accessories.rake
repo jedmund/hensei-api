@@ -16,19 +16,19 @@ namespace :granblue do
       # Set up options
       size = args[:size]
 
-      Dir.glob("#{Rails.root.join("app/models/job_accessory.rb")}").each { |file| require file }
+      Dir.glob(Rails.root.join('app/models/job_accessory.rb').to_s).each { |file| require file }
 
       # Set up filepath
-      dir = "#{Rails.root.join("export/")}"
+      dir = Rails.root.join('export/').to_s
       filename = "#{dir}/accessory-#{size}.txt"
       FileUtils.mkdir_p(dir)
 
       # Write to file
       File.open(filename, 'w') do |f|
         JobAccessory.find_each do |w|
-          if w.accessory_type === 1
+          if w.accessory_type == 1
             f.write("#{build_url(w.granblue_id.to_s, 'shield', size)} \n")
-          elsif w.accessory_type === 2
+          elsif w.accessory_type == 2
             f.write("#{build_url(w.granblue_id.to_s, 'familiar', size)} \n")
           end
         end

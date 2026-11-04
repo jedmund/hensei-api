@@ -7,7 +7,7 @@ RSpec.describe Processors::CharacterProcessor, type: :model do
 
   let(:party) { create(:party) }
   let(:deck_data) do
-    file_path = Rails.root.join("spec/fixtures/deck_sample2.json")
+    file_path = Rails.root.join('spec/fixtures/deck_sample2.json')
     JSON.parse(File.read(file_path))
   end
 
@@ -34,7 +34,7 @@ RSpec.describe Processors::CharacterProcessor, type: :model do
 
   describe 'awakening and perpetuity survive collection sync' do
     let(:deck_data) do
-      data = JSON.parse(Rails.root.join("spec/fixtures/deck_sample2.json").read)
+      data = JSON.parse(Rails.root.join('spec/fixtures/deck_sample2.json').read)
       # Add npc_arousal_form to first character (Attack awakening)
       data['deck']['npc']['1']['param']['npc_arousal_form'] = 2
       # Ensure perpetuity is set

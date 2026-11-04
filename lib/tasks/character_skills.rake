@@ -117,7 +117,7 @@ namespace :granblue do
            end
 
     output = Granblue::Reports::CharacterSkillShape.render(rows)
-    report_path = Rails.root.join("tmp/character_skill_shapes.md")
+    report_path = Rails.root.join('tmp/character_skill_shapes.md')
     File.write(report_path, output)
     puts "Wrote: #{report_path}"
     puts "Selected ids: #{rows.map { |row| row[:character].granblue_id }.join(',')}"
@@ -130,7 +130,7 @@ namespace :granblue do
     reports = chars.find_each.map do |character|
       Granblue::Parsers::CharacterSkillParser.new(character, status_lookup: status_lookup).parse(persist: false)
     end
-    report_path = Rails.root.join("tmp/character_skill_report.json")
+    report_path = Rails.root.join('tmp/character_skill_report.json')
     FileUtils.mkdir_p(File.dirname(report_path))
     File.write(report_path, JSON.pretty_generate(reports))
     puts "Inspected #{reports.size} characters. Details: #{report_path}"

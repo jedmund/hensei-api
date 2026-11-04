@@ -91,7 +91,7 @@ module PostDeployment
     end
 
     def display_import_summary
-      if @new_records.size > 0 || @updated_records.size > 0
+      if @new_records.size.positive? || @updated_records.size.positive?
         log_header 'Import Summary', '-'
         display_record_summary('New', @new_records)
         display_record_summary('Updated', @updated_records)

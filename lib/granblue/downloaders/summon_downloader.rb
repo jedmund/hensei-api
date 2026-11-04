@@ -111,6 +111,9 @@ module Granblue
         @base_url
       end
 
+      DIRECTORY_FOR_SIZE = { main: 'party_main', tall: 'ls', grid: 'party_sub', wide: 'm', square: 's', detail: 'detail', gacha: 'g' }.freeze
+      private_constant :DIRECTORY_FOR_SIZE
+
       # Gets directory name for a size variant
       #
       # @param size [String] Image size variant
@@ -118,15 +121,7 @@ module Granblue
       # @note Maps "main" -> "party_main", "tall" -> "ls", "grid" -> "party_sub", "wide" -> "m", "square" -> "s",
       #   "detail" -> "detail", "gacha" -> "g"
       def directory_for_size(size)
-        case size.to_s
-        when 'main' then 'party_main'
-        when 'tall' then 'ls'
-        when 'grid' then 'party_sub'
-        when 'wide' then 'm'
-        when 'square' then 's'
-        when 'detail' then 'detail'
-        when 'gacha' then 'g'
-        end
+        DIRECTORY_FOR_SIZE[size.to_s.to_sym]
       end
     end
   end

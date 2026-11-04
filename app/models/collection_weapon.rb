@@ -115,7 +115,7 @@ class CollectionWeapon < ApplicationRecord
     slots = weapon_keys.map(&:slot)
     return unless slots.length != slots.uniq.length
 
-      errors.add(:weapon_keys, 'cannot have multiple keys for the same slot')
+    errors.add(:weapon_keys, 'cannot have multiple keys for the same slot')
   end
 
   def validate_befoulment
@@ -129,7 +129,7 @@ class CollectionWeapon < ApplicationRecord
     errors.add(:befoulment_modifier, 'must be a befoulment modifier') if befoulment_modifier.present? && befoulment_modifier.category != 'befoulment'
 
     # Exorcism level only makes sense with befoulment or befoulment-capable weapons
-    if exorcism_level.present? && exorcism_level > 0 && befoulment_modifier.blank? &&
+    if exorcism_level.present? && exorcism_level.positive? && befoulment_modifier.blank? &&
        weapon_augment_type != 'befoulment'
       errors.add(:exorcism_level, 'cannot be set without a befoulment')
     end
@@ -140,7 +140,7 @@ class CollectionWeapon < ApplicationRecord
 
     return if weapon_element_changeable?
 
-      errors.add(:element, 'can only be set on element-changeable weapons')
+    errors.add(:element, 'can only be set on element-changeable weapons')
   end
 
   def validate_awakening_compatibility
@@ -148,24 +148,24 @@ class CollectionWeapon < ApplicationRecord
 
     return if awakening.object_type == 'Weapon'
 
-      errors.add(:awakening, 'must be a weapon awakening')
+    errors.add(:awakening, 'must be a weapon awakening')
   end
 
   def validate_awakening_level
     return unless awakening_level.present? && awakening_level > 1 && awakening_id.blank?
 
-      errors.add(:awakening_level, 'cannot be set without an awakening')
+    errors.add(:awakening_level, 'cannot be set without an awakening')
   end
 
   def validate_transcendence_requirements
-    return unless transcendence_step.present? && transcendence_step > 0
+    return unless transcendence_step.present? && transcendence_step.positive?
 
     errors.add(:transcendence_step, "requires uncap level 5 (current: #{uncap_level})") if uncap_level < 5
 
     # Some weapons might not support transcendence
     return unless weapon.present? && !weapon.transcendence
 
-      errors.add(:transcendence_step, 'not available for this weapon') if transcendence_step > 0
+    errors.add(:transcendence_step, 'not available for this weapon') if transcendence_step.positive?
   end
 
   ##

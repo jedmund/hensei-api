@@ -42,13 +42,13 @@ class Dataminer
   # user_id and game_version default to the baked-in constants but should be
   # overridden per session: uid is the logged-in account's player id and
   # game_version is the current game build (both change over time).
-  def initialize(page:, access_token:, wing:, midship:, t: 'dummy',
+  def initialize(page:, access_token:, wing:, midship:, t_cookie: 'dummy',
                  user_id: BOT_UID, game_version: GAME_VERSION, debug: false, delay: MIN_DELAY)
     @page = page
     @cookies = {
       access_gbtk: access_token,
       wing: wing,
-      t: t,
+      t: t_cookie,
       midship: midship
     }
     @user_id = user_id

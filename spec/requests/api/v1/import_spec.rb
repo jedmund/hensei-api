@@ -12,7 +12,7 @@ RSpec.describe 'ImportController', type: :request do
   end
 
   let(:raw_deck_data) do
-    file_path = Rails.root.join("spec/fixtures/deck_sample.json")
+    file_path = Rails.root.join('spec/fixtures/deck_sample.json')
     JSON.parse(File.read(file_path))
   end
   let(:valid_deck_json) { { 'import' => raw_deck_data }.to_json }

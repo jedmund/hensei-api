@@ -355,7 +355,7 @@ class Weapon < ApplicationRecord
 
         break if current.forged_from.blank?
 
-          current = Weapon.find_by(granblue_id: current.forged_from)
+        current = Weapon.find_by(granblue_id: current.forged_from)
 
       end
 

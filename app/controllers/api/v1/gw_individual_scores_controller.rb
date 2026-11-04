@@ -22,7 +22,9 @@ module Api
         score.recorded_by = current_user
 
         if score.save
-          render json: GwIndividualScoreBlueprint.render(score, view: :with_member, root: :individual_score, current_user: current_user), status: :created
+          render json: GwIndividualScoreBlueprint.render(score, view: :with_member, root: :individual_score,
+                                                                current_user: current_user),
+                 status: :created
         else
           render_validation_error_response(score)
         end
@@ -63,7 +65,9 @@ module Api
         score.recorded_by = current_user
 
         if score.save
-          render json: GwIndividualScoreBlueprint.render(score, view: :with_member, root: :individual_score, current_user: current_user), status: :created
+          render json: GwIndividualScoreBlueprint.render(score, view: :with_member, root: :individual_score,
+                                                                current_user: current_user),
+                 status: :created
         else
           render_validation_error_response(score)
         end
@@ -139,9 +143,12 @@ module Api
         end
 
         if errors.empty?
-          render json: GwIndividualScoreBlueprint.render(results, view: :with_member, root: :individual_scores, current_user: current_user), status: :created
+          render json: GwIndividualScoreBlueprint.render(results, view: :with_member, root: :individual_scores,
+                                                                  current_user: current_user),
+                 status: :created
         else
-          render json: { individual_scores: GwIndividualScoreBlueprint.render_as_hash(results, view: :with_member, current_user: current_user), errors: errors },
+          scores = GwIndividualScoreBlueprint.render_as_hash(results, view: :with_member, current_user: current_user)
+          render json: { individual_scores: scores, errors: errors },
                  status: :multi_status
         end
       end

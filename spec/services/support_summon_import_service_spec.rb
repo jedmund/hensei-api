@@ -41,8 +41,8 @@ RSpec.describe SupportSummonImportService do
     it 'maps GBF section indices to section enums' do
       service = described_class.new(user, [
                                       { 'gbf_section' => 1, 'position' => 0, 'granblue_id' => fire_summon.granblue_id, 'level' => 250 },
-        { 'gbf_section' => 2, 'position' => 0, 'granblue_id' => water_summon.granblue_id, 'level' => 200 },
-        { 'gbf_section' => 0, 'position' => 0, 'granblue_id' => misc_summon.granblue_id, 'level' => 100 }
+                                      { 'gbf_section' => 2, 'position' => 0, 'granblue_id' => water_summon.granblue_id, 'level' => 200 },
+                                      { 'gbf_section' => 0, 'position' => 0, 'granblue_id' => misc_summon.granblue_id, 'level' => 100 }
                                     ])
 
       result = service.import
@@ -137,7 +137,7 @@ RSpec.describe SupportSummonImportService do
 
       result = described_class.new(user, [
                                      { 'gbf_section' => 1, 'position' => 0, 'granblue_id' => fire_summon.granblue_id, 'level' => 100 },
-        { 'gbf_section' => 99, 'position' => 0, 'granblue_id' => water_summon.granblue_id, 'level' => 100 } # bad section
+                                     { 'gbf_section' => 99, 'position' => 0, 'granblue_id' => water_summon.granblue_id, 'level' => 100 } # bad section
                                    ]).import
 
       expect(result.success?).to be(false)

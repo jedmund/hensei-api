@@ -161,7 +161,7 @@ module Granblue
           # never in real page values. Covers both empty defaults ({{{x|}}}) and
           # nested defaults ({{{x|{{{y|}}}}}}) — the latter slip past a
           # |}}}-anchored match and would otherwise overwrite real page values.
-          next if value =~ /\A\{\{\{.*\}\}\}\z/
+          next if /\A\{\{\{.*\}\}\}\z/.match?(value)
 
           data[key] = value if value
         end

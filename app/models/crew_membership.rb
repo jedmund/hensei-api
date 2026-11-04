@@ -49,7 +49,7 @@ class CrewMembership < ApplicationRecord
 
     return unless CrewMembership.where(user_id: user_id, retired: false).where.not(id: id).exists?
 
-      errors.add(:user, 'can only be in one active crew')
+    errors.add(:user, 'can only be in one active crew')
   end
 
   def captain_limit
