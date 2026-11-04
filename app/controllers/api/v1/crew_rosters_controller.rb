@@ -61,7 +61,7 @@ class Api::V1::CrewRostersController < Api::V1::ApiController
     items = []
 
     if character_ids.present?
-      Character.where(id: character_ids).each do |c|
+      Character.where(id: character_ids).find_each do |c|
         items << {
           id: c.id, type: 'Character', granblue_id: c.granblue_id, name: c.name_en,
           element: c.element, season: c.season,
@@ -72,7 +72,7 @@ class Api::V1::CrewRostersController < Api::V1::ApiController
     end
 
     if weapon_ids.present?
-      Weapon.where(id: weapon_ids).each do |w|
+      Weapon.where(id: weapon_ids).find_each do |w|
         items << {
           id: w.id, type: 'Weapon', granblue_id: w.granblue_id, name: w.name_en,
           element: w.element,
@@ -82,7 +82,7 @@ class Api::V1::CrewRostersController < Api::V1::ApiController
     end
 
     if summon_ids.present?
-      Summon.where(id: summon_ids).each do |s|
+      Summon.where(id: summon_ids).find_each do |s|
         items << {
           id: s.id, type: 'Summon', granblue_id: s.granblue_id, name: s.name_en,
           element: s.element,

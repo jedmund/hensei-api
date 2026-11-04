@@ -1196,8 +1196,6 @@ Rails/Exit:
 # AllowedMethods: order, limit, select, lock
 Rails/FindEach:
   Exclude:
-    - 'app/controllers/api/v1/crew_rosters_controller.rb'
-    - 'app/controllers/api/v1/crews_controller.rb'
     - 'app/models/artifact_skill.rb'
     - 'app/services/grid_damage/character_auras.rb'
     - 'app/services/grid_damage/effects.rb'

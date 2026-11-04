@@ -174,17 +174,17 @@ module Api
 
         if char_ids.present?
           CollectionCharacter.includes(:character).where(user_id: user_ids, character_id: char_ids)
-                             .each { |item| (cache[:characters][item.user_id] ||= []) << item }
+                             .find_each { |item| (cache[:characters][item.user_id] ||= []) << item }
         end
 
         if weap_ids.present?
           CollectionWeapon.includes(:weapon).where(user_id: user_ids, weapon_id: weap_ids)
-                          .each { |item| (cache[:weapons][item.user_id] ||= []) << item }
+                          .find_each { |item| (cache[:weapons][item.user_id] ||= []) << item }
         end
 
         if summ_ids.present?
           CollectionSummon.includes(:summon).where(user_id: user_ids, summon_id: summ_ids)
-                          .each { |item| (cache[:summons][item.user_id] ||= []) << item }
+                          .find_each { |item| (cache[:summons][item.user_id] ||= []) << item }
         end
 
         cache
