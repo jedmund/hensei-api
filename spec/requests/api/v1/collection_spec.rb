@@ -171,10 +171,13 @@ RSpec.describe 'Collection Controller API', type: :request do
     end
 
     it 'returns distinct granblue_ids for characters' do
+      # A style shift shares its base character's granblue_id
+      style = create(:character, granblue_id: first_character.granblue_id, style_swap: true)
+      create(:collection_character, user: user, character: style)
+
       get "/api/v1/users/#{user.id}/collection/game_ids", headers: headers
 
       json = response.parsed_body
-      expect(json['characters']).to eq(json['characters'].uniq)
       expect(json['characters']).to contain_exactly('3040000100')
     end
 
