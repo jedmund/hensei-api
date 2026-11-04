@@ -290,7 +290,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
       get '/api/v1/users/search', params: { query: 'jed' }, headers: auth_headers
 
       expect(response).to have_http_status(:ok)
-      usernames = response.parsed_body['users'].map { |u| u['username'] }
+      usernames = response.parsed_body['users'].pluck('username')
       expect(usernames).to include('jedmund')
     end
 
@@ -299,7 +299,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
       get '/api/v1/users/search', params: { query: 'kona' }, headers: auth_headers
 
       expect(response).to have_http_status(:ok)
-      usernames = response.parsed_body['users'].map { |u| u['username'] }
+      usernames = response.parsed_body['users'].pluck('username')
       expect(usernames).to include('someguy')
     end
 
@@ -308,7 +308,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
       get '/api/v1/users/search', params: { query: 'COC' }, headers: auth_headers
 
       expect(response).to have_http_status(:ok)
-      usernames = response.parsed_body['users'].map { |u| u['username'] }
+      usernames = response.parsed_body['users'].pluck('username')
       expect(usernames).to include('Sandalphon')
     end
 
@@ -317,7 +317,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
       get '/api/v1/users/search', params: { query: 'jed' }, headers: auth_headers
 
       expect(response).to have_http_status(:ok)
-      usernames = response.parsed_body['users'].map { |u| u['username'] }
+      usernames = response.parsed_body['users'].pluck('username')
       expect(usernames).not_to include('jedmund')
     end
 

@@ -127,7 +127,7 @@ RSpec.describe 'Api::V1::CrewGwParticipations', type: :request do
       it 'includes members who were active during the event' do
         get "/api/v1/crew/gw_participations/by_event/#{gw_event.id}", headers: auth_headers
         json = response.parsed_body
-        member_ids = json['members_during_event'].map { |m| m['id'] }
+        member_ids = json['members_during_event'].pluck('id')
         expect(member_ids).to include(membership.id)
       end
     end

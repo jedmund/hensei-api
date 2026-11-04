@@ -45,7 +45,7 @@ RSpec.describe 'Api::V1::Raids', type: :request do
       json.each do |r|
         expect(r['element']).to eq(4)
       end
-      ids = json.map { |r| r['id'] }
+      ids = json.pluck('id')
       expect(ids).to include(first_raid.id)
       expect(ids).not_to include(second_raid.id)
     end
@@ -57,7 +57,7 @@ RSpec.describe 'Api::V1::Raids', type: :request do
       get '/api/v1/raids', params: { group_id: group.id }
       expect(response).to have_http_status(:ok)
 
-      ids = response.parsed_body.map { |r| r['id'] }
+      ids = response.parsed_body.pluck('id')
       expect(ids).to include(first_raid.id, second_raid.id)
       expect(ids).not_to include(other_raid.id)
     end

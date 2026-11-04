@@ -521,7 +521,7 @@ RSpec.describe 'Party last_updated tracking', type: :request do
           headers: { 'Content-Type' => 'application/json' }
       expect(response).to have_http_status(:ok)
 
-      party_ids = response.parsed_body.dig('playlist', 'parties').map { |p| p['id'] }
+      party_ids = response.parsed_body.dig('playlist', 'parties').pluck('id')
       expect(party_ids).to eq([new_party.id, old_party.id])
     end
   end

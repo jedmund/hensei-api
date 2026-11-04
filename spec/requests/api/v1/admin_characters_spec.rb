@@ -274,7 +274,7 @@ RSpec.describe 'Admin characters collection', type: :request do
           { 'id' => zodiac.id, 'slug' => 'zodiac', 'name_en' => zodiac.name_en, 'name_jp' => zodiac.name_jp }
         ]
       )
-      expect(body['results'].map { |r| r['skill_count'] }).to eq([2, 0, 0, 1])
+      expect(body['results'].pluck('skill_count')).to eq([2, 0, 0, 1])
       expect(body['results'].map { |r| r['series'].size }).to eq([2, 1, 0, 1])
     end
 

@@ -32,7 +32,7 @@ RSpec.describe 'Api::V1::WeaponKeys', type: :request do
       json.each do |key|
         expect(key['slot']).to eq(1)
       end
-      ids = json.map { |k| k['id'] }
+      ids = json.pluck('id')
       expect(ids).to include(first_weapon_key.id)
       expect(ids).not_to include(second_weapon_key.id)
     end
@@ -45,7 +45,7 @@ RSpec.describe 'Api::V1::WeaponKeys', type: :request do
       json.each do |key|
         expect(key['group']).to eq(2)
       end
-      ids = json.map { |k| k['id'] }
+      ids = json.pluck('id')
       expect(ids).to include(second_weapon_key.id)
       expect(ids).not_to include(first_weapon_key.id)
     end
@@ -57,7 +57,7 @@ RSpec.describe 'Api::V1::WeaponKeys', type: :request do
       expect(response).to have_http_status(:ok)
 
       json = response.parsed_body
-      ids = json.map { |k| k['id'] }
+      ids = json.pluck('id')
       expect(ids).to include(opus_key.id)
     end
   end

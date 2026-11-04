@@ -43,7 +43,7 @@ RSpec.describe 'Api::V1::JobAccessories', type: :request do
       json.each do |a|
         expect(a['accessory_type']).to eq(1)
       end
-      ids = json.map { |a| a['id'] }
+      ids = json.pluck('id')
       expect(ids).to include(first_accessory.id)
       expect(ids).not_to include(second_accessory.id)
     end

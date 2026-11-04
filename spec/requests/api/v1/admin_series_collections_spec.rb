@@ -73,7 +73,7 @@ RSpec.describe 'Admin series and awakenings collections', type: :request do
       body = fetch(path, q: 'zz-', fields: 'slug,character_count')
       expect(response).to have_http_status(:ok)
       expect(slugs(body)).to eq(%w[zz-bravo zz-alpha])
-      expect(body['results'].map { |r| r['character_count'] }).to eq([0, 1])
+      expect(body['results'].pluck('character_count')).to eq([0, 1])
     end
 
     it 'sorts by name' do

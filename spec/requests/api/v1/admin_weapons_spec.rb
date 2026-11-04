@@ -241,7 +241,7 @@ RSpec.describe 'Admin weapons collection', type: :request do
       expect(body['results'].first).to eq(
         'id' => alpha.id, 'name_en' => 'Alpha Blade', 'skill_count' => 2, 'series_name_en' => opus.name_en
       )
-      expect(body['results'].map { |r| r['skill_count'] }).to eq([2, 0, 0, 1])
+      expect(body['results'].pluck('skill_count')).to eq([2, 0, 0, 1])
     end
 
     it 'preloads series instead of querying per row' do

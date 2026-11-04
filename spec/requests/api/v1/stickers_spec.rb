@@ -25,7 +25,7 @@ RSpec.describe 'Api::V1::Stickers', type: :request do
       get '/api/v1/stickers'
 
       expect(response).to have_http_status(:ok)
-      expect(json_response['stickers'].map { |s| s['slug'] }).to eq(%w[first second])
+      expect(json_response['stickers'].pluck('slug')).to eq(%w[first second])
       expect(json_response['stickers'].first).to include(
         'id' => first.id, 'meaning' => { 'en' => 'Fast', 'ja' => '速い' },
         'image_url' => nil, 'position' => 1, 'active' => true
@@ -34,7 +34,7 @@ RSpec.describe 'Api::V1::Stickers', type: :request do
 
     it 'lets editors include inactive stickers' do
       get '/api/v1/stickers', params: { include_inactive: true }, headers: editor_headers
-      expect(json_response['stickers'].map { |s| s['slug'] }).to eq(%w[retired first second])
+      expect(json_response['stickers'].pluck('slug')).to eq(%w[retired first second])
     end
 
     it 'tells editors which stickers can still be deleted' do
@@ -53,7 +53,7 @@ RSpec.describe 'Api::V1::Stickers', type: :request do
 
     it 'ignores include_inactive for non-editors' do
       get '/api/v1/stickers', params: { include_inactive: true }, headers: member_headers
-      expect(json_response['stickers'].map { |s| s['slug'] }).to eq(%w[first second])
+      expect(json_response['stickers'].pluck('slug')).to eq(%w[first second])
     end
 
     it 'busts the cached catalogue when a sticker changes' do
@@ -332,7 +332,7 @@ RSpec.describe 'Api::V1::Stickers', type: :request do
     it 'sets positions in the given order' do
       put '/api/v1/stickers/reorder', params: { ids: [b.id, a.id] }, headers: editor_headers
       expect(response).to have_http_status(:ok)
-      expect(json_response['stickers'].map { |s| s['id'] }).to eq([b.id, a.id])
+      expect(json_response['stickers'].pluck('id')).to eq([b.id, a.id])
       expect(b.reload.position).to eq(0)
     end
 

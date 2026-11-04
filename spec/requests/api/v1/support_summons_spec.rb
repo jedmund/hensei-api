@@ -27,7 +27,7 @@ RSpec.describe 'Support Summons API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      ids = json['support_summons'].map { |s| s['id'] }
+      ids = json['support_summons'].pluck('id')
       expect(ids).to eq([misc2.id, fire0.id])
     end
 
@@ -69,7 +69,7 @@ RSpec.describe 'Support Summons API', type: :request do
     it 'accepts a username in addition to a UUID' do
       get "/api/v1/users/#{user.username}/support_summons"
       expect(response).to have_http_status(:ok)
-      ids = response.parsed_body['support_summons'].map { |s| s['id'] }
+      ids = response.parsed_body['support_summons'].pluck('id')
       expect(ids).to eq([misc2.id, fire0.id])
     end
 

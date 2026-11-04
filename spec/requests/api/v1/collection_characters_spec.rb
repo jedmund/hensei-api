@@ -132,7 +132,7 @@ RSpec.describe 'Collection Characters API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      returned_ids = json['characters'].map { |c| c['id'] }
+      returned_ids = json['characters'].pluck('id')
       expect(returned_ids).to include(unowned_char1.id, unowned_char2.id)
       expect(returned_ids).not_to include(owned_char.id)
     end
@@ -146,7 +146,7 @@ RSpec.describe 'Collection Characters API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      returned_ids = json['characters'].map { |c| c['id'] }
+      returned_ids = json['characters'].pluck('id')
       expect(returned_ids).to include(unowned_char.id)
       expect(returned_ids).not_to include(owned_char.id)
     end
@@ -170,7 +170,7 @@ RSpec.describe 'Collection Characters API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      returned_ids = json['characters'].map { |c| c['id'] }
+      returned_ids = json['characters'].pluck('id')
       expect(returned_ids).to include(fire_char.id)
       expect(returned_ids).not_to include(water_char.id)
       expect(returned_ids).not_to include(owned_fire_char.id)
@@ -186,7 +186,7 @@ RSpec.describe 'Collection Characters API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      returned_ids = json['characters'].map { |c| c['id'] }
+      returned_ids = json['characters'].pluck('id')
       expect(returned_ids).to include(matching_char.id)
       expect(returned_ids).not_to include(other_char.id)
     end
@@ -203,7 +203,7 @@ RSpec.describe 'Collection Characters API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      returned_ids = json['characters'].map { |c| c['id'] }
+      returned_ids = json['characters'].pluck('id')
       expect(returned_ids).to include(grand_char.id)
     end
 
@@ -217,7 +217,7 @@ RSpec.describe 'Collection Characters API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      returned_ids = json['characters'].map { |c| c['id'] }
+      returned_ids = json['characters'].pluck('id')
       expect(returned_ids).to include(matching_char.id)
     end
 
@@ -230,7 +230,7 @@ RSpec.describe 'Collection Characters API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      returned_ids = json['characters'].map { |c| c['id'] }
+      returned_ids = json['characters'].pluck('id')
       expect(returned_ids).not_to include(owned_char.id)
       expect(json['meta']['count']).to eq(0)
     end

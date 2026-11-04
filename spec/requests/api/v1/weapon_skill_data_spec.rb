@@ -33,7 +33,7 @@ RSpec.describe 'Api::V1::WeaponSkillData', type: :request do
       json.each do |d|
         expect(d['modifier']).to eq(normal_datum.modifier)
       end
-      ids = json.map { |d| d['id'] }
+      ids = json.pluck('id')
       expect(ids).to include(normal_datum.id)
       expect(ids).not_to include(omega_datum.id)
     end
@@ -46,7 +46,7 @@ RSpec.describe 'Api::V1::WeaponSkillData', type: :request do
       json.each do |d|
         expect(d['series']).to eq('omega')
       end
-      ids = json.map { |d| d['id'] }
+      ids = json.pluck('id')
       expect(ids).to include(omega_datum.id)
       expect(ids).not_to include(normal_datum.id)
     end

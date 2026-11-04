@@ -30,16 +30,16 @@ RSpec.describe 'Api::V1::Events', type: :request do
 
     it 'filters by scope and kind' do
       get '/api/v1/events', params: { scope: 'current' }
-      expect(json_response['events'].map { |e| e['id'] }).to eq([current.id])
+      expect(json_response['events'].pluck('id')).to eq([current.id])
 
       get '/api/v1/events', params: { scope: 'upcoming' }
-      expect(json_response['events'].map { |e| e['id'] }).to eq([upcoming.id])
+      expect(json_response['events'].pluck('id')).to eq([upcoming.id])
 
       get '/api/v1/events', params: { scope: 'past' }
-      expect(json_response['events'].map { |e| e['id'] }).to eq([past.id])
+      expect(json_response['events'].pluck('id')).to eq([past.id])
 
       get '/api/v1/events', params: { kind: 'unite_and_fight' }
-      expect(json_response['events'].map { |e| e['id'] }).to eq([upcoming.id])
+      expect(json_response['events'].pluck('id')).to eq([upcoming.id])
     end
 
     it 'renders the event shape with linked raids and integer elements' do
@@ -47,7 +47,7 @@ RSpec.describe 'Api::V1::Events', type: :request do
       event = json_response['events'].first
       expect(event).to include('kind' => 'story_event', 'status' => 'approved', 'element' => nil,
                                'advantage_element' => nil, 'image_url' => nil)
-      expect(event['raids'].map { |r| r['id'] }).to eq([raid.id])
+      expect(event['raids'].pluck('id')).to eq([raid.id])
       expect(event).not_to have_key('source_refs')
       expect(event).not_to have_key('event_number')
 
@@ -59,7 +59,7 @@ RSpec.describe 'Api::V1::Events', type: :request do
 
     it 'lets editors filter by status and see editor fields' do
       get '/api/v1/events', params: { status: 'draft' }, headers: editor_headers
-      expect(json_response['events'].map { |e| e['id'] }).to eq([draft.id])
+      expect(json_response['events'].pluck('id')).to eq([draft.id])
       expect(json_response['events'].first).to include('source_refs' => {}, 'source_payload' => {})
 
       get '/api/v1/events', params: { status: 'all' }, headers: editor_headers
@@ -117,7 +117,7 @@ RSpec.describe 'Api::V1::Events', type: :request do
       expect(response).to have_http_status(:created)
       expect(json_response).to include('status' => 'approved', 'kind' => 'unite_and_fight',
                                        'element' => GranblueEnums::ELEMENTS[:Fire])
-      expect(json_response['raids'].map { |r| r['id'] }).to eq([raids.second.id, raids.first.id])
+      expect(json_response['raids'].pluck('id')).to eq([raids.second.id, raids.first.id])
     end
 
     it 'accepts event_number for Unite and Fight' do
@@ -196,7 +196,7 @@ RSpec.describe 'Api::V1::Events', type: :request do
       put "/api/v1/events/#{event.id}", params: { event: { name_en: 'Renamed' } }, headers: editor_headers
       expect(response).to have_http_status(:ok)
       expect(json_response['name']['en']).to eq('Renamed')
-      expect(json_response['raids'].map { |r| r['id'] }).to eq([raid.id])
+      expect(json_response['raids'].pluck('id')).to eq([raid.id])
     end
 
     it 'stores and returns the external links' do
@@ -257,7 +257,7 @@ RSpec.describe 'Api::V1::Events', type: :request do
     it 'replaces raid links when raid_ids is given' do
       other = create(:raid)
       put "/api/v1/events/#{event.id}", params: { event: { raid_ids: [other.id] } }, headers: editor_headers
-      expect(json_response['raids'].map { |r| r['id'] }).to eq([other.id])
+      expect(json_response['raids'].pluck('id')).to eq([other.id])
     end
 
     it 'returns 422 (not 404) for an unknown raid' do

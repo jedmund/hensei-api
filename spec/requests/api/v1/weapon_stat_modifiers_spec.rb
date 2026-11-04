@@ -31,7 +31,7 @@ RSpec.describe 'Api::V1::WeaponStatModifiers', type: :request do
       json.each do |m|
         expect(m['category']).to eq('ax')
       end
-      ids = json.map { |m| m['id'] }
+      ids = json.pluck('id')
       expect(ids).to include(ax_mod.id)
       expect(ids).not_to include(befoul_mod.id)
     end

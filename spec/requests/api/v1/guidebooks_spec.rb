@@ -14,7 +14,7 @@ RSpec.describe 'Api::V1::Guidebooks', type: :request do
       json = response.parsed_body
       expect(json.length).to be >= 2
 
-      ids = json.map { |g| g['id'] }
+      ids = json.pluck('id')
       expect(ids).to include(first_guidebook.id, second_guidebook.id)
 
       entry = json.find { |g| g['id'] == first_guidebook.id }

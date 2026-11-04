@@ -160,7 +160,7 @@ RSpec.describe 'Character refresh (C6)', type: :request do
       expect(character.wiki_raw_fetched_at).to be_present
       expect(character.character_skill_build_fingerprint).to be_present
       expect(ring_cooldown).to eq(9)
-      expect(enqueued_jobs.map { |job| job['job_class'] }).not_to include('CharacterSkills::BuildJob')
+      expect(enqueued_jobs.pluck('job_class')).not_to include('CharacterSkills::BuildJob')
     end
 
     it 'writes the Japanese page when it was previewed' do

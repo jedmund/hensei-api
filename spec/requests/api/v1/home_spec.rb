@@ -38,9 +38,9 @@ RSpec.describe 'Api::V1::Home', type: :request do
       expect(section['event']['id']).to eq(current.id)
       expect(section['raids'].map { |r| r['raid']['id'] }).to eq([raid.id, empty_raid.id])
       expect(section['raids'].first['raid']['slug']).to eq(raid.slug)
-      expect(section['raids'].first['parties'].map { |p| p['id'] }).to eq([top.id, second.id])
+      expect(section['raids'].first['parties'].pluck('id')).to eq([top.id, second.id])
       expect(section['raids'].second['parties']).to eq([])
-      expect(section['raids'].map { |r| r['has_more'] }).to eq([false, false])
+      expect(section['raids'].pluck('has_more')).to eq([false, false])
     end
 
     it 'says when a raid has more teams than it shows' do
@@ -49,7 +49,7 @@ RSpec.describe 'Api::V1::Home', type: :request do
       get '/api/v1/home'
 
       raid_section = json_response['current'].sole['raids'].first
-      expect(raid_section['parties'].map { |p| p['id'] }).to eq([top.id])
+      expect(raid_section['parties'].pluck('id')).to eq([top.id])
       expect(raid_section['has_more']).to be(true)
     end
 
@@ -72,7 +72,7 @@ RSpec.describe 'Api::V1::Home', type: :request do
       rising = json_response['rising']
       expect(rising.size).to eq(9)
       expect(rising.first['id']).to eq(top.id)
-      expect(rising.map { |p| p['id'] }).not_to include(private_party.id)
+      expect(rising.pluck('id')).not_to include(private_party.id)
       expect(rising.first).to have_key('last_updated')
     end
 
@@ -88,7 +88,7 @@ RSpec.describe 'Api::V1::Home', type: :request do
 
       get '/api/v1/home'
 
-      expect(json_response['rising'].map { |p| p['id'] }).to eq([newest.id, newer.id, old.id])
+      expect(json_response['rising'].pluck('id')).to eq([newest.id, newer.id, old.id])
     end
 
     it 'leaves teams below the quality bar out of Rising' do
@@ -101,7 +101,7 @@ RSpec.describe 'Api::V1::Home', type: :request do
 
       get '/api/v1/home'
 
-      expect(json_response['rising'].map { |p| p['id'] }).to match_array(kept.map(&:id))
+      expect(json_response['rising'].pluck('id')).to match_array(kept.map(&:id))
     end
 
     it 'hides Rising when fewer than 3 teams have a score' do
@@ -136,7 +136,7 @@ RSpec.describe 'Api::V1::Home', type: :request do
     it 'only shows parties of the element advantaged against the boss' do
       get '/api/v1/home'
       parties = json_response['current'].sole['raids'].sole['parties']
-      expect(parties.map { |p| p['id'] }).to eq([earth_party.id])
+      expect(parties.pluck('id')).to eq([earth_party.id])
     end
   end
 
@@ -166,7 +166,7 @@ RSpec.describe 'Api::V1::Home', type: :request do
       get '/api/v1/home'
       section = json_response['current'].sole
       expect(section['event']['advantage_elements']).to eq([el[:Fire], el[:Dark]])
-      expect(section['raids'].sole['parties'].map { |p| p['id'] }).to eq([dark.id, fire.id])
+      expect(section['raids'].sole['parties'].pluck('id')).to eq([dark.id, fire.id])
     end
   end
 
@@ -186,7 +186,7 @@ RSpec.describe 'Api::V1::Home', type: :request do
     it 'orders by score only' do
       get '/api/v1/home'
       parties = json_response['current'].sole['raids'].sole['parties']
-      expect(parties.map { |p| p['id'] }).to eq([fire_party.id, earth_party.id])
+      expect(parties.pluck('id')).to eq([fire_party.id, earth_party.id])
     end
   end
 
@@ -211,7 +211,7 @@ RSpec.describe 'Api::V1::Home', type: :request do
       section = json_response['upcoming'].sole
       expect(section['event']['id']).to eq(upcoming.id)
       expect(section['previous_event']['id']).to eq(previous.id)
-      expect(section['raids'].sole['parties'].map { |p| p['id'] }).to eq([party.id])
+      expect(section['raids'].sole['parties'].pluck('id')).to eq([party.id])
     end
 
     it 'includes an event three weeks out' do
@@ -246,7 +246,7 @@ RSpec.describe 'Api::V1::Home', type: :request do
       get '/api/v1/home'
 
       picks = json_response['staff_picks']
-      expect(picks.map { |p| p['id'] }).to eq([eventless.id, running.id])
+      expect(picks.pluck('id')).to eq([eventless.id, running.id])
       expect(picks.first['party']).to include('id' => eventless.party_id)
     end
 
@@ -257,7 +257,7 @@ RSpec.describe 'Api::V1::Home', type: :request do
 
       get '/api/v1/home'
 
-      expect(json_response['staff_picks'].map { |p| p['id'] }).to eq([newer.id, older.id])
+      expect(json_response['staff_picks'].pluck('id')).to eq([newer.id, older.id])
     end
   end
 
@@ -284,8 +284,8 @@ RSpec.describe 'Api::V1::Home', type: :request do
       battles = json_response['new_battles']
       expect(battles.map { |b| b['raid']['id'] }).to eq([new_raid.id])
       expect(battles.first['raid']).to include('slug' => new_raid.slug, 'released_at' => new_raid.released_at.iso8601)
-      expect(battles.first['recent'].map { |p| p['id'] }).to eq([newer_team.id, older_team.id])
-      expect(battles.first['trending'].map { |p| p['id'] }).to eq([older_team.id, newer_team.id])
+      expect(battles.first['recent'].pluck('id')).to eq([newer_team.id, older_team.id])
+      expect(battles.first['trending'].pluck('id')).to eq([older_team.id, newer_team.id])
       expect(battles.first['has_more']).to be(false)
     end
 
@@ -295,8 +295,8 @@ RSpec.describe 'Api::V1::Home', type: :request do
       get '/api/v1/home'
 
       battle = json_response['new_battles'].sole
-      expect(battle['recent'].map { |p| p['id'] }).to eq([newer_team.id])
-      expect(battle['trending'].map { |p| p['id'] }).to eq([older_team.id])
+      expect(battle['recent'].pluck('id')).to eq([newer_team.id])
+      expect(battle['trending'].pluck('id')).to eq([older_team.id])
       expect(battle['has_more']).to be(true)
     end
 
@@ -312,8 +312,8 @@ RSpec.describe 'Api::V1::Home', type: :request do
       get '/api/v1/home'
 
       battles = json_response['new_battles'].index_by { |b| b['raid']['id'] }
-      expect(battles[new_raid.id]['recent'].map { |p| p['id'] }).to contain_exactly(newer_team.id, older_team.id)
-      expect(battles[zone.id]['recent'].map { |p| p['id'] }).to eq([expedition.id])
+      expect(battles[new_raid.id]['recent'].pluck('id')).to contain_exactly(newer_team.id, older_team.id)
+      expect(battles[zone.id]['recent'].pluck('id')).to eq([expedition.id])
     end
 
     it 'orders trending teams like Rising, so a newer team can outrank a higher score' do
@@ -324,7 +324,7 @@ RSpec.describe 'Api::V1::Home', type: :request do
 
       get '/api/v1/home'
 
-      trending = json_response['new_battles'].first['trending'].map { |p| p['id'] }
+      trending = json_response['new_battles'].first['trending'].pluck('id')
       expect(trending).to eq([newer_team.id, veteran.id, older_team.id])
     end
   end
@@ -358,10 +358,10 @@ RSpec.describe 'Api::V1::Home', type: :request do
                                              'change' => 'release')
       expect(items.second['item']['change']).to eq('flb')
       expect(items.first['item']['character']).to include('element', 'season', 'series', 'style_swap')
-      expect(items.first['recent'].map { |party| party['id'] }).to eq([newer.id])
+      expect(items.first['recent'].pluck('id')).to eq([newer.id])
       # Teams made before the uncap don't count, even if edited since
-      expect(items.second['recent'].map { |party| party['id'] }).to eq([uncapped.id])
-      expect(items.map { |entry| entry['has_more'] }).to eq([false, false])
+      expect(items.second['recent'].pluck('id')).to eq([uncapped.id])
+      expect(items.pluck('has_more')).to eq([false, false])
     end
 
     it 'says when an item has more teams than it shows' do
@@ -382,7 +382,7 @@ RSpec.describe 'Api::V1::Home', type: :request do
 
       get '/api/v1/home'
 
-      expect(json_response['new_items'].sole['recent'].map { |party| party['id'] }).to eq([kept.id])
+      expect(json_response['new_items'].sole['recent'].pluck('id')).to eq([kept.id])
     end
 
     it 'includes new items nobody has used yet, with no teams' do
@@ -425,8 +425,8 @@ RSpec.describe 'Api::V1::Home', type: :request do
       get '/api/v1/home'
 
       entry = json_response['new_items'].sole
-      expect(entry['recent'].map { |party| party['id'] }).to eq([newer.id, older.id])
-      expect(entry['trending'].map { |party| party['id'] }).to eq([older.id, newer.id])
+      expect(entry['recent'].pluck('id')).to eq([newer.id, older.id])
+      expect(entry['trending'].pluck('id')).to eq([older.id, newer.id])
     end
   end
 end

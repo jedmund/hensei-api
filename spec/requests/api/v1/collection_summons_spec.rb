@@ -90,14 +90,14 @@ RSpec.describe 'Collection Summons API', type: :request do
             headers: headers
 
         expect(response).to have_http_status(:ok)
-        ids = response.parsed_body['summons'].map { |s| s['id'] }
+        ids = response.parsed_body['summons'].pluck('id')
         expect(ids).to include(eligible_cs.id)
         expect(ids).not_to include(ineligible_cs.id)
       end
 
       it 'ignores the filter when unset' do
         get "/api/v1/users/#{user.id}/collection/summons", headers: headers
-        ids = response.parsed_body['summons'].map { |s| s['id'] }
+        ids = response.parsed_body['summons'].pluck('id')
         expect(ids).to include(eligible_cs.id, ineligible_cs.id)
       end
     end
@@ -114,7 +114,7 @@ RSpec.describe 'Collection Summons API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      returned_ids = json['summons'].map { |s| s['id'] }
+      returned_ids = json['summons'].pluck('id')
       expect(returned_ids).to include(unowned_smn1.id, unowned_smn2.id)
       expect(returned_ids).not_to include(owned_smn.id)
     end
@@ -129,7 +129,7 @@ RSpec.describe 'Collection Summons API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      returned_ids = json['summons'].map { |s| s['id'] }
+      returned_ids = json['summons'].pluck('id')
       expect(returned_ids).not_to include(owned_smn.id)
       expect(json['meta']['count']).to eq(0)
     end
@@ -143,7 +143,7 @@ RSpec.describe 'Collection Summons API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      returned_ids = json['summons'].map { |s| s['id'] }
+      returned_ids = json['summons'].pluck('id')
       expect(returned_ids).to include(unowned_smn.id)
       expect(returned_ids).not_to include(owned_smn.id)
     end
@@ -167,7 +167,7 @@ RSpec.describe 'Collection Summons API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      returned_ids = json['summons'].map { |s| s['id'] }
+      returned_ids = json['summons'].pluck('id')
       expect(returned_ids).to include(fire_smn.id)
       expect(returned_ids).not_to include(water_smn.id)
       expect(returned_ids).not_to include(owned_fire_smn.id)
@@ -183,7 +183,7 @@ RSpec.describe 'Collection Summons API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      returned_ids = json['summons'].map { |s| s['id'] }
+      returned_ids = json['summons'].pluck('id')
       expect(returned_ids).to include(matching_smn.id)
       expect(returned_ids).not_to include(other_smn.id)
     end
@@ -197,7 +197,7 @@ RSpec.describe 'Collection Summons API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      returned_ids = json['summons'].map { |s| s['id'] }
+      returned_ids = json['summons'].pluck('id')
       expect(returned_ids).not_to include(owned_smn.id)
       expect(json['meta']['count']).to eq(0)
     end

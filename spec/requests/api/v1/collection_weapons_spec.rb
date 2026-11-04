@@ -91,7 +91,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      returned_ids = json['weapons'].map { |w| w['id'] }
+      returned_ids = json['weapons'].pluck('id')
       expect(returned_ids).to include(unowned_wpn1.id, unowned_wpn2.id)
       expect(returned_ids).not_to include(owned_wpn.id)
     end
@@ -106,7 +106,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      returned_ids = json['weapons'].map { |w| w['id'] }
+      returned_ids = json['weapons'].pluck('id')
       expect(returned_ids).not_to include(owned_wpn.id)
       expect(json['meta']['count']).to eq(0)
     end
@@ -120,7 +120,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      returned_ids = json['weapons'].map { |w| w['id'] }
+      returned_ids = json['weapons'].pluck('id')
       expect(returned_ids).to include(unowned_wpn.id)
       expect(returned_ids).not_to include(owned_wpn.id)
     end
@@ -144,7 +144,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      returned_ids = json['weapons'].map { |w| w['id'] }
+      returned_ids = json['weapons'].pluck('id')
       expect(returned_ids).to include(fire_wpn.id)
       expect(returned_ids).not_to include(water_wpn.id)
       expect(returned_ids).not_to include(owned_fire_wpn.id)
@@ -160,7 +160,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      returned_ids = json['weapons'].map { |w| w['id'] }
+      returned_ids = json['weapons'].pluck('id')
       expect(returned_ids).to include(matching_wpn.id)
       expect(returned_ids).not_to include(other_wpn.id)
     end
@@ -174,7 +174,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      returned_ids = json['weapons'].map { |w| w['id'] }
+      returned_ids = json['weapons'].pluck('id')
       expect(returned_ids).not_to include(owned_wpn.id)
       expect(json['meta']['count']).to eq(0)
     end

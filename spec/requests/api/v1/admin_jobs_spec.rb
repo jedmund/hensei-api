@@ -123,7 +123,7 @@ RSpec.describe 'Admin jobs collection', type: :request do
 
     it 'returns skill counts on request' do
       body = fetch(fields: 'name_en,skill_count,aux_weapon')
-      expect(body['results'].map { |r| r['skill_count'] }).to eq([0, 0, 2])
+      expect(body['results'].pluck('skill_count')).to eq([0, 0, 2])
       expect(body['results'].first.keys).to match_array(%w[id name_en skill_count aux_weapon])
     end
   end

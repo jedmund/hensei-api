@@ -230,7 +230,7 @@ RSpec.describe 'Admin summons collection', type: :request do
         'id' => alpha.id, 'name_en' => 'Alpha Stone', 'aura_count' => 2,
         'series_name_en' => providence.name_en, 'max_level' => 250
       )
-      expect(body['results'].map { |r| r['aura_count'] }).to eq([2, 0, 0, 1])
+      expect(body['results'].pluck('aura_count')).to eq([2, 0, 0, 1])
     end
 
     it 'preloads series instead of querying per row' do

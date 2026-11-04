@@ -540,7 +540,7 @@ RSpec.describe 'Substitutions API', type: :request do
       post '/api/v1/substitutions/reorder', params: params.to_json, headers: headers
 
       body = JSON.parse(response.body)
-      expect(body.map { |r| r['id'] }).to eq([s_b.id, s_c.id, s_a.id])
+      expect(body.pluck('id')).to eq([s_b.id, s_c.id, s_a.id])
     end
 
     it 'bumps the party last_updated timestamp' do

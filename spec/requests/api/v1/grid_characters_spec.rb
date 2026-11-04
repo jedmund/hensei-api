@@ -652,7 +652,7 @@ RSpec.describe 'GridCharacters API', type: :request do
       expect(grid_character.reload.grid_character_role_ids).to contain_exactly(role_a.id, role_b.id)
 
       body = JSON.parse(response.body)
-      expect(body['grid_character']['roles'].map { |r| r['id'] }).to eq([role_a.id, role_b.id])
+      expect(body['grid_character']['roles'].pluck('id')).to eq([role_a.id, role_b.id])
     end
 
     it 'rejects more than three roles' do

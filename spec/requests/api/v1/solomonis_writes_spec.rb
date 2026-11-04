@@ -212,7 +212,7 @@ RSpec.describe 'Evoking Solomonis writes', type: :request do
                                                    headers: headers
 
       expect(response).to have_http_status(:ok)
-      expect(body.dig('party', 'solomonis', 'blessings').map { |b| b['level_id'] }).to eq([justice_level.id])
+      expect(body.dig('party', 'solomonis', 'blessings').pluck('level_id')).to eq([justice_level.id])
       expect(body.dig('party', 'solomonis', 'blessing_cost_total')).to eq(50)
       expect(body.dig('party', 'weapons', 0, 'seal_state')).to eq('start')
 
@@ -586,7 +586,7 @@ RSpec.describe 'Evoking Solomonis writes', type: :request do
       expect(solomonis).to include('pledge_level' => 3, 'outcome' => nil, 'game_report_id' => nil,
                                    'ended_at' => nil, 'stats' => {}, 'guidebook' => [])
       expect(solomonis.dig('route_evoker', 'id')).to eq(nier.id)
-      expect(solomonis['blessings'].map { |b| b['level_id'] }).to eq([justice_level.id])
+      expect(solomonis['blessings'].pluck('level_id')).to eq([justice_level.id])
       weapons = body.dig('party', 'weapons').index_by { |w| w['position'] }
       expect(weapons[2]['seal_state']).to eq('start')
       expect(weapons[5]).to include('seal_state' => 'sealed', 'unseal_priority' => 1)

@@ -150,7 +150,7 @@ RSpec.describe 'Parties API', type: :request do
 
         vc = response.parsed_body.dig('party', 'viewer_collection')
         expect(vc['weapons'].length).to eq(3)
-        uncap_levels = vc['weapons'].map { |w| w['uncap_level'] }
+        uncap_levels = vc['weapons'].pluck('uncap_level')
         expect(uncap_levels).to contain_exactly(3, 4, 5)
       end
 
@@ -429,7 +429,7 @@ RSpec.describe 'Parties API', type: :request do
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
       expect(json['migrated_count']).to eq(2)
-      expect(json['results'].map { |r| r['status'] }).to all(eq('migrated'))
+      expect(json['results'].pluck('status')).to all(eq('migrated'))
 
       first_anon_party.reload
       expect(first_anon_party.user_id).to eq(user.id)
@@ -529,7 +529,7 @@ RSpec.describe 'Parties API', type: :request do
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
       expect(json['parties'].length).to eq(2)
-      expect(json['parties'].map { |r| r['status'] }).to all(eq('ready'))
+      expect(json['parties'].pluck('status')).to all(eq('ready'))
       expect(json['parties'].first['party']).to be_present
 
       first_anon_party.reload
@@ -618,7 +618,7 @@ RSpec.describe 'Parties API', type: :request do
 
       expect(response).to have_http_status(:ok)
       remixes = response.parsed_body['party']['remixes']
-      names = remixes.map { |r| r['name'] }
+      names = remixes.pluck('name')
       expect(names).to include('Shown remix')
       expect(names).not_to include('Hidden remix')
     end
@@ -646,7 +646,7 @@ RSpec.describe 'Parties API', type: :request do
           headers: { 'Authorization' => "Bearer #{admin_token.token}", 'X-Admin-Mode' => 'true' }
 
       expect(response).to have_http_status(:ok)
-      names = response.parsed_body['party']['remixes'].map { |r| r['name'] }
+      names = response.parsed_body['party']['remixes'].pluck('name')
       expect(names).to include('Admin remix')
     end
   end
@@ -704,7 +704,7 @@ RSpec.describe 'Parties API', type: :request do
         get '/api/v1/parties', headers: headers
         expect(response).to have_http_status(:ok)
 
-        party_ids = response.parsed_body['results'].map { |p| p['id'] }
+        party_ids = response.parsed_body['results'].pluck('id')
         expect(party_ids).to include(good_party.id)
         expect(party_ids).not_to include(bad_party.id)
       end
@@ -713,7 +713,7 @@ RSpec.describe 'Parties API', type: :request do
         get '/api/v1/parties', headers: headers
         expect(response).to have_http_status(:ok)
 
-        party_ids = response.parsed_body['results'].map { |p| p['id'] }
+        party_ids = response.parsed_body['results'].pluck('id')
         expect(party_ids).to include(mc_only_party.id)
       end
     end

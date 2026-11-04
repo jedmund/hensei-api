@@ -31,7 +31,7 @@ RSpec.describe 'Api::V1::WeaponSkillBoostTypes', type: :request do
       json.each do |bt|
         expect(bt['category']).to eq('offensive')
       end
-      ids = json.map { |bt| bt['id'] }
+      ids = json.pluck('id')
       expect(ids).to include(offensive_boost_type.id)
       expect(ids).not_to include(defensive_boost_type.id)
     end

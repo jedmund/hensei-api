@@ -26,7 +26,7 @@ RSpec.describe 'Api::V1::CrewRosters', type: :request do
         json = response.parsed_body
         rosters = json['crew_rosters']
         expect(rosters.length).to eq(2)
-        expect(rosters.map { |r| r['element'] }).to eq([1, 2])
+        expect(rosters.pluck('element')).to eq([1, 2])
       end
     end
 
@@ -112,8 +112,8 @@ RSpec.describe 'Api::V1::CrewRosters', type: :request do
         get "/api/v1/crew/crew_rosters/#{roster.id}", headers: auth_headers
 
         json = response.parsed_body
-        item_ids = json['items'].map { |i| i['id'] }
-        roster_ids = roster.items.map { |i| i['id'] }
+        item_ids = json['items'].pluck('id')
+        roster_ids = roster.items.pluck('id')
         expect(item_ids).to eq(roster_ids)
       end
     end
@@ -193,7 +193,7 @@ RSpec.describe 'Api::V1::CrewRosters', type: :request do
         get "/api/v1/crew/crew_rosters/#{roster.id}", headers: auth_headers
 
         json = response.parsed_body
-        member_ids = json['members'].map { |m| m['user_id'] }
+        member_ids = json['members'].pluck('user_id')
         expect(member_ids).not_to include(retired_user.id)
       end
     end
@@ -215,7 +215,7 @@ RSpec.describe 'Api::V1::CrewRosters', type: :request do
         expect(response).to have_http_status(:ok)
         roster.reload
         expect(roster.items.length).to eq(2)
-        expect(roster.items.map { |i| i['type'] }).to contain_exactly('Character', 'Weapon')
+        expect(roster.items.pluck('type')).to contain_exactly('Character', 'Weapon')
       end
 
       it 'updates roster name' do

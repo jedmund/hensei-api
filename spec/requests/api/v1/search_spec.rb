@@ -48,7 +48,7 @@ RSpec.describe 'Api::V1::Search', type: :request do
     let!(:zyx_weapon) { create(:weapon, name_en: 'Zyxweapon', name_jp: 'ズィクス武器') }
 
     def searchable_ids
-      response.parsed_body['results'].map { |result| result['searchable_id'] }
+      response.parsed_body['results'].pluck('searchable_id')
     end
 
     it 'returns multisearch documents with the searchable record' do

@@ -34,7 +34,7 @@ RSpec.describe 'Weapon skill admin API', type: :request do
 
     it 'filters by boost_type' do
       get '/api/v1/weapon_skill_families', params: { boost_type: 'dmg_cap' }
-      mods = response.parsed_body['weapon_skill_families'].map { |f| f['modifier'] }
+      mods = response.parsed_body['weapon_skill_families'].pluck('modifier')
       expect(mods).to include('Spectest')
       get '/api/v1/weapon_skill_families', params: { boost_type: 'nope' }
       expect(response.parsed_body['weapon_skill_families']).to be_empty
@@ -97,14 +97,14 @@ RSpec.describe 'Weapon skill admin API', type: :request do
       make_version(skill_modifier: 'Garrison', modifier_override: 'none', name: 'Gone')
 
       get '/api/v1/weapon_skill_families'
-      mods = response.parsed_body['weapon_skill_families'].map { |f| f['modifier'] }
+      mods = response.parsed_body['weapon_skill_families'].pluck('modifier')
       expect(mods).not_to include('Garrison')
     end
 
     it 'shows the resolved family members' do
       get '/api/v1/weapon_skill_families/Might'
       fam = response.parsed_body['weapon_skill_family']
-      expect(fam['versions'].map { |v| v['id'] }).to contain_exactly(pinned_in.id, moved_in.id, derived.id)
+      expect(fam['versions'].pluck('id')).to contain_exactly(pinned_in.id, moved_in.id, derived.id)
       expect(fam['usage']).to include('version_count' => 3)
 
       get '/api/v1/weapon_skill_families/Enmity'
