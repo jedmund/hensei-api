@@ -1427,9 +1427,6 @@ Rails/Pluck:
 # This cop supports safe autocorrection (--autocorrect).
 Rails/Presence:
   Exclude:
-    - 'app/controllers/api/v1/characters_controller.rb'
-    - 'app/controllers/api/v1/grid_artifacts_controller.rb'
-    - 'app/controllers/concerns/party_querying_concern.rb'
     - 'app/errors/api/v1/granblue_error.rb'
     - 'app/services/party_query_builder.rb'
 

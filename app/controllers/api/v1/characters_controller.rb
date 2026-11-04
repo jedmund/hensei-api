@@ -92,7 +92,7 @@ module Api
         return unless size
 
         transformation = params[:transformation]
-        element = params[:element].present? ? params[:element].to_i : nil
+        element = params[:element].presence&.to_i
         gender = params[:gender].present? ? params[:gender].to_i : 0
         force = params[:force] == true
 
@@ -120,7 +120,7 @@ module Api
             # Style swap: fetch from _st2 URL and store as _style
             downloader.send(:download_style_variant, size)
           else
-            pose = transformation.present? ? transformation : '01'
+            pose = transformation.presence || '01'
             variant_id = "#{@character.granblue_id}_#{pose}"
             variant_id = "#{variant_id}_0#{element}" if element.present?
             variant_id = "#{variant_id}_#{gender}" if params[:gender].present?

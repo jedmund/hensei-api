@@ -17,7 +17,7 @@ module Api
         return unless validate_collection_access!(collection_artifact_param)
 
         # Check if grid_character already has an artifact
-        @grid_character.grid_artifact.destroy if @grid_character.grid_artifact.present?
+        @grid_character.grid_artifact.presence&.destroy
 
         @grid_artifact = GridArtifact.new(
           grid_artifact_params.merge(
