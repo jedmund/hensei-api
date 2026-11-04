@@ -38,8 +38,8 @@ module Processors
   # }
   #
   # The processor also uses an AX_MAPPING to convert in‐game AX skill IDs to our stored values.
-  class WeaponProcessor < BaseProcessor
-    TRANSCENDENCE_LEVELS = [200, 210, 220, 230, 240, 250].freeze
+  class WeaponProcessor < GridItemProcessor
+    grid_item :weapon, deck_path: %w[deck pc weapons], association: :weapons
 
     # KEY_MAPPING maps the raw key value (as a string) to a canonical range or value.
     # For example, in our test we want a raw key "10001" to be interpreted as any key whose
@@ -112,66 +112,14 @@ module Processors
     ELEMENT_CHANGEABLE_GAME_SERIES_IDS = [4, 13, 17, 19].freeze
 
     ##
-    # Initializes a new WeaponProcessor.
-    #
     # @param party [Party] the Party record.
     # @param data [Hash] the full deck JSON.
     # @param type [Symbol] (optional) processing type.
     # @param options [Hash] additional options.
-    def initialize(party, data, _type = :normal, options = {})
-      super(party, data, options)
-      @party = party
-      @data = data
+    def initialize(party, data, type = :normal, options = {})
+      super
       @augment_parser = Granblue::AugmentSkillParser.new(log_tag: 'WeaponProcessor')
       @game_sync_attrs = {}.compare_by_identity
-    end
-
-    ##
-    # Processes the deck’s weapon data and creates GridWeapon records.
-    #
-    # It expects the incoming data to be a Hash that contains:
-    #   "deck" → "pc" → "weapons"
-    #
-    # @return [void]
-    def process
-      unless @data.is_a?(Hash)
-        Rails.logger.error "[WEAPON] Invalid data format: expected a Hash, got #{@data.class}"
-        return
-      end
-
-      unless @data.key?('deck') && @data['deck'].key?('pc') && @data['deck']['pc'].key?('weapons')
-        Rails.logger.error '[WEAPON] Missing weapons data in deck JSON'
-        return
-      end
-
-      @data = @data.with_indifferent_access
-      weapons_data = @data['deck']['pc']['weapons']
-
-      grid_weapons = process_weapons(weapons_data)
-
-      grid_weapons.each do |grid_weapon|
-        grid_weapon.save!
-        if grid_weapon.collection_weapon.present?
-          update_collection_from_game(grid_weapon)
-          begin
-            grid_weapon.sync_from_collection!
-          rescue ActiveRecord::RecordInvalid => e
-            Rails.logger.error "[WEAPON] Sync from collection failed, reverting: #{e.record.errors.full_messages.join(', ')}"
-            grid_weapon.reload
-          end
-        end
-      rescue ActiveRecord::RecordInvalid => e
-        if ax_present?(grid_weapon)
-          Rails.logger.warn "[WEAPON] Dropping AX skills to save GridWeapon: #{e.record.errors.full_messages.join(', ')}"
-          add_warning('ax_skills_dropped', grid_weapon, grid_weapon.weapon)
-          clear_ax(grid_weapon)
-          retry
-        end
-
-        Rails.logger.error "[WEAPON] Failed to create GridWeapon: #{e.record.errors.full_messages.join(', ')}"
-        add_warning('item_skipped', grid_weapon, grid_weapon.weapon)
-        discard_unsaved(grid_weapon, :weapons)
-      end
     end
 
     private
@@ -179,144 +127,112 @@ module Processors
     AX_ATTRIBUTES = %i[ax_modifier1_id ax_strength1 ax_modifier2_id ax_strength2].freeze
     private_constant :AX_ATTRIBUTES
 
+    def build_items
+      @data['deck']['pc']['weapons'].filter_map { |key, raw_weapon| build_weapon(key.to_i, raw_weapon) }
+    end
+
+    # A weapon whose game AX data fails validation is saved without its AX
+    # skills: losing the whole weapon is worse than losing its AX skills.
+    def retry_save?(grid_weapon, error)
+      return false unless ax_present?(grid_weapon)
+
+      log_warn "Dropping AX skills to save GridWeapon: #{error.record.errors.full_messages.join(', ')}"
+      add_warning('ax_skills_dropped', grid_weapon, grid_weapon.weapon)
+      clear_ax(grid_weapon)
+      true
+    end
+
     def ax_present?(grid_weapon)
       AX_ATTRIBUTES.any? { |attr| grid_weapon[attr].present? }
     end
 
-    ##
-    # Clears AX skills so a weapon whose game AX data fails validation is still
-    # imported. Losing the whole weapon is worse than losing its AX skills.
-    #
-    # @param grid_weapon [GridWeapon] the unsaved grid weapon.
-    # @return [void]
     def clear_ax(grid_weapon)
       AX_ATTRIBUTES.each { |attr| grid_weapon[attr] = nil }
     end
 
     ##
-    # Updates a collection weapon's uncap_level and transcendence_step from game data
-    # when the game shows higher values. The game is the source of truth.
-    #
-    # @param grid_weapon [GridWeapon] the grid weapon with game-derived values.
-    # @return [void]
-    def update_collection_from_game(grid_weapon)
-      cw = grid_weapon.collection_weapon
-      return unless cw.weapon_id == grid_weapon.weapon_id
-
-      updates = {}
-      updates[:uncap_level] = grid_weapon.uncap_level if grid_weapon.uncap_level > cw.uncap_level
-      updates[:transcendence_step] = grid_weapon.transcendence_step if grid_weapon.transcendence_step > cw.transcendence_step
-
-      # Sync game-derived customizations so sync_from_collection! round-trips correctly
-      updates[:weapon_key1_id] = grid_weapon.weapon_key1_id
-      updates[:weapon_key2_id] = grid_weapon.weapon_key2_id
-      updates[:weapon_key3_id] = grid_weapon.weapon_key3_id
-      updates[:ax_modifier1_id] = grid_weapon.ax_modifier1_id
-      updates[:ax_strength1] = grid_weapon.ax_strength1
-      updates[:ax_modifier2_id] = grid_weapon.ax_modifier2_id
-      updates[:ax_strength2] = grid_weapon.ax_strength2
-      updates[:element] = grid_weapon.element
-      # Befoulment, permeation, exorcism and skill levels, only when the game sent them
+    # What the collection weapon takes from the game besides uncap, so that
+    # sync_from_collection! round-trips it: keys, AX, element, awakening, and
+    # befoulment, permeation, exorcism and skill levels when the game sent them.
+    def game_customizations(grid_weapon)
+      updates = grid_weapon.slice(:weapon_key1_id, :weapon_key2_id, :weapon_key3_id, *AX_ATTRIBUTES, :element)
+                           .symbolize_keys
       updates.merge!(@game_sync_attrs.fetch(grid_weapon, {}))
 
       if grid_weapon.awakening_id.present?
         updates[:awakening_id] = grid_weapon.awakening_id
         updates[:awakening_level] = grid_weapon.awakening_level || 1
       end
-
-      cw.update!(updates)
-      Rails.logger.info "[WEAPON] Updated collection weapon #{cw.id} from game data: #{updates}"
-    rescue ActiveRecord::RecordInvalid => e
-      Rails.logger.warn "[WEAPON] Could not update collection weapon #{cw.id}: #{e.record.errors.full_messages.join(', ')}"
+      updates
     end
 
     ##
-    # Processes a hash of raw weapon data and returns an array of GridWeapon records.
+    # Builds the grid weapon for one deck slot (1 is the mainhand).
     #
-    # @param weapons_data [Hash] the raw weapons data (keyed by slot number).
-    # @return [Array<GridWeapon>]
-    def process_weapons(weapons_data)
-      weapons_data.filter_map do |key, raw_weapon|
-        next if raw_weapon.nil? || raw_weapon['param'].nil? || raw_weapon['master'].nil?
+    # @param slot [Integer] the deck slot.
+    # @param raw_weapon [Hash] the slot's raw weapon data.
+    # @return [GridWeapon, nil]
+    def build_weapon(slot, raw_weapon)
+      return if incomplete?(raw_weapon)
 
-        position = key.to_i == 1 ? -1 : key.to_i - 2
-        mainhand = (position == -1)
-
-        level = raw_weapon.dig('param', 'level').to_i
-        transcendence_step = level_to_transcendence(level)
-        uncap_level = level_to_uncap(level, transcendence_step)
-        series = raw_weapon.dig('master', 'series_id').to_i
-        weapon_id = raw_weapon.dig('master', 'id')
-
-        element_changeable = ELEMENT_CHANGEABLE_GAME_SERIES_IDS.include?(series)
-
-        attribute = raw_weapon.dig('master', 'attribute').to_i
-        processed_element = attribute if element_changeable && attribute.positive? && GranblueEnums::ELEMENTS.value?(attribute)
-
-        weapon = find_weapon(weapon_id, element_changeable, raw_weapon.dig('master', 'name'))
-
-        unless weapon
-          Rails.logger.error "[WEAPON] Weapon not found with id #{weapon_id}"
-          next
-        end
-
-        grid_weapon = GridWeapon.new(
-          party: @party,
-          weapon: weapon,
-          position: position,
-          mainhand: mainhand,
-          uncap_level: uncap_level,
-          transcendence_step: transcendence_step,
-          element: processed_element
-        )
-
-        # Link to collection weapon if available
-        game_id = raw_weapon.dig('param', 'id')
-        if game_id.present?
-          collection_weapon = @party.user.collection_weapons.find_by(game_id: game_id.to_s)
-
-          if collection_weapon.nil? && @party.user.import_weapons
-            begin
-              collection_weapon = @party.user.collection_weapons.create!(
-                weapon_id: grid_weapon.weapon_id,
-                game_id: game_id.to_s,
-                uncap_level: grid_weapon.uncap_level,
-                transcendence_step: grid_weapon.transcendence_step,
-                element: processed_element
-              )
-            rescue StandardError => e
-              Rails.logger.error("Failed to create collection weapon during import: #{e.message}")
-              collection_weapon = nil
-            end
-          end
-
-          grid_weapon.collection_weapon = collection_weapon if collection_weapon
-        end
-
-        arousal_data = raw_weapon.dig('param', 'arousal')
-        if arousal_data && arousal_data['is_arousal_weapon']
-          grid_weapon.awakening_id = map_arousal_to_awakening(arousal_data)
-          grid_weapon.awakening_level = arousal_data['level'].to_i.positive? ? arousal_data['level'].to_i : 1
-        end
-
-        # Extract skill IDs and convert into weapon keys
-        skill_ids = [raw_weapon['skill1'], raw_weapon['skill2'], raw_weapon['skill3']].compact.map { |s| s['id'] }
-        process_weapon_keys(grid_weapon, skill_ids, raw_weapon) if skill_ids.length.positive?
-
-        process_augment_skills(grid_weapon, raw_weapon['param'])
-
-        grid_weapon
+      master = raw_weapon['master']
+      element_changeable = ELEMENT_CHANGEABLE_GAME_SERIES_IDS.include?(master['series_id'].to_i)
+      weapon = find_weapon(master['id'], element_changeable, master['name'])
+      unless weapon
+        log_error "Weapon not found with id #{master['id']}"
+        return
       end
+
+      grid_weapon = new_grid_weapon(weapon, slot, raw_weapon['param'], game_element(master, element_changeable))
+      apply_game_details(grid_weapon, raw_weapon)
+      grid_weapon
     end
 
-    ##
-    # Converts a given weapon level to a transcendence step.
-    #
-    # If the level is less than 200, returns 0; otherwise, floors the level
-    # to the nearest 10 and returns its index in TRANSCENDENCE_LEVELS.
-    #
-    # @param level [Integer] the weapon’s level.
-    # @return [Integer] the transcendence step.
+    def new_grid_weapon(weapon, slot, param, element)
+      level = param['level'].to_i
+      transcendence_step = level_to_transcendence(level)
+      position = slot == 1 ? -1 : slot - 2
+
+      grid_weapon = GridWeapon.new(party: @party, weapon: weapon, position: position, mainhand: position == -1,
+                                   uncap_level: level_to_uncap(level, transcendence_step),
+                                   transcendence_step: transcendence_step, element: element)
+      link_collection_weapon(grid_weapon, param['id'], element)
+      grid_weapon
+    end
+
+    # The element the game shows for an element-changeable weapon; nil for any other.
+    def game_element(master, element_changeable)
+      attribute = master['attribute'].to_i
+      attribute if element_changeable && attribute.positive? && GranblueEnums::ELEMENTS.value?(attribute)
+    end
+
+    # Links to the collection weapon with the game's copy id, creating one when the
+    # user imports to their collection. A weapon without an id isn't linked.
+    def link_collection_weapon(grid_weapon, game_id, element)
+      return if game_id.blank?
+
+      link_collection(grid_weapon, { game_id: game_id.to_s },
+                      weapon_id: grid_weapon.weapon_id,
+                      uncap_level: grid_weapon.uncap_level,
+                      transcendence_step: grid_weapon.transcendence_step,
+                      element: element)
+    end
+
+    # Awakening, weapon keys and augment skills.
+    def apply_game_details(grid_weapon, raw_weapon)
+      arousal_data = raw_weapon.dig('param', 'arousal')
+      if arousal_data && arousal_data['is_arousal_weapon']
+        grid_weapon.awakening_id = map_arousal_to_awakening(arousal_data)
+        grid_weapon.awakening_level = arousal_data['level'].to_i.positive? ? arousal_data['level'].to_i : 1
+      end
+
+      # The skill ids name the weapon keys
+      skill_ids = [raw_weapon['skill1'], raw_weapon['skill2'], raw_weapon['skill3']].compact.pluck('id')
+      process_weapon_keys(grid_weapon, skill_ids, raw_weapon) if skill_ids.length.positive?
+
+      process_augment_skills(grid_weapon, raw_weapon['param'])
+    end
+
     ##
     # Derives the uncap level from a weapon's current level and transcendence step.
     # Deck weapon data does not include an evolution field, so uncap must be inferred.
@@ -330,13 +246,6 @@ module Processors
       return 4 if level > 100
 
       3
-    end
-
-    def level_to_transcendence(level)
-      return 0 if level < 200
-
-      floored_level = (level / 10).floor * 10
-      TRANSCENDENCE_LEVELS.index(floored_level) || 0
     end
 
     # GBF series_id to WeaponSeries slug mapping (a subset of GameDataImport::WEAPON_SERIES_SLUGS)
@@ -390,23 +299,6 @@ module Processors
     end
 
     ##
-    # Returns true if the candidate key (a string) matches the mapping entry.
-    #
-    # If mapping_entry includes a dash, it is interpreted as a range (e.g. "697-706").
-    # Otherwise, it must match exactly.
-    #
-    # @param candidate_key [String] the candidate WeaponKey.granblue_id.
-    # @param mapping_entry [String] the mapping entry.
-    # @return [Boolean]
-    def matches_key?(candidate_key, mapping_entry)
-      if mapping_entry.include?('-')
-        left, right = mapping_entry.split('-').map(&:to_i)
-        candidate_key.to_i.between?(left, right)
-      else
-        candidate_key == mapping_entry
-      end
-    end
-
     ##
     # Assigns augment skills and skill level from the game data: befoulment,
     # permeation and exorcism level for Odious weapons, AX skills otherwise.
