@@ -277,7 +277,7 @@ RSpec.describe 'GridCharacterRoles API', type: :request do
            headers: editor_headers, as: :json
 
       expect(response).to have_http_status(:unprocessable_content)
-      expect(response.parsed_body['error']).to match(/128x128 or smaller/)
+      expect(response.parsed_body['error']).to include('128x128 or smaller')
     end
 
     it 'rejects an icon over the byte cap' do
@@ -288,7 +288,7 @@ RSpec.describe 'GridCharacterRoles API', type: :request do
            headers: editor_headers, as: :json
 
       expect(response).to have_http_status(:unprocessable_content)
-      expect(response.parsed_body['error']).to match(/256KB or smaller/)
+      expect(response.parsed_body['error']).to include('256KB or smaller')
       expect(role.reload.icon_key).to be_nil
     end
 

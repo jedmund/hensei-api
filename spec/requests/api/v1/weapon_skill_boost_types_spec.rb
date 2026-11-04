@@ -20,7 +20,7 @@ RSpec.describe 'Api::V1::WeaponSkillBoostTypes', type: :request do
       expect(entry['category']).to eq('offensive')
       expect(entry['stacking_rule']).to eq(offensive_boost_type.stacking_rule)
       expect(entry['grid_cap']).to eq(30.0)
-      expect(entry['cap_is_flat']).to eq(false)
+      expect(entry['cap_is_flat']).to be(false)
     end
 
     it 'filters by category and excludes non-matching' do

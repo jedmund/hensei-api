@@ -15,17 +15,17 @@ RSpec.describe 'ImportController Evoking Solomonis runs', type: :request do
 
   let(:zone) { create(:raid, :solomonis_zone) }
   # The canonical test data may already hold some of these characters.
-  let!(:nier) do
+  let(:nier) do
     character = Character.find_by(granblue_id: '3040169000') || create(:character, granblue_id: '3040169000')
     character.update!(solomonis_zone: zone, element: 6, transcendence: true, max_transcendence_stage: 5)
     character
   end
-  let!(:allies) do
+  let(:allies) do
     %w[3040265000 3040554000 3040639000 3040610000].map do |id|
       Character.find_by(granblue_id: id) || create(:character, granblue_id: id)
     end
   end
-  let!(:job) { create(:job, granblue_id: '130501') }
+  let(:job) { create(:job, granblue_id: '130501') }
 
   let(:body) do
     {
@@ -60,9 +60,13 @@ RSpec.describe 'ImportController Evoking Solomonis runs', type: :request do
     SolomonisGuideEffect.find_by!(granblue_id: granblue_id)
   end
 
-  around { |example| travel_to(Time.zone.parse('2026-10-12T12:00:00+09:00')) { example.run } }
-
-  before { seed_catalogue(status_list.pluck('status_id')) }
+  before do
+    travel_to(Time.zone.parse('2026-10-12T12:00:00+09:00'))
+    nier
+    allies
+    job
+    seed_catalogue(status_list.pluck('status_id'))
+  end
 
   describe 'POST /api/v1/import with kind solomonis_run' do
     it 'imports a run from the report and its guidebook' do

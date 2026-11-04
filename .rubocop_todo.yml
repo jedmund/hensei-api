@@ -56,7 +56,6 @@ FactoryBot/CreateList:
   Exclude:
     - 'spec/lib/character_skills/icon_snapshot_spec.rb'
     - 'spec/models/solomonis/solomonis_party_spec.rb'
-    - 'spec/requests/api/v1/home_spec.rb'
     - 'spec/services/support_summon_import_service_spec.rb'
 
 # Offense count: 16
@@ -517,9 +516,6 @@ RSpec/AnyInstance:
 # This cop supports unsafe autocorrection (--autocorrect-all).
 RSpec/BeEq:
   Exclude:
-    - 'spec/requests/api/v1/phantom_claims_spec.rb'
-    - 'spec/requests/api/v1/users_spec.rb'
-    - 'spec/requests/api/v1/weapon_skill_boost_types_spec.rb'
     - 'spec/services/processors/character_processor_spec.rb'
 
 # Offense count: 8
@@ -533,14 +529,6 @@ RSpec/BeforeAfterAll:
     - 'spec/lib/tasks/weapon_skill_loaders_spec.rb'
     - 'spec/lib/weapon_skills/catalogue_dump_spec.rb'
     - 'spec/models/grid_characters_spec.rb'
-
-# Offense count: 3
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: NegatedMatcher.
-RSpec/ChangeByZero:
-  Exclude:
-    - 'spec/requests/api/v1/grid_characters_spec.rb'
-    - 'spec/requests/api/v1/grid_weapons_spec.rb'
 
 # Offense count: 214
 # Configuration parameters: Prefixes, AllowedPatterns.
@@ -622,8 +610,6 @@ RSpec/DescribeMethod:
 # SupportedStyles: described_class, explicit
 RSpec/DescribedClass:
   Exclude:
-    - 'spec/controllers/concerns/party_authorization_concern_spec.rb'
-    - 'spec/controllers/concerns/party_querying_concern_spec.rb'
     - 'spec/models/artifact_skill_spec.rb'
     - 'spec/models/artifact_spec.rb'
     - 'spec/models/character_spec.rb'
@@ -747,7 +733,6 @@ RSpec/LeakyLocalVariable:
     - 'spec/lib/character_skills/build/writer_spec.rb'
     - 'spec/lib/granblue/parsers/character_skill_golden_spec.rb'
     - 'spec/lib/granblue/parsers/character_skill_style_golden_spec.rb'
-    - 'spec/requests/goldens_spec.rb'
     - 'spec/services/icon_upload_validator_spec.rb'
 
 # Offense count: 7
@@ -782,9 +767,6 @@ RSpec/MatchWithSimpleRegex:
   Exclude:
     - 'spec/models/grid_summons_spec.rb'
     - 'spec/models/user_spec.rb'
-    - 'spec/requests/api/v1/awakenings_spec.rb'
-    - 'spec/requests/api/v1/entity_reparse_spec.rb'
-    - 'spec/requests/api/v1/grid_character_roles_spec.rb'
 
 # Offense count: 13
 # Configuration parameters: EnforcedStyle.
@@ -796,7 +778,6 @@ RSpec/MessageSpies:
     - 'spec/lib/granblue/parsers/wiki_spec.rb'
     - 'spec/lib/tasks/database_restore_spec.rb'
     - 'spec/models/weapon_skill_version_spec.rb'
-    - 'spec/requests/api/v1/stickers_spec.rb'
     - 'spec/services/gacha_simulation/cache_and_cost_spec.rb'
     - 'spec/services/processors/base_processor_spec.rb'
 
@@ -807,7 +788,6 @@ RSpec/MultipleDescribes:
     - 'spec/lib/granblue/importers/import_error_spec.rb'
     - 'spec/lib/weapon_skills/build_skill_level_spec.rb'
     - 'spec/models/party_remix_substitutions_spec.rb'
-    - 'spec/requests/api/v1/admin_stickers_spec.rb'
 
 # Offense count: 89
 # Configuration parameters: EnforcedStyle, IgnoreSharedExamples.
@@ -854,7 +834,6 @@ RSpec/ReceiveMessages:
 RSpec/RepeatedExample:
   Exclude:
     - 'spec/models/substitution_spec.rb'
-    - 'spec/requests/api/v1/collection_spec.rb'
 
 # Offense count: 2
 RSpec/RepeatedExampleGroupDescription:
@@ -919,8 +898,6 @@ RSpec/ScatteredLet:
 # SupportedInflectors: default, active_support
 RSpec/SpecFilePathFormat:
   Exclude:
-    - 'spec/controllers/concerns/party_authorization_concern_spec.rb'
-    - 'spec/controllers/concerns/party_querying_concern_spec.rb'
     - 'spec/lib/granblue/parsers/character_skill_status_lookup_spec.rb'
     - 'spec/lib/weapon_skills/source_store_spec.rb'
     - 'spec/models/grid_characters_spec.rb'
@@ -971,7 +948,6 @@ RSpec/VerifiedDoubles:
     - 'spec/lib/granblue/parsers/validation_errors_serializer_spec.rb'
     - 'spec/lib/granblue/parsers/wiki_data_parser_spec.rb'
     - 'spec/lib/granblue/parsers/wiki_spec.rb'
-    - 'spec/requests/gacha_simulation/gacha_spec.rb'
     - 'spec/services/artifact_image_download_service_spec.rb'
     - 'spec/services/aws_service_spec.rb'
     - 'spec/services/character_image_download_service_spec.rb'
@@ -979,15 +955,6 @@ RSpec/VerifiedDoubles:
     - 'spec/services/raid_image_download_service_spec.rb'
     - 'spec/services/summon_image_download_service_spec.rb'
     - 'spec/services/weapon_image_download_service_spec.rb'
-
-# Offense count: 7
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: ResponseMethods.
-# ResponseMethods: response, last_response
-RSpecRails/HaveHttpStatus:
-  Exclude:
-    - 'spec/requests/api/v1/api_rate_limits_spec.rb'
-    - 'spec/requests/api/v1/auth_hardening_spec.rb'
 
 # Offense count: 1
 RSpecRails/ReceivePerformLater:
@@ -998,7 +965,6 @@ RSpecRails/ReceivePerformLater:
 # This cop supports unsafe autocorrection (--autocorrect-all).
 RSpecRails/TravelAround:
   Exclude:
-    - 'spec/requests/api/v1/import_solomonis_spec.rb'
     - 'spec/services/granblue/wiki_fetch_dates_spec.rb'
 
 # Offense count: 4
@@ -1022,12 +988,6 @@ Rails/ActiveRecordCallbacksOrder:
     - 'app/models/grid_weapon.rb'
     - 'app/models/source.rb'
     - 'app/models/weapon.rb'
-
-# Offense count: 1
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Rails/ApplicationController:
-  Exclude:
-    - 'spec/controllers/concerns/party_authorization_concern_spec.rb'
 
 # Offense count: 1
 # This cop supports unsafe autocorrection (--autocorrect-all).
@@ -1212,7 +1172,6 @@ Rails/IndexWith:
     - 'spec/lib/tasks/build_weapon_skills_spec.rb'
     - 'spec/lib/tasks/character_source_fetch_tasks_spec.rb'
     - 'spec/models/solomonis/seal_state_spec.rb'
-    - 'spec/requests/goldens_spec.rb'
     - 'spec/services/client_ip_resolver_spec.rb'
 
 # Offense count: 15
@@ -1352,7 +1311,6 @@ Rails/RedundantActiveRecordAllMethod:
     - 'lib/granblue/parsers/summon_parser.rb'
     - 'lib/granblue/parsers/weapon_parser.rb'
     - 'lib/tasks/export_job.rake'
-    - 'spec/requests/api/v1/stickers_spec.rb'
 
 # Offense count: 2
 # This cop supports safe autocorrection (--autocorrect).

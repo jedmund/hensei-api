@@ -14,7 +14,7 @@ RSpec.describe 'Gacha API', type: :request do
   end
   let(:snapshot) { { 'items' => items, 'fingerprint' => 'snapshot', 'loaded_at' => Time.now.to_i } }
   let(:store) { {} }
-  let(:redis) { double('redis') }
+  let(:redis) { instance_double(Sidekiq::RedisClientAdapter::CompatClient) }
 
   before do
     Rails.application.config.x.rate_limit_store.clear

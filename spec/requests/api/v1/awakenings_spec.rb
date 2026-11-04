@@ -122,7 +122,7 @@ RSpec.describe 'Api::V1::Awakenings', type: :request do
       post url, params: { image: Base64.strict_encode64(png_of('200x200')) }, headers: editor_headers, as: :json
 
       expect(response).to have_http_status(:unprocessable_content)
-      expect(response.parsed_body['error']).to match(/128x128 or smaller/)
+      expect(response.parsed_body['error']).to include('128x128 or smaller')
     end
 
     it 'rejects a missing image' do

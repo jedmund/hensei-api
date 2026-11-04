@@ -57,8 +57,9 @@ RSpec.describe 'Api::V1::Stickers', type: :request do
     end
 
     it 'busts the cached catalogue when a sticker changes' do
-      expect(Rails.cache).to receive(:delete).with(Sticker::CATALOGUE_CACHE_KEY).at_least(:once)
+      allow(Rails.cache).to receive(:delete).with(Sticker::CATALOGUE_CACHE_KEY)
       first.update!(meaning_en: 'Faster')
+      expect(Rails.cache).to have_received(:delete).with(Sticker::CATALOGUE_CACHE_KEY).at_least(:once)
     end
   end
 
@@ -259,8 +260,10 @@ RSpec.describe 'Api::V1::Stickers', type: :request do
   end
 
   describe 'the sticker library' do
-    let(:first) { StickerLibrary.all.first }
-    let(:last) { StickerLibrary.all.last }
+    # StickerLibrary is a plain module, so all returns an Array, not a relation
+    let(:library_stickers) { StickerLibrary.all }
+    let(:first) { library_stickers.first }
+    let(:last) { library_stickers.last }
 
     it 'lists the library for editors, marking stickers already made from it' do
       made = create(:sticker, image_key: first.image_key)

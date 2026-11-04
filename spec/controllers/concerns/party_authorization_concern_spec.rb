@@ -4,7 +4,7 @@ require 'rails_helper'
 
 # Dummy controller that includes the PartyAuthorizationConcern.
 # This allows us to test its instance methods in isolation.
-class DummyAuthorizationController < ActionController::Base
+class DummyAuthorizationController < ApplicationController
   include PartyAuthorizationConcern
 
   attr_accessor :party, :current_user, :edit_key
@@ -19,7 +19,7 @@ class DummyAuthorizationController < ActionController::Base
   end
 end
 
-RSpec.describe DummyAuthorizationController, type: :controller do
+RSpec.describe PartyAuthorizationConcern, type: :controller do
   let(:dummy_controller) { DummyAuthorizationController.new }
   let(:user) { create(:user) }
   let(:other_user) { create(:user) }

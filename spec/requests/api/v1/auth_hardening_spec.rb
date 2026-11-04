@@ -102,19 +102,19 @@ RSpec.describe 'API auth hardening', type: :request do
     it 'limits password logins per email' do
       10.times do
         post '/oauth/token', params: { grant_type: 'password', email: user.email, password: 'wrong' }
-        expect(response.status).not_to eq(429)
+        expect(response).not_to have_http_status(:too_many_requests)
       end
 
       post '/oauth/token', params: { grant_type: 'password', email: user.email.upcase, password: 'wrong' }
       expect(response).to have_http_status(:too_many_requests)
 
       post '/oauth/token', params: { grant_type: 'password', email: 'someone-else@example.com', password: 'wrong' }
-      expect(response.status).not_to eq(429)
+      expect(response).not_to have_http_status(:too_many_requests)
     end
 
     it 'does not count refresh token requests against the login limit' do
       11.times { post '/oauth/token', params: { grant_type: 'refresh_token', refresh_token: 'nope', email: user.email } }
-      expect(response.status).not_to eq(429)
+      expect(response).not_to have_http_status(:too_many_requests)
     end
 
     it 'limits password reset requests per email' do
@@ -127,14 +127,14 @@ RSpec.describe 'API auth hardening', type: :request do
 
     it 'limits availability checks per IP without sharing the signup counter' do
       30.times { post '/api/v1/check/username', params: { username: 'someone' } }
-      expect(response.status).not_to eq(429)
+      expect(response).not_to have_http_status(:too_many_requests)
 
       post '/api/v1/check/email', params: { email: 'a@example.com' }
       expect(response).to have_http_status(:too_many_requests)
 
       post '/api/v1/users', params: { user: { username: 'ratelimited', email: 'rl@example.com',
                                               password: 'password123', password_confirmation: 'password123' } }
-      expect(response.status).not_to eq(429)
+      expect(response).not_to have_http_status(:too_many_requests)
     end
   end
 
@@ -145,7 +145,7 @@ RSpec.describe 'API auth hardening', type: :request do
       expect(response).to have_http_status(:too_many_requests)
 
       post '/api/v1/check/username', params: { username: 'someone' }, headers: { 'CF-Connecting-IP' => '198.51.100.7' }
-      expect(response.status).not_to eq(429)
+      expect(response).not_to have_http_status(:too_many_requests)
     end
   end
 

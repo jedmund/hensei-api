@@ -167,7 +167,7 @@ RSpec.describe 'GridCharacters API', type: :request do
         }
         expect do
           post '/api/v1/grid_characters/resolve', params: resolve_params.to_json, headers: headers
-        end.to change(GridCharacter, :count).by(0) # one record is destroyed and one is created
+        end.not_to change(GridCharacter, :count) # one record is destroyed and one is created
         expect(response).to have_http_status(:created)
         json_response = response.parsed_body
         expect(json_response['grid_character']).to include('position' => 4)
@@ -373,7 +373,7 @@ RSpec.describe 'GridCharacters API', type: :request do
 
     it 'resolves conflicts by replacing the existing grid character' do
       expect(GridCharacter.exists?(conflicting_character.id)).to be true
-      expect { post_resolve }.to change(GridCharacter, :count).by(0) # one record deleted, one created
+      expect { post_resolve }.not_to change(GridCharacter, :count) # one record deleted, one created
       expect(response).to have_http_status(:created)
       json_response = response.parsed_body
       expect(json_response['grid_character']).to include('position' => 4)

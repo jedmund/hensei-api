@@ -174,6 +174,7 @@ RSpec.describe 'Collection Controller API', type: :request do
       get "/api/v1/users/#{user.id}/collection/game_ids", headers: headers
 
       json = response.parsed_body
+      expect(json['characters']).to eq(json['characters'].uniq)
       expect(json['characters']).to contain_exactly('3040000100')
     end
 

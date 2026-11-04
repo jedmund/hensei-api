@@ -92,7 +92,7 @@ RSpec.describe 'Api::V1::Home', type: :request do
     end
 
     it 'leaves teams below the quality bar out of Rising' do
-      kept = Array.new(3) { create(:party, :complete, visibility: 1) }
+      kept = create_list(:party, 3, :complete, visibility: 1)
       unfilled = create(:party, visibility: 1)
       untitled = create(:party, :complete, visibility: 1, name: '無題')
       new_team = create(:party, :complete, visibility: 1, name: 'new TEAM')
