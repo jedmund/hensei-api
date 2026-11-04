@@ -177,7 +177,12 @@ RSpec.describe 'Import gamedata', type: :request do
     before { create(:character, granblue_id: '3040377000') }
 
     it 'answers with a generic message' do
-      allow_any_instance_of(Character).to receive(:update!).and_raise(StandardError, 'secret detail')
+      # Records loaded from the database skip .new, so stub the ones the import looks up
+      allow(Character).to receive(:find_by).and_wrap_original do |original, *args, **kwargs|
+        original.call(*args, **kwargs).tap do |found|
+          allow(found).to receive(:update!).and_raise(StandardError, 'secret detail') if found
+        end
+      end
       post '/api/v1/import/characters?lang=en', params: { 'id' => '3040377000' }.to_json, headers: headers_for(editor)
 
       expect(response).to have_http_status(:unprocessable_content)

@@ -63,8 +63,8 @@ RSpec.describe 'Character skill refreshes', type: :request do
     CharacterSkills::RefreshStore.clear
     allow(CharacterSkills::WikiPacer.instance).to receive(:wait)
     # The rebalance: every page's cooldown drops to 5.
-    allow_any_instance_of(Granblue::WikiFetcher).to receive(:fetch) do |_, entity, **|
-      Granblue::WikiFetcher::Page.new(title: entity.wiki_en, text: wiki(5))
+    on_new_instances(Granblue::WikiFetcher) do |fetcher|
+      allow(fetcher).to receive(:fetch) { |entity, **| Granblue::WikiFetcher::Page.new(title: entity.wiki_en, text: wiki(5)) }
     end
     CharacterSkills::Build::Runner.new(mode: 'write', characters: [first, style, second], all: true, io: StringIO.new,
                                        enqueue_icons: false).call
@@ -146,11 +146,8 @@ RSpec.describe 'Character skill refreshes', type: :request do
   end
 
   describe 'preview, then apply the chosen characters' do
-    it 'writes the chosen characters from the previewed text and skips the rest' do
-      create_refresh([first.id, style.id, second.id])
-      id = response.parsed_body['id']
-      run_refresh_jobs
-
+    # Every item previewed, nothing written yet
+    def expect_previewed(id)
       show(id)
       body = response.parsed_body
       expect(body['status']).to eq('previewed')
@@ -161,9 +158,16 @@ RSpec.describe 'Character skill refreshes', type: :request do
                                                              'fields' => include('cooldown')))
       expect(first.reload.wiki_raw).to eq(wiki(7))
       expect(cooldown(first)).to eq(7)
+    end
+
+    it 'writes the chosen characters from the previewed text and skips the rest' do
+      create_refresh([first.id, style.id, second.id])
+      id = response.parsed_body['id']
+      run_refresh_jobs
+      expect_previewed(id)
 
       # The pages change again after the preview; the apply must not refetch.
-      allow_any_instance_of(Granblue::WikiFetcher).to receive(:fetch).and_raise('no refetch on apply')
+      on_new_instances(Granblue::WikiFetcher) { |fetcher| allow(fetcher).to receive(:fetch).and_raise('no refetch on apply') }
 
       apply(id, { character_ids: [first.id, second.id] })
       expect(response).to have_http_status(:accepted)

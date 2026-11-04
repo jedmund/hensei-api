@@ -150,27 +150,16 @@ RSpec.describe 'Api::V1::CrewRosters', type: :request do
         expect(member['username']).to eq(member_user.username)
 
         char_ownership = member['characters'].find { |c| c['id'] == character.id }
-        expect(char_ownership['uncap_level']).to eq(5)
-        expect(char_ownership['transcendence_step']).to eq(3)
-        expect(char_ownership['flb']).to be true
-        expect(char_ownership['ulb']).to be false
-        expect(char_ownership['transcendence']).to be true
-        expect(char_ownership['special']).to be false
+        expect(char_ownership).to include('uncap_level' => 5, 'transcendence_step' => 3, 'flb' => true, 'ulb' => false,
+                                          'transcendence' => true, 'special' => false)
 
         story_ownership = member['characters'].find { |c| c['id'] == story_character.id }
-        expect(story_ownership['uncap_level']).to eq(5)
-        expect(story_ownership['transcendence_step']).to eq(0)
-        expect(story_ownership['flb']).to be true
-        expect(story_ownership['ulb']).to be true
-        expect(story_ownership['transcendence']).to be false
-        expect(story_ownership['special']).to be true
+        expect(story_ownership).to include('uncap_level' => 5, 'transcendence_step' => 0, 'flb' => true, 'ulb' => true,
+                                           'transcendence' => false, 'special' => true)
 
         wpn_ownership = member['weapons'].find { |w| w['id'] == weapon.id }
-        expect(wpn_ownership['uncap_level']).to eq(4)
-        expect(wpn_ownership['transcendence_step']).to eq(0)
-        expect(wpn_ownership['flb']).to be true
-        expect(wpn_ownership['ulb']).to be true
-        expect(wpn_ownership['transcendence']).to be true
+        expect(wpn_ownership).to include('uncap_level' => 4, 'transcendence_step' => 0, 'flb' => true, 'ulb' => true,
+                                         'transcendence' => true)
       end
 
       it 'returns empty arrays for members who do not own the items' do

@@ -505,10 +505,6 @@ RSpec/AnyInstance:
     - 'spec/lib/granblue/parsers/character_skills/jp_skill_text_spec.rb'
     - 'spec/lib/granblue/parsers/status_catalog_builder_spec.rb'
     - 'spec/lib/summon_auras/build/runner_spec.rb'
-    - 'spec/requests/api/v1/character_refresh_spec.rb'
-    - 'spec/requests/api/v1/character_skill_refreshes_spec.rb'
-    - 'spec/requests/api/v1/import_gamedata_spec.rb'
-    - 'spec/requests/api/v1/weapon_skill_versions_spec.rb'
     - 'spec/services/granblue/wiki_fetch_dates_spec.rb'
     - 'spec/services/granblue/wiki_fetch_only_spec.rb'
 
@@ -637,13 +633,6 @@ RSpec/DescribedClass:
     - 'spec/models/support_summon_spec.rb'
     - 'spec/models/user_spec.rb'
     - 'spec/models/weapon_spec.rb'
-
-# Offense count: 2
-# Configuration parameters: Max, CountAsOne.
-RSpec/ExampleLength:
-  Exclude:
-    - 'spec/requests/api/v1/character_skill_refreshes_spec.rb'
-    - 'spec/requests/api/v1/crew_rosters_spec.rb'
 
 # Offense count: 2
 # This cop supports unsafe autocorrection (--autocorrect-all).
