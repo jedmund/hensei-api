@@ -8,11 +8,15 @@ RSpec.describe 'Api::V1::PhantomPlayers', type: :request do
   let(:auth_headers) { { 'Authorization' => "Bearer #{access_token.token}" } }
 
   let(:crew) { create(:crew) }
-  let!(:captain_membership) { create(:crew_membership, crew: crew, user: user, role: :captain) }
+  let(:user_role) { :captain }
+
+  before { create(:crew_membership, crew: crew, user: user, role: user_role) }
 
   describe 'GET /api/v1/crews/:crew_id/phantom_players' do
-    let!(:phantom1) { create(:phantom_player, crew: crew, name: 'Phantom A') }
-    let!(:phantom2) { create(:phantom_player, crew: crew, name: 'Phantom B') }
+    before do
+      create(:phantom_player, crew: crew, name: 'Phantom A')
+      create(:phantom_player, crew: crew, name: 'Phantom B')
+    end
 
     context 'as crew member' do
       it 'returns all phantom players' do
@@ -88,7 +92,7 @@ RSpec.describe 'Api::V1::PhantomPlayers', type: :request do
     end
 
     context 'as regular member' do
-      let!(:captain_membership) { create(:crew_membership, crew: crew, user: user, role: :member) }
+      let(:user_role) { :member }
 
       it 'returns unauthorized' do
         expect do
@@ -118,7 +122,7 @@ RSpec.describe 'Api::V1::PhantomPlayers', type: :request do
     end
 
     context 'as regular member' do
-      let!(:captain_membership) { create(:crew_membership, crew: crew, user: user, role: :member) }
+      let(:user_role) { :member }
 
       it 'returns unauthorized' do
         put "/api/v1/crews/#{crew.id}/phantom_players/#{phantom.id}",
@@ -146,7 +150,7 @@ RSpec.describe 'Api::V1::PhantomPlayers', type: :request do
     end
 
     context 'as regular member' do
-      let!(:captain_membership) { create(:crew_membership, crew: crew, user: user, role: :member) }
+      let(:user_role) { :member }
 
       it 'returns unauthorized' do
         expect do
@@ -162,7 +166,8 @@ RSpec.describe 'Api::V1::PhantomPlayers', type: :request do
   describe 'POST /api/v1/crews/:crew_id/phantom_players/:id/assign' do
     let!(:phantom) { create(:phantom_player, crew: crew) }
     let(:target_user) { create(:user) }
-    let!(:target_membership) { create(:crew_membership, crew: crew, user: target_user, role: :member) }
+
+    before { create(:crew_membership, crew: crew, user: target_user, role: :member) }
 
     context 'as officer' do
       it 'assigns the phantom to a user' do
@@ -187,7 +192,7 @@ RSpec.describe 'Api::V1::PhantomPlayers', type: :request do
     end
 
     context 'as regular member' do
-      let!(:captain_membership) { create(:crew_membership, crew: crew, user: user, role: :member) }
+      let(:user_role) { :member }
 
       it 'returns unauthorized' do
         post "/api/v1/crews/#{crew.id}/phantom_players/#{phantom.id}/assign",
@@ -201,13 +206,16 @@ RSpec.describe 'Api::V1::PhantomPlayers', type: :request do
 
   describe 'POST /api/v1/crews/:crew_id/phantom_players/:id/confirm_claim' do
     let(:claimer) { create(:user) }
-    let!(:claimer_membership) { create(:crew_membership, crew: crew, user: claimer, role: :member) }
-    let!(:phantom) { create(:phantom_player, crew: crew, claimed_by: claimer) }
-
+    let(:phantom) { create(:phantom_player, crew: crew, claimed_by: claimer) }
     let(:claimer_token) do
       Doorkeeper::AccessToken.create!(resource_owner_id: claimer.id, expires_in: 30.days, scopes: 'public')
     end
     let(:claimer_headers) { { 'Authorization' => "Bearer #{claimer_token.token}" } }
+
+    before do
+      create(:crew_membership, crew: crew, user: claimer, role: :member)
+      phantom
+    end
 
     it 'confirms the claim' do
       post "/api/v1/crews/#{crew.id}/phantom_players/#{phantom.id}/confirm_claim",

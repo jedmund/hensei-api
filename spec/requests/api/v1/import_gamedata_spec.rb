@@ -174,7 +174,7 @@ RSpec.describe 'Import gamedata', type: :request do
   end
 
   describe 'a failure while storing' do
-    let!(:character) { create(:character, granblue_id: '3040377000') }
+    before { create(:character, granblue_id: '3040377000') }
 
     it 'answers with a generic message' do
       allow_any_instance_of(Character).to receive(:update!).and_raise(StandardError, 'secret detail')

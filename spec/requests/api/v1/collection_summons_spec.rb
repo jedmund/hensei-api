@@ -15,9 +15,12 @@ RSpec.describe 'Collection Summons API', type: :request do
   describe 'GET /api/v1/users/:user_id/collection/summons' do
     let(:summon1) { create(:summon) }
     let(:summon2) { create(:summon) }
-    let!(:collection_summon1) { create(:collection_summon, user: user, summon: summon1, uncap_level: 5) }
-    let!(:collection_summon2) { create(:collection_summon, user: user, summon: summon2, uncap_level: 3) }
-    let!(:other_user_summon) { create(:collection_summon, user: other_user) }
+
+    before do
+      create(:collection_summon, user: user, summon: summon1, uncap_level: 5)
+      create(:collection_summon, user: user, summon: summon2, uncap_level: 3)
+      create(:collection_summon, user: other_user)
+    end
 
     it 'returns the current user\'s collection summons' do
       get "/api/v1/users/#{user.id}/collection/summons", headers: headers

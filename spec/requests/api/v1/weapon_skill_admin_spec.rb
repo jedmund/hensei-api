@@ -77,7 +77,8 @@ RSpec.describe 'Weapon skill admin API', type: :request do
 
     let!(:pinned_in) { make_version(skill_modifier: nil, modifier_override: 'Might', name: 'Pinned In') }
     let!(:moved_in) { make_version(skill_modifier: 'Enmity', modifier_override: 'Might', name: 'Moved In') }
-    let!(:pinned_out) { make_version(skill_modifier: 'Might', modifier_override: 'none', name: 'Pinned Out') }
+    before { make_version(skill_modifier: 'Might', modifier_override: 'none', name: 'Pinned Out') }
+
     let!(:derived) { make_version(skill_modifier: 'Might', modifier_override: nil, name: 'Derived') }
 
     def family(modifier)

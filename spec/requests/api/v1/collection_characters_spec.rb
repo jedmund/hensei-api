@@ -16,9 +16,12 @@ RSpec.describe 'Collection Characters API', type: :request do
   describe 'GET /api/v1/users/:user_id/collection/characters' do
     let(:character1) { create(:character) }
     let(:character2) { create(:character) }
-    let!(:collection_character1) { create(:collection_character, user: user, character: character1, uncap_level: 5) }
-    let!(:collection_character2) { create(:collection_character, user: user, character: character2, uncap_level: 3) }
-    let!(:other_user_character) { create(:collection_character, user: other_user) }
+
+    before do
+      create(:collection_character, user: user, character: character1, uncap_level: 5)
+      create(:collection_character, user: user, character: character2, uncap_level: 3)
+      create(:collection_character, user: other_user)
+    end
 
     it 'returns the current user\'s collection characters' do
       get "/api/v1/users/#{user.id}/collection/characters", headers: headers

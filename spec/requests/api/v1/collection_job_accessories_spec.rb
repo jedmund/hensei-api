@@ -18,9 +18,12 @@ RSpec.describe 'Collection Job Accessories API', type: :request do
     let(:job2) { create(:job) }
     let(:job_accessory1) { create(:job_accessory, job: job1) }
     let(:job_accessory2) { create(:job_accessory, job: job2) }
-    let!(:collection_accessory1) { create(:collection_job_accessory, user: user, job_accessory: job_accessory1) }
-    let!(:collection_accessory2) { create(:collection_job_accessory, user: user, job_accessory: job_accessory2) }
-    let!(:other_user_accessory) { create(:collection_job_accessory, user: other_user) }
+
+    before do
+      create(:collection_job_accessory, user: user, job_accessory: job_accessory1)
+      create(:collection_job_accessory, user: user, job_accessory: job_accessory2)
+      create(:collection_job_accessory, user: other_user)
+    end
 
     it 'returns the current user\'s collection job accessories' do
       get '/api/v1/collection/job_accessories', headers: headers

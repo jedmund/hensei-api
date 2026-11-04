@@ -191,12 +191,15 @@ RSpec.describe 'Api::V1::Home', type: :request do
   end
 
   describe 'upcoming events' do
-    let!(:previous) { create(:event, :past, created_at: 45.days.ago) }
-    let!(:upcoming) { create(:event, :upcoming) }
-    let!(:far_future) { create(:event, starts_at: 31.days.from_now, ends_at: 38.days.from_now) }
-    let!(:party) { create(:party, :complete, raid: raid, visibility: 1) }
+    let(:previous) { create(:event, :past, created_at: 45.days.ago) }
+    let(:upcoming) { create(:event, :upcoming) }
+    let(:party) { create(:party, :complete, raid: raid, visibility: 1) }
 
     before do
+      previous
+      upcoming
+      create(:event, starts_at: 31.days.from_now, ends_at: 38.days.from_now)
+      party
       create(:event_raid, event: previous, raid: raid)
       create(:event_raid, event: upcoming, raid: raid)
       give(party, sticker: sticker, at: 36.days.ago)
@@ -259,13 +262,17 @@ RSpec.describe 'Api::V1::Home', type: :request do
   end
 
   describe 'new battles' do
-    let!(:new_raid) { create(:raid, released_at: 10.days.ago.to_date) }
-    let!(:old_raid) { create(:raid, released_at: 40.days.ago.to_date) }
-    let!(:undated_raid) { create(:raid) }
-    let!(:older_team) { create(:party, :complete, raid: new_raid, visibility: 1, created_at: 3.days.ago) }
-    let!(:newer_team) { create(:party, :complete, raid: new_raid, visibility: 1, created_at: 1.day.ago) }
+    let(:new_raid) { create(:raid, released_at: 10.days.ago.to_date) }
+    let(:old_raid) { create(:raid, released_at: 40.days.ago.to_date) }
+    let(:older_team) { create(:party, :complete, raid: new_raid, visibility: 1, created_at: 3.days.ago) }
+    let(:newer_team) { create(:party, :complete, raid: new_raid, visibility: 1, created_at: 1.day.ago) }
 
     before do
+      new_raid
+      old_raid
+      create(:raid)
+      older_team
+      newer_team
       create(:party, :complete, raid: new_raid, visibility: 3)
       create(:party, :complete, raid: old_raid, visibility: 1)
       older_team.update_columns(participation_score: 1.5)

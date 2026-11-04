@@ -13,9 +13,13 @@ RSpec.describe 'Api::V1::Stickers', type: :request do
   end
 
   describe 'GET /api/v1/stickers' do
-    let!(:second) { create(:sticker, slug: 'second', position: 2) }
-    let!(:first) { create(:sticker, slug: 'first', position: 1, meaning_en: 'Fast', meaning_jp: '速い') }
-    let!(:retired) { create(:sticker, :inactive, slug: 'retired', position: 0) }
+    let(:first) { create(:sticker, slug: 'first', position: 1, meaning_en: 'Fast', meaning_jp: '速い') }
+
+    before do
+      create(:sticker, slug: 'second', position: 2)
+      first
+      create(:sticker, :inactive, slug: 'retired', position: 0)
+    end
 
     it 'returns active stickers in position order, publicly' do
       get '/api/v1/stickers'

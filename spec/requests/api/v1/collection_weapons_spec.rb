@@ -17,9 +17,12 @@ RSpec.describe 'Collection Weapons API', type: :request do
   describe 'GET /api/v1/users/:user_id/collection/weapons' do
     let(:weapon1) { create(:weapon) }
     let(:weapon2) { create(:weapon) }
-    let!(:collection_weapon1) { create(:collection_weapon, user: user, weapon: weapon1, uncap_level: 5) }
-    let!(:collection_weapon2) { create(:collection_weapon, user: user, weapon: weapon2, uncap_level: 3) }
-    let!(:other_user_weapon) { create(:collection_weapon, user: other_user) }
+
+    before do
+      create(:collection_weapon, user: user, weapon: weapon1, uncap_level: 5)
+      create(:collection_weapon, user: user, weapon: weapon2, uncap_level: 3)
+      create(:collection_weapon, user: other_user)
+    end
 
     it 'returns the current user\'s collection weapons' do
       get "/api/v1/users/#{user.id}/collection/weapons", headers: headers

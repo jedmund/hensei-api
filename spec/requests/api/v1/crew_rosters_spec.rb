@@ -13,9 +13,11 @@ RSpec.describe 'Api::V1::CrewRosters', type: :request do
 
   describe 'GET /api/v1/crew/crew_rosters' do
     context 'as captain' do
-      let!(:membership) { create(:crew_membership, crew: crew, user: user, role: :captain) }
-      let!(:fire_roster) { create(:crew_roster, crew: crew, created_by: user, element: 1, name: 'Fire') }
-      let!(:water_roster) { create(:crew_roster, crew: crew, created_by: user, element: 2, name: 'Water') }
+      before do
+        create(:crew_membership, crew: crew, user: user, role: :captain)
+        create(:crew_roster, crew: crew, created_by: user, element: 1, name: 'Fire')
+        create(:crew_roster, crew: crew, created_by: user, element: 2, name: 'Water')
+      end
 
       it 'returns all rosters ordered by element' do
         get '/api/v1/crew/crew_rosters', headers: auth_headers
@@ -29,8 +31,10 @@ RSpec.describe 'Api::V1::CrewRosters', type: :request do
     end
 
     context 'as regular member' do
-      let!(:membership) { create(:crew_membership, crew: crew, user: user, role: :member) }
-      let!(:roster) { create(:crew_roster, crew: crew, created_by: user, element: 1, name: 'Fire') }
+      before do
+        create(:crew_membership, crew: crew, user: user, role: :member)
+        create(:crew_roster, crew: crew, created_by: user, element: 1, name: 'Fire')
+      end
 
       it 'returns rosters (visible to all crew members)' do
         get '/api/v1/crew/crew_rosters', headers: auth_headers
@@ -51,7 +55,7 @@ RSpec.describe 'Api::V1::CrewRosters', type: :request do
   end
 
   describe 'GET /api/v1/crew/crew_rosters/:id' do
-    let!(:membership) { create(:crew_membership, crew: crew, user: user, role: :captain) }
+    before { create(:crew_membership, crew: crew, user: user, role: :captain) }
 
     context 'with an empty roster' do
       let!(:roster) { create(:crew_roster, crew: crew, created_by: user, element: 1, name: 'Fire') }
@@ -125,17 +129,13 @@ RSpec.describe 'Api::V1::CrewRosters', type: :request do
       end
 
       let(:member_user) { create(:user) }
-      let!(:member_membership) { create(:crew_membership, crew: crew, user: member_user, role: :member) }
 
-      let!(:collection_char) do
+      before do
+        create(:crew_membership, crew: crew, user: member_user, role: :member)
         create(:collection_character, user: member_user, character: character,
                                       uncap_level: 5, transcendence_step: 3)
-      end
-      let!(:collection_wpn) do
         create(:collection_weapon, user: member_user, weapon: weapon,
                                    uncap_level: 4, transcendence_step: 0)
-      end
-      let!(:story_collection_char) do
         create(:collection_character, user: member_user, character: story_character,
                                       uncap_level: 5, transcendence_step: 0)
       end
@@ -205,7 +205,7 @@ RSpec.describe 'Api::V1::CrewRosters', type: :request do
     let(:weapon) { create(:weapon, element: 1) }
 
     context 'as captain' do
-      let!(:membership) { create(:crew_membership, crew: crew, user: user, role: :captain) }
+      before { create(:crew_membership, crew: crew, user: user, role: :captain) }
 
       it 'updates roster items' do
         put "/api/v1/crew/crew_rosters/#{roster.id}",
@@ -240,7 +240,7 @@ RSpec.describe 'Api::V1::CrewRosters', type: :request do
     end
 
     context 'as vice captain' do
-      let!(:membership) { create(:crew_membership, crew: crew, user: user, role: :vice_captain) }
+      before { create(:crew_membership, crew: crew, user: user, role: :vice_captain) }
 
       it 'allows updates (officers can edit)' do
         put "/api/v1/crew/crew_rosters/#{roster.id}",
@@ -252,7 +252,7 @@ RSpec.describe 'Api::V1::CrewRosters', type: :request do
     end
 
     context 'as regular member' do
-      let!(:membership) { create(:crew_membership, crew: crew, user: user, role: :member) }
+      before { create(:crew_membership, crew: crew, user: user, role: :member) }
 
       it 'returns unauthorized' do
         put "/api/v1/crew/crew_rosters/#{roster.id}",
@@ -269,7 +269,7 @@ RSpec.describe 'Api::V1::CrewRosters', type: :request do
     let!(:roster) { create(:crew_roster, crew: crew, created_by: user, element: 1, name: 'Fire') }
 
     context 'as captain' do
-      let!(:membership) { create(:crew_membership, crew: crew, user: user, role: :captain) }
+      before { create(:crew_membership, crew: crew, user: user, role: :captain) }
 
       it 'deletes the roster' do
         expect do
@@ -281,7 +281,7 @@ RSpec.describe 'Api::V1::CrewRosters', type: :request do
     end
 
     context 'as regular member' do
-      let!(:membership) { create(:crew_membership, crew: crew, user: user, role: :member) }
+      before { create(:crew_membership, crew: crew, user: user, role: :member) }
 
       it 'returns unauthorized' do
         expect do

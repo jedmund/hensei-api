@@ -119,13 +119,13 @@ RSpec.describe 'Grid item cross-party authorization', type: :request do
   end
 
   describe 'grid characters' do
-    let!(:row) { create(:grid_character, party: owner_party, position: 0) }
+    let!(:row) { create(:grid_character, party: owner_party, position: 0) } # rubocop:disable RSpec/LetSetup -- the shared examples use row
 
     it_behaves_like 'a party-scoped grid resource', path: 'grid_characters', param_key: :character
   end
 
   describe 'grid summons' do
-    let!(:row) { create(:grid_summon, party: owner_party, position: 1) }
+    let!(:row) { create(:grid_summon, party: owner_party, position: 1) } # rubocop:disable RSpec/LetSetup -- the shared examples use row
 
     it_behaves_like 'a party-scoped grid resource', path: 'grid_summons', param_key: :summon
   end

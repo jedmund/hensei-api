@@ -31,12 +31,10 @@ RSpec.describe 'Admin events collection', type: :request do
                                    starts_at: Time.zone.parse('2026-08-01 10:00'),
                                    ends_at: Time.zone.parse('2026-08-08 10:00'))
   end
-  let!(:story) do
-    create(:event, :draft, name_en: 'A Story', name_jp: nil, element: nil,
-                           starts_at: Time.zone.parse('2026-10-01 10:00'), ends_at: Time.zone.parse('2026-10-10 10:00'))
-  end
 
   before do
+    create(:event, :draft, name_en: 'A Story', name_jp: nil, element: nil,
+                           starts_at: Time.zone.parse('2026-10-01 10:00'), ends_at: Time.zone.parse('2026-10-10 10:00'))
     create(:event_raid, event: gw, raid: create(:raid), position: 0)
     create(:event_raid, event: gw, raid: create(:raid), position: 1)
   end

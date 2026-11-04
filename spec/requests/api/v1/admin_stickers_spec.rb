@@ -27,9 +27,11 @@ RSpec.describe 'Admin stickers collection', type: :request do
                      created_at: 2.days.ago)
   end
   let!(:fast) { create(:sticker, slug: 'fast', meaning_en: 'Fast', position: 0, created_at: 1.day.ago) }
-  let!(:retired) { create(:sticker, :inactive, slug: 'retired', meaning_en: 'Old', position: 1) }
 
-  before { create_list(:party_sticker, 2, sticker: fast) }
+  before do
+    create(:sticker, :inactive, slug: 'retired', meaning_en: 'Old', position: 1)
+    create_list(:party_sticker, 2, sticker: fast)
+  end
 
   describe 'access' do
     it 'returns every sticker in picker order with the default fields' do

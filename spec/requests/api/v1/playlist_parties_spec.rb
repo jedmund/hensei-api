@@ -103,7 +103,7 @@ RSpec.describe 'Api::V1::PlaylistParties', type: :request do
   end
 
   describe 'DELETE /api/v1/playlists/:playlist_id/parties/:id' do
-    let!(:playlist_party) { create(:playlist_party, playlist: playlist, party: party) }
+    before { create(:playlist_party, playlist: playlist, party: party) }
 
     it 'removes a party from the playlist' do
       expect do
