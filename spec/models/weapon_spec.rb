@@ -401,4 +401,44 @@ RSpec.describe Weapon, type: :model do
       end
     end
   end
+
+  describe '#max_uncap_level and #max_transcendence_step' do
+    it 'reaches 3 with no uncaps' do
+      item = build(:weapon, flb: false, ulb: false, transcendence: false)
+      expect([item.max_uncap_level, item.max_transcendence_step]).to eq([3, 0])
+    end
+
+    it 'reaches 4 with FLB' do
+      item = build(:weapon, flb: true, ulb: false, transcendence: false)
+      expect([item.max_uncap_level, item.max_transcendence_step]).to eq([4, 0])
+    end
+
+    it 'reaches 5 with ULB' do
+      item = build(:weapon, flb: true, ulb: true, transcendence: false)
+      expect([item.max_uncap_level, item.max_transcendence_step]).to eq([5, 0])
+    end
+
+    it 'reaches 6 and step 5 with transcendence' do
+      item = build(:weapon, :transcendable)
+      expect([item.max_uncap_level, item.max_transcendence_step]).to eq([6, 5])
+    end
+  end
+
+  describe '#default_uncap_level' do
+    let(:weapon) { build(:weapon, flb: true, ulb: true, extra: true, extra_prerequisite: 4) }
+
+    it 'starts at the max in a main slot' do
+      expect(weapon.default_uncap_level(0)).to eq(5)
+      expect(weapon.default_uncap_level).to eq(5)
+    end
+
+    it 'starts at the extra prerequisite in an extra slot' do
+      expect(weapon.default_uncap_level('10')).to eq(4)
+    end
+
+    it 'never goes past the max' do
+      weapon.extra_prerequisite = 6
+      expect(weapon.default_uncap_level(9)).to eq(5)
+    end
+  end
 end

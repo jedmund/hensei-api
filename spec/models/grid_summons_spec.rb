@@ -535,4 +535,30 @@ RSpec.describe GridSummon, type: :model do
       expect(Party.exists?(party.id)).to be false
     end
   end
+
+  describe '#apply_uncap' do
+    it 'lowers a level past the max' do
+      grid_summon = build(:grid_summon, summon: build(:summon, flb: true, ulb: false))
+      grid_summon.apply_uncap(uncap_level: '5', transcendence_step: nil)
+      expect([grid_summon.uncap_level, grid_summon.transcendence_step]).to eq([4, 0])
+    end
+
+    it 'keeps an in-range level as sent' do
+      grid_summon = build(:grid_summon, summon: build(:summon, flb: true, ulb: true))
+      grid_summon.apply_uncap(uncap_level: '4', transcendence_step: nil)
+      expect(grid_summon.uncap_level).to eq(4)
+    end
+
+    it 'raises the level to the max when a transcendence step is sent' do
+      grid_summon = build(:grid_summon, summon: build(:summon, :transcendable))
+      grid_summon.apply_uncap(uncap_level: 3, transcendence_step: '7')
+      expect([grid_summon.uncap_level, grid_summon.transcendence_step]).to eq([6, 5])
+    end
+
+    it 'keeps a summon that cannot transcend at step 0' do
+      grid_summon = build(:grid_summon, summon: build(:summon, flb: true))
+      grid_summon.apply_uncap(uncap_level: 4, transcendence_step: 3)
+      expect(grid_summon.transcendence_step).to eq(0)
+    end
+  end
 end

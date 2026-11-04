@@ -355,4 +355,32 @@ RSpec.describe GridWeapon, type: :model do
       end
     end
   end
+
+  describe '#apply_uncap' do
+    let(:weapon) { build(:weapon, flb: true, ulb: false, extra: true, extra_prerequisite: 4) }
+
+    it 'lowers a level past the max' do
+      grid_weapon = build(:grid_weapon, weapon: weapon, position: 0)
+      grid_weapon.apply_uncap(uncap_level: '6', transcendence_step: nil)
+      expect([grid_weapon.uncap_level, grid_weapon.transcendence_step]).to eq([4, 0])
+    end
+
+    it 'raises the level to the extra prerequisite in an extra slot' do
+      grid_weapon = build(:grid_weapon, weapon: weapon, position: 10)
+      grid_weapon.apply_uncap(uncap_level: 3, transcendence_step: 0)
+      expect(grid_weapon.uncap_level).to eq(4)
+    end
+
+    it 'caps the transcendence step at 5' do
+      grid_weapon = build(:grid_weapon, weapon: build(:weapon, :transcendable), position: 0)
+      grid_weapon.apply_uncap(uncap_level: 6, transcendence_step: '9')
+      expect([grid_weapon.uncap_level, grid_weapon.transcendence_step]).to eq([6, 5])
+    end
+
+    it 'drops an imported skill level when the uncap changes' do
+      grid_weapon = build(:grid_weapon, weapon: weapon, position: 0, uncap_level: 3, skill_level: 10)
+      grid_weapon.apply_uncap(uncap_level: 4, transcendence_step: 0)
+      expect(grid_weapon.skill_level).to be_nil
+    end
+  end
 end
