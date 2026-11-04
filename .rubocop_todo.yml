@@ -1068,15 +1068,6 @@ RSpecRails/TravelAround:
     - 'spec/requests/api/v1/import_solomonis_spec.rb'
     - 'spec/services/granblue/wiki_fetch_dates_spec.rb'
 
-# Offense count: 4
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: ExpectedOrder.
-# ExpectedOrder: index, show, new, edit, create, update, destroy
-Rails/ActionOrder:
-  Exclude:
-    - 'app/controllers/api/v1/character_skill_refreshes_controller.rb'
-    - 'app/controllers/api/v1/users_controller.rb'
-
 # Offense count: 8
 # This cop supports safe autocorrection (--autocorrect).
 Rails/ActiveRecordCallbacksOrder:

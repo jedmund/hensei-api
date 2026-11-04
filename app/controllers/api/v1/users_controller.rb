@@ -30,6 +30,47 @@ module Api
 
       DEFAULT_MAX_CLEAR_TIME = 5400
 
+      def show
+        if @user.nil?
+          render_not_found_response('user')
+        else
+          base_query = Party.includes(
+            { raid: :group },
+            :job,
+            :solomonis_expedition,
+            :user,
+            :skill0,
+            :skill1,
+            :skill2,
+            :skill3,
+            :guidebook1,
+            :guidebook2,
+            :guidebook3,
+            { characters: [{ character: :character_series_records }, :grid_artifact, :awakening] },
+            { weapons: [{ weapon: %i[weapon_series weapon_series_variant], collection_weapon: {} }, :awakening] },
+            { summons: [{ summon: :summon_series }, :collection_summon] }
+          )
+          # Restrict to parties belonging to the profile owner
+          base_query = base_query.where(user_id: @user.id)
+          skip_privacy = (current_user&.id == @user.id)
+          query = PartyQueryBuilder.new(
+            base_query,
+            params: params,
+            current_user: current_user,
+            options: { skip_privacy: skip_privacy, admin_mode: admin_mode }
+          ).build
+          current_page_size = page_size
+          parties = query.paginate(page: params[:page], per_page: current_page_size)
+          count = query.count
+          render json: UserBlueprint.render(@user,
+                                            view: :profile,
+                                            root: 'profile',
+                                            parties: parties,
+                                            meta: { count: count, total_pages: (count.to_f / current_page_size).ceil, per_page: current_page_size },
+                                            current_user: current_user)
+        end
+      end
+
       def create
         return create_from_signup_ticket if params[:signup_ticket].present?
 
@@ -109,47 +150,6 @@ module Api
       # This endpoint is ONLY for authenticated users viewing their own settings
       def me
         render json: UserBlueprint.render(current_user, view: :settings)
-      end
-
-      def show
-        if @user.nil?
-          render_not_found_response('user')
-        else
-          base_query = Party.includes(
-            { raid: :group },
-            :job,
-            :solomonis_expedition,
-            :user,
-            :skill0,
-            :skill1,
-            :skill2,
-            :skill3,
-            :guidebook1,
-            :guidebook2,
-            :guidebook3,
-            { characters: [{ character: :character_series_records }, :grid_artifact, :awakening] },
-            { weapons: [{ weapon: %i[weapon_series weapon_series_variant], collection_weapon: {} }, :awakening] },
-            { summons: [{ summon: :summon_series }, :collection_summon] }
-          )
-          # Restrict to parties belonging to the profile owner
-          base_query = base_query.where(user_id: @user.id)
-          skip_privacy = (current_user&.id == @user.id)
-          query = PartyQueryBuilder.new(
-            base_query,
-            params: params,
-            current_user: current_user,
-            options: { skip_privacy: skip_privacy, admin_mode: admin_mode }
-          ).build
-          current_page_size = page_size
-          parties = query.paginate(page: params[:page], per_page: current_page_size)
-          count = query.count
-          render json: UserBlueprint.render(@user,
-                                            view: :profile,
-                                            root: 'profile',
-                                            parties: parties,
-                                            meta: { count: count, total_pages: (count.to_f / current_page_size).ceil, per_page: current_page_size },
-                                            current_user: current_user)
-        end
       end
 
       # Looks the email up and reports whether it is already registered. The
