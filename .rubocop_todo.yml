@@ -28,7 +28,6 @@ Metrics/AbcSize:
     - 'app/models/grid_weapon.rb'
     - 'app/services/dataminer.rb'
     - 'app/services/gacha_simulation/banner_import.rb'
-    - 'app/services/gacha_simulation/probability.rb'
     - 'app/services/granblue/panel_validator.rb'
     - 'app/services/granblue/weapon_wiki_backfill.rb'
     - 'app/services/party_difficulty/calculator.rb'
@@ -171,7 +170,6 @@ Metrics/MethodLength:
 # Configuration parameters: Max, CountKeywordArgs, MaxOptionalParameters.
 Metrics/ParameterLists:
   Exclude:
-    - 'app/services/gacha_simulation/probability.rb'
     - 'app/services/party_sticker_summary.rb'
     - 'lib/character_skills/status_verb_rules.rb'
     - 'lib/granblue/extractors/weapon_skill_data_extractor.rb'

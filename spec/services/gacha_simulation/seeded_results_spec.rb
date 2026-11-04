@@ -118,18 +118,22 @@ RSpec.describe 'Gacha simulation seeded results' do
   end
 
   describe GachaSimulation::Probability do
+    def target(ordinary, guaranteed, copies, purchase)
+      described_class::Target.new(p: ordinary, g: guaranteed, copies: copies, purchase: purchase)
+    end
+
     it 'samples the same waits for a seeded generator' do
-      expect(described_class.waiting(Random.new(7), 0.003, 0.003, 4, 'ten')).to eq('draws' => '1750', 'copies' => '4')
-      expect(described_class.waiting(Random.new(7), 0.003, 0.03, 2, 'ten')).to eq('draws' => '130', 'copies' => '2')
-      expect(described_class.waiting(Random.new(7), 0.003, 0.003, 4, 'singles')).to eq('draws' => '1152', 'copies' => '4')
+      expect(described_class.waiting(Random.new(7), target(0.003, 0.003, 4, 'ten'))).to eq('draws' => '1750', 'copies' => '4')
+      expect(described_class.waiting(Random.new(7), target(0.003, 0.03, 2, 'ten'))).to eq('draws' => '130', 'copies' => '2')
+      expect(described_class.waiting(Random.new(7), target(0.003, 0.003, 4, 'singles'))).to eq('draws' => '1152', 'copies' => '4')
     end
 
     it 'gives the same odds and thresholds' do
-      expect(described_class.odds(300, 0.003, 0.03, 2, 'ten', 'at_least')).to eq(0.5117542148516755)
-      expect(described_class.odds(300, 0.003, 0.03, 2, 'ten', 'exactly')).to eq(0.2670302981045656)
-      expect(described_class.odds(300, 0.003, 0.03, 2, 'singles', 'at_least')).to eq(0.2274623288190493)
-      expect(described_class.threshold(0.003, 0.03, 2, 'ten', 0.5)).to eq('300')
-      expect(described_class.threshold(0.003, 0.003, 4, 'singles', 0.95)).to eq('2583')
+      expect(described_class.odds(300, target(0.003, 0.03, 2, 'ten'), 'at_least')).to eq(0.5117542148516755)
+      expect(described_class.odds(300, target(0.003, 0.03, 2, 'ten'), 'exactly')).to eq(0.2670302981045656)
+      expect(described_class.odds(300, target(0.003, 0.03, 2, 'singles'), 'at_least')).to eq(0.2274623288190493)
+      expect(described_class.threshold(target(0.003, 0.03, 2, 'ten'), 0.5)).to eq('300')
+      expect(described_class.threshold(target(0.003, 0.003, 4, 'singles'), 0.95)).to eq('2583')
     end
   end
 end

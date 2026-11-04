@@ -44,8 +44,9 @@ module GachaSimulation
       g = probability('guaranteed', identity)
       raise ValidationError, 'Target unavailable or has zero probability' unless p.positive? || (@config['purchase'] == 'ten' && g.positive?)
 
+      wanted = Probability::Target.new(p: p, g: g, copies: copies, purchase: @config['purchase'])
       if operation == 'until'
-        result = Probability.waiting(@random, p, g, copies, @config['purchase'])
+        result = Probability.waiting(@random, wanted)
       else
         count = self.class.draw_count(input, @config, max: 1_000_000_000_000)
         comparison = input.fetch('comparison', 'at_least')
@@ -53,11 +54,9 @@ module GachaSimulation
 
         slots = @config['purchase'] == 'ten' ? count / 10 : 0
         result = { 'draws' => count.to_s, 'comparison' => comparison,
-                   'probability' => Probability.odds(count, p, g, copies, @config['purchase'], comparison),
+                   'probability' => Probability.odds(count, wanted, comparison),
                    'expected_copies' => ((count - slots) * p) + (slots * g),
-                   'thresholds' => [50, 90, 95].to_h do |level|
-                     [level.to_s, Probability.threshold(p, g, copies, @config['purchase'], level / 100.0)]
-                   end }
+                   'thresholds' => [50, 90, 95].to_h { |level| [level.to_s, Probability.threshold(wanted, level / 100.0)] } }
       end
       metadata.merge(result).merge('target' => identity, 'requested_copies' => copies.to_s,
                                    'cost' => ExchangeRate.cost(result['draws']))

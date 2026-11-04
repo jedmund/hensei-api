@@ -8,6 +8,10 @@ module GachaSimulation
   module Probability
     module_function
 
+    # A target's per-draw probability in an ordinary slot (p) and in a ten-part's
+    # guaranteed slot (g), how many copies are wanted, and how draws are bought.
+    Target = Data.define(:p, :g, :copies, :purchase)
+
     def log1p(x)
       return Math.log(1 + x) if x.abs > 1e-4
 
@@ -57,8 +61,12 @@ module GachaSimulation
       [total, 1.0].min
     end
 
-    def odds(n, p, g, copies, purchase, comparison)
-      guaranteed = purchase == 'ten' ? n / 10 : 0
+    # The chance of the target's copies (exactly, or at least) in n draws.
+    def odds(n, target, comparison)
+      p = target.p
+      g = target.g
+      copies = target.copies
+      guaranteed = target.purchase == 'ten' ? n / 10 : 0
       ordinary = n - guaranteed
       return binomial(n, p, copies, comparison) if guaranteed.zero? || p == g
 
@@ -77,17 +85,18 @@ module GachaSimulation
       comparison == 'exactly' ? masses[copies] : tail(n, p, copies, masses)
     end
 
-    def threshold(p, g, copies, purchase, level)
-      step = purchase == 'ten' ? 10 : 1
+    # The fewest complete purchases' draws whose odds of the target reach level.
+    def threshold(target, level)
+      step = target.purchase == 'ten' ? 10 : 1
       limit = 1_000_000_000_000 / step
       low = 0
       high = 1
-      high = [high * 2, limit].min while high < limit && odds(high * step, p, g, copies, purchase, 'at_least') < level
-      return nil if odds(high * step, p, g, copies, purchase, 'at_least') < level
+      high = [high * 2, limit].min while high < limit && odds(high * step, target, 'at_least') < level
+      return nil if odds(high * step, target, 'at_least') < level
 
       while high - low > 1
         middle = (high + low) / 2
-        if odds(middle * step, p, g, copies, purchase, 'at_least') >= level
+        if odds(middle * step, target, 'at_least') >= level
           high = middle
         else
           low = middle
@@ -102,18 +111,25 @@ module GachaSimulation
       (BigDecimal(log1p(-random.rand).to_s) / BigDecimal(log_failure.to_s)).floor + 1
     end
 
-    def waiting(random, p, g, copies, purchase)
-      if purchase == 'singles'
-        log_failure = p == 1 ? -Float::INFINITY : log1p(-p)
-        return { 'draws' => copies.times.sum { geometric(random, log_failure) }.to_s, 'copies' => copies.to_s }
-      end
-      log_failure = p == 1 || g == 1 ? -Float::INFINITY : (9 * log1p(-p)) + log1p(-g)
-      success = -expm1(log_failure)
-      ordinary = pmfs(9, p, 9)
-      weights = (1..10).map { |k| (((ordinary[k] || 0) * (1 - g)) + (ordinary[k - 1] * g)) / success }
+    # Samples how many draws it takes to get the target's copies.
+    def waiting(random, target)
+      target.purchase == 'singles' ? waiting_singles(random, target) : waiting_tens(random, target)
+    end
+
+    # Bought one at a time, each copy takes a geometric number of draws.
+    def waiting_singles(random, target)
+      log_failure = target.p == 1 ? -Float::INFINITY : log1p(-target.p)
+      { 'draws' => target.copies.times.sum { geometric(random, log_failure) }.to_s, 'copies' => target.copies.to_s }
+    end
+
+    # Bought ten at a time: a geometric number of ten-parts until one holds the target,
+    # then that ten-part's copies, by the chance of each count given at least one.
+    def waiting_tens(random, target)
+      log_failure = target.p == 1 || target.g == 1 ? -Float::INFINITY : (9 * log1p(-target.p)) + log1p(-target.g)
+      weights = ten_part_weights(target, -expm1(log_failure))
       blocks = 0
       count = 0
-      while count < copies
+      while count < target.copies
         blocks += geometric(random, log_failure)
         value = random.rand
         cumulative = 0.0
@@ -124,6 +140,13 @@ module GachaSimulation
         count += index + 1
       end
       { 'draws' => (blocks * 10).to_s, 'copies' => count.to_s }
+    end
+
+    # The chance a ten-part holding the target holds 1..10 copies: k from the nine
+    # ordinary slots and none from the guaranteed one, or k - 1 and one.
+    def ten_part_weights(target, success)
+      ordinary = pmfs(9, target.p, 9)
+      (1..10).map { |k| (((ordinary[k] || 0) * (1 - target.g)) + (ordinary[k - 1] * target.g)) / success }
     end
   end
 end
