@@ -34,7 +34,7 @@ module Granblue
       def self.fetch_all(save: false, overwrite: false, debug: false, start: nil)
         errors = []
 
-        weapons = Weapon.all.order(:granblue_id)
+        weapons = Weapon.order(:granblue_id)
 
         start_index = start.nil? ? 0 : weapons.index { |w| w.granblue_id == start }
         count = weapons.drop(start_index).count

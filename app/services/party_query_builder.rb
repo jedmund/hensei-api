@@ -161,7 +161,7 @@ class PartyQueryBuilder
       SQL
     else
       # User is not in a crew - only show public parties
-      query.where('visibility = ?', 1)
+      query.where(visibility: 1)
     end
   end
 

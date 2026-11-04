@@ -1292,9 +1292,6 @@ Rails/RakeEnvironment:
 # AllowedReceivers: ActionMailer::Preview, ActiveSupport::TimeZone
 Rails/RedundantActiveRecordAllMethod:
   Exclude:
-    - 'lib/granblue/parsers/summon_parser.rb'
-    - 'lib/granblue/parsers/weapon_parser.rb'
-    - 'lib/tasks/export_job.rake'
     - 'spec/requests/api/v1/stickers_spec.rb'
 
 # Offense count: 2
@@ -1449,7 +1446,6 @@ Rails/WhereEquals:
   Exclude:
     - 'app/controllers/api/v1/favorites_controller.rb'
     - 'app/controllers/api/v1/users_controller.rb'
-    - 'app/services/party_query_builder.rb'
 
 # Offense count: 2
 # This cop supports unsafe autocorrection (--autocorrect-all).
@@ -1458,31 +1454,11 @@ Rails/WhereEquals:
 Rails/WhereExists:
   Exclude:
     - 'app/controllers/api/v1/raids_controller.rb'
-    - 'app/models/concerns/solomonis_party_seals.rb'
-
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-Rails/WhereMissing:
-  Exclude:
-    - 'lib/tasks/rebuild_weapons_from_sources.rake'
-
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-Rails/WhereNot:
-  Exclude:
-    - 'lib/collection_artifacts/raw_data_clearer.rb'
 
 # Offense count: 12
 # This cop supports unsafe autocorrection (--autocorrect-all).
 Rails/WhereRange:
   Exclude:
-    - 'app/jobs/party_participation/sweep_job.rb'
-    - 'app/models/crew_membership.rb'
-    - 'app/models/event.rb'
-    - 'app/models/phantom_player.rb'
-    - 'app/services/home_feed.rb'
-    - 'app/services/party_sticker_summary.rb'
-    - 'lib/collection_artifacts/raw_data_clearer.rb'
     - 'spec/services/processors/summon_processor_spec.rb'
 
 # Offense count: 1

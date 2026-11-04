@@ -54,7 +54,7 @@ module SolomonisPartySeals
     return unless expedition
 
     justice = PartyBlessing.joins(:arcarum_blessing)
-                           .where(party_id: id, arcarum_blessings: { slug: ArcarumBlessing::JUSTICE }).exists?
+                           .exists?(party_id: id, arcarum_blessings: { slug: ArcarumBlessing::JUSTICE })
     weapons = GridWeapon.where(party_id: id, is_substitute: false).to_a
     summons = GridSummon.where(party_id: id, is_substitute: false).to_a
 

@@ -85,7 +85,7 @@ namespace :granblue do
         end
       else
         # Download all jobs
-        jobs = Job.all.order(:granblue_id)
+        jobs = Job.order(:granblue_id)
         total = jobs.count
         logger.info "Found #{total} jobs to process"
         logger.info "Test mode: #{test_mode}" if test_mode
