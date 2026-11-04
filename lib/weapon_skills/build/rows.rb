@@ -111,7 +111,7 @@ module WeaponSkills
       # data and base effects, curated version-linked rows, and suppressed_boosts.
       def covered_boost_types(version, registry, curation)
         suppressed = curation.suppressed(version)
-        return Set['*'] if suppressed.include?('*')
+        return Set['*'] if suppressed.include?('*') # rubocop:disable Rails/ArelStar -- the suppress-all marker, not SQL
 
         modifier = version.skill_modifier
         covered = Set.new

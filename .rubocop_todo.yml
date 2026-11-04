@@ -1102,12 +1102,6 @@ Rails/ApplicationRecord:
   Exclude:
     - 'app/models/data_version.rb'
 
-# Offense count: 1
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Rails/ArelStar:
-  Exclude:
-    - 'lib/weapon_skills/build/rows.rb'
-
 # Offense count: 85
 # This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: NilOrEmpty, NotPresent, UnlessPresent.
@@ -1197,12 +1191,6 @@ Rails/NegateInclude:
     - 'app/controllers/api/v1/weapon_skill_versions_controller.rb'
     - 'app/controllers/api/v1/weapons_controller.rb'
     - 'spec/scripts/fetch_gacha_rates_spec.rb'
-
-# Offense count: 1
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Rails/OrderArguments:
-  Exclude:
-    - 'app/models/crew_gw_participation.rb'
 
 # Offense count: 204
 # This cop supports unsafe autocorrection (--autocorrect-all).
@@ -1299,13 +1287,6 @@ Rails/RedundantActiveRecordAllMethod:
 Rails/RedundantAllowNil:
   Exclude:
     - 'app/models/user.rb'
-
-# Offense count: 2
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Rails/RedundantPresenceValidationOnBelongsTo:
-  Exclude:
-    - 'app/models/raid.rb'
-    - 'app/models/weapon_skill.rb'
 
 # Offense count: 23
 # This cop supports unsafe autocorrection (--autocorrect-all).

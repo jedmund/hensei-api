@@ -43,6 +43,6 @@ class CrewGwParticipation < ApplicationRecord
     gw_individual_scores
       .select('crew_membership_id, SUM(score) as total_score')
       .group(:crew_membership_id)
-      .order('total_score DESC')
+      .order('total_score DESC') # rubocop:disable Rails/OrderArguments -- a SELECT alias; order(total_score:) would qualify it with the table
   end
 end
