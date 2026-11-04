@@ -549,4 +549,43 @@ RSpec.describe SummonImportService, type: :service do
       expect(updates).to be_empty
     end
   end
+
+  describe 'result entries' do
+    # Errors go back to the extension verbatim, so their keys are part of the API.
+    def game_item(game_id, granblue_id, **param)
+      { 'param' => { 'id' => game_id, 'image_id' => granblue_id, 'evolution' => 3, 'phase' => 0, **param },
+        'master' => { 'id' => granblue_id } }
+    end
+
+    let(:summon) { create(:summon) }
+
+    it 'records skips by game id' do
+      create(:collection_summon, user: user, summon: summon, game_id: '1')
+      result = described_class.new(user, { 'list' => [game_item('1', summon.granblue_id), game_item('2', summon.granblue_id)] },
+                                   conflict_resolutions: { '2' => 'skip' }).import
+
+      expect(result.skipped).to eq([{ game_id: '1', reason: 'Already exists' }, { game_id: '2', reason: 'Skipped by user' }])
+    end
+
+    it 'records a failed save with the catalog granblue_id' do
+      result = described_class.new(user, { 'list' => [game_item('1', summon.granblue_id, 'evolution' => 5, 'phase' => 2)] })
+                              .import
+
+      expect(result.errors).to eq([{ game_id: '1', granblue_id: summon.granblue_id,
+                                     error: 'Transcendence step not available for this summon' }])
+    end
+
+    it 'records an exception with the item index' do
+      allow(Summon).to receive(:find_by).and_raise(StandardError, 'boom')
+      result = described_class.new(user, { 'list' => [game_item('7', summon.granblue_id)] }).import
+
+      expect(result.errors).to eq([{ index: 0, game_id: '7', error: 'boom' }])
+    end
+
+    it 'answers an empty list with a single message' do
+      result = described_class.new(user, []).import
+
+      expect(result.errors).to eq(['No summon items found in data'])
+    end
+  end
 end

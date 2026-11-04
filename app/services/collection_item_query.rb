@@ -96,10 +96,10 @@ class CollectionItemQuery
   end
 
   def unowned_orders
-    name = "#{@item_type.catalog.table_name}.#{language == 'ja' ? 'name_jp' : 'name_en'}"
+    name = @item_type.catalog.arel_table[CatalogSort.name_column(language)]
     orders = {
-      'name_asc' => [Arel.sql("#{name} ASC NULLS LAST")],
-      'name_desc' => [Arel.sql("#{name} DESC NULLS LAST")],
+      'name_asc' => [name.asc.nulls_last],
+      'name_desc' => [name.desc.nulls_last],
       'element_asc' => [{ element: :asc }],
       'element_desc' => [{ element: :desc }],
       'release_date_desc' => [Arel.sql('latest_date DESC NULLS LAST'), { id: :asc }],

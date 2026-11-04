@@ -471,4 +471,38 @@ RSpec.describe ArtifactImportService, type: :service do
       expect(result.created.first.skill1['quality']).to eq(5)
     end
   end
+
+  describe 'result entries' do
+    # Errors go back to the extension verbatim, so their keys are part of the API.
+    let(:artifact) { create(:artifact) }
+    let(:item) { { 'artifact_id' => artifact.granblue_id.to_i, 'id' => 81, 'level' => '5', 'attribute' => '2' } }
+
+    it 'records skips by game id' do
+      create(:collection_artifact, user: user, artifact: artifact, game_id: '81')
+
+      result = described_class.new(user, { 'list' => [item] }).import
+
+      expect(result.skipped).to eq([{ game_id: 81, reason: 'Already exists' }])
+    end
+
+    it 'records a failed save with the payload artifact_id' do
+      result = described_class.new(user, { 'list' => [item.merge('level' => '9')] }).import
+
+      expect(result.errors).to eq([{ game_id: 81, artifact_id: artifact.granblue_id.to_i,
+                                     error: 'Level is not included in the list' }])
+    end
+
+    it 'records an exception with the item index' do
+      allow(ArtifactSkill).to receive(:find_by_game_name).and_raise(StandardError, 'boom')
+      result = described_class.new(user, { 'list' => [item.merge('skill1_info' => { 'name' => 'HP' })] }).import
+
+      expect(result.errors).to eq([{ index: 0, game_id: 81, error: 'boom' }])
+    end
+
+    it 'answers an empty list with a single message' do
+      result = described_class.new(user, { 'list' => [] }).import
+
+      expect(result.errors).to eq(['No artifact items found in data'])
+    end
+  end
 end

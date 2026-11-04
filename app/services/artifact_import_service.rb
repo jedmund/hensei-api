@@ -1,204 +1,65 @@
 # frozen_string_literal: true
 
 ##
-# Service for importing artifacts from game JSON data.
-# Matches skills by name (EN or JP) and stores quality tier for later strength calculation.
+# Imports artifacts from the game's artifact list into the user's
+# CollectionArtifact records. The shared flow is CollectionImport::Inventory;
+# artifact items are flat ({ id:, artifact_id:, skill1_info:, ... }), and skills
+# are matched by name (EN or JP), keeping the quality tier for later strength
+# calculation.
 #
 # @example Import artifacts for a user
-#   service = ArtifactImportService.new(user, game_data)
-#   result = service.import
-#   if result.success?
-#     puts "Imported #{result.created_count} artifacts"
-#   end
+#   result = ArtifactImportService.new(user, game_data).import
+#   result.created.size # => artifacts added
 #
-class ArtifactImportService
-  Result = Struct.new(:success?, :created, :updated, :skipped, :errors, :reconciliation, keyword_init: true)
-
-  def initialize(user, game_data, options = {})
-    @user = user
-    @game_data = game_data
-    @update_existing = options[:update_existing] || false
-    @is_full_inventory = options[:is_full_inventory] || false
-    @reconcile_deletions = options[:reconcile_deletions] || false
-    @filter = CollectionImportFilter.from(options[:filter])
-    @created = []
-    @updated = []
-    @skipped = []
-    @errors = []
-    @processed_game_ids = []
-  end
-
-  ##
-  # Previews what would be deleted in a sync operation.
-  # Does not modify any data, just returns items that would be removed.
-  # When a filter is active, only considers items matching that filter.
-  #
-  # @return [Array<CollectionArtifact>] Collection artifacts that would be deleted
-  def preview_deletions
-    items = extract_items
-    return [] if items.empty?
-
-    # Extract all game_ids from the import data
-    # Artifacts use 'id' directly (not nested in 'param')
-    game_ids = items.filter_map do |item|
-      data = item.is_a?(Hash) ? item.with_indifferent_access : item
-      data['id'].to_s if data['id'].present?
-    end
-
-    return [] if game_ids.empty?
-
-    # Find collection artifacts with game_ids NOT in the import
-    # Scoped to filter criteria if present
-    scope = @user.collection_artifacts
-                 .includes(:artifact)
-                 .where.not(game_id: nil)
-                 .where.not(game_id: game_ids)
-
-    apply_filter_scope(scope)
-  end
-
-  ##
-  # Imports artifacts from game data.
-  #
-  # @return [Result] Import result with counts and errors
-  def import
-    items = extract_items
-    if items.empty?
-      return Result.new(
-        success?: false,
-        created: [],
-        updated: [],
-        skipped: [],
-        errors: ['No artifact items found in data'],
-        reconciliation: nil
-      )
-    end
-
-    # Preload artifacts and existing collection artifacts to avoid N+1 queries
-    preload_artifacts(items)
-    preload_existing_collection_artifacts(items)
-
-    ActiveRecord::Base.transaction do
-      items.each_with_index do |item, index|
-        import_item(item, index)
-      rescue StandardError => e
-        @errors << { index: index, game_id: item['id'], error: e.message }
-      end
-    end
-
-    # Handle deletion reconciliation if requested
-    reconciliation_result = nil
-    reconciliation_result = reconcile_deletions if @reconcile_deletions && @is_full_inventory && @processed_game_ids.any?
-
-    Result.new(
-      success?: @errors.empty?,
-      created: @created,
-      updated: @updated,
-      skipped: @skipped,
-      errors: @errors,
-      reconciliation: reconciliation_result
-    )
-  end
+class ArtifactImportService < CollectionImport::Inventory
+  collection_import :artifact, grid_model: GridArtifact
 
   private
 
-  def extract_items
-    return @game_data if @game_data.is_a?(Array)
-    return @game_data['list'] if @game_data.is_a?(Hash) && @game_data['list'].is_a?(Array)
-
-    []
+  # Handles both string and symbol keys from params.
+  def import_item(item)
+    super(item.is_a?(Hash) ? item.with_indifferent_access : item)
   end
 
-  def preload_artifacts(items)
+  # Preloads the artifacts and the user's copies, avoiding N+1 queries.
+  def prepare(items)
     artifact_ids = items.map { |item| (item['artifact_id'] || item[:artifact_id]).to_s }.uniq
-    artifacts = Artifact.where(granblue_id: artifact_ids).index_by(&:granblue_id)
-    @artifacts_cache = artifacts
-  end
+    @artifacts_cache = Artifact.where(granblue_id: artifact_ids).index_by(&:granblue_id)
 
-  def preload_existing_collection_artifacts(items)
     game_ids = items.map { |item| (item['id'] || item[:id]).to_s }.uniq
-    existing = @user.collection_artifacts.where(game_id: game_ids).index_by(&:game_id)
-    @existing_cache = existing
+    @existing_cache = collection.where(game_id: game_ids).index_by(&:game_id)
   end
 
-  def import_item(item, _index)
-    # Handle both string and symbol keys from params
+  def game_id(item)
+    (item.is_a?(Hash) ? item.with_indifferent_access : item)['id']
+  end
+
+  def failed_game_id(item)
+    item['id']
+  end
+
+  def find_catalog(item)
+    @artifacts_cache[item['artifact_id'].to_s]
+  end
+
+  def owned_copy(item)
+    @existing_cache[item['id'].to_s]
+  end
+
+  def item_ref(item, _catalog = nil)
+    { game_id: item['id'], artifact_id: item['artifact_id'] }
+  end
+
+  def build_attrs(item, artifact)
     data = item.is_a?(Hash) ? item.with_indifferent_access : item
-
-    # Track this game_id as processed (for reconciliation)
-    game_id = data['id']
-    @processed_game_ids << game_id.to_s if game_id.present?
-
-    artifact = find_artifact(data['artifact_id'])
-    unless artifact
-      @errors << { game_id: data['id'], artifact_id: data['artifact_id'], error: 'Artifact not found' }
-      return
-    end
-
-    # Check for existing collection artifact with same game ID
-    existing = @existing_cache[data['id'].to_s]
-
-    if existing
-      if @update_existing
-        update_existing_artifact(existing, data, artifact)
-      else
-        @skipped << { game_id: data['id'], reason: 'Already exists' }
-      end
-      return
-    end
-
-    create_collection_artifact(data, artifact)
-  end
-
-  def find_artifact(artifact_id)
-    @artifacts_cache[artifact_id.to_s]
-  end
-
-  def create_collection_artifact(item, artifact)
-    attrs = build_collection_artifact_attrs(item, artifact)
-
-    collection_artifact = @user.collection_artifacts.build(attrs)
-
-    if collection_artifact.save
-      @created << collection_artifact
-    else
-      @errors << {
-        game_id: item['id'],
-        artifact_id: item['artifact_id'],
-        error: collection_artifact.errors.full_messages.join(', ')
-      }
-    end
-  end
-
-  def update_existing_artifact(existing, item, artifact)
-    attrs = build_collection_artifact_attrs(item, artifact)
-
-    if existing.update(attrs)
-      @updated << existing
-    else
-      @errors << {
-        game_id: item['id'],
-        artifact_id: item['artifact_id'],
-        error: existing.errors.full_messages.join(', ')
-      }
-    end
-  end
-
-  def build_collection_artifact_attrs(item, artifact)
-    # Handle both string and symbol keys from params
-    data = item.is_a?(Hash) ? item.with_indifferent_access : item
-
-    # Extract Cygames scores
     score_info = data['score_info'] || {}
-
-    # Update score_category on ArtifactSkill records if present
     update_skill_score_categories(data)
 
     {
       artifact: artifact,
       game_id: data['id'].to_s,
-      element: map_element(data['attribute']),
-      proficiency: artifact.quirk? ? map_proficiency(data['kind']) : nil,
+      element: game_number(data['attribute'], GranblueEnums::ELEMENTS),
+      proficiency: artifact.quirk? ? game_number(data['kind'], GranblueEnums::PROFICIENCY) : nil,
       level: data['level'].to_i,
       skill1: parse_skill(data['skill1_info']),
       skill2: parse_skill(data['skill2_info']),
@@ -212,19 +73,12 @@ class ArtifactImportService
   end
 
   # The game's attribute and kind are our element and proficiency numbers.
-  def map_element(game_element)
-    game_id(game_element, GranblueEnums::ELEMENTS)
-  end
-
-  def map_proficiency(kind)
-    game_id(kind, GranblueEnums::PROFICIENCY)
-  end
-
-  def game_id(value, enum)
+  def game_number(value, enum)
     id = Integer(value.to_s, exception: false)
     id if id&.positive? && enum.value?(id)
   end
 
+  # Fills in an ArtifactSkill's score category the first time an import sees it.
   def update_skill_score_categories(data)
     (1..4).each do |slot|
       info = data["skill#{slot}_info"]
@@ -232,12 +86,10 @@ class ArtifactImportService
 
       info = info.with_indifferent_access if info.is_a?(Hash)
       category = info['score_category']
-      next if category.blank? || category.to_s == ''
+      next if category.blank?
 
-      name = info['name']
-      skill = ArtifactSkill.find_by_game_name(name)
-      next unless skill
-      next if skill.score_category.present?
+      skill = ArtifactSkill.find_by_game_name(info['name'])
+      next if skill.nil? || skill.score_category.present?
 
       skill.update_columns(score_category: category.to_i, updated_at: Time.current)
     end
@@ -246,79 +98,20 @@ class ArtifactImportService
   def parse_skill(skill_info)
     return {} if skill_info.blank?
 
-    # Handle both string and symbol keys from params
     info = skill_info.is_a?(Hash) ? skill_info.with_indifferent_access : skill_info
-
-    name = info['name']
-    quality = info['skill_quality'] || info['level'] || 1
-    level = info['level'] || 1
-
-    # Look up skill by game name (supports both EN and JP)
-    skill = ArtifactSkill.find_by_game_name(name)
+    skill = ArtifactSkill.find_by_game_name(info['name'])
     return {} unless skill
 
     {
       'modifier' => skill.modifier,
-      'quality' => quality.to_i,
-      'level' => level.to_i
+      'quality' => (info['skill_quality'] || info['level'] || 1).to_i,
+      'level' => (info['level'] || 1).to_i
     }
   end
 
-  ##
-  # Reconciles deletions by removing collection artifacts not in the processed list.
-  # Only called when @is_full_inventory and @reconcile_deletions are both true.
-  # When a filter is active, only deletes items matching that filter.
-  #
-  # @return [Hash] Reconciliation result with deleted count and orphaned grid item IDs
-  def reconcile_deletions
-    # Find collection artifacts with game_ids NOT in our processed list
-    # Scoped to filter criteria if present
-    scope = @user.collection_artifacts
-                 .where.not(game_id: nil)
-                 .where.not(game_id: @processed_game_ids)
-
-    scope = apply_filter_scope(scope)
-
-    deleted_count = 0
-    orphaned_grid_item_ids = []
-
-    scope.find_each do |coll_artifact|
-      # Collect IDs of grid items that will be orphaned
-      grid_artifact_ids = GridArtifact.where(collection_artifact_id: coll_artifact.id).pluck(:id)
-      orphaned_grid_item_ids.concat(grid_artifact_ids)
-
-      # The before_destroy callback on CollectionArtifact will mark grid items as orphaned
-      coll_artifact.destroy
-      deleted_count += 1
-    end
-
-    {
-      deleted: deleted_count,
-      orphaned_grid_items: orphaned_grid_item_ids
-    }
-  end
-
-  ##
-  # Applies element and proficiency filters to a collection artifacts scope.
-  # Used to scope deletion checks to only items matching the current game filter.
-  #
-  # @param scope [ActiveRecord::Relation] The collection artifacts relation to filter
-  # @return [ActiveRecord::Relation] Filtered relation
-  def apply_filter_scope(scope)
-    return scope unless @filter.present?
-
-    # Filter by elements if specified
-    if @filter.elements.present?
-      elements = @filter.elements
-      scope = scope.where(element: elements)
-    end
-
-    # Filter by proficiencies if specified
-    if @filter.proficiencies.present?
-      proficiencies = @filter.proficiencies
-      scope = scope.where(proficiency: proficiencies)
-    end
-
+  def filter_scope(scope, filter)
+    scope = scope.where(element: filter.elements) if filter.elements.present?
+    scope = scope.where(proficiency: filter.proficiencies) if filter.proficiencies.present?
     scope
   end
 end

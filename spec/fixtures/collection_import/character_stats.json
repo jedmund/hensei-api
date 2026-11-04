@@ -1,0 +1,23 @@
+{
+  "list": [
+    {
+      "granblue_id": "3040425000",
+      "uncap_level": 5,
+      "transcendence_step": 0,
+      "awakening_type": 2,
+      "awakening_level": 7,
+      "ring1": { "modifier": 1, "strength": 1500 },
+      "ring2": { "modifier": 2, "strength": 750 },
+      "earring": { "modifier": 3, "strength": 9 },
+      "perpetuity": true
+    },
+    {
+      "granblue_id": "3040036000",
+      "uncap_level": 6,
+      "transcendence_step": 5,
+      "awakening_type": 4,
+      "awakening_level": 12
+    },
+    { "granblue_id": "3049999900", "uncap_level": 4 }
+  ]
+}
