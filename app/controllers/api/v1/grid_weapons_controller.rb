@@ -15,11 +15,15 @@ module Api
       include PartyAuthorizationConcern
       include SubstituteGridPreloading
       include PartyFullLoading
+      include GridItemActions
 
-      before_action :find_grid_weapon, only: %i[update update_uncap_level update_position destroy sync sync_to_collection duplicate]
-      before_action :find_party, only: %i[create update update_uncap_level update_position swap resolve destroy sync sync_to_collection duplicate]
+      grid_item GridWeapon, blueprint: GridWeaponBlueprint, view: :full,
+                            positions: [-1, *0..11], party_param_keys: %i[weapon resolve]
+
+      before_action :find_grid_item, only: GridItemActions::ROW_ACTIONS + %i[duplicate]
+      before_action :find_party, only: GridItemActions::EDIT_ACTIONS + %i[resolve duplicate]
       before_action :find_incoming_weapon, only: %i[create resolve]
-      before_action :authorize_party_edit!, only: %i[create update update_uncap_level update_position swap resolve destroy sync sync_to_collection duplicate]
+      before_action :authorize_party_edit!, only: GridItemActions::EDIT_ACTIONS + %i[resolve duplicate]
 
       ##
       # Creates a new GridWeapon.
@@ -53,8 +57,8 @@ module Api
           save_weapon(grid_weapon)
         elsif grid_weapon.errors[:series].include?('must not conflict with existing weapons')
           handle_conflict(grid_weapon)
-          else
-            render_validation_error_response(grid_weapon)
+        else
+          render_validation_error_response(grid_weapon)
         end
       end
 
@@ -73,141 +77,20 @@ module Api
 
         normalize_ax_fields!
 
-        sync_flag_change = nil
-        sync_flag_change = ActiveModel::Type::Boolean.new.cast(weapon_params[:notes_synced]) if weapon_params.key?(:notes_synced)
-        description_in_payload = weapon_params.key?(:description)
-
         ActiveRecord::Base.transaction do
-          @grid_weapon.assign_with_skill_level(weapon_params.except(:bullets).merge(seal_state_params(:weapon)))
-          raise ActiveRecord::Rollback unless @grid_weapon.save
+          @grid_item.assign_with_skill_level(weapon_params.except(:bullets).merge(seal_state_params(:weapon)))
+          raise ActiveRecord::Rollback unless @grid_item.save
 
-          update_bullet_loadout!(@grid_weapon, params[:weapon][:bullets]) if params.dig(:weapon, :bullets).present?
-
-          # Fan out notes sync changes inside the same transaction so the
-          # group's description/flag can't drift if the rest of the request fails.
-          if sync_flag_change == true
-            NotesSync.enable_sync!(@grid_weapon)
-          elsif sync_flag_change == false
-            NotesSync.disable_sync!(@grid_weapon)
-          elsif description_in_payload
-            NotesSync.propagate_description!(@grid_weapon)
-          end
+          update_bullet_loadout!(@grid_item, params[:weapon][:bullets]) if params.dig(:weapon, :bullets).present?
+          apply_notes_sync!(weapon_params)
         end
 
-        if @grid_weapon.errors.empty?
-          @grid_weapon.reload
-          render json: GridWeaponBlueprint.render(@grid_weapon, view: :full, root: :grid_weapon), status: :ok
+        if @grid_item.errors.empty?
+          @grid_item.reload
+          render json: GridWeaponBlueprint.render(@grid_item, view: :full, root: :grid_weapon), status: :ok
         else
-          render_validation_error_response(@grid_weapon)
+          render_validation_error_response(@grid_item)
         end
-      end
-
-      ##
-      # Updates the uncap level and transcendence step of a GridWeapon.
-      #
-      # Finds the weapon to update, computes the maximum allowed uncap level based on its associated
-      # weapon’s flags, and then updates the fields accordingly.
-      #
-      # @return [void]
-      def update_uncap_level
-        max_uncap = compute_max_uncap_level(@grid_weapon.weapon)
-        requested_uncap = weapon_params[:uncap_level].to_i
-        new_uncap = [requested_uncap, max_uncap].min
-
-        # Enforce floor when weapon is in an extra slot with a prerequisite
-        if GridWeapon::EXTRA_POSITIONS.include?(@grid_weapon.position) &&
-           @grid_weapon.weapon.extra_prerequisite.present?
-          new_uncap = [new_uncap, @grid_weapon.weapon.extra_prerequisite].max
-        end
-
-        @grid_weapon.assign_with_skill_level(uncap_level: new_uncap,
-                                             transcendence_step: [(weapon_params[:transcendence_step] || 0).to_i, 5].min)
-        if @grid_weapon.save
-          render json: GridWeaponBlueprint.render(@grid_weapon, view: :uncap, root: :grid_weapon), status: :ok
-        else
-          render_validation_error_response(@grid_weapon)
-        end
-      end
-
-      ##
-      # Updates the position of a GridWeapon.
-      #
-      # Moves a grid weapon to a new position, optionally changing its container.
-      # Validates that the target position is empty and within allowed bounds.
-      #
-      # @return [void]
-      def update_position
-        new_position = position_params[:position].to_i
-
-        # Validate position bounds
-        unless valid_weapon_position?(new_position)
-          return render_unprocessable_entity_response(
-            Api::V1::InvalidPositionError.new("Invalid position #{new_position} for weapon")
-          )
-        end
-
-        # Check if target position is occupied
-        if GridWeapon.exists?(party_id: @party.id, position: new_position)
-          return render_unprocessable_entity_response(
-            Api::V1::PositionOccupiedError.new("Position #{new_position} is already occupied")
-          )
-        end
-
-        # Update position
-        @grid_weapon.position = new_position
-
-        # Update party attributes if needed
-        update_party_attributes_for_position(@grid_weapon, new_position)
-
-        if @grid_weapon.save
-          @party.mark_updated!
-          render json: {
-            party: PartyBlueprint.render_as_hash(load_full_party(@party.id), view: :full),
-            grid_weapon: GridWeaponBlueprint.render_as_hash(@grid_weapon, view: :full)
-          }, status: :ok
-        else
-          render_validation_error_response(@grid_weapon)
-        end
-      end
-
-      ##
-      # Swaps positions between two GridWeapons.
-      #
-      # Exchanges the positions of two grid weapons within the same party.
-      # Both weapons must belong to the same party and be valid for swapping.
-      #
-      # @return [void]
-      def swap
-        source_id = swap_params[:source_id]
-        target_id = swap_params[:target_id]
-
-        source = GridWeapon.find_by(id: source_id, party_id: @party.id)
-        target = GridWeapon.find_by(id: target_id, party_id: @party.id)
-
-        return render_not_found_response('grid_weapon') unless source && target
-
-        # Perform the swap
-        ActiveRecord::Base.transaction do
-          temp_position = -999
-          source_pos = source.position
-          target_pos = target.position
-
-          source.update!(position: temp_position)
-          target.update!(position: source_pos)
-          source.update!(position: target_pos)
-        end
-
-        @party.mark_updated!
-
-        render json: {
-          party: PartyBlueprint.render_as_hash(load_full_party(@party.id), view: :full),
-          swapped: {
-            source: GridWeaponBlueprint.render_as_hash(source.reload, view: :full),
-            target: GridWeaponBlueprint.render_as_hash(target.reload, view: :full)
-          }
-        }, status: :ok
-      rescue ActiveRecord::RecordInvalid => e
-        render_validation_error_response(e.record)
       end
 
       ##
@@ -249,71 +132,10 @@ module Api
 
         if grid_weapon.persisted?
           @party.mark_updated!
-          render json: GridWeaponBlueprint.render(grid_weapon, view: :full, root: :grid_weapon, meta: { replaced: resolve_params[:position] }), status: :created
+          render json: render_replaced_view(grid_weapon, resolve_params[:position]), status: :created
         else
           render_validation_error_response(grid_weapon)
         end
-      end
-
-      ##
-      # Destroys a GridWeapon.
-      #
-      # Checks authorization and, if allowed, destroys the weapon and renders the destroyed view.
-      #
-      # @return [void]
-      def destroy
-        grid_weapon = @grid_weapon
-
-        if grid_weapon.destroy
-          @party.mark_updated!
-          clear_collection_source_if_empty!(@party)
-          render json: GridWeaponBlueprint.render(grid_weapon, view: :destroyed), status: :ok
-        else
-          render_unprocessable_entity_response(
-            Api::V1::GranblueError.new(grid_weapon.errors.full_messages.join(', '))
-          )
-        end
-      end
-
-      ##
-      # Syncs a grid weapon from its linked collection weapon.
-      #
-      # @return [void]
-      def sync
-        unless @grid_weapon.collection_weapon.present?
-          return render_unprocessable_entity_response(
-            Api::V1::GranblueError.new('No collection weapon linked')
-          )
-        end
-
-        return unless validate_collection_access!(@grid_weapon.collection_weapon)
-
-        @grid_weapon.sync_from_collection!(fields: sync_fields_param)
-        render json: GridWeaponBlueprint.render(@grid_weapon.reload,
-                                                root: :grid_weapon,
-                                                view: :full)
-      end
-
-      ##
-      # Syncs a grid weapon to its linked collection weapon.
-      #
-      # @return [void]
-      def sync_to_collection
-        unless @grid_weapon.collection_weapon.present?
-          return render_unprocessable_entity_response(
-            Api::V1::GranblueError.new('No collection weapon linked')
-          )
-        end
-
-        unless current_user.present? && @party.collection_source_user_id == current_user.id &&
-               @grid_weapon.collection_weapon.user_id == current_user.id
-          return render_unauthorized_response
-        end
-
-        @grid_weapon.sync_to_collection!(fields: sync_fields_param)
-        render json: GridWeaponBlueprint.render(@grid_weapon.reload,
-                                                root: :grid_weapon,
-                                                view: :full)
       end
 
       ##
@@ -327,7 +149,7 @@ module Api
       # @return [void]
       def duplicate
         # Block limited weapons
-        if @grid_weapon.weapon.limit
+        if @grid_item.weapon.limit
           return render_unprocessable_entity_response(
             Api::V1::GranblueError.new('Limited weapons cannot be duplicated')
           )
@@ -349,7 +171,7 @@ module Api
           )
         end
 
-        new_weapon = @grid_weapon.amoeba_dup
+        new_weapon = @grid_item.amoeba_dup
         new_weapon.position = position
         new_weapon.collection_weapon_id = nil
         new_weapon.orphaned = false
@@ -363,38 +185,6 @@ module Api
       end
 
       private
-
-      ##
-      # Pulls the optional `fields` array (camelCase keys) from the request body
-      # used by per-section sync. Returns nil when omitted so the model falls
-      # back to syncing every tracked column.
-      def sync_fields_param
-        raw = params[:fields]
-        return nil if raw.blank?
-
-        Array(raw).map(&:to_s).reject(&:blank?)
-      end
-
-      ##
-      # Computes the maximum uncap level for a given weapon based on its flags.
-      #
-      # @param weapon [Weapon] the associated weapon.
-      # @return [Integer] the maximum allowed uncap level.
-      def compute_max_transcendence_step(weapon)
-        weapon.transcendence ? 5 : 0
-      end
-
-      def compute_max_uncap_level(weapon)
-        if weapon.flb && !weapon.ulb && !weapon.transcendence
-          4
-        elsif weapon.ulb && !weapon.transcendence
-          5
-        elsif weapon.transcendence
-          6
-        else
-          3
-        end
-      end
 
       ##
       # Computes the default uncap level for an incoming weapon.
@@ -425,26 +215,14 @@ module Api
       ##
       # Normalizes the AX modifier fields for the weapon parameters.
       #
-      # Sets ax_modifier1_id and ax_modifier2_id to nil if their integer values equal -1.
+      # Clears the AX and befoulment modifiers the client sent as -1 (none).
       #
       # @return [void]
       def normalize_ax_fields!
-        params[:weapon][:ax_modifier1_id] = nil if weapon_params[:ax_modifier1_id].to_i == -1
-        params[:weapon][:ax_modifier2_id] = nil if weapon_params[:ax_modifier2_id].to_i == -1
-        params[:weapon][:befoulment_modifier_id] = nil if weapon_params[:befoulment_modifier_id].to_i == -1
-      end
-
-      ##
-      # Renders the grid weapon view.
-      #
-      # @param grid_weapon [GridWeapon] the grid weapon to render.
-      # @param conflict_position [Integer] the position that was replaced.
-      # @return [String] the rendered view.
-      def render_grid_weapon_view(grid_weapon, conflict_position)
-        GridWeaponBlueprint.render(grid_weapon,
-                                   view: :full,
-                                   root: :grid_weapon,
-                                   meta: { replaced: conflict_position })
+        raw = params.require(:weapon)
+        %i[ax_modifier1_id ax_modifier2_id befoulment_modifier_id].each do |key|
+          raw[key] = nil if weapon_params[key].to_i == -1
+        end
       end
 
       ##
@@ -462,14 +240,7 @@ module Api
           existing.destroy
         end
 
-        # Set the party's element if the grid weapon is being set as mainhand
-        if weapon.position.to_i == -1
-          @party.element = weapon.weapon.element
-          @party.save!
-        elsif GridWeapon::EXTRA_POSITIONS.include?(weapon.position.to_i)
-          @party.extra = true
-          @party.save!
-        end
+        update_party_attributes_for_position(weapon, weapon.position.to_i)
 
         if weapon.save
           @party.mark_updated!
@@ -507,43 +278,12 @@ module Api
           old_position = conflict_weapon.position
           conflict_weapon.position = weapon_params[:position]
           if conflict_weapon.save
-            output = render_grid_weapon_view(conflict_weapon, old_position)
+            output = render_replaced_view(conflict_weapon, old_position)
             render json: output
           else
             render_validation_error_response(conflict_weapon)
           end
         end
-      end
-
-      ##
-      # Renders the conflict view.
-      #
-      # @param conflict_weapons [Array<GridWeapon>] an array of conflicting grid weapons.
-      # @param incoming_weapon [Weapon] the incoming weapon.
-      # @param incoming_position [Integer] the desired position.
-      # @return [String] the rendered conflict view.
-      def render_conflict_view(conflict_weapons, incoming_weapon, incoming_position)
-        ConflictBlueprint.render(nil,
-                                 view: :weapons,
-                                 conflict_weapons: conflict_weapons,
-                                 incoming_weapon: incoming_weapon,
-                                 incoming_position: incoming_position)
-      end
-
-      ##
-      # Finds and sets the GridWeapon based on the provided parameters.
-      #
-      # Searches for a grid weapon using various parameter keys and renders a not found response if it is absent.
-      #
-      # @return [void]
-      def find_grid_weapon
-        grid_weapon_id = params[:id] || params.dig(:weapon, :id)
-        @grid_weapon = GridWeapon
-                       .includes(*GridWeapon::NESTED_BLUEPRINT_PRELOADS, :substitutions)
-                       .find_by(id: grid_weapon_id)
-        return render_not_found_response('grid_weapon') unless @grid_weapon
-
-        preload_substitute_grids!([@grid_weapon])
       end
 
       ##
@@ -560,38 +300,37 @@ module Api
       end
 
       ##
-      # Finds and sets the party based on parameters.
-      #
-      # Renders an unauthorized response if the current user is not the owner.
+      # Caps the requested uncap level by the weapon's flags, and raises it to
+      # the extra-slot prerequisite when the weapon sits in an extra slot.
       #
       # @return [void]
-      def find_party
-        requested_party_id = params.dig(:weapon, :party_id) || params.dig(:resolve, :party_id) || params[:party_id]
-        @party = if @grid_weapon
-                   # The party always comes from the row itself; a mismatched
-                   # party id in the request is treated as not found.
-                   @grid_weapon.party if requested_party_id.blank? || requested_party_id.to_s == @grid_weapon.party_id.to_s
-                 else
-                   Party.find_by(id: requested_party_id)
-                 end
-        render_not_found_response('party') unless @party
+      def apply_uncap_level
+        weapon = @grid_item.weapon
+        new_uncap = [weapon_params[:uncap_level].to_i, compute_max_uncap_level(weapon)].min
+
+        if GridWeapon::EXTRA_POSITIONS.include?(@grid_item.position) && weapon.extra_prerequisite.present?
+          new_uncap = [new_uncap, weapon.extra_prerequisite].max
+        end
+
+        @grid_item.assign_with_skill_level(uncap_level: new_uncap,
+                                           transcendence_step: [(weapon_params[:transcendence_step] || 0).to_i, 5].min)
+      end
+
+      def before_position_save(new_position)
+        update_party_attributes_for_position(@grid_item, new_position)
+      end
+
+      # The moved weapon as loaded, so its substitutes keep their owned flags.
+      def moved_grid_item_json
+        GridWeaponBlueprint.render_as_hash(@grid_item, view: :full)
       end
 
       ##
-      # Validates if a weapon position is valid.
+      # Sets the party's element when a weapon takes the mainhand, and marks
+      # the party as using extra slots when one takes an extra slot.
       #
-      # @param position [Integer] the position to validate.
-      # @return [Boolean] true if the position is valid; false otherwise.
-      def valid_weapon_position?(position)
-        # Mainhand (-1), grid slots (0-8), extra slots (9-11)
-        position == -1 || (0..11).cover?(position)
-      end
-
-      ##
-      # Updates party attributes based on the weapon's new position.
-      #
-      # @param grid_weapon [GridWeapon] the grid weapon being moved.
-      # @param new_position [Integer] the new position.
+      # @param grid_weapon [GridWeapon] the grid weapon placed.
+      # @param new_position [Integer] the slot it takes.
       # @return [void]
       def update_party_attributes_for_position(grid_weapon, new_position)
         if new_position == -1
@@ -604,9 +343,9 @@ module Api
       end
 
       ##
-      # Specifies and permits the allowed weapon parameters.
+      # Replaces the weapon's bullets, rolling back on an invalid one.
       #
-      # @return [ActionController::Parameters] the permitted parameters.
+      # @return [void]
       def update_bullet_loadout!(grid_weapon, bullets_params)
         grid_weapon.grid_weapon_bullets.destroy_all
 
@@ -623,8 +362,12 @@ module Api
         end
       end
 
+      ##
+      # Specifies and permits the allowed weapon parameters.
+      #
+      # @return [ActionController::Parameters] the permitted parameters.
       def weapon_params
-        params.require(:weapon).permit(
+        grid_item_params(
           :id, :weapon_id, :collection_weapon_id,
           :position, :mainhand, :uncap_level, :transcendence_step, :element,
           :weapon_key1_id, :weapon_key2_id, :weapon_key3_id,
@@ -633,23 +376,7 @@ module Api
           :awakening_id, :awakening_level,
           :notes_synced,
           bullets: %i[position bullet_id]
-        ).then { |p| permit_description(p, params[:weapon]) }
-      end
-
-      ##
-      # Specifies and permits the position update parameters.
-      #
-      # @return [ActionController::Parameters] the permitted parameters.
-      def position_params
-        params.permit(:position, :container)
-      end
-
-      ##
-      # Specifies and permits the swap parameters.
-      #
-      # @return [ActionController::Parameters] the permitted parameters.
-      def swap_params
-        params.permit(:source_id, :target_id)
+        )
       end
 
       ##
@@ -657,7 +384,7 @@ module Api
       #
       # @return [ActionController::Parameters] the permitted parameters.
       def resolve_params
-        params.require(:resolve).permit(:party_id, :position, :incoming, conflicting: [])
+        params.expect(resolve: [:position, :incoming, { conflicting: [] }])
       end
 
       ##
