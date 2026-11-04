@@ -8,15 +8,11 @@
 # A controller declares its type once:
 #
 #   grid_item GridWeapon, blueprint: GridWeaponBlueprint, view: :full,
-#                         positions: [-1, *0..11], party_param_keys: %i[weapon resolve]
+#                         party_param_keys: %i[weapon resolve]
 #
 # and keeps its own create/update and whatever only its type has. The row is
-# always @grid_item, and @party is always the party the row belongs to.
-#
-# Hooks a controller can override:
-# - before_position_save(new_position): side effects of a move, before saving
-# - after_position_save(old_position, new_position): returns extra response keys
-# - moved_grid_item_json: the moved row as rendered in the move response
+# always @grid_item, and @party is always the party the row belongs to. Where
+# rows may sit and what a move does to the party is GridPlacement's job.
 #
 # Requires PartyAuthorizationConcern, CollectionSourceConcern,
 # SubstituteGridPreloading and PartyFullLoading.
@@ -33,10 +29,11 @@ module GridItemActions
   #
   # - name: 'weapon', 'character' or 'summon'; also the request's param key
   # - view: the blueprint view rows are rendered with
-  # - positions: the slots a row may move to
-  # - restricted_positions: slots rows can't be moved into or swapped out of
   # - party_param_keys: payloads that may carry a party_id
-  GridItemType = Data.define(:model, :blueprint, :name, :view, :positions, :restricted_positions, :party_param_keys) do
+  # - reports_reordered: the move response says whether slots were compacted
+  # - reloads_moved: the move response reloads the row (weapons render it as
+  #   loaded, so its substitutes keep their owned flags)
+  GridItemType = Data.define(:model, :blueprint, :name, :view, :party_param_keys, :reports_reordered, :reloads_moved) do
     def param_key = name.to_sym
     def root = :"grid_#{name}"
     def collection_association = :"collection_#{name}"
@@ -47,12 +44,12 @@ module GridItemActions
   end
 
   class_methods do
-    def grid_item(model, blueprint:, view:, positions:, restricted_positions: [], party_param_keys: nil)
+    def grid_item(model, blueprint:, view:, party_param_keys: nil, reports_reordered: false, reloads_moved: true)
       name = model.name.delete_prefix('Grid').underscore
       self.grid_item_type = GridItemType.new(
         model: model, blueprint: blueprint, name: name, view: view,
-        positions: positions, restricted_positions: restricted_positions,
-        party_param_keys: party_param_keys || [name.to_sym]
+        party_param_keys: party_param_keys || [name.to_sym],
+        reports_reordered: reports_reordered, reloads_moved: reloads_moved
       )
     end
   end
@@ -77,22 +74,20 @@ module GridItemActions
   #
   # @return [void]
   def update_position
-    new_position = position_params[:position].to_i
-    error = move_error(new_position)
-    return render_unprocessable_entity_response(error) if error
-
-    old_position = @grid_item.position
-    @grid_item.position = new_position
-    before_position_save(new_position)
-    return render_validation_error_response(@grid_item) unless @grid_item.save
+    move = GridPlacement.move(@grid_item, position_params[:position].to_i)
+    return render_validation_error_response(@grid_item) unless move.saved
 
     @party.mark_updated!
-    extra = after_position_save(old_position, new_position)
-
-    render json: {
+    moved = grid_item_type.reloads_moved ? @grid_item.reload : @grid_item
+    body = {
       party: Api::V1::PartyBlueprint.render_as_hash(load_full_party(@party.id), view: :full),
-      grid_item_type.root => moved_grid_item_json
-    }.merge(extra), status: :ok
+      grid_item_type.root => grid_item_type.blueprint.render_as_hash(moved, view: grid_item_type.view)
+    }
+    body[:reordered] = move.reordered if grid_item_type.reports_reordered
+
+    render json: body, status: :ok
+  rescue GridPlacement::Error => e
+    render_placement_error(e)
   end
 
   ##
@@ -104,13 +99,7 @@ module GridItemActions
     target = party_row(swap_params[:target_id])
     return render_not_found_response(grid_item_type.root.to_s) unless source && target
 
-    if restricted_position?(source.position) || restricted_position?(target.position)
-      return render_unprocessable_entity_response(
-        Api::V1::InvalidPositionError.new("Cannot swap #{grid_item_type.name}s in restricted positions")
-      )
-    end
-
-    swap_positions!(source, target)
+    GridPlacement.swap!(source, target)
     @party.mark_updated!
 
     render json: {
@@ -120,6 +109,8 @@ module GridItemActions
         target: grid_item_type.blueprint.render_as_hash(target.reload, view: grid_item_type.view)
       }
     }, status: :ok
+  rescue GridPlacement::Error => e
+    render_placement_error(e)
   rescue ActiveRecord::RecordInvalid => e
     render_validation_error_response(e.record)
   end
@@ -232,47 +223,15 @@ module GridItemActions
     params.permit(:source_id, :target_id)
   end
 
-  # Why the row can't move to new_position, or nil when it can.
-  def move_error(new_position)
-    name = grid_item_type.name
-    if grid_item_type.positions.exclude?(new_position)
-      Api::V1::InvalidPositionError.new("Invalid position #{new_position} for #{name}")
-    elsif restricted_position?(new_position)
-      Api::V1::InvalidPositionError.new("Cannot move #{name} to restricted position #{new_position}")
-    elsif grid_item_type.model.exists?(party_id: @party.id, position: new_position)
-      Api::V1::PositionOccupiedError.new("Position #{new_position} is already occupied")
-    end
-  end
-
   # A row of this type in @party, or nil; never a row from another party.
   def party_row(id)
     grid_item_type.model.find_by(id: id, party_id: @party.id)
   end
 
-  def restricted_position?(position)
-    grid_item_type.restricted_positions.include?(position)
-  end
-
-  # Swaps through a free slot so the party's unique positions never clash.
-  def swap_positions!(source, target)
-    ActiveRecord::Base.transaction do
-      source_position = source.position
-      target_position = target.position
-
-      source.update!(position: -999)
-      target.update!(position: source_position)
-      source.update!(position: target_position)
-    end
-  end
-
-  def before_position_save(_new_position); end
-
-  def after_position_save(_old_position, _new_position)
-    {}
-  end
-
-  def moved_grid_item_json
-    grid_item_type.blueprint.render_as_hash(@grid_item.reload, view: grid_item_type.view)
+  # A placement refusal as the API's error for it.
+  def render_placement_error(error)
+    api_error = error.is_a?(GridPlacement::PositionOccupied) ? Api::V1::PositionOccupiedError : Api::V1::InvalidPositionError
+    render_unprocessable_entity_response(api_error.new(error.message))
   end
 
   def render_grid_item(grid_item)

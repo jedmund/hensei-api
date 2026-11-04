@@ -18,7 +18,7 @@ module Api
       include GridItemActions
 
       grid_item GridWeapon, blueprint: GridWeaponBlueprint, view: :full,
-                            positions: [-1, *0..11], party_param_keys: %i[weapon resolve]
+                            party_param_keys: %i[weapon resolve], reloads_moved: false
 
       before_action :find_grid_item, only: GridItemActions::ROW_ACTIONS + %i[duplicate]
       before_action :find_party, only: GridItemActions::EDIT_ACTIONS + %i[resolve duplicate]
@@ -211,7 +211,7 @@ module Api
           existing.destroy
         end
 
-        update_party_attributes_for_position(weapon, weapon.position.to_i)
+        GridPlacement.claim_slot!(weapon, weapon.position.to_i, party: @party)
 
         if weapon.save
           @party.mark_updated!
@@ -267,32 +267,6 @@ module Api
           render_not_found_response('weapon') unless @incoming_weapon
         else
           @incoming_weapon = nil
-        end
-      end
-
-      def before_position_save(new_position)
-        update_party_attributes_for_position(@grid_item, new_position)
-      end
-
-      # The moved weapon as loaded, so its substitutes keep their owned flags.
-      def moved_grid_item_json
-        GridWeaponBlueprint.render_as_hash(@grid_item, view: :full)
-      end
-
-      ##
-      # Sets the party's element when a weapon takes the mainhand, and marks
-      # the party as using extra slots when one takes an extra slot.
-      #
-      # @param grid_weapon [GridWeapon] the grid weapon placed.
-      # @param new_position [Integer] the slot it takes.
-      # @return [void]
-      def update_party_attributes_for_position(grid_weapon, new_position)
-        if new_position == -1
-          @party.element = grid_weapon.weapon.element
-          @party.save!
-        elsif GridWeapon::EXTRA_POSITIONS.include?(new_position)
-          @party.extra = true
-          @party.save!
         end
       end
 

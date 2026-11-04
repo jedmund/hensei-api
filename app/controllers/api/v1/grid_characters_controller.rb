@@ -19,7 +19,7 @@ module Api
       include GridItemActions
 
       grid_item GridCharacter, blueprint: GridCharacterBlueprint, view: :nested,
-                               positions: 0..7, party_param_keys: %i[character resolve]
+                               party_param_keys: %i[character resolve], reports_reordered: true
 
       before_action :find_grid_item, only: GridItemActions::ROW_ACTIONS + %i[switch_style]
       before_action :find_party, only: GridItemActions::EDIT_ACTIONS + %i[resolve switch_style]
@@ -181,12 +181,6 @@ module Api
         grid_character
       end
 
-      # Moving between the main and extra slots closes the gap in the main slots.
-      def after_position_save(old_position, new_position)
-        reordered = compact_character_positions if should_compact_characters?(old_position, new_position)
-        { reordered: reordered || false }
-      end
-
       ##
       # Assigns raw attributes from the original parameters to the grid character.
       #
@@ -315,35 +309,6 @@ module Api
         return if @incoming_character
 
         render_unprocessable_entity_response(Api::V1::NoCharacterProvidedError.new)
-      end
-
-      ##
-      # Determines if character positions should be compacted.
-      #
-      # @param old_position [Integer] the old position.
-      # @param new_position [Integer] the new position.
-      # @return [Boolean] true if compaction is needed; false otherwise.
-      def should_compact_characters?(old_position, new_position)
-        # Compact if moving from main slots (0-4) to extra (5-7) or vice versa
-        main_to_extra = (0..4).cover?(old_position) && (5..7).cover?(new_position)
-        extra_to_main = (5..7).cover?(old_position) && (0..4).cover?(new_position)
-        main_to_extra || extra_to_main
-      end
-
-      ##
-      # Compacts character positions to maintain sequential filling.
-      #
-      # @return [Boolean] true if positions were reordered; false otherwise.
-      def compact_character_positions
-        main_characters = @party.characters.where(position: 0..4).order(:position)
-
-        ActiveRecord::Base.transaction do
-          main_characters.each_with_index do |char, index|
-            char.update!(position: index) if char.position != index
-          end
-        end
-
-        true
       end
 
       ##

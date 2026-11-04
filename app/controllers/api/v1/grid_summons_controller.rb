@@ -20,8 +20,7 @@ module Api
 
       attr_reader :party, :incoming_summon
 
-      grid_item GridSummon, blueprint: GridSummonBlueprint, view: :nested,
-                            positions: [-1, *0..6], restricted_positions: [-1, 6]
+      grid_item GridSummon, blueprint: GridSummonBlueprint, view: :nested
 
       before_action :find_grid_item, only: GridItemActions::ROW_ACTIONS + %i[update_quick_summon duplicate]
       before_action :find_party, only: GridItemActions::EDIT_ACTIONS + %i[update_quick_summon duplicate]
