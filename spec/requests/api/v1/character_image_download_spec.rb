@@ -10,7 +10,7 @@ RSpec.describe 'Character image download', type: :request do
   let(:editor) { create(:user, role: 7) }
   let(:character) { create(:character, granblue_id: '3040001000') }
   let(:url) { "/api/v1/characters/#{character.id}/download_image" }
-  let(:downloader) { double('CharacterDownloader') } # rubocop:disable RSpec/VerifiedDoubles
+  let(:downloader) { double('CharacterDownloader') } # rubocop:disable RSpec/VerifiedDoubles -- the stubbed methods are private (reached via send)
   let(:downloader_class) { Granblue::Downloaders::CharacterDownloader }
 
   before do
