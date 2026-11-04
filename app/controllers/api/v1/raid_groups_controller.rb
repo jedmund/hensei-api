@@ -64,7 +64,7 @@ module Api
       end
 
       def raid_group_params
-        params.require(:raid_group).permit(*PERMITTED)
+        params.expect(raid_group: [*PERMITTED])
       end
     end
   end

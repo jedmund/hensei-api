@@ -342,14 +342,17 @@ module Api
         @user = User.includes(active_crew_membership: :crew).find(current_user.id)
       end
 
+      # password_prompt_dismissed is accepted so a payload holding only that flag
+      # (see dismiss_password_prompt) still passes expect, then dropped: it isn't
+      # a column.
       def user_params
-        params.require(:user).permit(
-          :username, :email, :password, :password_confirmation, :display_name,
-          :description, :granblue_id, :picture, :element, :language, :gender, :private,
-          :theme, :show_gamertag, :wiki_profile, :youtube, :collection_privacy,
-          :import_weapons, :default_import_visibility, :simple_portraits,
-          :default_rep_view, :timezone, :support_summons_public
-        )
+        params.expect(
+          user: %i[username email password password_confirmation display_name
+                   description granblue_id picture element language gender private
+                   theme show_gamertag wiki_profile youtube collection_privacy
+                   import_weapons default_import_visibility simple_portraits
+                   default_rep_view timezone support_summons_public password_prompt_dismissed]
+        ).except(:password_prompt_dismissed)
       end
 
       def user_update_params

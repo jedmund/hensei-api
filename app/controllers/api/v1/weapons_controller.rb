@@ -275,7 +275,7 @@ module Api
       end
 
       def weapon_params
-        params.require(:weapon).permit(*PERMITTED)
+        params.expect(weapon: [*PERMITTED])
       end
     end
   end

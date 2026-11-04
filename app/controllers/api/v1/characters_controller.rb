@@ -295,7 +295,7 @@ module Api
       end
 
       def character_params
-        params.require(:character).permit(*PERMITTED)
+        params.expect(character: [*PERMITTED])
       end
     end
   end

@@ -231,7 +231,7 @@ module Api
       end
 
       def summon_params
-        params.require(:summon).permit(*PERMITTED)
+        params.expect(summon: [*PERMITTED])
       end
     end
   end

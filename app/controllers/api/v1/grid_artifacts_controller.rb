@@ -113,13 +113,15 @@ module Api
       # out of the permit list (update would otherwise repoint the artifact at
       # any character id, including one in another user's party).
       def grid_artifact_params
-        params.require(:grid_artifact).permit(
-          :collection_artifact_id,
-          :element, :proficiency, :level, :reroll_slot,
-          skill1: %i[modifier quality level],
-          skill2: %i[modifier quality level],
-          skill3: %i[modifier quality level],
-          skill4: %i[modifier quality level]
+        params.expect(
+          grid_artifact: [
+            :collection_artifact_id,
+            :element, :proficiency, :level, :reroll_slot,
+            { skill1: %i[modifier quality level],
+              skill2: %i[modifier quality level],
+              skill3: %i[modifier quality level],
+              skill4: %i[modifier quality level] }
+          ]
         )
       end
     end

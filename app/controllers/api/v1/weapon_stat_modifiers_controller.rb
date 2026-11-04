@@ -13,7 +13,7 @@ module Api
 
       # GET /weapon_stat_modifiers/:id
       def show
-        @modifier = WeaponStatModifier.find(params[:id])
+        @modifier = WeaponStatModifier.find(params.expect(:id))
         render json: WeaponStatModifierBlueprint.render(@modifier)
       end
     end

@@ -44,7 +44,6 @@ RSpec.describe 'Strong params payload shapes', type: :request do
     [:post, -> { '/api/v1/support_summons' }, :support_summon],
     [:post, -> { '/api/v1/playlists' }, :playlist],
     [:post, -> { '/api/v1/favorites' }, :favorite],
-    [:post, -> { '/api/v1/substitutions' }, :substitution],
     [:put, -> { "/api/v1/parties/#{party.shortcode}/jobs" }, :party],
     [:patch, -> { '/api/v1/crew' }, :crew],
     [:patch, lambda {
@@ -57,26 +56,34 @@ RSpec.describe 'Strong params payload shapes', type: :request do
   ]
 
   endpoints.each do |verb, path, root|
-    it "#{verb.upcase} with a non-object #{root} answers 500" do
+    it "#{verb.upcase} with a non-object #{root} answers 422 naming the param" do
       public_send(verb, instance_exec(&path), params: { root => 'oops' }, headers: headers, as: :json)
 
-      expect(response).to have_http_status(:internal_server_error)
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.parsed_body.dig('errors', 'param')).to eq(root.to_s)
     end
   end
 
+  # set_party digs the party id out of the payload before the params are read
+  it 'POST with a non-object substitution still answers 500' do
+    post '/api/v1/substitutions', params: { substitution: 'oops' }, headers: headers, as: :json
+
+    expect(response).to have_http_status(:internal_server_error)
+  end
+
   describe 'a payload whose fields are all unpermitted' do
-    it 'saves nothing and answers 200' do
+    it 'saves nothing and answers 422' do
       key = create(:weapon_key, name_en: 'Before')
       patch "/api/v1/weapon_keys/#{key.id}", params: { weapon_key: { unknown: 'x' } }, headers: headers, as: :json
 
-      expect(response).to have_http_status(:ok)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(key.reload.name_en).to eq('Before')
     end
 
-    it 'leaves the user unchanged and answers 200' do
+    it 'leaves the user unchanged and answers 422' do
       put '/api/v1/users/me', params: { user: { unknown: 'x' } }, headers: headers, as: :json
 
-      expect(response).to have_http_status(:ok)
+      expect(response).to have_http_status(:unprocessable_content)
     end
   end
 
@@ -89,11 +96,11 @@ RSpec.describe 'Strong params payload shapes', type: :request do
       response.parsed_body.dig('draft', 'id')
     end
 
-    it 'stages a non-object params as an error' do
+    it 'refuses a non-object params with 422' do
       put "/api/v1/difficulty_rules/#{rule_id}", params: { difficulty_rule: { params: 'x' } },
                                                  headers: headers, as: :json
 
-      expect(response).to have_http_status(:internal_server_error)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     it 'stages nested params' do
@@ -105,31 +112,31 @@ RSpec.describe 'Strong params payload shapes', type: :request do
     end
   end
 
-  # condition is NOT NULL, so a null condition can't be saved
+  # condition is NOT NULL, so a payload holding only a null condition has nothing to save
   describe 'PATCH /api/v1/weapon_skill_effects/:id with only a null condition' do
-    it 'keeps the condition and answers 500' do
+    it 'keeps the condition and answers 422' do
       effect = WeaponSkillEffect.create!(modifier: 'Spectest', boost_type: 'dmg_cap', scaling_kind: 'static',
                                          value: 10.0, stacking: 'additive', condition: { 'type' => 'arcarum' })
       patch "/api/v1/weapon_skill_effects/#{effect.id}", params: { weapon_skill_effect: { condition: nil } },
                                                          headers: headers, as: :json
 
-      expect(response).to have_http_status(:internal_server_error)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(effect.reload.condition).to eq('type' => 'arcarum')
     end
   end
 
   describe 'required body ids' do
-    it 'answers 404 when assigning a phantom without a user_id' do
+    it 'answers 422 when assigning a phantom without a user_id' do
       phantom = create(:phantom_player, crew: crew)
       post "/api/v1/crews/#{crew.id}/phantom_players/#{phantom.id}/assign", params: {}, headers: headers, as: :json
 
-      expect(response).to have_http_status(:not_found)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
-    it 'answers 404 when importing GW scores without an event_number' do
+    it 'answers 422 when importing GW scores without an event_number' do
       post '/api/v1/crew/import_gw_scores', params: { round: 1, members: [] }, headers: headers, as: :json
 
-      expect(response).to have_http_status(:not_found)
+      expect(response).to have_http_status(:unprocessable_content)
     end
   end
 end

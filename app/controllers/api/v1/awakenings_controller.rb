@@ -88,7 +88,7 @@ module Api
       end
 
       def awakening_params
-        params.require(:awakening).permit(*PERMITTED)
+        params.expect(awakening: [*PERMITTED])
       end
     end
   end

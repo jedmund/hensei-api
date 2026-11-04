@@ -141,7 +141,7 @@ module Api
       end
 
       def event_params
-        params.require(:event).permit(*PERMITTED)
+        params.expect(event: [*PERMITTED])
       end
 
       def event_attributes

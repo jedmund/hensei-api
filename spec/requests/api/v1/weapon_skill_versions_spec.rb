@@ -38,7 +38,7 @@ RSpec.describe 'PATCH /api/v1/weapon_skill_versions/:id', type: :request do
   it 'ignores the derived classification columns a reparse would overwrite' do
     patch_version(version, { skill_modifier: 'Enmity', skill_series: 'ex', skill_size: 'big' })
 
-    expect(response).to have_http_status(:ok)
+    expect(response).to have_http_status(:unprocessable_content)
     expect(version.reload).to have_attributes(skill_modifier: 'Might', skill_series: 'normal', skill_size: 'medium',
                                               overrides_edited_at: nil)
   end

@@ -47,7 +47,7 @@ module Api
       end
 
       def favorite_params
-        params.require(:favorite).permit(:party_id)
+        params.expect(favorite: [:party_id])
       end
     end
   end

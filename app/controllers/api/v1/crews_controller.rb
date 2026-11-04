@@ -139,14 +139,14 @@ module Api
 
       def set_crew
         @crew = if params[:id]
-                  Crew.includes(crew_memberships: { user: { active_crew_membership: :crew } }).find(params[:id])
+                  Crew.includes(crew_memberships: { user: { active_crew_membership: :crew } }).find(params.expect(:id))
                 else
                   current_user&.crew
                 end
       end
 
       def crew_params
-        params.require(:crew).permit(:name, :gamertag, :granblue_crew_id, :description)
+        params.expect(crew: %i[name gamertag granblue_crew_id description])
       end
 
       def require_crew!

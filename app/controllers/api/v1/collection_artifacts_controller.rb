@@ -185,7 +185,7 @@ module Api
       private
 
       def set_target_user
-        @target_user = User.find(params[:user_id])
+        @target_user = User.find(params.expect(:user_id))
       rescue ActiveRecord::RecordNotFound
         render json: { error: 'User not found' }, status: :not_found
       end
@@ -199,24 +199,26 @@ module Api
       end
 
       def set_collection_artifact_for_read
-        @collection_artifact = @target_user.collection_artifacts.find(params[:id])
+        @collection_artifact = @target_user.collection_artifacts.find(params.expect(:id))
       rescue ActiveRecord::RecordNotFound
         raise CollectionErrors::CollectionItemNotFound.new('artifact', params[:id])
       end
 
       def set_collection_artifact_for_write
-        @collection_artifact = current_user.collection_artifacts.find(params[:id])
+        @collection_artifact = current_user.collection_artifacts.find(params.expect(:id))
       rescue ActiveRecord::RecordNotFound
         raise CollectionErrors::CollectionItemNotFound.new('artifact', params[:id])
       end
 
       def collection_artifact_params
-        params.require(:collection_artifact).permit(
-          :artifact_id, :element, :proficiency, :level, :nickname, :reroll_slot,
-          skill1: %i[modifier quality level],
-          skill2: %i[modifier quality level],
-          skill3: %i[modifier quality level],
-          skill4: %i[modifier quality level]
+        params.expect(
+          collection_artifact: [
+            :artifact_id, :element, :proficiency, :level, :nickname, :reroll_slot,
+            { skill1: %i[modifier quality level],
+              skill2: %i[modifier quality level],
+              skill3: %i[modifier quality level],
+              skill4: %i[modifier quality level] }
+          ]
         )
       end
 

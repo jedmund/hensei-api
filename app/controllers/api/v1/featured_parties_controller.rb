@@ -90,7 +90,7 @@ module Api
       end
 
       def featured_party_params
-        attrs = params.require(:featured_party).permit(:event_id, :party_id, :position, :note_en, :note_jp)
+        attrs = params.expect(featured_party: %i[event_id party_id position note_en note_jp])
         attrs[:event_id] = nil if attrs.key?(:event_id) && attrs[:event_id].blank?
         attrs
       end

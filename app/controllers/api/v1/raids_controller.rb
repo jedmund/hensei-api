@@ -159,7 +159,7 @@ module Api
       end
 
       def raid_params
-        params.require(:raid).permit(*PERMITTED)
+        params.expect(raid: [*PERMITTED])
       end
 
       def apply_filters(scope)

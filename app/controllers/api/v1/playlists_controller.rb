@@ -32,7 +32,7 @@ module Api
       # GET /users/:user_id/playlists/:id
       def show
         owner = User.with_username(params[:user_id]).first!
-        playlist = owner.playlists.find_by!(slug: params[:id])
+        playlist = owner.playlists.find_by!(slug: params.expect(:id))
 
         return render_not_found_response('playlist') unless playlist.viewable_by?(current_user)
 
@@ -79,7 +79,7 @@ module Api
       private
 
       def set_playlist
-        @playlist = Playlist.find(params[:id])
+        @playlist = Playlist.find(params.expect(:id))
       end
 
       def authorize_owner!
@@ -87,7 +87,7 @@ module Api
       end
 
       def playlist_params
-        params.require(:playlist).permit(:title, :description, :video_url, :visibility)
+        params.expect(playlist: %i[title description video_url visibility])
       end
 
       # Raid slugs per playlist, from the parties the viewer may see.

@@ -54,11 +54,11 @@ module Api
 
       def set_summon_series
         # Support lookup by slug or UUID
-        @summon_series = SummonSeries.find_by(slug: params[:id]) || SummonSeries.find(params[:id])
+        @summon_series = SummonSeries.find_by(slug: params[:id]) || SummonSeries.find(params.expect(:id))
       end
 
       def summon_series_params
-        params.require(:summon_series).permit(:name_en, :name_jp, :slug, :order)
+        params.expect(summon_series: %i[name_en name_jp slug order])
       end
     end
   end

@@ -50,7 +50,7 @@ class Api::V1::CrewRostersController < Api::V1::ApiController
   end
 
   def set_roster
-    @roster = @crew.crew_rosters.find(params[:id])
+    @roster = @crew.crew_rosters.find(params.expect(:id))
   end
 
   def roster_params
