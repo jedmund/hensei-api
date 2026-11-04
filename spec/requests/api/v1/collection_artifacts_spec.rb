@@ -132,6 +132,18 @@ RSpec.describe 'Collection Artifacts API', type: :request do
       expect(ids(proficiency: '')).to contain_exactly(zeta.id, alpha.id, quirk.id)
     end
 
+    it 'filters by several integer proficiencies' do
+      sabre, dagger = CollectionArtifact.proficiencies.values_at('sabre', 'dagger')
+      expect(ids(proficiency: "#{sabre},#{dagger}")).to contain_exactly(zeta.id, alpha.id, quirk.id)
+      expect(ids(proficiency: sabre.to_s)).to eq([alpha.id])
+    end
+
+    it 'fails on a proficiency name (current behavior)' do
+      get url, params: { proficiency: 'dagger' }, headers: headers
+
+      expect(response).to have_http_status(:internal_server_error)
+    end
+
     it 'filters by rarity' do
       expect(ids(rarity: 'quirk')).to eq([quirk.id])
       expect(ids(rarity: 'standard,quirk')).to contain_exactly(zeta.id, alpha.id, quirk.id)

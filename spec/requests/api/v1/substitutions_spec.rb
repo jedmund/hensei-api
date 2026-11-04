@@ -712,6 +712,15 @@ RSpec.describe 'Substitutions API', type: :request do
         end
       end
 
+      it 'fails on a substitutions value that is not an array (current behavior)' do
+        ['x', { id: s_a.id, position: 0 }, 5].each do |value|
+          reorder(value)
+
+          expect(response).to have_http_status(:internal_server_error), value.inspect
+        end
+        expect(s_a.reload.position).to eq(0)
+      end
+
       it 'says when entries belong to two slots' do
         other_grid = create(:grid_weapon, party: party, weapon: Weapon.all[5])
         other_sub_grid = create(:grid_weapon, party: party, weapon: Weapon.all[6], is_substitute: true)
