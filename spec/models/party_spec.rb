@@ -728,6 +728,317 @@ end
     end
   end
 
+  describe 'full_auto_skills validation' do
+    it 'is valid when empty' do
+      expect(build(:party, full_auto_skills: {})).to be_valid
+    end
+
+    it 'is valid with known slots and boolean values' do
+      expect(build(:party, full_auto_skills: { '0' => true, '3' => false })).to be_valid
+    end
+
+    it 'rejects a value that is not an object' do
+      party = build(:party, full_auto_skills: %w[0 1])
+      expect(party).not_to be_valid
+      expect(party.errors[:full_auto_skills]).to eq(['must be an object'])
+    end
+
+    it 'rejects an unknown slot' do
+      party = build(:party, full_auto_skills: { '4' => true })
+      expect(party).not_to be_valid
+      expect(party.errors[:full_auto_skills]).to eq(['invalid slot 4'])
+    end
+
+    it 'rejects a non-boolean value' do
+      party = build(:party, full_auto_skills: { '0' => 'maybe' })
+      expect(party).not_to be_valid
+      expect(party.errors[:full_auto_skills]).to eq(['invalid value for slot 0'])
+    end
+  end
+
+  describe 'error order across the custom validations' do
+    it 'reports skills, guidebooks and full auto errors in declaration order' do
+      skill = create(:job_skill)
+      guidebook = create(:guidebook)
+      party = build(:party, skill0: skill, skill1: skill, guidebook1: guidebook, guidebook2: guidebook,
+                            full_auto_skills: { '9' => true }, visibility: 4)
+
+      expect(party).not_to be_valid
+      expect(party.errors.attribute_names).to eq(%i[skill1 job_skills guidebook2 guidebooks full_auto_skills visibility])
+    end
+  end
+
+  describe 'visibility and crew sharing' do
+    let(:owner) { create(:user) }
+    let(:crew) { create(:crew) }
+    let(:crewmate) { create(:user).tap { |u| create(:crew_membership, crew: crew, user: u) } }
+    let(:outsider) { create(:user).tap { |u| create(:crew_membership, crew: create(:crew), user: u) } }
+    let(:party) do
+      create(:party, user: owner, visibility: 3).tap do |p|
+        create(:party_share, party: p, shareable: crew, shared_by: owner)
+      end
+    end
+
+    it 'is shared with the crew it was shared to' do
+      expect(party.shared_with_crew?(crew)).to be true
+    end
+
+    it 'is not shared with another crew' do
+      expect(party.shared_with_crew?(create(:crew))).to be false
+    end
+
+    it 'lets a member of the shared crew view a private party' do
+      expect(party.viewable_by?(crewmate)).to be true
+    end
+
+    it 'hides a private shared party from a member of another crew' do
+      expect(party.viewable_by?(outsider)).to be false
+    end
+
+    it 'hides a private shared party from anonymous viewers' do
+      expect(party.viewable_by?(nil)).to be false
+    end
+
+    it 'builds the anonymous scope from visibility alone' do
+      expect(described_class.viewable_by(nil).to_sql).to eq(described_class.where(visibility: [1, 2]).to_sql)
+    end
+
+    it 'gives admins in admin mode an unfiltered scope' do
+      admin = create(:user, role: 9)
+      expect(described_class.viewable_by(admin, admin_mode: true).to_sql).to eq(described_class.all.to_sql)
+    end
+  end
+
+  describe '.quality_name_sql' do
+    it 'excludes every default name, quoted' do
+      quoted = described_class::LOW_QUALITY_NAMES.map { |name| "'#{name}'" }.join(',')
+      expect(described_class.quality_name_sql).to eq("LOWER(parties.name) NOT IN (#{quoted})")
+    end
+
+    it 'lists the default names and up to five remixes of each' do
+      expect(described_class::LOW_QUALITY_NAMES.size).to eq(33)
+      expect(described_class::LOW_QUALITY_NAMES).to include(
+        'untitled', '無題', 'new team', 'remix of remix of remix of remix of remix of new team',
+        '無題のリミックスのリミックスのリミックスのリミックスのリミックス'
+      )
+      expect(described_class::LOW_QUALITY_NAMES).not_to include('remix of remix of remix of remix of remix of remix of untitled')
+    end
+  end
+
+  describe '.quality' do
+    let!(:good) { create(:party, :complete, name: 'Fire Grid') }
+
+    it 'keeps a named, filled team with an owner' do
+      expect(described_class.quality).to contain_exactly(good)
+    end
+
+    it 'drops teams without an owner' do
+      create(:party, :complete, user: nil, name: 'Anonymous Grid')
+      expect(described_class.quality).to contain_exactly(good)
+    end
+
+    it 'drops default names case-insensitively, and teams with no name' do
+      ['Untitled', 'Remix of New Team', '無題のリミックス', 'NEW TEAM', nil].each do |name|
+        create(:party, :complete, name: name)
+      end
+      expect(described_class.quality).to contain_exactly(good)
+    end
+
+    it 'keeps a name that only contains a default one' do
+      named = create(:party, :complete, name: 'Untitled Water')
+      expect(described_class.quality).to contain_exactly(good, named)
+    end
+
+    it 'drops teams below the weapon or summon minimum' do
+      create(:party, name: 'Few Weapons', weapons_count: 4, summons_count: 2)
+      create(:party, name: 'Few Summons', weapons_count: 5, summons_count: 1)
+      expect(described_class.quality).to contain_exactly(good)
+    end
+
+    it 'exempts Evoking Solomonis teams from the minimums' do
+      solomonis = create(:party, :solomonis, name: 'Expedition', weapons_count: 3, summons_count: 1)
+      expect(described_class.quality).to contain_exactly(good, solomonis)
+    end
+  end
+
+  describe '.rising_rank_sql' do
+    it 'decays the participation score by the team age' do
+      now = Time.utc(2026, 1, 1)
+      expect(described_class.rising_rank_sql(now)).to eq(
+        'parties.participation_score * POWER(0.5, ' \
+        "GREATEST(EXTRACT(EPOCH FROM ('2026-01-01 00:00:00' - parties.created_at)), 0) / 1209600) DESC"
+      )
+    end
+  end
+
+  describe '.rising' do
+    let(:now) { Time.utc(2026, 6, 1, 12) }
+
+    def team(score, age, visibility: 1)
+      create(:party, visibility: visibility).tap do |party|
+        party.update_columns(participation_score: score, created_at: now - age)
+      end
+    end
+
+    it 'ranks public teams by score halved every 14 days of age, then by id' do
+      fresh = team(10, 0.days)
+      tied = team(10, 0.days)
+      older = team(16, 14.days)
+      future = team(5, -1.day)
+      low = team(4, 0.days)
+      oldest = team(40, 42.days)
+
+      # Ids are UUIDs, so equal ranks come back in UUID order.
+      expected = [*[fresh, tied].sort_by(&:id), older, *[future, oldest].sort_by(&:id), low]
+      expect(described_class.rising(now: now).to_a).to eq(expected)
+    end
+
+    it 'leaves out teams that are not public or have no score' do
+      shown = team(1, 0.days)
+      team(100, 0.days, visibility: 2)
+      team(100, 0.days, visibility: 3)
+      team(0, 0.days)
+      create(:party, visibility: 1)
+
+      expect(described_class.rising(now: now).to_a).to eq([shown])
+    end
+
+    it 'composes with the quality bar' do
+      kept = create(:party, :complete, name: 'Wind Grid').tap { |p| p.update_columns(participation_score: 2) }
+      create(:party, name: 'Sparse Grid').tap { |p| p.update_columns(participation_score: 5) }
+
+      expect(described_class.quality.rising(now: now).to_a).to eq([kept])
+    end
+  end
+
+  describe '#keep_only_collection_links_of!' do
+    let(:owner) { create(:user) }
+    let(:other) { create(:user) }
+    let(:owned_weapon) { create(:collection_weapon, user: owner) }
+    let(:foreign_weapon) { create(:collection_weapon, user: other) }
+    let(:owned_summon) { create(:collection_summon, user: owner) }
+    let(:owned_character) { create(:collection_character, user: owner) }
+    let(:owned_artifact) { create(:collection_artifact, user: owner) }
+
+    let(:party) do
+      create(:party, user: owner, collection_source_user_id: owner.id).tap do |p|
+        create(:grid_weapon, party: p, weapon: owned_weapon.weapon, collection_weapon: owned_weapon, position: 0)
+        create(:grid_weapon, party: p, weapon: foreign_weapon.weapon, collection_weapon: foreign_weapon,
+                             position: 1, orphaned: true)
+        gc = create(:grid_character, party: p, character: owned_character.character, collection_character: owned_character)
+        create(:grid_summon, party: p, summon: owned_summon.summon, collection_summon: owned_summon)
+        create(:grid_artifact, grid_character: gc, artifact: owned_artifact.artifact, element: 'fire',
+                               collection_artifact: owned_artifact)
+      end
+    end
+
+    let(:copy) { described_class.includes(all_characters: :grid_artifact).find(party.id) }
+
+    def links(target)
+      {
+        source: target.collection_source_user_id,
+        weapons: target.all_weapons.sort_by(&:position).map { |w| [w.collection_weapon_id, w.orphaned] },
+        characters: target.all_characters.map(&:collection_character_id),
+        summons: target.all_summons.map { |s| [s.collection_summon_id, s.orphaned] },
+        artifacts: target.all_characters.filter_map(&:grid_artifact).map { |a| [a.collection_artifact_id, a.orphaned] }
+      }
+    end
+
+    it "keeps the user's own links and drops the rest, clearing their orphaned flag" do
+      copy.keep_only_collection_links_of!(owner)
+
+      expect(links(copy)).to eq(
+        source: owner.id,
+        weapons: [[owned_weapon.id, false], [nil, false]],
+        characters: [owned_character.id],
+        summons: [[owned_summon.id, false]],
+        artifacts: [[owned_artifact.id, false]]
+      )
+    end
+
+    it "drops every link for another user's copy" do
+      copy.keep_only_collection_links_of!(other)
+
+      expect(links(copy)).to eq(
+        source: nil,
+        weapons: [[nil, false], [foreign_weapon.id, true]],
+        characters: [nil],
+        summons: [[nil, false]],
+        artifacts: [[nil, false]]
+      )
+    end
+
+    it 'drops every link for a copy without a user' do
+      copy.keep_only_collection_links_of!(nil)
+
+      expect(links(copy)).to eq(
+        source: nil,
+        weapons: [[nil, false], [nil, false]],
+        characters: [nil],
+        summons: [[nil, false]],
+        artifacts: [[nil, false]]
+      )
+    end
+
+    it 'changes nothing in the database' do
+      copy.keep_only_collection_links_of!(nil)
+      expect(links(described_class.find(party.id))[:weapons]).to eq([[owned_weapon.id, false], [foreign_weapon.id, true]])
+    end
+  end
+
+  describe 'difficulty recompute' do
+    let!(:party) { create(:party) }
+
+    it 'enqueues a recompute when a team is created' do
+      expect { create(:party) }.to have_enqueued_job(PartyDifficulty::ScoreJob)
+    end
+
+    it 'enqueues a recompute when a scoring column changes' do
+      expect { party.update!(weapons_count: 3) }.to have_enqueued_job(PartyDifficulty::ScoreJob).with(party.id)
+      expect { party.update!(job: create(:job)) }.to have_enqueued_job(PartyDifficulty::ScoreJob).with(party.id)
+      expect { party.update!(ultimate_mastery_level: 2) }.to have_enqueued_job(PartyDifficulty::ScoreJob).with(party.id)
+    end
+
+    it 'skips the recompute for edits that do not affect the score' do
+      expect { party.update!(name: 'Renamed', description: nil) }.not_to have_enqueued_job(PartyDifficulty::ScoreJob)
+    end
+
+    it 'enqueues a recompute from mark_updated!' do
+      expect { party.mark_updated! }.to have_enqueued_job(PartyDifficulty::ScoreJob).with(party.id)
+    end
+
+    it 'lists the scoring columns' do
+      expect(described_class::SCORING_COLUMNS).to eq(
+        %w[weapons_count characters_count summons_count job_id accessory_id ultimate_mastery_level]
+      )
+    end
+  end
+
+  describe 'callback chains' do
+    def chain(name)
+      described_class.public_send(name).map { |callback| [callback.kind, callback.filter] }
+                     .select { |_kind, filter| filter.is_a?(Symbol) && !filter.start_with?('autosave_associated_records') }
+    end
+
+    it 'runs the commit hooks in their declared order' do
+      expect(chain(:_commit_callbacks)).to eq(
+        [%i[after update_element!], %i[after update_extra!], %i[after enqueue_difficulty_recompute_if_scoring_changed!]]
+      )
+    end
+
+    it 'runs the create hooks in their declared order' do
+      expect(chain(:_create_callbacks)).to eq(
+        [%i[after create_remapped_substitutions], %i[before set_shortcode], %i[before set_edit_key]]
+      )
+    end
+
+    it 'runs the custom validations after the association validations' do
+      validations = chain(:_validate_callbacks).map(&:last)
+      expect(validations.last(3)).to eq(%i[skills_are_unique guidebooks_are_unique validate_full_auto_skills])
+      expect(validations.index(:solomonis_consistency)).to be < validations.index(:validate_associated_records_for_remixes)
+    end
+  end
+
   # Debug block: print debug info if an example fails.
   after do |example|
     puts "\nDEBUG [Party Model Validations]: Failed example: #{example.full_description}" if example.exception
