@@ -95,7 +95,6 @@ Naming/PredicateMethod:
   AllowBangMethods: true
   AllowedMethods:
     - call
-    - compact_character_positions
     - invalid_format
     - parse_boolean
     - to_boolean

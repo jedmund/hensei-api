@@ -434,4 +434,12 @@ RSpec.describe GridCharacter, type: :model do
       end
     end
   end
+
+  describe '#apply_uncap' do
+    it 'takes the level as sent and the step as an integer' do
+      grid_character = build(:grid_character)
+      grid_character.apply_uncap(uncap_level: '5', transcendence_step: nil)
+      expect([grid_character.uncap_level, grid_character.transcendence_step]).to eq([5, 0])
+    end
+  end
 end

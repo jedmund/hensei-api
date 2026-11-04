@@ -231,27 +231,17 @@ module WikiImport
     def default_uncap(kind, record)
       case kind
       when :character then [[4, record.max_uncap_level].min, 0]
-      when :weapon then [untranscended_max(record), 0]
+      when :weapon then [[record.max_uncap_level, 5].min, 0]
       else max_uncap(kind, record)
       end
     end
 
     # [uncap_level, transcendence_step] at the item's max.
     def max_uncap(kind, record)
-      if kind == :character
-        uncap = record.max_uncap_level
-        return [uncap, uncap == 6 ? record.max_transcendence_stage : 0]
-      end
-      return [6, 5] if record.transcendence
+      uncap = record.max_uncap_level
+      return [uncap, uncap == 6 ? record.max_transcendence_stage : 0] if kind == :character
 
-      [untranscended_max(record), 0]
-    end
-
-    def untranscended_max(record)
-      return 5 if record.transcendence || record.ulb
-      return 4 if record.flb
-
-      3
+      [uncap, record.max_transcendence_step]
     end
 
     def character_awakening(entry)

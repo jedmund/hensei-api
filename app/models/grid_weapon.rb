@@ -124,6 +124,23 @@ class GridWeapon < ApplicationRecord
   end
 
   ##
+  # Sets an uncap from a request: the level is lowered to the weapon's max,
+  # raised to its extra prerequisite while it sits in an extra slot, and the
+  # transcendence step is capped at 5. Drops an imported skill level the new
+  # uncap doesn't describe (assign_with_skill_level).
+  #
+  # @param uncap_level [Integer, String, nil]
+  # @param transcendence_step [Integer, String, nil]
+  # @return [void]
+  def apply_uncap(uncap_level:, transcendence_step:)
+    level = [uncap_level.to_i, weapon.max_uncap_level].min
+    level = [level, weapon.extra_prerequisite].max if EXTRA_POSITIONS.include?(position) && weapon.extra_prerequisite.present?
+
+    assign_with_skill_level(uncap_level: level,
+                            transcendence_step: [transcendence_step.to_i, UncapTiers::MAX_TRANSCENDENCE_STEP].min)
+  end
+
+  ##
   # Returns the blueprint for rendering the grid weapon.
   #
   # @return [GridWeaponBlueprint] the blueprint class for grid weapons.

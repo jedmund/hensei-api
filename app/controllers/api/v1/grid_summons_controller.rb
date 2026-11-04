@@ -5,27 +5,17 @@ module Api
     ##
     # Controller handling API requests related to grid summons within a party.
     #
-    # This controller provides endpoints for creating, updating, resolving conflicts, and deleting grid summons.
-    # It ensures that the correct party and summons are found and that the current user (or edit key) is authorized.
+    # This controller provides endpoints for creating, updating, duplicating and quick-summoning
+    # grid summons. Moving, swapping, uncapping, removing and collection sync come from
+    # GridItemsController; GridPlacement keeps rows out of the main and friend summon slots.
     #
-    # @see Api::V1::ApiController for shared API behavior.
-    class GridSummonsController < Api::V1::ApiController
-      include IdResolvable
-      include CollectionSourceConcern
-      include PartyAuthorizationConcern
-      include SubstituteGridPreloading
-      include PartyFullLoading
-
+    # @see Api::V1::GridItemsController for the shared grid actions.
+    class GridSummonsController < GridItemsController
       attr_reader :party, :incoming_summon
 
-      before_action :find_grid_summon,
-                    only: %i[update update_uncap_level update_quick_summon update_position destroy sync sync_to_collection duplicate]
-      before_action :find_party,
-                    only: %i[create update update_uncap_level update_quick_summon update_position swap destroy sync
-                             sync_to_collection duplicate]
-      before_action :find_incoming_summon, only: :create
-      before_action :authorize_party_edit!,
-                    only: %i[create update update_uncap_level update_quick_summon update_position swap destroy sync sync_to_collection duplicate]
+      grid_item GridSummon, blueprint: GridSummonBlueprint, view: :nested,
+                            row_actions: %i[update_quick_summon duplicate],
+                            edit_actions: %i[update_quick_summon duplicate]
 
       ##
       # Creates a new grid summon.
@@ -46,8 +36,8 @@ module Api
         # Build a new grid summon using permitted parameters merged with party and summon IDs.
         # Set the uncap_level to the summon's maximum uncap level regardless of what the client sent.
         grid_summon = build_grid_summon.tap do |gs|
-          gs.uncap_level = max_uncap_level(gs.summon)
-          gs.transcendence_step = compute_max_transcendence_step(gs.summon)
+          gs.uncap_level = gs.summon.max_uncap_level
+          gs.transcendence_step = gs.summon.max_transcendence_step
         end
 
         # If the grid summon is valid (i.e. it passes all validations), then save it normally.
@@ -75,60 +65,19 @@ module Api
           return unless validate_collection_source!(@party, collection_item)
         end
 
-        @grid_summon.attributes = summon_params.merge(seal_state_params(:summon))
-
-        sync_flag_change = nil
-        sync_flag_change = ActiveModel::Type::Boolean.new.cast(summon_params[:notes_synced]) if summon_params.key?(:notes_synced)
-        description_in_payload = summon_params.key?(:description)
+        @grid_item.attributes = summon_params.merge(seal_state_params(:summon))
 
         ActiveRecord::Base.transaction do
-          raise ActiveRecord::Rollback unless @grid_summon.save
+          raise ActiveRecord::Rollback unless @grid_item.save
 
-          if sync_flag_change == true
-            NotesSync.enable_sync!(@grid_summon)
-          elsif sync_flag_change == false
-            NotesSync.disable_sync!(@grid_summon)
-          elsif description_in_payload
-            NotesSync.propagate_description!(@grid_summon)
-          end
+          apply_notes_sync!(summon_params)
         end
 
-        if @grid_summon.errors.empty?
-          @grid_summon.reload
-          render json: GridSummonBlueprint.render(@grid_summon, view: :nested, root: :grid_summon)
+        if @grid_item.errors.empty?
+          @grid_item.reload
+          render json: GridSummonBlueprint.render(@grid_item, view: :nested, root: :grid_summon)
         else
-          render_validation_error_response(@grid_summon)
-        end
-      end
-
-      ##
-      # Updates the uncap level and transcendence step of a grid summon.
-      #
-      # This action recalculates the maximum allowed uncap level based on the summon attributes
-      # and applies business logic to adjust the uncap level and transcendence step accordingly.
-      # On success, it renders the updated grid summon view; otherwise, it renders a validation error response.
-      #
-      # @return [void]
-      def update_uncap_level
-        summon = @grid_summon.summon
-        max_level = max_uncap_level(summon)
-
-        greater_than_max_uncap = summon_params[:uncap_level].to_i > max_level
-        can_be_transcended = summon.transcendence &&
-                             summon_params[:transcendence_step].present? &&
-                             summon_params[:transcendence_step].to_i.positive?
-
-        new_uncap_level = greater_than_max_uncap || can_be_transcended ? max_level : summon_params[:uncap_level]
-        new_transcendence_step = if summon.transcendence && summon_params[:transcendence_step].present?
-                                   [summon_params[:transcendence_step].to_i, 5].min
-                                 else
-                                   0
-                                 end
-
-        if @grid_summon.update(uncap_level: new_uncap_level, transcendence_step: new_transcendence_step)
-          render json: GridSummonBlueprint.render(@grid_summon, view: :uncap, root: :grid_summon)
-        else
-          render_validation_error_response(@grid_summon)
+          render_validation_error_response(@grid_item)
         end
       end
 
@@ -141,177 +90,23 @@ module Api
       #
       # @return [void]
       def update_quick_summon
-        return if [4, 5, 6].include?(@grid_summon.position)
+        return if [4, 5, 6].include?(@grid_item.position)
 
-        quick_summons = @grid_summon.party.summons.select(&:quick_summon)
+        quick_summons = @grid_item.party.summons.select(&:quick_summon)
 
         quick_summons.each do |summon|
           summon.update!(quick_summon: false)
         end
 
-        @grid_summon.update!(quick_summon: summon_params[:quick_summon])
-        return unless @grid_summon.persisted?
+        @grid_item.update!(quick_summon: summon_params[:quick_summon])
+        return unless @grid_item.persisted?
 
         @party.mark_updated!
 
-        quick_summons -= [@grid_summon]
-        summons = [@grid_summon] + quick_summons
+        quick_summons -= [@grid_item]
+        summons = [@grid_item] + quick_summons
 
         render json: GridSummonBlueprint.render(summons, view: :nested, root: :summons)
-      end
-
-      ##
-      # Updates the position of a GridSummon.
-      #
-      # Moves a grid summon to a new position, optionally changing its container.
-      # Validates that the target position is empty and within allowed bounds.
-      #
-      # @return [void]
-      def update_position
-        new_position = position_params[:position].to_i
-
-        # Validate position bounds (-1 main, 0-3 sub, 4-5 subaura, 6 friend)
-        unless valid_summon_position?(new_position)
-          return render_unprocessable_entity_response(
-            Api::V1::InvalidPositionError.new("Invalid position #{new_position} for summon")
-          )
-        end
-
-        # Check if position is restricted (main summon, friend)
-        if restricted_summon_position?(new_position)
-          return render_unprocessable_entity_response(
-            Api::V1::InvalidPositionError.new("Cannot move summon to restricted position #{new_position}")
-          )
-        end
-
-        # Check if target position is occupied
-        if GridSummon.exists?(party_id: @party.id, position: new_position)
-          return render_unprocessable_entity_response(
-            Api::V1::PositionOccupiedError.new("Position #{new_position} is already occupied")
-          )
-        end
-
-        @grid_summon.position = new_position
-
-        if @grid_summon.save
-          @party.mark_updated!
-          render json: {
-            party: PartyBlueprint.render_as_hash(load_full_party(@party.id), view: :full),
-            grid_summon: GridSummonBlueprint.render_as_hash(@grid_summon.reload, view: :nested)
-          }, status: :ok
-        else
-          render_validation_error_response(@grid_summon)
-        end
-      end
-
-      ##
-      # Swaps positions between two GridSummons.
-      #
-      # Exchanges the positions of two grid summons within the same party.
-      # Both summons must belong to the same party and not be in restricted positions.
-      #
-      # @return [void]
-      def swap
-        source_id = swap_params[:source_id]
-        target_id = swap_params[:target_id]
-
-        source = GridSummon.find_by(id: source_id, party_id: @party.id)
-        target = GridSummon.find_by(id: target_id, party_id: @party.id)
-
-        return render_not_found_response('grid_summon') unless source && target
-
-        # Check if either position is restricted
-        if restricted_summon_position?(source.position) || restricted_summon_position?(target.position)
-          return render_unprocessable_entity_response(
-            Api::V1::InvalidPositionError.new('Cannot swap summons in restricted positions')
-          )
-        end
-
-        # Perform the swap
-        ActiveRecord::Base.transaction do
-          temp_position = -999
-          source_pos = source.position
-          target_pos = target.position
-
-          source.update!(position: temp_position)
-          target.update!(position: source_pos)
-          source.update!(position: target_pos)
-        end
-
-        @party.mark_updated!
-
-        render json: {
-          party: PartyBlueprint.render_as_hash(load_full_party(@party.id), view: :full),
-          swapped: {
-            source: GridSummonBlueprint.render_as_hash(source.reload, view: :nested),
-            target: GridSummonBlueprint.render_as_hash(target.reload, view: :nested)
-          }
-        }, status: :ok
-      rescue ActiveRecord::RecordInvalid => e
-        render_validation_error_response(e.record)
-      end
-
-      #
-      # Destroys a grid summon.
-      #
-      # Finds the grid summon by ID. If not found, renders a not-found response.
-      # If the current user is not authorized to perform the deletion, renders an unauthorized response.
-      # On successful destruction, renders the destroyed grid summon view.
-      #
-      # @return [void]
-      def destroy
-        grid_summon = @grid_summon
-
-        if grid_summon.destroy
-          @party.mark_updated!
-          clear_collection_source_if_empty!(@party)
-          render json: GridSummonBlueprint.render(grid_summon, view: :destroyed), status: :ok
-        else
-          render_unprocessable_entity_response(
-            Api::V1::GranblueError.new(grid_summon.errors.full_messages.join(', '))
-          )
-        end
-      end
-
-      ##
-      # Syncs a grid summon from its linked collection summon.
-      #
-      # @return [void]
-      def sync
-        unless @grid_summon.collection_summon.present?
-          return render_unprocessable_entity_response(
-            Api::V1::GranblueError.new('No collection summon linked')
-          )
-        end
-
-        return unless validate_collection_access!(@grid_summon.collection_summon)
-
-        @grid_summon.sync_from_collection!(fields: sync_fields_param)
-        render json: GridSummonBlueprint.render(@grid_summon.reload,
-                                                root: :grid_summon,
-                                                view: :nested)
-      end
-
-      ##
-      # Syncs a grid summon to its linked collection summon.
-      #
-      # @return [void]
-      def sync_to_collection
-        unless @grid_summon.collection_summon.present?
-          return render_unprocessable_entity_response(
-            Api::V1::GranblueError.new('No collection summon linked')
-          )
-        end
-
-        unless current_user.present? && @party.collection_source_user_id == current_user.id &&
-               @grid_summon.collection_summon.user_id == current_user.id
-          return render_unauthorized_response
-        end
-
-        @grid_summon.sync_to_collection!(fields: sync_fields_param)
-        render json: GridSummonBlueprint.render(@grid_summon.reload,
-                                                root: :grid_summon,
-                                                view: :nested)
       end
 
       ##
@@ -324,7 +119,7 @@ module Api
       # @return [void]
       def duplicate
         # Block limited summons
-        if @grid_summon.summon.limit
+        if @grid_item.summon.limit
           return render_unprocessable_entity_response(
             Api::V1::GranblueError.new('Limited summons cannot be duplicated')
           )
@@ -348,10 +143,10 @@ module Api
 
         new_summon = GridSummon.new(
           party_id: @party.id,
-          summon_id: @grid_summon.summon_id,
+          summon_id: @grid_item.summon_id,
           position: position,
-          uncap_level: @grid_summon.uncap_level,
-          transcendence_step: @grid_summon.transcendence_step,
+          uncap_level: @grid_item.uncap_level,
+          transcendence_step: @grid_item.transcendence_step,
           collection_summon_id: nil,
           orphaned: false,
           main: false,
@@ -391,7 +186,7 @@ module Api
         # summon already in a synced group.
         NotesSync.adopt_for_new_item!(summon)
         summon.reload
-        output = render_grid_summon_view(summon)
+        output = render_replaced_view(summon)
         render json: output, status: :created
       end
 
@@ -413,64 +208,11 @@ module Api
 
         return unless conflict_summon.save
 
-        output = render_grid_summon_view(conflict_summon, old_position)
+        output = render_replaced_view(conflict_summon, old_position)
         render json: output
       end
 
       private
-
-      ##
-      # Pulls the optional `fields` array (camelCase keys) from the request body
-      # used by per-section sync. Returns nil when omitted so the model falls
-      # back to syncing every tracked column.
-      def sync_fields_param
-        raw = params[:fields]
-        return nil if raw.blank?
-
-        Array(raw).map(&:to_s).reject(&:blank?)
-      end
-
-      ##
-      # Finds the party based on the provided party_id parameter.
-      #
-      # Sets the @party instance variable and renders an unauthorized response if the current
-      # user is not the owner of the party.
-      #
-      # @return [void]
-
-      ##
-      # Finds and sets the party based on parameters.
-      #
-      # Renders an unauthorized response if the current user is not the owner.
-      #
-      # @return [void]
-      def find_party
-        requested_party_id = params.dig(:summon, :party_id) || params[:party_id]
-        @party = if @grid_summon
-                   # The party always comes from the row itself; a mismatched
-                   # party id in the request is treated as not found.
-                   @grid_summon.party if requested_party_id.blank? || requested_party_id.to_s == @grid_summon.party_id.to_s
-                 else
-                   Party.find_by(id: requested_party_id)
-                 end
-        render_not_found_response('party') unless @party
-      end
-
-      ##
-      # Finds and sets the GridSummon based on the provided parameters.
-      #
-      # Searches for a grid summon using various parameter keys and renders a not found response if it is absent.
-      #
-      # @return [void]
-      def find_grid_summon
-        grid_summon_id = params[:id] || params.dig(:summon, :id)
-        @grid_summon = GridSummon
-                       .includes(*GridSummon::NESTED_BLUEPRINT_PRELOADS, :substitutions)
-                       .find_by(id: grid_summon_id)
-        return render_not_found_response('grid_summon') unless @grid_summon
-
-        preload_substitute_grids!([@grid_summon])
-      end
 
       ##
       # Finds the incoming summon based on the provided parameters.
@@ -478,7 +220,7 @@ module Api
       # Sets the @incoming_summon instance variable.
       #
       # @return [void]
-      def find_incoming_summon
+      def find_incoming_item
         @incoming_summon = find_by_any_id(Summon, summon_params[:summon_id])
       end
 
@@ -506,90 +248,13 @@ module Api
       end
 
       ##
-      # Renders the grid summon view with additional metadata.
-      #
-      # @param grid_summon [GridSummon] The grid summon instance to render.
-      # @param conflict_position [Integer, nil] The position of a conflicting summon, if applicable.
-      # @return [String] The rendered grid summon view as JSON.
-      def render_grid_summon_view(grid_summon, conflict_position = nil)
-        GridSummonBlueprint.render(grid_summon,
-                                   view: :full,
-                                   root: :grid_summon,
-                                   meta: { replaced: conflict_position })
-      end
-
-      ##
-      # Determines the maximum uncap level for a given summon.
-      #
-      # The maximum uncap level is determined based on the attributes of the summon:
-      # - Returns 4 if the summon has FLB but not ULB and is not transcended.
-      # - Returns 5 if the summon has ULB and is not transcended.
-      # - Returns 6 if the summon has transcendence.
-      # - Otherwise, returns 3.
-      #
-      # @param summon [Summon] The summon for which to determine the maximum uncap level.
-      # @return [Integer] The maximum uncap level.
-      def compute_max_transcendence_step(summon)
-        summon.transcendence ? 5 : 0
-      end
-
-      def max_uncap_level(summon)
-        if summon.flb && !summon.ulb && !summon.transcendence
-          4
-        elsif summon.ulb && !summon.transcendence
-          5
-        elsif summon.transcendence
-          6
-        else
-          3
-        end
-      end
-
-      ##
-      # Validates if a summon position is valid.
-      #
-      # @param position [Integer] the position to validate.
-      # @return [Boolean] true if the position is valid; false otherwise.
-      def valid_summon_position?(position)
-        # Main (-1), sub slots (0-3), subaura (4-5), friend (6)
-        position == -1 || (0..6).cover?(position)
-      end
-
-      ##
-      # Checks if a summon position is restricted (cannot be drag-drop target).
-      #
-      # @param position [Integer] the position to check.
-      # @return [Boolean] true if the position is restricted; false otherwise.
-      def restricted_summon_position?(position)
-        # Main summon (-1) and friend summon (6) are restricted
-        [-1, 6].include?(position)
-      end
-
-      ##
       # Defines and permits the whitelisted parameters for a grid summon.
       #
       # @return [ActionController::Parameters] The permitted parameters.
       def summon_params
-        permitted = params.require(:summon).permit(:id, :summon_id, :collection_summon_id,
-                                                   :position, :main, :friend, :quick_summon,
-                                                   :uncap_level, :transcendence_step, :notes_synced)
-        permit_description(permitted, params[:summon])
-      end
-
-      ##
-      # Specifies and permits the position update parameters.
-      #
-      # @return [ActionController::Parameters] the permitted parameters.
-      def position_params
-        params.permit(:position, :container)
-      end
-
-      ##
-      # Specifies and permits the swap parameters.
-      #
-      # @return [ActionController::Parameters] the permitted parameters.
-      def swap_params
-        params.permit(:source_id, :target_id)
+        grid_item_params(:id, :summon_id, :collection_summon_id,
+                         :position, :main, :friend, :quick_summon,
+                         :uncap_level, :transcendence_step, :notes_synced)
       end
 
       ##

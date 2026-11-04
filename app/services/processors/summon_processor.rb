@@ -183,28 +183,11 @@ module Processors
                        main: false,
                        friend: true,
                        quick_summon: false,
-                       uncap_level: determine_uncap_level(summon),
-                       transcendence_step: summon.transcendence ? 5 : 0,
+                       uncap_level: summon.max_uncap_level,
+                       transcendence_step: summon.max_transcendence_step,
                        created_at: Time.now,
                        updated_at: Time.now
                      })
-    end
-
-    ##
-    # Determines the numeric uncap level of a given Summon
-    #
-    # @param summon [Summon] the canonical summon
-    # @return [Integer]
-    def determine_uncap_level(summon)
-      if summon.transcendence
-        6
-      elsif summon.ulb
-        5
-      elsif summon.flb
-        4
-      else
-        3
-      end
     end
 
     ##
