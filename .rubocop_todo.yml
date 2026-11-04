@@ -85,7 +85,6 @@ Layout/BeginEndAlignment:
 # This cop supports safe autocorrection (--autocorrect).
 Layout/ElseAlignment:
   Exclude:
-    - 'app/controllers/api/v1/search_controller.rb'
     - 'app/controllers/concerns/batch_previewable.rb'
     - 'lib/granblue/importers/base_importer.rb'
     - 'lib/post_deployment/search_indexer.rb'
@@ -124,7 +123,6 @@ Layout/IndentationConsistency:
 # SupportedStylesAlignWith: start_of_line, relative_to_receiver
 Layout/IndentationWidth:
   Exclude:
-    - 'app/controllers/api/v1/search_controller.rb'
     - 'app/controllers/concerns/batch_previewable.rb'
     - 'app/services/processors/character_processor.rb'
     - 'app/services/processors/summon_processor.rb'
@@ -180,7 +178,6 @@ Metrics/AbcSize:
     - 'app/controllers/api/v1/jobs_controller.rb'
     - 'app/controllers/api/v1/parties_controller.rb'
     - 'app/controllers/api/v1/playlists_controller.rb'
-    - 'app/controllers/api/v1/search_controller.rb'
     - 'app/controllers/api/v1/substitutions_controller.rb'
     - 'app/controllers/api/v1/users_controller.rb'
     - 'app/controllers/api/v1/weapon_keys_controller.rb'
@@ -249,7 +246,6 @@ Metrics/AbcSize:
 Metrics/ClassLength:
   Exclude:
     - 'app/controllers/api/v1/parties_controller.rb'
-    - 'app/controllers/api/v1/search_controller.rb'
     - 'app/controllers/concerns/admin_collection/query.rb'
     - 'app/models/grid_character.rb'
     - 'app/models/grid_weapon.rb'
@@ -276,7 +272,6 @@ Metrics/CyclomaticComplexity:
     - 'app/controllers/api/v1/parties_controller.rb'
     - 'app/controllers/api/v1/party_solomonis_controller.rb'
     - 'app/controllers/api/v1/playlists_controller.rb'
-    - 'app/controllers/api/v1/search_controller.rb'
     - 'app/controllers/api/v1/substitutions_controller.rb'
     - 'app/controllers/api/v1/users_controller.rb'
     - 'app/controllers/api/v1/weapon_skill_families_controller.rb'
@@ -335,7 +330,6 @@ Metrics/CyclomaticComplexity:
 Metrics/MethodLength:
   Exclude:
     - 'app/controllers/api/v1/parties_controller.rb'
-    - 'app/controllers/api/v1/search_controller.rb'
     - 'app/controllers/api/v1/substitutions_controller.rb'
     - 'app/controllers/concerns/batch_previewable.rb'
     - 'app/services/dataminer.rb'
@@ -376,7 +370,6 @@ Metrics/PerceivedComplexity:
     - 'app/controllers/api/v1/parties_controller.rb'
     - 'app/controllers/api/v1/party_solomonis_controller.rb'
     - 'app/controllers/api/v1/playlists_controller.rb'
-    - 'app/controllers/api/v1/search_controller.rb'
     - 'app/controllers/api/v1/substitutions_controller.rb'
     - 'app/controllers/api/v1/users_controller.rb'
     - 'app/controllers/api/v1/weapon_skill_families_controller.rb'
@@ -1142,7 +1135,6 @@ Rails/Blank:
     - 'app/controllers/api/v1/grid_artifacts_controller.rb'
     - 'app/controllers/api/v1/job_skills_controller.rb'
     - 'app/controllers/api/v1/parties_controller.rb'
-    - 'app/controllers/api/v1/search_controller.rb'
     - 'app/controllers/api/v1/summons_controller.rb'
     - 'app/controllers/api/v1/weapons_controller.rb'
     - 'app/controllers/concerns/collection_source_concern.rb'
@@ -1476,7 +1468,6 @@ Rails/RakeEnvironment:
 # AllowedReceivers: ActionMailer::Preview, ActiveSupport::TimeZone
 Rails/RedundantActiveRecordAllMethod:
   Exclude:
-    - 'app/controllers/api/v1/search_controller.rb'
     - 'lib/granblue/parsers/summon_parser.rb'
     - 'lib/granblue/parsers/weapon_parser.rb'
     - 'lib/tasks/export_job.rake'
@@ -1538,27 +1529,17 @@ Rails/RootPathnameMethods:
     - 'spec/services/processors/summon_processor_spec.rb'
     - 'spec/services/sources/wiki_status_list_spec.rb'
 
-# Offense count: 80
+# Offense count: 46
 # Configuration parameters: ForbiddenMethods, AllowedMethods.
 # ForbiddenMethods: decrement!, decrement_counter, increment!, increment_counter, insert, insert!, insert_all, insert_all!, toggle!, touch, touch_all, update_all, update_attribute, update_column, update_columns, update_counters, upsert, upsert_all
 Rails/SkipsModelValidations:
   Exclude:
     - 'app/controllers/api/v1/api_controller.rb'
     - 'app/controllers/api/v1/awakenings_controller.rb'
-    - 'app/controllers/api/v1/parties_controller.rb'
     - 'app/controllers/api/v1/social_auth_controller.rb'
-    - 'app/controllers/api/v1/substitutions_controller.rb'
     - 'app/controllers/concerns/editor_image_upload.rb'
-    - 'app/jobs/party_views/flush_job.rb'
-    - 'app/models/collection_artifact.rb'
-    - 'app/models/collection_character.rb'
-    - 'app/models/collection_summon.rb'
-    - 'app/models/collection_weapon.rb'
-    - 'app/models/concerns/has_sources.rb'
-    - 'app/models/concerns/solomonis_party.rb'
     - 'app/models/concerns/solomonis_party_seals.rb'
     - 'app/models/difficulty_config.rb'
-    - 'app/models/extension_auth_code.rb'
     - 'app/models/grid_character.rb'
     - 'app/models/grid_summon.rb'
     - 'app/models/grid_weapon.rb'
@@ -1567,28 +1548,19 @@ Rails/SkipsModelValidations:
     - 'app/models/source.rb'
     - 'app/models/user.rb'
     - 'app/models/weapon.rb'
-    - 'app/services/account_deletion/purge.rb'
     - 'app/services/account_deletion/scheduler.rb'
     - 'app/services/artifact_import_service.rb'
-    - 'app/services/gacha_simulation/banner_import.rb'
     - 'app/services/granblue/curation_snapshot/ops.rb'
     - 'app/services/granblue/golden_fixture.rb'
     - 'app/services/granblue/weapon_wiki_backfill.rb'
     - 'app/services/notes_sync.rb'
     - 'app/services/party_difficulty/persister.rb'
-    - 'app/services/party_participation/persister.rb'
     - 'lib/character_skills/build/runner.rb'
-    - 'lib/collection_artifacts/raw_data_clearer.rb'
-    - 'lib/granblue/banner_catalogue_reconciliation.rb'
-    - 'lib/granblue/classic_lower_catalogue.rb'
     - 'lib/summon_auras/build/runner.rb'
-    - 'lib/summon_auras/build/writer.rb'
     - 'lib/tasks/deploy.rake'
     - 'lib/tasks/golden_party.rake'
     - 'lib/tasks/mentions.rake'
     - 'lib/weapon_skills/build/runner.rb'
-    - 'lib/weapon_skills/source_store/fetcher.rb'
-    - 'lib/weapon_skills/source_store/transfer.rb'
     - 'lib/weapon_skills/version_text/backfill.rb'
 
 # Offense count: 2
@@ -1751,7 +1723,6 @@ Style/CollectionQuerying:
 Style/ComparableClamp:
   Exclude:
     - 'app/controllers/api/v1/api_controller.rb'
-    - 'app/controllers/api/v1/search_controller.rb'
 
 # Offense count: 2
 # This cop supports unsafe autocorrection (--autocorrect-all).
