@@ -227,6 +227,46 @@ RSpec.describe GridDamage::Effects do
                                  per_copy_cap: 46))).to eq(46.0)
   end
 
+  it 'reads the flat kinds, including the legacy HP placeholders, as their value' do
+    %w[flat ally_hp_scaled current_hp_scaled].each do |kind|
+      expect(val(effect_struct.new(scaling_kind: kind, value: '12.5'))).to eq(12.5)
+    end
+    expect(val(effect_struct.new(scaling_kind: 'flat'))).to be_nil
+  end
+
+  it 'gates bonus_dmg on its condition like conditional_flat' do
+    condition = { 'type' => 'foe_debuff_count', 'gte' => 3 }
+    effect = effect_struct.new(scaling_kind: 'bonus_dmg', value: 20, condition: condition)
+
+    expect(val(effect, state: { debuff_count: 3 })).to eq(20.0)
+    expect(val(effect, state: { debuff_count: 2 })).to be_nil
+    expect(val(effect_struct.new(scaling_kind: 'bonus_dmg', value: 20, condition: {}))).to eq(20.0)
+  end
+
+  it 'scales persistence supplements with current HP' do
+    effect = effect_struct.new(scaling_kind: 'persistence_supp', value: 30_000)
+
+    expect(val(effect)).to eq(30_000.0)
+    expect(val(effect, state: { hp_percent: 50 })).to eq(20_000.0)
+    expect(val(effect, state: { hp_percent: 1 })).to eq(30_000.0 * 1.02 / 3.0)
+    expect(val(effect, state: { hp_percent: 0 })).to eq(10_000.0)
+  end
+
+  it 'scales hp_linear_cutoff boosts linearly with current HP' do
+    effect = effect_struct.new(scaling_kind: 'hp_linear_cutoff', value: 120)
+
+    expect(val(effect)).to eq(120.0)
+    expect(val(effect, state: { hp_percent: 25 })).to eq(30.0)
+    expect(val(effect, state: { hp_percent: 5 })).to eq(6.0)
+    expect(val(effect, state: { hp_percent: 1 })).to eq(120.0 * GridDamage::Scaling::ONE_HP_PERCENT / 100.0)
+  end
+
+  it 'gives documentation rows and unknown kinds no value' do
+    expect(val(effect_struct.new(scaling_kind: 'documentation', value: 10))).to be_nil
+    expect(val(effect_struct.new(scaling_kind: 'mystery', value: 10))).to be_nil
+    expect(val(effect_struct.new(scaling_kind: nil, value: 10))).to be_nil
+  end
+
   it 'rejects legacy count_basis values' do
     effect = effect_struct.new(scaling_kind: 'per_grid_count', value: 4, count_basis: 'weapon_type')
 

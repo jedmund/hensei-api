@@ -89,6 +89,72 @@ RSpec.describe GridDamage::Conditions do
     expect(described_class.met?({ 'type' => 'turn_lte', 'lte' => 8 }, state: {})).to be(true)
   end
 
+  it "gates transcendence_step on the copy's transcendence" do
+    condition = { 'type' => 'transcendence_step', 'gte' => 3 }
+
+    expect(described_class.met?(condition, grid_weapon: double(transcendence_step: 3))).to be(true)
+    expect(described_class.met?(condition, grid_weapon: double(transcendence_step: 2))).to be(false)
+    expect(described_class.met?(condition)).to be(false).or(be_nil)
+  end
+
+  it "gates copy_skill_level on the copy's skill level" do
+    condition = { 'type' => 'copy_skill_level', 'gte' => 20 }
+    copy = double(skill_level: nil, uncap_level: 5, transcendence_step: 0)
+
+    expect(described_class.met?(condition, weapon: weapon, grid_weapon: copy)).to be(true)
+    expect(described_class.met?(condition, weapon: weapon, grid_weapon: double(skill_level: 15))).to be(false)
+    expect(described_class.met?(condition, weapon: weapon)).to be(false).or(be_nil)
+    expect(described_class.met?(condition, grid_weapon: copy)).to be(false).or(be_nil)
+  end
+
+  it "gates weapon_specialty on the MC's specialties" do
+    condition = { 'type' => 'weapon_specialty' }
+    staff = double(proficiency: GranblueEnums::PROFICIENCY_ENUM[:staff])
+
+    expect(described_class.met?(condition, weapon: staff, composition: { mc_specialties: %w[sabre staff] })).to be(true)
+    expect(described_class.met?(condition, weapon: staff, composition: { mc_specialties: %w[sabre] })).to be(false)
+    expect(described_class.met?(condition, weapon: staff)).to be(false)
+    expect(described_class.met?(condition, composition: { mc_specialties: %w[sabre] })).to be(false)
+  end
+
+  it 'requires every equipped weapon to be different for all_weapons_unique' do
+    condition = { 'type' => 'all_weapons_unique' }
+
+    expect(described_class.met?(condition, composition: { id_counts: { 'W1' => 1, 'W2' => 1 } })).to be(true)
+    expect(described_class.met?(condition, composition: composition)).to be(false)
+    expect(described_class.met?(condition, composition: { id_counts: {} })).to be(false)
+    expect(described_class.met?(condition)).to be(false)
+  end
+
+  it 'treats unknown and invalid count conditions as not met' do
+    expect(described_class.met?({ 'type' => 'mystery', 'gte' => 1 }, state: state, composition: composition)).to be(false)
+    expect(described_class.met?({ 'type' => 'count_basis_gte', 'basis' => 'weapon_type', 'gte' => 1 },
+                                composition: composition)).to be(false)
+    expect(described_class.met?({ 'type' => 'count_basis_gte', 'basis' => 'distinct_weapon_types', 'gte' => 0 },
+                                composition: composition)).to be(false)
+  end
+
+  it 'treats a missing weapon as zero for per-weapon conditions' do
+    expect(described_class.met?({ 'type' => 'skill_level', 'gte' => 1 })).to be(false)
+    expect(described_class.met?({ 'type' => 'weapon_level', 'gte' => 0 })).to be(true)
+    expect(described_class.met?({ 'type' => 'same_id_count', 'gte' => 1 }, composition: composition)).to be(false)
+    expect(described_class.met?({ 'type' => 'skill_type_count', 'gte' => 16 }, composition: composition)).to be(false)
+  end
+
+  it 'matches the foe element and status exactly' do
+    expect(described_class.met?({ 'type' => 'foe_element', 'is' => 'fire' }, state: state)).to be(false)
+    expect(described_class.met?({ 'type' => 'foe_element', 'is' => nil })).to be(true)
+    expect(described_class.met?({ 'type' => 'foe_status', 'status' => 'Glaciate' }, state: state)).to be(false)
+    expect(described_class.met?({ 'type' => 'arcarum', 'eq' => false }, state: state)).to be(true)
+  end
+
+  it 'reads boost_level from the highest of the optimus, omega and taboo enhancements' do
+    cond = { 'type' => 'boost_level', 'gte' => 150 }
+
+    expect(described_class.met?(cond, state: { enhancements: { taboo: 150, optimus: nil } })).to be(true)
+    expect(described_class.met?(cond, state: { enhancements: { omega: '149.5' } })).to be(false)
+  end
+
   it 'leaves critical_capped to the panel and flags it as crit-gated' do
     condition = { 'type' => 'critical_capped' }
 
