@@ -291,7 +291,7 @@ class GridCharacter < ApplicationRecord
   # @param fields [Array<String>, nil] optional list of camelCase keys to sync
   # @return [Boolean] true if sync was performed, false if no collection link
   def sync_from_collection!(fields: nil)
-    return false unless collection_character.present?
+    return false if collection_character.blank?
 
     columns = sync_columns_for(fields)
     return true if columns.empty?
@@ -308,7 +308,7 @@ class GridCharacter < ApplicationRecord
   # @param fields [Array<String>, nil] optional list of camelCase keys to sync
   # @return [Boolean] true if sync was performed, false if no collection link
   def sync_to_collection!(fields: nil)
-    return false unless collection_character.present?
+    return false if collection_character.blank?
 
     columns = sync_columns_for(fields)
     return true if columns.empty?
@@ -331,7 +331,7 @@ class GridCharacter < ApplicationRecord
   # mark exactly the sections/rows that drifted. Ring drift uses dotted keys
   # (overMastery.0..3) so the corresponding ring rows can highlight individually.
   def out_of_sync_fields
-    return [] unless collection_character.present?
+    return [] if collection_character.blank?
 
     fields = []
     fields << 'uncapLevel' if uncap_level != collection_character.uncap_level

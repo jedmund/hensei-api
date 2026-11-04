@@ -114,7 +114,7 @@ class GridSummon < ApplicationRecord
   # @param fields [Array<String>, nil] optional list of camelCase keys to sync
   # @return [Boolean] true if sync was performed, false if no collection link
   def sync_from_collection!(fields: nil)
-    return false unless collection_summon.present?
+    return false if collection_summon.blank?
 
     columns = sync_columns_for(fields)
     return true if columns.empty?
@@ -129,7 +129,7 @@ class GridSummon < ApplicationRecord
   # @param fields [Array<String>, nil] optional list of camelCase keys to sync
   # @return [Boolean] true if sync was performed, false if no collection link
   def sync_to_collection!(fields: nil)
-    return false unless collection_summon.present?
+    return false if collection_summon.blank?
 
     columns = sync_columns_for(fields)
     return true if columns.empty?
@@ -150,7 +150,7 @@ class GridSummon < ApplicationRecord
   # Returns the list of fields that differ from the linked collection summon.
   # Uses camelCase keys matching the frontend's grid item shape.
   def out_of_sync_fields
-    return [] unless collection_summon.present?
+    return [] if collection_summon.blank?
 
     fields = []
     fields << 'uncapLevel' if uncap_level != collection_summon.uncap_level

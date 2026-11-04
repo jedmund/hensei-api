@@ -198,7 +198,7 @@ class User < ApplicationRecord
 
   # Check if user is in same crew as another user
   def in_same_crew_as?(other_user)
-    return false unless other_user.present?
+    return false if other_user.blank?
     return false unless crew.present? && other_user.crew.present?
 
     crew.id == other_user.crew.id

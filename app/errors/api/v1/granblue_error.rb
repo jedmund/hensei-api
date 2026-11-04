@@ -18,7 +18,7 @@ module Api
       end
 
       def message
-        @data.present? ? @data : 'Something went wrong'
+        @data.presence || 'Something went wrong'
       end
 
       def to_hash

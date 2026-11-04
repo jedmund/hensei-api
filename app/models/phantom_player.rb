@@ -75,7 +75,7 @@ class PhantomPlayer < ApplicationRecord
   end
 
   def claimed_by_must_be_crew_member
-    return unless claimed_by.present?
+    return if claimed_by.blank?
     return if claimed_by.crew == crew
 
     errors.add(:claimed_by, 'must be a member of this crew')
@@ -88,7 +88,7 @@ class PhantomPlayer < ApplicationRecord
   end
 
   def transfer_to_membership!
-    return unless claimed_by.present?
+    return if claimed_by.blank?
 
     membership = claimed_by.active_crew_membership
     return unless membership

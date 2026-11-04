@@ -70,7 +70,7 @@ module Granblue
 
         # An aura can carry several clauses ("…HP.<br />…Elemental ATK / …"); classify
         # each and keep the most grid-relevant (frame > elemental > … > other).
-        clauses = clean.split(%r{<br\s*/?>|\s/\s|\.\s+(?=[A-Z])}).map(&:strip).reject(&:blank?)
+        clauses = clean.split(%r{<br\s*/?>|\s/\s|\.\s+(?=[A-Z])}).map(&:strip).compact_blank
         clauses = [clean] if clauses.empty?
         best = clauses.map { |c| parse_clause(c, series: series, summon_element: summon_element) }
                       .min_by { |pc| TARGET_PRIORITY.index(pc[:target]) }

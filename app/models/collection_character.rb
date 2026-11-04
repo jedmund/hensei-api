@@ -88,7 +88,7 @@ class CollectionCharacter < ApplicationRecord
   end
 
   def validate_awakening_compatibility
-    return unless awakening.present?
+    return if awakening.blank?
 
     return if awakening.object_type == 'Character'
 

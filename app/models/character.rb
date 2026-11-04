@@ -215,7 +215,7 @@ class Character < ApplicationRecord
   def series_names
     records = ordered_series_records
     return records.map(&:name_en) if records.any?
-    return [] unless series.present?
+    return [] if series.blank?
 
     # Legacy fallback for rows that haven't been migrated to the lookup table.
     series.filter_map { |s| GranblueEnums::CHARACTER_SERIES.key(s)&.to_s }

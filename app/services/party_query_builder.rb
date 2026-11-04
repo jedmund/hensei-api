@@ -76,7 +76,7 @@ class PartyQueryBuilder
   # `label=<slug>`: parties whose label is that sticker (see
   # PartyStickerSummary.labels_for).
   def apply_label_filter(query)
-    return query unless @params[:label].present?
+    return query if @params[:label].blank?
 
     query.where(id: PartyStickerSummary.labelled_party_ids(@params[:label]))
   end
@@ -118,9 +118,9 @@ class PartyQueryBuilder
   # Filters by one or more difficulty tiers. Accepts a comma-separated list of
   # UUIDs or slugs in the `difficulty` param.
   def apply_difficulty_filter(query)
-    return query unless @params[:difficulty].present?
+    return query if @params[:difficulty].blank?
 
-    raw = @params[:difficulty].to_s.split(',').map(&:strip).reject(&:blank?)
+    raw = @params[:difficulty].to_s.split(',').map(&:strip).compact_blank
     return query if raw.empty?
 
     uuids, slugs = raw.partition { |v| v.match?(UUID_REGEX) }
@@ -177,14 +177,14 @@ class PartyQueryBuilder
       auto_guard: build_option(@params[:auto_guard]),
       charge_attack: build_option(@params[:charge_attack]),
       solo: build_option(@params[:solo]),
-      boost_side: (@params[:boost_side] if @params[:boost_side].present?)
+      boost_side: @params[:boost_side].presence
     }.compact
   end
 
   # Parses the element parameter, supporting both single values and
   # comma-separated lists (e.g. "1,3" for multiple elements).
   def build_element_filter
-    return nil unless @params[:element].present?
+    return nil if @params[:element].blank?
 
     values = @params[:element].to_s.split(',').map(&:to_i)
     values.length == 1 ? values.first : values
@@ -197,7 +197,7 @@ class PartyQueryBuilder
 
   def resolve_raid_id
     value = @params[:raid]
-    return nil unless value.present?
+    return nil if value.blank?
     return value if value.match?(UUID_REGEX)
 
     Raid.find_by(slug: value)&.id
@@ -206,7 +206,7 @@ class PartyQueryBuilder
   # Returns a date range based on the 'recency' parameter.
   # If recency is not provided, returns nil so no date filter is applied.
   def build_date_range
-    return nil unless @params[:recency].present?
+    return nil if @params[:recency].blank?
 
     start_time = DateTime.current - @params[:recency].to_i.seconds
     start_time.beginning_of_day..DateTime.current
@@ -273,7 +273,7 @@ class PartyQueryBuilder
 
   # Filters to parties that have a video_url set.
   def apply_has_video_filter(query)
-    return query unless @params[:has_video].present?
+    return query if @params[:has_video].blank?
 
     query.where.not(video_url: [nil, ''])
   end
@@ -281,7 +281,7 @@ class PartyQueryBuilder
   # Filters by boost_mod. When filtering for 'unboosted', also includes
   # parties with NULL boost_mod (incomplete summon setups).
   def apply_boost_mod_filter(query)
-    return query unless @params[:boost_mod].present?
+    return query if @params[:boost_mod].blank?
 
     if @params[:boost_mod] == 'unboosted'
       query.where(boost_mod: ['unboosted', nil])

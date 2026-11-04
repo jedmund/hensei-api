@@ -102,7 +102,7 @@ class Weapon < ApplicationRecord
   end
 
   def compatible_with_key?(key)
-    return false unless weapon_series.present?
+    return false if weapon_series.blank?
     return false unless effective_has_weapon_keys
 
     key.weapon_series.include?(weapon_series)
@@ -110,14 +110,14 @@ class Weapon < ApplicationRecord
 
   # Returns whether the weapon is included in the Draconic or Dark Opus series
   def opus_or_draconic?
-    return false unless weapon_series.present?
+    return false if weapon_series.blank?
 
     [WeaponSeries::DARK_OPUS, WeaponSeries::DRACONIC].include?(weapon_series.slug)
   end
 
   # Returns whether the weapon belongs to the Draconic Weapon series or the Draconic Weapon Providence series
   def draconic_or_providence?
-    return false unless weapon_series.present?
+    return false if weapon_series.blank?
 
     [WeaponSeries::DRACONIC, WeaponSeries::DRACONIC_PROVIDENCE].include?(weapon_series.slug)
   end
@@ -199,13 +199,13 @@ class Weapon < ApplicationRecord
 
   # Forge chain methods
   def forged_from_weapon
-    return nil unless forged_from.present?
+    return nil if forged_from.blank?
 
     Weapon.find_by(granblue_id: forged_from)
   end
 
   def forge_chain(same_element: true)
-    return [] unless forge_chain_id.present?
+    return [] if forge_chain_id.blank?
 
     chain = Weapon.in_forge_chain(forge_chain_id)
     same_element ? chain.where(element: element) : chain
@@ -293,7 +293,7 @@ class Weapon < ApplicationRecord
   validate :no_circular_forge_chain
 
   def no_circular_forge_chain
-    return unless forged_from.present?
+    return if forged_from.blank?
 
     visited = Set.new([granblue_id])
     current = forged_from
@@ -344,7 +344,7 @@ class Weapon < ApplicationRecord
         chain.unshift(current)
         visited.add(current.granblue_id)
 
-        break unless current.forged_from.present?
+        break if current.forged_from.blank?
 
           current = Weapon.find_by(granblue_id: current.forged_from)
 

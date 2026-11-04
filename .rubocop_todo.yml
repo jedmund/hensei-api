@@ -1113,9 +1113,6 @@ Rails/ArelStar:
 # Configuration parameters: NilOrEmpty, NotPresent, UnlessPresent.
 Rails/Blank:
   Exclude:
-    - 'app/blueprints/api/v1/party_blueprint.rb'
-    - 'app/blueprints/api/v1/summon_blueprint.rb'
-    - 'app/blueprints/api/v1/weapon_blueprint.rb'
     - 'app/controllers/api/v1/api_controller.rb'
     - 'app/controllers/api/v1/characters_controller.rb'
     - 'app/controllers/api/v1/collection_artifacts_controller.rb'
@@ -1124,33 +1121,6 @@ Rails/Blank:
     - 'app/controllers/api/v1/summons_controller.rb'
     - 'app/controllers/api/v1/weapons_controller.rb'
     - 'app/controllers/concerns/collection_source_concern.rb'
-    - 'app/models/character.rb'
-    - 'app/models/collection_character.rb'
-    - 'app/models/collection_weapon.rb'
-    - 'app/models/collection_weapon_bullet.rb'
-    - 'app/models/crew_invitation.rb'
-    - 'app/models/grid_artifact.rb'
-    - 'app/models/grid_character.rb'
-    - 'app/models/grid_summon.rb'
-    - 'app/models/grid_weapon.rb'
-    - 'app/models/grid_weapon_bullet.rb'
-    - 'app/models/gw_individual_score.rb'
-    - 'app/models/phantom_player.rb'
-    - 'app/models/user.rb'
-    - 'app/models/weapon.rb'
-    - 'app/models/weapon_key.rb'
-    - 'app/services/party_difficulty/rules/weapon_awakening_at_least.rb'
-    - 'app/services/party_query_builder.rb'
-    - 'app/services/processors/bullet_processor.rb'
-    - 'lib/weapon_skills/build/structure/tiers.rb'
-
-# Offense count: 3
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Rails/CompactBlank:
-  Exclude:
-    - 'app/services/party_query_builder.rb'
-    - 'lib/granblue/extractors/summon_aura_extractor.rb'
-    - 'lib/granblue/parsers/character_wiki_data.rb'
 
 # Offense count: 2
 # This cop supports safe autocorrection (--autocorrect).
@@ -1370,8 +1340,6 @@ Rails/Presence:
     - 'app/controllers/api/v1/characters_controller.rb'
     - 'app/controllers/api/v1/grid_artifacts_controller.rb'
     - 'app/controllers/concerns/party_querying_concern.rb'
-    - 'app/errors/api/v1/granblue_error.rb'
-    - 'app/services/party_query_builder.rb'
 
 # Offense count: 1
 # This cop supports unsafe autocorrection (--autocorrect-all).

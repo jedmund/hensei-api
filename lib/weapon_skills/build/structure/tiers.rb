@@ -30,7 +30,7 @@ module WeaponSkills
           suffixes << nil if hash["s#{slot}_name"].present?
           hash.each_key do |key|
             next unless key.to_s =~ /\As#{slot}_(\d+s|u\d+)_name\z/
-            next unless hash[key].present?
+            next if hash[key].blank?
 
             suffixes << Regexp.last_match(1)
           end

@@ -169,7 +169,7 @@ class GridWeapon < ApplicationRecord
   ALL_SYNC_COLUMNS = SYNC_FIELD_MAP.values.flatten.uniq.freeze
 
   def sync_from_collection!(fields: nil)
-    return false unless collection_weapon.present?
+    return false if collection_weapon.blank?
 
     columns = sync_columns_for(fields)
     bullet_positions = sync_bullet_positions_for(fields)
@@ -194,7 +194,7 @@ class GridWeapon < ApplicationRecord
   # @param fields [Array<String>, nil] optional list of camelCase keys to sync
   # @return [Boolean] true if sync was performed, false if no collection link
   def sync_to_collection!(fields: nil)
-    return false unless collection_weapon.present?
+    return false if collection_weapon.blank?
 
     columns = sync_columns_for(fields)
     bullet_positions = sync_bullet_positions_for(fields)
@@ -235,7 +235,7 @@ class GridWeapon < ApplicationRecord
   # 1-based weapon key slots, and dotted keys (`ax.0`/`ax.1`, `bullets.N` by
   # position) for fields the UI renders as individual rows.
   def out_of_sync_fields
-    return [] unless collection_weapon.present?
+    return [] if collection_weapon.blank?
 
     fields = []
     fields << 'uncapLevel' if uncap_level != collection_weapon.uncap_level
@@ -283,7 +283,7 @@ class GridWeapon < ApplicationRecord
 
     party.weapons.select do |party_weapon|
       # Skip if the record is not persisted.
-      next false unless party_weapon.id.present?
+      next false if party_weapon.id.blank?
 
       id_match = weapon.id == party_weapon.id
       series_match = weapon.weapon_series_id.present? &&
@@ -367,7 +367,7 @@ class GridWeapon < ApplicationRecord
   #
   # @return [void]
   def compatible_with_position
-    return unless weapon.present?
+    return if weapon.blank?
 
     return unless EXTRA_POSITIONS.include?(position.to_i)
 
@@ -447,7 +447,7 @@ class GridWeapon < ApplicationRecord
   #
   # @return [void]
   def out_of_sync_bullet_positions
-    return [] unless collection_weapon.present?
+    return [] if collection_weapon.blank?
 
     grid_by_pos = grid_weapon_bullets.index_by(&:position)
     collection_by_pos = collection_weapon.collection_weapon_bullets.index_by(&:position)
@@ -481,7 +481,7 @@ class GridWeapon < ApplicationRecord
   # rubocop:enable Rails/SkipsModelValidations
 
   def set_default_exorcism_level
-    return unless weapon.present?
+    return if weapon.blank?
     return unless exorcism_level.nil? || exorcism_level.zero?
     return unless weapon_augment_type == 'befoulment'
 
