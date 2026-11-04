@@ -220,7 +220,7 @@ module Api
       # Fetches the weapon's wiki sources into the stored sources, then rebuilds its skills from
       # them (the weapon-skill build).
       def fetch_wiki
-        return render json: { error: 'No wiki page configured for this weapon' }, status: :unprocessable_content unless @weapon.wiki_en.present?
+        return render json: { error: 'No wiki page configured for this weapon' }, status: :unprocessable_content if @weapon.wiki_en.blank?
 
         begin
           # The reparse below builds the weapon; the save mustn't queue a second build.

@@ -258,7 +258,7 @@ module Api
       # Reads from X-Per-Page header
       def page_size(default = COLLECTION_PER_PAGE)
         per_page_header = request.headers['X-Per-Page']
-        return default unless per_page_header.present?
+        return default if per_page_header.blank?
 
         requested_size = per_page_header.to_i
         return default if requested_size <= 0
@@ -274,7 +274,7 @@ module Api
       # Returns a clamped page size from the `limit` query parameter
       def collection_page_size(default = 50)
         raw = params[:limit]
-        return default unless raw.present?
+        return default if raw.blank?
 
         requested = raw.to_i
         return default if requested <= 0

@@ -80,8 +80,8 @@ module Api
       # POST /job_skills/:id/download_image
       def download_image
         skill = JobSkill.find(params[:id])
-        return render json: { error: 'No image_id' }, status: :unprocessable_content unless skill.image_id.present?
-        return render json: { error: 'No slug' }, status: :unprocessable_content unless skill.slug.present?
+        return render json: { error: 'No image_id' }, status: :unprocessable_content if skill.image_id.blank?
+        return render json: { error: 'No slug' }, status: :unprocessable_content if skill.slug.blank?
 
         downloader = Granblue::Downloaders::JobSkillDownloader.new(skill.image_id, slug: skill.slug, storage: :s3)
         result = downloader.download

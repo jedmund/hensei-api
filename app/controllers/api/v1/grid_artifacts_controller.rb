@@ -57,7 +57,7 @@ module Api
 
       # POST /grid_artifacts/:id/sync
       def sync
-        unless @grid_artifact.collection_artifact.present?
+        if @grid_artifact.collection_artifact.blank?
           return render_unprocessable_entity_response(
             Api::V1::GranblueError.new('No collection artifact linked')
           )

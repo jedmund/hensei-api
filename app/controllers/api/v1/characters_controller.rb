@@ -212,7 +212,7 @@ module Api
       # POST /characters/:id/fetch_wiki
       # Fetches and stores wiki data for this character
       def fetch_wiki
-        return render json: { error: 'No wiki page configured for this character' }, status: :unprocessable_content unless @character.wiki_en.present?
+        return render json: { error: 'No wiki page configured for this character' }, status: :unprocessable_content if @character.wiki_en.blank?
 
         begin
           Granblue::WikiFetcher.new.fetch_and_store(@character)

@@ -187,7 +187,7 @@ module Api
       # POST /summons/:id/fetch_wiki
       # Fetches and stores wiki data for this summon
       def fetch_wiki
-        return render json: { error: 'No wiki page configured for this summon' }, status: :unprocessable_content unless @summon.wiki_en.present?
+        return render json: { error: 'No wiki page configured for this summon' }, status: :unprocessable_content if @summon.wiki_en.blank?
 
         begin
           Granblue::WikiFetcher.new.fetch_and_store(@summon)
