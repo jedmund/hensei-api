@@ -170,3 +170,8 @@ RSpec/LetSetup:
 # files) describe a behavior, not one class
 RSpec/DescribeClass:
   Enabled: false
+
+# Data migration specs stub the migration's own `say` output (and check it)
+RSpec/SubjectStub:
+  Exclude:
+    - 'spec/data/**/*'
