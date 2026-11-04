@@ -191,7 +191,7 @@ module Api
       end
 
       def substitution_params
-        params.expect(substitution: %i[grid_type grid_id item_id position party_id])
+        params.expect(substitution: %i[grid_type grid_id item_id position])
       end
 
       # Counts existing rows rather than MAX+1: after deletes, MAX+1 can produce
