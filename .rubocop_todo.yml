@@ -1620,8 +1620,6 @@ Rails/Validation:
 # This cop supports unsafe autocorrection (--autocorrect-all).
 Rails/WhereEquals:
   Exclude:
-    - 'app/controllers/api/v1/favorites_controller.rb'
-    - 'app/controllers/api/v1/users_controller.rb'
     - 'app/services/party_query_builder.rb'
 
 # Offense count: 2

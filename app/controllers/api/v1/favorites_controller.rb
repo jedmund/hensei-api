@@ -43,7 +43,7 @@ module Api
       private
 
       def set_party
-        @party = Party.where('id = ?', params[:party_id]).first
+        @party = Party.find_by(id: params[:party_id])
       end
 
       def favorite_params

@@ -155,7 +155,7 @@ module Api
       # Looks the email up and reports whether it is already registered. The
       # register form relies on this; the endpoint is rate limited above.
       def check_email
-        available = User.where('email = ?', params[:email]).none?
+        available = User.where(email: params[:email].to_s).none?
         render json: { available: available }
       end
 
