@@ -367,8 +367,53 @@ RSpec.describe 'Grid shared actions', type: :request do
     end
   end
 
+  # Weapons and summons share their notes across copies of the same item when
+  # the switch is on; the update carries the switch or a new description.
+  shared_examples 'notes sync on update' do |type:|
+    let(:tiptap_doc) do
+      { 'type' => 'doc', 'content' => [{ 'type' => 'paragraph', 'content' => [{ 'type' => 'text', 'text' => 'Notes' }] }] }
+    end
+    let(:item) { create(type) }
+    let!(:row) { create(:"grid_#{type}", party: party, position: 0, type => item) }
+    let!(:copy) { create(:"grid_#{type}", party: party, position: 1, type => item) }
+    let(:grid_type) { type }
+
+    def update_row(payload)
+      put "/api/v1/grid_#{grid_type}s/#{row.id}", params: { grid_type => payload }.to_json, headers: headers
+    end
+
+    it 'turns sync on for every copy and copies the description' do
+      update_row(notes_synced: true, description: tiptap_doc)
+
+      expect(response).to have_http_status(:ok)
+      expect(copy.reload.notes_synced).to be(true)
+      expect(copy.description).to eq(tiptap_doc)
+    end
+
+    it 'turns sync off for every copy' do
+      row.update!(notes_synced: true)
+      copy.update!(notes_synced: true)
+      update_row(notes_synced: false)
+
+      expect(response).to have_http_status(:ok)
+      expect(row.reload.notes_synced).to be(false)
+      expect(copy.reload.notes_synced).to be(false)
+    end
+
+    it 'spreads a description-only update across a synced group' do
+      row.update!(notes_synced: true)
+      copy.update!(notes_synced: true)
+      update_row(description: tiptap_doc)
+
+      expect(response).to have_http_status(:ok)
+      expect(row.reload.description).to eq(tiptap_doc)
+      expect(copy.reload.description).to eq(tiptap_doc)
+    end
+  end
+
   describe 'grid weapons' do
     it_behaves_like 'shared grid actions', type: :weapon, view: :full, slots: [0, 2, 4], invalid_position: 20
+    it_behaves_like 'notes sync on update', type: :weapon
   end
 
   describe 'grid characters' do
@@ -377,6 +422,7 @@ RSpec.describe 'Grid shared actions', type: :request do
 
   describe 'grid summons' do
     it_behaves_like 'shared grid actions', type: :summon, view: :nested, slots: [0, 1, 2], invalid_position: 7
+    it_behaves_like 'notes sync on update', type: :summon
   end
 
   describe 'weapon specifics' do
