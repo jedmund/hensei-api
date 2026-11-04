@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe ArtifactImageDownloadService do
-  let(:artifact) { double('Artifact', granblue_id: '30001') }
-  let(:downloader_double) { double('ArtifactDownloader', download: nil) }
+  let(:artifact) { instance_double(Artifact, granblue_id: '30001') }
+  let(:downloader_double) { instance_double(Granblue::Downloaders::ArtifactDownloader, download: nil) }
 
   before do
     allow(Granblue::Downloaders::ArtifactDownloader).to receive(:new).and_return(downloader_double)

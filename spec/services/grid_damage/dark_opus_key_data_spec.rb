@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe 'Dark Opus key effect data' do
   let(:effects) do
-    payload = JSON.parse(File.read(Rails.root.join("data/weapon_skill_effects.json")))
+    payload = JSON.parse(Rails.root.join("data/weapon_skill_effects.json").read)
     payload.fetch('effects')
   end
 
@@ -29,7 +29,7 @@ RSpec.describe 'Dark Opus key effect data' do
         )
       end
     end
-    expect(key_rows('pendulum-strife').map { |row| row['boost_type'] }).to contain_exactly('da', 'ta')
+    expect(key_rows('pendulum-strife').pluck('boost_type')).to contain_exactly('da', 'ta')
   end
 
   it "models passive chain stats and excludes Depravity's triggered effects" do

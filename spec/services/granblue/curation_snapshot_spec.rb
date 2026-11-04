@@ -161,7 +161,7 @@ RSpec.describe Granblue::CurationSnapshot do
       expect(Dir.children(dir).sort).to eq(%w[_canonical.json _none.json spec-series.json])
       doc = JSON.parse(File.read(dir.join('spec-series.json')))
       expect(doc.keys).to eq(%w[format versions effects data ops])
-      expect(doc['effects'].map { |e| e['modifier'] }).to eq(['Axe Voltage II'])
+      expect(doc['effects'].pluck('modifier')).to eq(['Axe Voltage II'])
       expect(doc['ops'].sole).to include('op' => 'gate', 'unlock_level' => 150)
       expect(JSON.parse(File.read(dir.join('_canonical.json')))['effects'].sole).not_to have_key('weapon')
       expect(JSON.parse(File.read(dir.join('_none.json')))['versions'].sole).to include('size_override' => 'big')
@@ -234,7 +234,7 @@ RSpec.describe Granblue::CurationSnapshot do
       report = sync
 
       expect(report.ops_satisfied).to eq(1)
-      expect(report.unmatched.map { |e| e['weapon'] }).to eq(['1999999999'])
+      expect(report.unmatched.pluck('weapon')).to eq(['1999999999'])
     end
 
     it 'adds a missing version and applies overrides on top of it, once' do
@@ -353,14 +353,14 @@ RSpec.describe Granblue::CurationSnapshot do
 
       drift = described_class.drift(**files)
 
-      expect(drift['missing'].map { |row| row['modifier'] }).to eq(['Axe Voltage II'])
+      expect(drift['missing'].pluck('modifier')).to eq(['Axe Voltage II'])
       expect(drift['changed']).to be_empty
     end
 
     it "lists ops this database doesn't reflect" do
       write_overlay('s.json', 'ops' => [op('gate', 'unlock_level' => 200)])
 
-      expect(described_class.drift(**files)['unapplied'].map { |e| e['op'] }).to eq(['gate'])
+      expect(described_class.drift(**files)['unapplied'].pluck('op')).to eq(['gate'])
       sync
       expect(described_class.drift(**files)['unapplied']).to be_empty
     end
@@ -385,7 +385,7 @@ RSpec.describe Granblue::CurationSnapshot do
       expect(counts).to eq('spec-series.json' => 3)
       expect(File.exist?(legacy)).to be(false)
       expect(Dir.children(pending)).to be_empty
-      expect(described_class.load(**files).entries('ops').map { |e| e['op'] }).to match_array(%w[gate remove_version])
+      expect(described_class.load(**files).entries('ops').pluck('op')).to match_array(%w[gate remove_version])
     end
 
     it 'lets a newer fragment replace an entry with the same identity, and says so' do

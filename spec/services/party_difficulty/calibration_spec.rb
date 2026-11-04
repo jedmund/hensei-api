@@ -24,6 +24,14 @@ RSpec.describe PartyDifficulty::Calibration do
                            weight: 1.0, active: true, params: { 'min_uncap_level' => 3, 'min_count' => 1 })
   end
 
+  let(:new_rule) do
+    { 'id' => 'new-ulb', 'name' => 'ULB weapons', 'component' => 'weapon', 'rule_type' => 'weapon_uncap_at_least',
+      'weight' => 4.0, 'active' => true, 'params' => { 'min_uncap_level' => 5, 'min_count' => 1 } }
+  end
+  let(:kept_rule) do
+    PartyDifficulty::Calibration::Ruleset.rule_hash(kept).merge('name' => 'FLB weapons', 'weight' => 5.0)
+  end
+
   def ruleset(rules:, tiers: nil)
     PartyDifficulty::Calibration::Ruleset.new(
       components: [{ 'name' => 'weapon', 'weight' => 3.0, 'target_max' => 10.0, 'min_count_to_score' => 0, 'enabled' => true }],
@@ -33,14 +41,6 @@ RSpec.describe PartyDifficulty::Calibration do
         { 'slug' => 'mid', 'name' => 'Intermediate', 'min_score' => 20.0, 'max_score' => 100.0 }
       ]
     )
-  end
-
-  let(:new_rule) do
-    { 'id' => 'new-ulb', 'name' => 'ULB weapons', 'component' => 'weapon', 'rule_type' => 'weapon_uncap_at_least',
-      'weight' => 4.0, 'active' => true, 'params' => { 'min_uncap_level' => 5, 'min_count' => 1 } }
-  end
-  let(:kept_rule) do
-    PartyDifficulty::Calibration::Ruleset.rule_hash(kept).merge('name' => 'FLB weapons', 'weight' => 5.0)
   end
 
   describe 'Ruleset' do
@@ -93,7 +93,7 @@ RSpec.describe PartyDifficulty::Calibration do
       rs = ruleset(rules: [kept_rule, new_rule])
       PartyDifficulty::Calibration::Applier.new(rs).apply!
 
-      expect { PartyDifficulty::Calibration::Applier.new(rs).apply! }.not_to(change { DifficultyConfig.current_version })
+      expect { PartyDifficulty::Calibration::Applier.new(rs).apply! }.not_to(change(DifficultyConfig, :current_version))
     end
   end
 
@@ -102,7 +102,7 @@ RSpec.describe PartyDifficulty::Calibration do
       party = create(:party)
       rs = ruleset(rules: [kept_rule, new_rule])
 
-      expect { described_class.new(rs).score(party) }.not_to(change { DifficultyRule.count })
+      expect { described_class.new(rs).score(party) }.not_to(change(DifficultyRule, :count))
     end
   end
 end

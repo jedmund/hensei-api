@@ -4,24 +4,23 @@ require 'rails_helper'
 
 # Phase 2 — per-boost_type aggregation (stacking rules, caps, main-hand gating).
 RSpec.describe GridDamage::Aggregator do
-  C = GridDamage::Aggregator::Contribution # rubocop:disable Lint/ConstantDefinitionInBlock
-  Meta = Struct.new(:stacking_rule, :grid_cap, :cap_is_flat, keyword_init: true) # rubocop:disable Lint/ConstantDefinitionInBlock
-
-  def contrib(boost_type:, value:, series: 'normal', main_hand_only: false, mainhand: false,
-              stacking_group: nil)
-    C.new(boost_type: boost_type, series: series, value: value, main_hand_only: main_hand_only,
-          mainhand: mainhand, stacking_group: stacking_group)
-  end
+  let(:meta_struct) { Struct.new(:stacking_rule, :grid_cap, :cap_is_flat, keyword_init: true) }
 
   let(:boost_types) do
     {
-      'atk' => Meta.new(stacking_rule: 'multiplicative_by_series', grid_cap: nil, cap_is_flat: false),
-      'da' => Meta.new(stacking_rule: 'additive', grid_cap: nil, cap_is_flat: false),
-      'hp' => Meta.new(stacking_rule: 'additive', grid_cap: 400.0, cap_is_flat: false),
-      'ca_supp' => Meta.new(stacking_rule: 'additive', grid_cap: 1_000_000.0, cap_is_flat: true),
-      'elem_amplify' => Meta.new(stacking_rule: 'highest_only', grid_cap: nil, cap_is_flat: false),
-      'ca_dmg_hit' => Meta.new(stacking_rule: 'additive', grid_cap: -99.0, cap_is_flat: false)
+      'atk' => meta_struct.new(stacking_rule: 'multiplicative_by_series', grid_cap: nil, cap_is_flat: false),
+      'da' => meta_struct.new(stacking_rule: 'additive', grid_cap: nil, cap_is_flat: false),
+      'hp' => meta_struct.new(stacking_rule: 'additive', grid_cap: 400.0, cap_is_flat: false),
+      'ca_supp' => meta_struct.new(stacking_rule: 'additive', grid_cap: 1_000_000.0, cap_is_flat: true),
+      'elem_amplify' => meta_struct.new(stacking_rule: 'highest_only', grid_cap: nil, cap_is_flat: false),
+      'ca_dmg_hit' => meta_struct.new(stacking_rule: 'additive', grid_cap: -99.0, cap_is_flat: false)
     }
+  end
+
+  def contrib(boost_type:, value:, series: 'normal', main_hand_only: false, mainhand: false,
+              stacking_group: nil)
+    GridDamage::Aggregator::Contribution.new(boost_type: boost_type, series: series, value: value, main_hand_only: main_hand_only,
+                                             mainhand: mainhand, stacking_group: stacking_group)
   end
 
   def agg(contribs) = described_class.aggregate(contribs, boost_types: boost_types)
@@ -76,7 +75,7 @@ RSpec.describe GridDamage::Aggregator do
     it 'keeps only the largest copy within one named effect family' do
       r = agg([
                 contrib(boost_type: 'da', value: 4, stacking_group: 'effect|da|Staff Resonance'),
-        contrib(boost_type: 'da', value: 6, stacking_group: 'effect|da|Staff Resonance')
+                contrib(boost_type: 'da', value: 6, stacking_group: 'effect|da|Staff Resonance')
               ])['da']
 
       expect(r.total).to eq(6.0)
@@ -85,7 +84,7 @@ RSpec.describe GridDamage::Aggregator do
     it 'still adds differently named families' do
       r = agg([
                 contrib(boost_type: 'da', value: 4, stacking_group: 'effect|da|One Resonance'),
-        contrib(boost_type: 'da', value: 6, stacking_group: 'effect|da|Another Resonance')
+                contrib(boost_type: 'da', value: 6, stacking_group: 'effect|da|Another Resonance')
               ])['da']
 
       expect(r.total).to eq(10.0)
@@ -96,8 +95,8 @@ RSpec.describe GridDamage::Aggregator do
     it 'keeps per-series subtotals (frames multiply later, not here)' do
       r = agg([
                 contrib(boost_type: 'atk', series: 'normal', value: 15),
-        contrib(boost_type: 'atk', series: 'normal', value: 18),
-        contrib(boost_type: 'atk', series: 'omega', value: 20)
+                contrib(boost_type: 'atk', series: 'normal', value: 18),
+                contrib(boost_type: 'atk', series: 'omega', value: 20)
               ])['atk']
       expect(r.by_series).to eq('normal' => 33.0, 'omega' => 20.0)
       expect(r.capped).to be(false)
@@ -123,7 +122,7 @@ RSpec.describe GridDamage::Aggregator do
 
   describe 'shared_cap_group' do
     def shared(value)
-      C.new(boost_type: 'atk', series: 'ex', value: value, shared_cap_group: 'g', cap: 80.0, mainhand: false)
+      GridDamage::Aggregator::Contribution.new(boost_type: 'atk', series: 'ex', value: value, shared_cap_group: 'g', cap: 80.0, mainhand: false)
     end
 
     it 'pools group members and caps the total at the group cap' do

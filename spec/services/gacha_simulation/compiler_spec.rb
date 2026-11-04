@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe GachaSimulation::Compiler do
-  let(:evidence) { JSON.parse(File.read(Rails.root.join('spec/fixtures/gacha/user-banner-rates.json'))) }
+  let(:evidence) { JSON.parse(Rails.root.join('spec/fixtures/gacha/user-banner-rates.json').read) }
   let(:items) do
     categories = %w[characterWeapon weapon summon]
     evidence['groups'].flat_map do |group|

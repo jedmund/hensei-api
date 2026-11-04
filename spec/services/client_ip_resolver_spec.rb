@@ -12,7 +12,7 @@ RSpec.describe ClientIpResolver do
   end
 
   def with_env(vars)
-    original = vars.keys.to_h { |k| [k, ENV.fetch(k, nil)] }
+    original = vars.keys.index_with { |k| ENV.fetch(k, nil) }
     vars.each { |k, v| ENV[k] = v }
     yield
   ensure

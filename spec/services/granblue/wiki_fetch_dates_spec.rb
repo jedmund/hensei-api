@@ -6,11 +6,11 @@ require 'rails_helper'
 RSpec.describe 'Wiki fetch dates' do
   let(:now) { Time.zone.parse('2026-10-15 12:00') }
 
-  around { |example| travel_to(now) { example.run } }
+  before { travel_to(now) }
 
   describe Granblue::WikiFetcher do
     before do
-      allow_any_instance_of(Granblue::Parsers::Wiki).to receive(:fetch).and_return('{{Page}}')
+      on_new_instances(Granblue::Parsers::Wiki) { |client| allow(client).to receive(:fetch).and_return('{{Page}}') }
     end
 
     %i[weapon summon character].each do |factory|
@@ -41,10 +41,10 @@ RSpec.describe 'Wiki fetch dates' do
     let(:character) { create(:character, wiki_en: 'Some Character', wiki_raw: nil) }
 
     # Only the wikitext write is under test, not the field parse.
-    before { allow_any_instance_of(described_class).to receive(:parse).and_return({}) }
+    before { on_new_instances(described_class) { |parser| allow(parser).to receive(:parse).and_return({}) } }
 
     it 'stamps a real fetch' do
-      allow_any_instance_of(Granblue::Parsers::Wiki).to receive(:fetch).and_return('{{Character}}')
+      on_new_instances(Granblue::Parsers::Wiki) { |client| allow(client).to receive(:fetch).and_return('{{Character}}') }
 
       described_class.new(granblue_id: character.granblue_id).fetch
 

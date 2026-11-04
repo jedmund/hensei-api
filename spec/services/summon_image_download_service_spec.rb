@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe SummonImageDownloadService do
-  let(:summon) { double('Summon', granblue_id: '2040001000', ulb: false, transcendence: false) }
-  let(:downloader_double) { double('SummonDownloader', download: nil) }
+  let(:summon) { instance_double(Summon, granblue_id: '2040001000', ulb: false, transcendence: false) }
+  let(:downloader_double) { instance_double(Granblue::Downloaders::SummonDownloader, download: nil) }
 
   before do
     allow(Granblue::Downloaders::SummonDownloader).to receive(:new).and_return(downloader_double)
@@ -16,7 +16,7 @@ RSpec.describe SummonImageDownloadService do
       expect(result.success?).to be true
     end
 
-    context 'variant building' do
+    describe 'variant building' do
       it 'includes base variant without suffix' do
         result = described_class.new(summon).download
         expect(result.images['main']).to include('2040001000.jpg')

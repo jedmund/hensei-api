@@ -3,40 +3,42 @@
 require 'rails_helper'
 
 RSpec.describe 'Rose Crystal series data' do
-  ROSE_WEAPONS = [ # rubocop:disable Lint/ConstantDefinitionInBlock
-    { id: '1040307000', name: 'Rose Crystal Axe', element: 4, profile: :brier,
-      first: 'Emerald Rose Brier', first_desc: "Medium boost to wind allies' ATK and max HP",
-      second: 'Emerald Rose Bud', second_desc: 'Lessen fire DMG taken for wind allies',
-      reduced_element: 'fire' },
-    { id: '1040706100', name: 'Rose Crystal Bow', element: 1, profile: :brier,
-      first: 'Blood Rose Brier', first_desc: "Medium boost to Fire allies' ATK and max HP",
-      second: 'Blood Rose Bud', second_desc: 'Lessen Water DMG taken for Fire allies',
-      reduced_element: 'water' },
-    { id: '1040607400', name: 'Rose Crystal Claw', element: 3, profile: :brier,
-      first: 'Bronze Rose Brier', first_desc: "Medium boost to Earth allies' ATK and max HP",
-      second: 'Bronze Rose Bud', second_desc: 'Lessen Wind DMG taken for Earth allies',
-      reduced_element: 'wind' },
-    { id: '1040806300', name: 'Rose Crystal Harp', element: 2, profile: :brier,
-      first: 'Ice Rose Brier', first_desc: "Medium boost to Water allies' ATK and max HP",
-      second: 'Ice Rose Bud', second_desc: 'Lessen Earth DMG taken for Water allies',
-      reduced_element: 'earth' },
-    { id: '1040108400', name: 'Rose Crystal Knife', element: 4, profile: :thorns,
-      first: 'Emerald Rose Thorns', first_desc: "Big boost to wind allies' ATK",
-      second: 'Emerald Rose Barrier', second_desc: 'Lessen earth DMG for all allies',
-      reduced_element: 'earth' },
-    { id: '1040207200', name: 'Rose Crystal Lance', element: 3, profile: :thorns,
-      first: 'Bronze Rose Thorns', first_desc: "Big boost to Earth allies' ATK",
-      second: 'Bronze Rose Barrier', second_desc: 'Lessen Water DMG for all allies',
-      reduced_element: 'water' },
-    { id: '1040009700', name: 'Rose Crystal Sword', element: 2, profile: :thorns,
-      first: 'Ice Rose Thorns', first_desc: "Big boost to Water allies' ATK",
-      second: 'Ice Rose Barrier', second_desc: 'Lessen Fire DMG for all allies',
-      reduced_element: 'fire' },
-    { id: '1040409500', name: 'Rose Crystal Wand', element: 1, profile: :thorns,
-      first: 'Blood Rose Thorns', first_desc: "Big boost to Fire allies' ATK",
-      second: 'Blood Rose Barrier', second_desc: 'Lessen Wind DMG for all allies',
-      reduced_element: 'wind' }
-  ].freeze
+  let(:rose_weapons) do
+    [
+      { id: '1040307000', name: 'Rose Crystal Axe', element: 4, profile: :brier,
+        first: 'Emerald Rose Brier', first_desc: "Medium boost to wind allies' ATK and max HP",
+        second: 'Emerald Rose Bud', second_desc: 'Lessen fire DMG taken for wind allies',
+        reduced_element: 'fire' },
+      { id: '1040706100', name: 'Rose Crystal Bow', element: 1, profile: :brier,
+        first: 'Blood Rose Brier', first_desc: "Medium boost to Fire allies' ATK and max HP",
+        second: 'Blood Rose Bud', second_desc: 'Lessen Water DMG taken for Fire allies',
+        reduced_element: 'water' },
+      { id: '1040607400', name: 'Rose Crystal Claw', element: 3, profile: :brier,
+        first: 'Bronze Rose Brier', first_desc: "Medium boost to Earth allies' ATK and max HP",
+        second: 'Bronze Rose Bud', second_desc: 'Lessen Wind DMG taken for Earth allies',
+        reduced_element: 'wind' },
+      { id: '1040806300', name: 'Rose Crystal Harp', element: 2, profile: :brier,
+        first: 'Ice Rose Brier', first_desc: "Medium boost to Water allies' ATK and max HP",
+        second: 'Ice Rose Bud', second_desc: 'Lessen Earth DMG taken for Water allies',
+        reduced_element: 'earth' },
+      { id: '1040108400', name: 'Rose Crystal Knife', element: 4, profile: :thorns,
+        first: 'Emerald Rose Thorns', first_desc: "Big boost to wind allies' ATK",
+        second: 'Emerald Rose Barrier', second_desc: 'Lessen earth DMG for all allies',
+        reduced_element: 'earth' },
+      { id: '1040207200', name: 'Rose Crystal Lance', element: 3, profile: :thorns,
+        first: 'Bronze Rose Thorns', first_desc: "Big boost to Earth allies' ATK",
+        second: 'Bronze Rose Barrier', second_desc: 'Lessen Water DMG for all allies',
+        reduced_element: 'water' },
+      { id: '1040009700', name: 'Rose Crystal Sword', element: 2, profile: :thorns,
+        first: 'Ice Rose Thorns', first_desc: "Big boost to Water allies' ATK",
+        second: 'Ice Rose Barrier', second_desc: 'Lessen Fire DMG for all allies',
+        reduced_element: 'fire' },
+      { id: '1040409500', name: 'Rose Crystal Wand', element: 1, profile: :thorns,
+        first: 'Blood Rose Thorns', first_desc: "Big boost to Fire allies' ATK",
+        second: 'Blood Rose Barrier', second_desc: 'Lessen Wind DMG for all allies',
+        reduced_element: 'wind' }
+    ].freeze
+  end
 
   let!(:rose_series) do
     WeaponSeries.find_by(slug: 'rose') || create(:weapon_series, slug: 'rose', name_en: 'Rose Weapons')
@@ -47,7 +49,7 @@ RSpec.describe 'Rose Crystal series data' do
     create(:weapon_skill_boost_type, :defensive, key: 'hp', grid_cap: 400) unless WeaponSkillBoostType.exists?(key: 'hp')
     create(:weapon_skill_boost_type, :defensive, key: 'elem_reduc', grid_cap: 30) unless WeaponSkillBoostType.exists?(key: 'elem_reduc')
 
-    ROSE_WEAPONS.each { |attrs| seed_rose_weapon(attrs) }
+    rose_weapons.each { |attrs| seed_rose_weapon(attrs) }
     CurateRoseCrystalSeriesValues.new.up
   end
 
@@ -112,7 +114,7 @@ RSpec.describe 'Rose Crystal series data' do
   end
 
   it 'applies the Brier and Bud profile to every matching weapon' do
-    ROSE_WEAPONS.select { |attrs| attrs.fetch(:profile) == :brier }.each do |attrs|
+    rose_weapons.select { |attrs| attrs.fetch(:profile) == :brier }.each do |attrs|
       boosts = boosts_for(attrs.fetch(:id))
 
       expect(boosts.fetch('atk').by_series.fetch('ex')).to eq(12.0)
@@ -122,7 +124,7 @@ RSpec.describe 'Rose Crystal series data' do
   end
 
   it 'applies the Thorns and Barrier profile to every matching weapon' do
-    ROSE_WEAPONS.select { |attrs| attrs.fetch(:profile) == :thorns }.each do |attrs|
+    rose_weapons.select { |attrs| attrs.fetch(:profile) == :thorns }.each do |attrs|
       boosts = boosts_for(attrs.fetch(:id))
 
       expect(boosts.fetch('atk').by_series.fetch('ex')).to eq(15.0)
@@ -149,7 +151,7 @@ RSpec.describe 'Rose Crystal series data' do
   end
 
   it 'clamps the whole series at its SL10 maximum' do
-    ROSE_WEAPONS.each do |attrs|
+    rose_weapons.each do |attrs|
       boosts = boosts_for(attrs.fetch(:id), skill_level: 15)
       expected_atk = attrs.fetch(:profile) == :brier ? 12.0 : 15.0
 
@@ -158,7 +160,7 @@ RSpec.describe 'Rose Crystal series data' do
   end
 
   it 'records the reduced element and source for every series member' do
-    ROSE_WEAPONS.each do |attrs|
+    rose_weapons.each do |attrs|
       version = Weapon.find_by!(granblue_id: attrs.fetch(:id))
                       .weapon_skills.find_by!(position: 1)
                       .weapon_skill_versions.find_by!(ordinal: 0)
@@ -174,7 +176,7 @@ RSpec.describe 'Rose Crystal series data' do
   it 'is idempotent and survives a rebuild by the weapon-skill build' do
     CurateRoseCrystalSeriesValues.new.up
     store = WeaponSkills::SourceStore::Database.new
-    ROSE_WEAPONS.each do |attrs|
+    rose_weapons.each do |attrs|
       weapon = Weapon.find_by!(granblue_id: attrs.fetch(:id))
       weapon.update!(wiki_en: attrs.fetch(:name))
       page = "{{Weapon\n|name=#{attrs.fetch(:name)}\n|s1_name=#{attrs.fetch(:first)}\n" \
@@ -182,7 +184,7 @@ RSpec.describe 'Rose Crystal series data' do
              "|s2_desc=#{attrs.fetch(:second_desc)}\n}}"
       store.put('wiki_raw', weapon.wiki_en, page, weapon_id: weapon.id, page_kind: 'inline')
     end
-    summary = WeaponSkills::Build::Runner.new(mode: 'write', ids: ROSE_WEAPONS.pluck(:id), all: true,
+    summary = WeaponSkills::Build::Runner.new(mode: 'write', ids: rose_weapons.pluck(:id), all: true,
                                               io: StringIO.new).call
     expect(summary).to have_attributes(built: 8, failed: 0)
 

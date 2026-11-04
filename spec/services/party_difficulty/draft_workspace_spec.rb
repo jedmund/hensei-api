@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe PartyDifficulty::DraftWorkspace do
+  subject(:workspace) { described_class.for(user) }
+
   let(:user) { create(:user) }
   let(:component) do
     DifficultyComponent.find_or_create_by!(name: 'weapon') do |c|
@@ -26,8 +28,6 @@ RSpec.describe PartyDifficulty::DraftWorkspace do
       t.sort_order = 99
     end
   end
-
-  subject(:workspace) { described_class.for(user) }
 
   describe '#stage!' do
     it 'creates an update draft and surfaces it in merged_rules with pending? true' do
