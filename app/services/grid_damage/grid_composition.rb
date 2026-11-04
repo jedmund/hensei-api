@@ -41,50 +41,59 @@ module GridDamage
 
     def for_party(party)
       entries = party.weapons.includes(weapon: [:weapon_series, { weapon_skills: :weapon_skill_versions }]).filter_map do |gw|
-        w = gw.weapon
-        next unless w
-
-        modifiers = []
-        omega = false
-        w.weapon_skills.each do |ws|
-          v = ws.active_version(uncap_level: gw.uncap_level.to_i, transcendence_step: gw.transcendence_step.to_i)
-          next unless v
-
-          # omega-skill counters (Vivification) go by the RESOLVED frame — a Dark Opus
-          # Renunciation's s1 counts as an omega skill despite its template series
-          # (mcwZet: Vivification counts 7, incl. the opus).
-          omega ||= FrameResolver.frame_for(w, v) == 'omega'
-          next unless v.resolved_modifier
-
-          modifiers << v.resolved_modifier
-        end
-        {
-          proficiency: w.proficiency,
-          series_slug: w.weapon_series&.slug,
-          granblue_id: w.granblue_id,
-          modifiers: modifiers,
-          omega: omega,
-          element: ElementScope.element_of(gw)
-        }
+        entry_for(gw)
       end
-      # The MC's weapon specialties (BOTH job proficiencies) — select the row of
-      # per-specialty skills (e.g. Cloud of Howling Twilight). A job matching on either
-      # proficiency gets the specialty tier (dAV5ds: Lancer Origin is spear+axe; the
-      # panel shows Pillar-Smasher's Conviction at the axe values).
-      # A party without a job still implies one specialty: the mainhand weapon's type
-      # is always among the wielding job's proficiencies (HoEE8b: axe MH resolves
-      # Pillar-Smasher's Conviction at the axe tier even with no job saved).
-      job = party.try(:job)
-      mc_specialties = [job&.proficiency1, job&.proficiency2].filter_map { |p| PROFICIENCY_NAME[p] }
-      if mc_specialties.empty?
-        mh = party.weapons.find(&:mainhand)&.weapon
-        mc_specialties = [PROFICIENCY_NAME[mh&.proficiency]].compact
-      end
+      mc_specialties = mc_specialties_for(party)
       summarize(entries).merge(
         mc_specialty: mc_specialties.first, mc_specialties: mc_specialties,
         # crew races incl. the MC (Gran/Djeeta are Human) — bahamut count basis
         character_races: [1] + party.characters.filter_map { |gc| gc.character&.race1&.to_i }
       )
+    end
+
+    # One grid weapon's entry for summarize, or nil for an empty slot.
+    def entry_for(grid_weapon)
+      w = grid_weapon.weapon
+      return unless w
+
+      modifiers = []
+      omega = false
+      w.weapon_skills.each do |ws|
+        v = ws.active_version(uncap_level: grid_weapon.uncap_level.to_i, transcendence_step: grid_weapon.transcendence_step.to_i)
+        next unless v
+
+        # omega-skill counters (Vivification) go by the RESOLVED frame — a Dark Opus
+        # Renunciation's s1 counts as an omega skill despite its template series
+        # (mcwZet: Vivification counts 7, incl. the opus).
+        omega ||= FrameResolver.frame_for(w, v) == 'omega'
+        next unless v.resolved_modifier
+
+        modifiers << v.resolved_modifier
+      end
+      {
+        proficiency: w.proficiency,
+        series_slug: w.weapon_series&.slug,
+        granblue_id: w.granblue_id,
+        modifiers: modifiers,
+        omega: omega,
+        element: ElementScope.element_of(grid_weapon)
+      }
+    end
+
+    # The MC's weapon specialties (BOTH job proficiencies) — select the row of
+    # per-specialty skills (e.g. Cloud of Howling Twilight). A job matching on either
+    # proficiency gets the specialty tier (dAV5ds: Lancer Origin is spear+axe; the
+    # panel shows Pillar-Smasher's Conviction at the axe values).
+    # A party without a job still implies one specialty: the mainhand weapon's type
+    # is always among the wielding job's proficiencies (HoEE8b: axe MH resolves
+    # Pillar-Smasher's Conviction at the axe tier even with no job saved).
+    def mc_specialties_for(party)
+      job = party.try(:job)
+      mc_specialties = [job&.proficiency1, job&.proficiency2].filter_map { |p| PROFICIENCY_NAME[p] }
+      return mc_specialties unless mc_specialties.empty?
+
+      mh = party.weapons.find(&:mainhand)&.weapon
+      [PROFICIENCY_NAME[mh&.proficiency]].compact
     end
 
     # Pure: entries = [{ proficiency:, series_slug:, granblue_id:, modifiers: [..], omega: bool,
@@ -123,12 +132,26 @@ module GridDamage
       raise ArgumentError, "Unknown count_basis: #{basis.inspect}" unless valid_count_basis?(basis)
 
       case basis
-      when 'same_weapon_type'
-        composition.dig(:weapon_type_counts, weapon&.proficiency).to_i
-      when 'max_same_weapon_type'
-        composition[:max_weapon_type_count].to_i
-      when 'distinct_weapon_types'
-        composition[:distinct_weapon_type_count].to_i
+      when 'same_weapon_type', 'max_same_weapon_type', 'distinct_weapon_types'
+        weapon_type_count(basis, weapon: weapon, composition: composition)
+      when 'omega_skill' then omega_skill_count(weapon: weapon, composition: composition)
+      when 'crew_races' then crew_race_count(effect: effect, composition: composition)
+      else series_count(basis, weapon: weapon, composition: composition)
+      end
+    end
+
+    # Counts by weapon type: the bearing weapon's own, the most common, or how many differ.
+    def weapon_type_count(basis, weapon:, composition:)
+      case basis
+      when 'same_weapon_type' then composition.dig(:weapon_type_counts, weapon&.proficiency).to_i
+      when 'max_same_weapon_type' then composition[:max_weapon_type_count].to_i
+      when 'distinct_weapon_types' then composition[:distinct_weapon_type_count].to_i
+      end
+    end
+
+    # Counts by series: the bearing weapon's own, its own in its element, or a named one.
+    def series_count(basis, weapon:, composition:)
+      case basis
       when 'same_series'
         composition.dig(:weapon_series_counts, weapon&.weapon_series&.slug).to_i
       # Vitiation and Guile count "weapons with Taboo Allowater's skills": its series in its
@@ -136,18 +159,22 @@ module GridDamage
       when 'same_element_series'
         element = Calculator::ELEMENT_WORD[weapon&.element.to_i]
         composition.dig(:weapon_series_counts_by_element, [weapon&.weapon_series&.slug, element]).to_i
-      # Vivification counts weapons with its own element's omega skills ("Ironflame's"
-      # for Iron's): 6C5bN9's Earth Lifetree's Insignia don't count on a Fire grid.
-      when 'omega_skill'
-        element = Calculator::ELEMENT_WORD[weapon&.element.to_i]
-        by_element = composition[:omega_skill_counts_by_element]
-        element && by_element ? by_element[element].to_i : composition[:omega_skill_count].to_i
-      when 'crew_races'
-        races = Array(effect&.condition&.dig('races')).map(&:to_i)
-        composition.fetch(:character_races, []).count { |r| races.include?(r.to_i) }
       else
         composition.dig(:weapon_series_counts, basis.split(':', 2).last).to_i
       end
+    end
+
+    # Vivification counts weapons with its own element's omega skills ("Ironflame's"
+    # for Iron's): 6C5bN9's Earth Lifetree's Insignia don't count on a Fire grid.
+    def omega_skill_count(weapon:, composition:)
+      element = Calculator::ELEMENT_WORD[weapon&.element.to_i]
+      by_element = composition[:omega_skill_counts_by_element]
+      element && by_element ? by_element[element].to_i : composition[:omega_skill_count].to_i
+    end
+
+    def crew_race_count(effect:, composition:)
+      races = Array(effect&.condition&.dig('races')).map(&:to_i)
+      composition.fetch(:character_races, []).count { |r| races.include?(r.to_i) }
     end
   end
 end
