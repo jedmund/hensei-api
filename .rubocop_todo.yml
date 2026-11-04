@@ -1068,15 +1068,6 @@ RSpecRails/TravelAround:
     - 'spec/requests/api/v1/import_solomonis_spec.rb'
     - 'spec/services/granblue/wiki_fetch_dates_spec.rb'
 
-# Offense count: 4
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: ExpectedOrder.
-# ExpectedOrder: index, show, new, edit, create, update, destroy
-Rails/ActionOrder:
-  Exclude:
-    - 'app/controllers/api/v1/character_skill_refreshes_controller.rb'
-    - 'app/controllers/api/v1/users_controller.rb'
-
 # Offense count: 8
 # This cop supports safe autocorrection (--autocorrect).
 Rails/ActiveRecordCallbacksOrder:
@@ -1116,14 +1107,6 @@ Rails/Blank:
     - 'app/blueprints/api/v1/party_blueprint.rb'
     - 'app/blueprints/api/v1/summon_blueprint.rb'
     - 'app/blueprints/api/v1/weapon_blueprint.rb'
-    - 'app/controllers/api/v1/api_controller.rb'
-    - 'app/controllers/api/v1/characters_controller.rb'
-    - 'app/controllers/api/v1/collection_artifacts_controller.rb'
-    - 'app/controllers/api/v1/grid_artifacts_controller.rb'
-    - 'app/controllers/api/v1/job_skills_controller.rb'
-    - 'app/controllers/api/v1/summons_controller.rb'
-    - 'app/controllers/api/v1/weapons_controller.rb'
-    - 'app/controllers/concerns/collection_source_concern.rb'
     - 'app/models/character.rb'
     - 'app/models/collection_character.rb'
     - 'app/models/collection_weapon.rb'
@@ -1213,8 +1196,6 @@ Rails/Exit:
 # AllowedMethods: order, limit, select, lock
 Rails/FindEach:
   Exclude:
-    - 'app/controllers/api/v1/crew_rosters_controller.rb'
-    - 'app/controllers/api/v1/crews_controller.rb'
     - 'app/models/artifact_skill.rb'
     - 'app/services/grid_damage/character_auras.rb'
     - 'app/services/grid_damage/effects.rb'
@@ -1296,10 +1277,6 @@ Rails/InverseOf:
 # This cop supports unsafe autocorrection (--autocorrect-all).
 Rails/NegateInclude:
   Exclude:
-    - 'app/controllers/api/v1/characters_controller.rb'
-    - 'app/controllers/api/v1/summons_controller.rb'
-    - 'app/controllers/api/v1/weapon_skill_versions_controller.rb'
-    - 'app/controllers/api/v1/weapons_controller.rb'
     - 'app/models/difficulty_rule.rb'
     - 'app/services/gacha_simulation/compiler.rb'
     - 'app/services/grid_damage/calculator.rb'
@@ -1352,9 +1329,6 @@ Rails/Output:
 # This cop supports unsafe autocorrection (--autocorrect-all).
 Rails/Pluck:
   Exclude:
-    - 'app/controllers/api/v1/crew_rosters_controller.rb'
-    - 'app/controllers/api/v1/grid_character_roles_controller.rb'
-    - 'app/controllers/api/v1/home_controller.rb'
     - 'app/services/character_skills/refresh_batch.rb'
     - 'app/services/gacha_simulation/banner.rb'
     - 'app/services/gacha_simulation/banner_import.rb'
@@ -1435,9 +1409,6 @@ Rails/Pluck:
 # This cop supports safe autocorrection (--autocorrect).
 Rails/Presence:
   Exclude:
-    - 'app/controllers/api/v1/characters_controller.rb'
-    - 'app/controllers/api/v1/grid_artifacts_controller.rb'
-    - 'app/controllers/concerns/party_querying_concern.rb'
     - 'app/errors/api/v1/granblue_error.rb'
     - 'app/services/party_query_builder.rb'
 
@@ -1519,10 +1490,6 @@ Rails/RootPathnameMethods:
 # ForbiddenMethods: decrement!, decrement_counter, increment!, increment_counter, insert, insert!, insert_all, insert_all!, toggle!, touch, touch_all, update_all, update_attribute, update_column, update_columns, update_counters, upsert, upsert_all
 Rails/SkipsModelValidations:
   Exclude:
-    - 'app/controllers/api/v1/api_controller.rb'
-    - 'app/controllers/api/v1/awakenings_controller.rb'
-    - 'app/controllers/api/v1/social_auth_controller.rb'
-    - 'app/controllers/concerns/editor_image_upload.rb'
     - 'app/models/concerns/solomonis_party_seals.rb'
     - 'app/models/difficulty_config.rb'
     - 'app/models/grid_character.rb'
@@ -1555,64 +1522,6 @@ Rails/SquishedSQLHeredocs:
     - 'lib/tasks/database.rake'
     - 'spec/data/clear_gacha_rateups_spec.rb'
 
-# Offense count: 98
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Rails/StrongParametersExpect:
-  Exclude:
-    - 'app/controllers/api/v1/artifact_skills_controller.rb'
-    - 'app/controllers/api/v1/artifacts_controller.rb'
-    - 'app/controllers/api/v1/awakenings_controller.rb'
-    - 'app/controllers/api/v1/bullets_controller.rb'
-    - 'app/controllers/api/v1/character_series_controller.rb'
-    - 'app/controllers/api/v1/characters_controller.rb'
-    - 'app/controllers/api/v1/collection_artifacts_controller.rb'
-    - 'app/controllers/api/v1/collection_controller.rb'
-    - 'app/controllers/api/v1/collection_job_accessories_controller.rb'
-    - 'app/controllers/api/v1/crew_gw_participations_controller.rb'
-    - 'app/controllers/api/v1/crew_invitations_controller.rb'
-    - 'app/controllers/api/v1/crew_memberships_controller.rb'
-    - 'app/controllers/api/v1/crew_rosters_controller.rb'
-    - 'app/controllers/api/v1/crews_controller.rb'
-    - 'app/controllers/api/v1/difficulties_controller.rb'
-    - 'app/controllers/api/v1/difficulty_components_controller.rb'
-    - 'app/controllers/api/v1/difficulty_drafts_controller.rb'
-    - 'app/controllers/api/v1/difficulty_rules_controller.rb'
-    - 'app/controllers/api/v1/events_controller.rb'
-    - 'app/controllers/api/v1/favorites_controller.rb'
-    - 'app/controllers/api/v1/featured_parties_controller.rb'
-    - 'app/controllers/api/v1/grid_artifacts_controller.rb'
-    - 'app/controllers/api/v1/gw_crew_scores_controller.rb'
-    - 'app/controllers/api/v1/gw_events_controller.rb'
-    - 'app/controllers/api/v1/gw_individual_scores_controller.rb'
-    - 'app/controllers/api/v1/gw_score_imports_controller.rb'
-    - 'app/controllers/api/v1/job_skills_controller.rb'
-    - 'app/controllers/api/v1/jobs_controller.rb'
-    - 'app/controllers/api/v1/party_shares_controller.rb'
-    - 'app/controllers/api/v1/party_stickers_controller.rb'
-    - 'app/controllers/api/v1/phantom_players_controller.rb'
-    - 'app/controllers/api/v1/playlist_parties_controller.rb'
-    - 'app/controllers/api/v1/playlists_controller.rb'
-    - 'app/controllers/api/v1/raid_groups_controller.rb'
-    - 'app/controllers/api/v1/raids_controller.rb'
-    - 'app/controllers/api/v1/skills_controller.rb'
-    - 'app/controllers/api/v1/statuses_controller.rb'
-    - 'app/controllers/api/v1/stickers_controller.rb'
-    - 'app/controllers/api/v1/substitutions_controller.rb'
-    - 'app/controllers/api/v1/summon_series_controller.rb'
-    - 'app/controllers/api/v1/summons_controller.rb'
-    - 'app/controllers/api/v1/support_summons_controller.rb'
-    - 'app/controllers/api/v1/users_controller.rb'
-    - 'app/controllers/api/v1/weapon_keys_controller.rb'
-    - 'app/controllers/api/v1/weapon_series_controller.rb'
-    - 'app/controllers/api/v1/weapon_series_variants_controller.rb'
-    - 'app/controllers/api/v1/weapon_skill_boost_types_controller.rb'
-    - 'app/controllers/api/v1/weapon_skill_data_controller.rb'
-    - 'app/controllers/api/v1/weapon_skill_effects_controller.rb'
-    - 'app/controllers/api/v1/weapon_skill_families_controller.rb'
-    - 'app/controllers/api/v1/weapon_skill_versions_controller.rb'
-    - 'app/controllers/api/v1/weapon_stat_modifiers_controller.rb'
-    - 'app/controllers/api/v1/weapons_controller.rb'
-
 # Offense count: 10
 # This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: EnforcedStyle.
@@ -1644,8 +1553,6 @@ Rails/Validation:
 # This cop supports unsafe autocorrection (--autocorrect-all).
 Rails/WhereEquals:
   Exclude:
-    - 'app/controllers/api/v1/favorites_controller.rb'
-    - 'app/controllers/api/v1/users_controller.rb'
     - 'app/services/party_query_builder.rb'
 
 # Offense count: 2
@@ -1654,7 +1561,6 @@ Rails/WhereEquals:
 # SupportedStyles: exists, where
 Rails/WhereExists:
   Exclude:
-    - 'app/controllers/api/v1/raids_controller.rb'
     - 'app/models/concerns/solomonis_party_seals.rb'
 
 # Offense count: 1

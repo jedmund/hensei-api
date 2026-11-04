@@ -80,13 +80,13 @@ module Api
       private
 
       def set_event
-        @event = Event.unite_and_fight.find(params[:id])
+        @event = Event.unite_and_fight.find(params.expect(:id))
       end
 
       # Maps the GW fields onto the event: element by name or number, and the
       # JST days onto starts_at/ends_at. Renders a 422 for an unparseable date.
       def event_attributes
-        permitted = params.require(:gw_event).permit(:element, :start_date, :end_date, :event_number)
+        permitted = params.expect(gw_event: %i[element start_date end_date event_number])
         attrs = permitted.slice(:event_number).to_h.symbolize_keys
         attrs[:element] = Event.normalize_element(permitted[:element]) if permitted.key?(:element)
         attrs.merge(Event.gw_window(permitted[:start_date], permitted[:end_date]))

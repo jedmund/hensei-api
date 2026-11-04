@@ -69,7 +69,7 @@ module Api
 
       # POST /crews/:crew_id/phantom_players/:id/assign
       def assign
-        user = User.find(params[:user_id])
+        user = User.find(params.expect(:user_id))
         @phantom.assign_to(user)
         render json: PhantomPlayerBlueprint.render(@phantom, view: :with_claimed_by, root: :phantom_player)
       end
@@ -128,7 +128,7 @@ module Api
       private
 
       def set_crew
-        @crew = Crew.find(params[:crew_id])
+        @crew = Crew.find(params.expect(:crew_id))
       end
 
       def set_crew_from_user
@@ -137,15 +137,15 @@ module Api
       end
 
       def set_phantom
-        @phantom = @crew.phantom_players.find(params[:id])
+        @phantom = @crew.phantom_players.find(params.expect(:id))
       end
 
       def set_phantom_for_scores
-        @phantom = @crew.phantom_players.find(params[:id])
+        @phantom = @crew.phantom_players.find(params.expect(:id))
       end
 
       def phantom_params
-        params.require(:phantom_player).permit(:name, :granblue_id, :notes, :joined_at, :retired, :retired_at)
+        params.expect(phantom_player: %i[name granblue_id notes joined_at retired retired_at])
       end
 
       def bulk_params

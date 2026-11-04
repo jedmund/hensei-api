@@ -30,7 +30,7 @@ module Api
       private
 
       def set_target_user
-        @target_user = User.find(params[:user_id])
+        @target_user = User.find(params.expect(:user_id))
       rescue ActiveRecord::RecordNotFound
         render json: { error: 'User not found' }, status: :not_found
       end

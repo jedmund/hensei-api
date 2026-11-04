@@ -70,7 +70,7 @@ module Api
         # Validate the whole batch before opening the transaction so a bad id in
         # entry N doesn't roll back the N-1 successful updates and leave the
         # caller without a usable error.
-        requested_ids = entries.map { |e| e[:id] }
+        requested_ids = entries.pluck(:id)
         known_ids = GridCharacterRole.where(id: requested_ids).pluck(:id)
         missing = requested_ids - known_ids
         unless missing.empty?

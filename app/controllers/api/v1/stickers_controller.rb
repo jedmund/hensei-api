@@ -170,7 +170,7 @@ module Api
       end
 
       def sticker_params
-        params.require(:sticker).permit(*PERMITTED)
+        params.expect(sticker: [*PERMITTED])
       end
 
       # The columns to assign: library_id is applied by use_library_images

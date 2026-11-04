@@ -75,7 +75,7 @@ module CollectionSourceConcern
   # @param party [Party] the party to check
   # @return [void]
   def clear_collection_source_if_empty!(party)
-    return unless party.collection_source_user_id.present?
+    return if party.collection_source_user_id.blank?
 
     has_links = party.characters.where.not(collection_character_id: nil).exists? ||
                 party.weapons.where.not(collection_weapon_id: nil).exists? ||

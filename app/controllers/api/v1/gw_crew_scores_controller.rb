@@ -45,15 +45,15 @@ module Api
       end
 
       def set_participation
-        @participation = @crew.crew_gw_participations.find(params[:gw_participation_id])
+        @participation = @crew.crew_gw_participations.find(params.expect(:gw_participation_id))
       end
 
       def set_score
-        @score = @participation.gw_crew_scores.find(params[:id])
+        @score = @participation.gw_crew_scores.find(params.expect(:id))
       end
 
       def score_params
-        params.require(:crew_score).permit(:round, :crew_score, :opponent_score, :opponent_name, :opponent_granblue_id)
+        params.expect(crew_score: %i[round crew_score opponent_score opponent_name opponent_granblue_id])
       end
     end
   end

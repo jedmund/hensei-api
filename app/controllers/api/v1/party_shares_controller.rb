@@ -46,11 +46,11 @@ module Api
       private
 
       def set_party
-        @party = Party.find(params[:party_id])
+        @party = Party.find(params.expect(:party_id))
       end
 
       def set_party_share
-        @party_share = @party.party_shares.find(params[:id])
+        @party_share = @party.party_shares.find(params.expect(:id))
       end
 
       def authorize_party_owner!
@@ -60,7 +60,7 @@ module Api
       end
 
       def party_share_params
-        params.require(:share).permit(:crew_id)
+        params.expect(share: [:crew_id])
       end
     end
   end

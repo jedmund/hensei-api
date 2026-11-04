@@ -48,7 +48,8 @@ module Api
       end
 
       def sign_in(linked)
-        linked.update_column(:last_used_at, Time.current)
+        # A login timestamp, not an edit: skip validations and leave updated_at alone
+        linked.update_column(:last_used_at, Time.current) # rubocop:disable Rails/SkipsModelValidations
         render_token_response(linked.user)
       end
 

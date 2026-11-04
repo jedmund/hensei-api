@@ -29,87 +29,11 @@ module Api
       DEFAULT_MIN_WEAPONS = 0
 
       DEFAULT_MAX_CLEAR_TIME = 5400
-
-      def create
-        return create_from_signup_ticket if params[:signup_ticket].present?
-
-        user = User.new(user_params)
-
-        unless user.save
-          Rails.logger.error "[Registration] Validation failed: #{user.errors.full_messages.join(', ')}"
-          return render json: { error: 'Validation failed', messages: user.errors.full_messages },
-                        status: :unprocessable_content
-        end
-
-        token = Doorkeeper::AccessToken.create!(
-          application_id: nil,
-          resource_owner_id: user.id,
-          expires_in: 30.days,
-          scopes: 'public'
-        ).token
-
-        raw_token = user.generate_verification_token!
-        SendEmailVerificationJob.perform_later(user.id, raw_token)
-
-        render json: UserBlueprint.render({
-                                            id: user.id,
-                                            username: user.username,
-                                            token: token,
-                                            email_verified: false
-                                          },
-                                          view: :token),
-               status: :created
-      rescue StandardError => e
-        Rails.logger.error "[Registration] Unexpected error: #{e.class}: #{e.message}"
-        Rails.logger.error e.backtrace&.first(10)&.join("\n")
-        render json: { error: 'Registration failed' },
-               status: :internal_server_error
-      end
-
-      # TODO: Allow admins to update other users
-
-      # Email and password are not updatable here; they change only through
-      # registration and the password reset flow.
-      def update
-        @user.assign_attributes(user_update_params)
-        dismiss_password_prompt
-        if @user.save
-          render json: UserBlueprint.render(@user, view: :minimal)
-        else
-          render_validation_error_response(@user)
-        end
-      end
-
-      def info
-        payload = UserBlueprint.render_as_hash(@user, view: :minimal)
-        cast_bool = ActiveModel::Type::Boolean.new
-
-        payload[:collection_accessible] = @user.collection_viewable_by?(current_user) if cast_bool.cast(params[:check_collection])
-
-        payload[:support_summons_accessible] = @user.support_summons_viewable_by?(current_user) if cast_bool.cast(params[:check_support_summons])
-
-        render json: payload
-      end
-
-      def search
-        query = params[:query].to_s.strip
-        return render json: { users: [] } if query.length < 2
-
-        escaped = query.downcase.gsub(/[\\%_]/) { |c| "\\#{c}" }
-        q = "#{escaped}%"
-        users = User
-                .where("LOWER(username) LIKE :q ESCAPE '\\' OR LOWER(display_name) LIKE :q ESCAPE '\\'", q: q)
-                .where.not(id: current_user.id)
-                .includes(active_crew_membership: :crew)
-                .limit(10)
-        render json: { users: UserBlueprint.render_as_hash(users, view: :minimal) }
-      end
-
-      # GET /users/me - returns current user's settings including email
-      # This endpoint is ONLY for authenticated users viewing their own settings
-      def me
-        render json: UserBlueprint.render(current_user, view: :settings)
-      end
+      USER_FIELDS = %i[username email password password_confirmation display_name
+                       description granblue_id picture element language gender private
+                       theme show_gamertag wiki_profile youtube collection_privacy
+                       import_weapons default_import_visibility simple_portraits
+                       default_rep_view timezone support_summons_public].freeze
 
       def show
         if @user.nil?
@@ -152,10 +76,93 @@ module Api
         end
       end
 
+      def create
+        return create_from_signup_ticket if params[:signup_ticket].present?
+
+        user = User.new(user_params)
+
+        unless user.save
+          Rails.logger.error "[Registration] Validation failed: #{user.errors.full_messages.join(', ')}"
+          return render json: { error: 'Validation failed', messages: user.errors.full_messages },
+                        status: :unprocessable_content
+        end
+
+        token = Doorkeeper::AccessToken.create!(
+          application_id: nil,
+          resource_owner_id: user.id,
+          expires_in: 30.days,
+          scopes: 'public'
+        ).token
+
+        raw_token = user.generate_verification_token!
+        SendEmailVerificationJob.perform_later(user.id, raw_token)
+
+        render json: UserBlueprint.render({
+                                            id: user.id,
+                                            username: user.username,
+                                            token: token,
+                                            email_verified: false
+                                          },
+                                          view: :token),
+               status: :created
+      rescue StandardError => e
+        Rails.logger.error "[Registration] Unexpected error: #{e.class}: #{e.message}"
+        Rails.logger.error e.backtrace&.first(10)&.join("\n")
+        render json: { error: 'Registration failed' },
+               status: :internal_server_error
+      end
+
+      # TODO: Allow admins to update other users
+
+      # Email and password are not updatable here; they change only through
+      # registration and the password reset flow.
+      def update
+        attrs = user_update_params
+        dismissed = attrs.delete(:password_prompt_dismissed)
+        @user.assign_attributes(attrs)
+        dismiss_password_prompt(dismissed)
+        if @user.save
+          render json: UserBlueprint.render(@user, view: :minimal)
+        else
+          render_validation_error_response(@user)
+        end
+      end
+
+      def info
+        payload = UserBlueprint.render_as_hash(@user, view: :minimal)
+        cast_bool = ActiveModel::Type::Boolean.new
+
+        payload[:collection_accessible] = @user.collection_viewable_by?(current_user) if cast_bool.cast(params[:check_collection])
+
+        payload[:support_summons_accessible] = @user.support_summons_viewable_by?(current_user) if cast_bool.cast(params[:check_support_summons])
+
+        render json: payload
+      end
+
+      def search
+        query = params[:query].to_s.strip
+        return render json: { users: [] } if query.length < 2
+
+        escaped = query.downcase.gsub(/[\\%_]/) { |c| "\\#{c}" }
+        q = "#{escaped}%"
+        users = User
+                .where("LOWER(username) LIKE :q ESCAPE '\\' OR LOWER(display_name) LIKE :q ESCAPE '\\'", q: q)
+                .where.not(id: current_user.id)
+                .includes(active_crew_membership: :crew)
+                .limit(10)
+        render json: { users: UserBlueprint.render_as_hash(users, view: :minimal) }
+      end
+
+      # GET /users/me - returns current user's settings including email
+      # This endpoint is ONLY for authenticated users viewing their own settings
+      def me
+        render json: UserBlueprint.render(current_user, view: :settings)
+      end
+
       # Looks the email up and reports whether it is already registered. The
       # register form relies on this; the endpoint is rate limited above.
       def check_email
-        available = User.where('email = ?', params[:email]).none?
+        available = User.where(email: params[:email].to_s).none?
         render json: { available: available }
       end
 
@@ -220,8 +227,7 @@ module Api
 
       # The settings banner suggesting a password stays dismissed once
       # dismissed. Only the flag is accepted, never the timestamp itself.
-      def dismiss_password_prompt
-        dismissed = params.dig(:user, :password_prompt_dismissed)
+      def dismiss_password_prompt(dismissed)
         return unless ActiveModel::Type::Boolean.new.cast(dismissed)
 
         @user.password_prompt_dismissed_at ||= Time.current
@@ -343,17 +349,14 @@ module Api
       end
 
       def user_params
-        params.require(:user).permit(
-          :username, :email, :password, :password_confirmation, :display_name,
-          :description, :granblue_id, :picture, :element, :language, :gender, :private,
-          :theme, :show_gamertag, :wiki_profile, :youtube, :collection_privacy,
-          :import_weapons, :default_import_visibility, :simple_portraits,
-          :default_rep_view, :timezone, :support_summons_public
-        )
+        params.expect(user: USER_FIELDS)
       end
 
+      # Also takes password_prompt_dismissed, which update hands to
+      # dismiss_password_prompt rather than assigning (it isn't a column)
       def user_update_params
-        user_params.except(:email, :password, :password_confirmation)
+        params.expect(user: [*USER_FIELDS, :password_prompt_dismissed])
+              .except(:email, :password, :password_confirmation)
       end
     end
   end

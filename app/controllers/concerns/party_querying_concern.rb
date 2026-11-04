@@ -49,7 +49,7 @@ module PartyQueryingConcern
 
   # Returns a remixed party name based on the current party name and current_user language.
   def remixed_name(name)
-    blanked_name = { en: name.blank? ? 'Untitled team' : name, ja: name.blank? ? '無名の編成' : name }
+    blanked_name = { en: name.presence || 'Untitled team', ja: name.presence || '無名の編成' }
     if current_user&.language == 'ja'
       "#{blanked_name[:ja]}のリミックス"
     else
