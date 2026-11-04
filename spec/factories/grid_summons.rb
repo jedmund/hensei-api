@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :grid_summon do
-    association :party
+    party
     # Use the canonical (seeded) Summon record.
     # Make sure your CSV canonical data (loaded via canonical.rb) includes a Summon with the specified granblue_id.
     summon { Summon.find_by!(granblue_id: '2040433000') }

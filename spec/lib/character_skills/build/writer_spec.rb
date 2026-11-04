@@ -3,9 +3,11 @@
 require 'rails_helper'
 
 RSpec.describe CharacterSkills::Build::Writer do
-  samples = {
-    vikala: '3040252000', caim: '3040164000', threo: '3040032000', wamdus: '3040419000', orologia: '3040536000'
-  }
+  def self.samples
+    {
+      vikala: '3040252000', caim: '3040164000', threo: '3040032000', wamdus: '3040419000', orologia: '3040536000'
+    }
+  end
 
   def fixture_dir = Rails.root.join('spec/fixtures/character_skills')
 
@@ -57,7 +59,7 @@ RSpec.describe CharacterSkills::Build::Writer do
   end
 
   it 'writes what the graph holds: slots, versions, effects and links' do
-    character = sample_character(:vikala, samples[:vikala])
+    character = sample_character(:vikala, self.class.samples[:vikala])
     graph = graph_for(character)
     report = write(character, graph)
 
@@ -65,11 +67,11 @@ RSpec.describe CharacterSkills::Build::Writer do
     effects = graph[:slots].sum { |slot| slot[:versions].sum { |v| v[:effects].size } }
     expect(report.to_h).to include(slots_created: graph[:slots].size, versions_created: versions,
                                    effects_created: effects, links_created: graph[:links].size)
-    expect(CharacterSkill.where(character_id: character.id).pluck(:character_granblue_id).uniq).to eq([samples[:vikala]])
+    expect(CharacterSkill.where(character_id: character.id).pluck(:character_granblue_id).uniq).to eq([self.class.samples[:vikala]])
   end
 
   it 'updates a renamed ability in place and keeps its id' do
-    character = sample_character(:vikala, samples[:vikala])
+    character = sample_character(:vikala, self.class.samples[:vikala])
     write(character)
     before = version(character, 'ability', 2, 'Dazzling Dreams')
     ids = ids_for(character)
@@ -86,7 +88,7 @@ RSpec.describe CharacterSkills::Build::Writer do
   end
 
   it 'deletes a version the build no longer makes, with its effects and links' do
-    character = sample_character(:vikala, samples[:vikala])
+    character = sample_character(:vikala, self.class.samples[:vikala])
     write(character)
     alt = version(character, 'ability', 2, 'Eccentric Parade')
     expect(alt.incoming_links).to exist
@@ -105,7 +107,7 @@ RSpec.describe CharacterSkills::Build::Writer do
   end
 
   it 'keeps link ids across a rebuild' do
-    character = sample_character(:caim, samples[:caim])
+    character = sample_character(:caim, self.class.samples[:caim])
     write(character)
     links = CharacterSkillVersionLink.joins(from_version: :character_skill)
                                      .where(character_skills: { character_id: character.id })
@@ -117,7 +119,7 @@ RSpec.describe CharacterSkills::Build::Writer do
   end
 
   it 'clears a column the build no longer produces, and restores defaults' do
-    character = sample_character(:orologia, samples[:orologia])
+    character = sample_character(:orologia, self.class.samples[:orologia])
     write(character)
     stored = CharacterSkillVersion.joins(:character_skill).where(character_skills: { character_id: character.id }).first
     stored.update_columns(name_jp: '手で書いた', enhance_levels: [99], trigger_type: 'contextual')
@@ -129,7 +131,7 @@ RSpec.describe CharacterSkills::Build::Writer do
   end
 
   it 'removes duplicate ordinals left by older builds, keeping the oldest row' do
-    character = sample_character(:wamdus, samples[:wamdus])
+    character = sample_character(:wamdus, self.class.samples[:wamdus])
     write(character)
     original = CharacterSkillVersion.joins(:character_skill).where(character_skills: { character_id: character.id })
                                     .order(:created_at).first
@@ -144,7 +146,7 @@ RSpec.describe CharacterSkills::Build::Writer do
   end
 
   it 'deletes slots the build no longer makes' do
-    character = sample_character(:vikala, samples[:vikala])
+    character = sample_character(:vikala, self.class.samples[:vikala])
     write(character)
     graph = graph_for(character)
     graph[:slots].reject! { |s| s[:attrs][:kind] == 'support' }
@@ -155,7 +157,7 @@ RSpec.describe CharacterSkills::Build::Writer do
   end
 
   it "writes a style row's skills without touching its base's" do
-    base = sample_character(:vikala, samples[:vikala])
+    base = sample_character(:vikala, self.class.samples[:vikala])
     write(base)
     ids = ids_for(base)
     style = create(:character, granblue_id: base.granblue_id, style_swap: true, name_en: 'Vikala',
@@ -167,7 +169,7 @@ RSpec.describe CharacterSkills::Build::Writer do
   end
 
   it 'collects the icon stems it created or changed' do
-    character = sample_character(:vikala, samples[:vikala])
+    character = sample_character(:vikala, self.class.samples[:vikala])
     writer = described_class.new(character, graph_for(character))
     writer.call
     expect(writer.icon_stems).not_to be_empty

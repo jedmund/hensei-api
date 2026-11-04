@@ -11,6 +11,7 @@ RSpec.describe GachaRatesFetcher do
   let(:payload) { gacha_banner_payload }
   let(:list) { { 'legend' => { 'lineup' => [payload['banner'].merge('id' => '211961', 'times' => '1'), payload['banner']] } } }
   let(:requests) { [] }
+  let(:uploads) { [] }
 
   after { FileUtils.remove_entry(dir) }
 
@@ -27,26 +28,33 @@ RSpec.describe GachaRatesFetcher do
       requests << [uri.to_s, headers]
       respond(uri.path) || raise("unexpected #{uri}")
     end
-    allow(fetcher).to receive(:upload) { |body| (@uploaded = body) && { 'game_id' => '211960', 'items' => 9, 'unmatched' => 0 } }
-    expect { fetcher.import_cookies("Cookie: wing=abc; t=1; access_gbtk=x; access_gbtk=y\n") }.to output.to_stdout
+    allow(fetcher).to receive(:upload) do |body|
+      uploads << body
+      { 'game_id' => '211960', 'items' => 9, 'unmatched' => 0 }
+    end
+    allow(fetcher).to receive(:puts).and_call_original
+    allow(fetcher).to receive(:puts).with(/\ASaved \d+ cookies/)
+    fetcher.import_cookies("Cookie: wing=abc; t=1; access_gbtk=x; access_gbtk=y\n")
   end
 
   it 'imports a copied Cookie header, keeping the first of a repeated name' do
+    expect(fetcher).to have_received(:puts).with("Saved 3 cookies to #{env['GBF_COOKIE_FILE']}")
     expect(JSON.parse(File.read(env['GBF_COOKIE_FILE']))).to eq('wing' => 'abc', 't' => '1', 'access_gbtk' => 'x')
     expect(File.stat(env['GBF_COOKIE_FILE']).mode & 0o777).to eq(0o600)
   end
 
   it "uploads the 10-part banner's lineup entry and both rate tabs, with the game's version" do
     expect { fetcher.run }.to output(/Uploaded banner 211960/).to_stdout
-    expect(@uploaded['banner']).to include('id' => '211960', 'service_start' => '2026/10/9 19:00')
-    expect(@uploaded['tabs'].keys).to eq(%w[1 2])
-    expect(GachaSimulation::BannerImport.call(JSON.parse(JSON.generate(@uploaded)))['items']).to eq(9)
+    uploaded = uploads.last
+    expect(uploaded['banner']).to include('id' => '211960', 'service_start' => '2026/10/9 19:00')
+    expect(uploaded['tabs'].keys).to eq(%w[1 2])
+    expect(GachaSimulation::BannerImport.call(JSON.parse(JSON.generate(uploaded)))['items']).to eq(9)
     ratio = requests.find { |url, _| url.include?('provision_ratio') }
     expect(ratio[0]).to include('uid=123')
     expect(ratio[1]).to include('X-Version' => '1791424018')
   end
 
-  context 'while the uploaded banner is running' do
+  context 'when the uploaded banner is running' do
     before { travel_to Time.zone.parse('2026-10-10 12:00 JST') }
 
     it "doesn't contact the game until the banner ends, unless forced" do
@@ -72,11 +80,10 @@ RSpec.describe GachaRatesFetcher do
     travel_to Time.zone.parse('2026-10-12 19:05 JST')
     requests.clear
     expect { fetcher.run }.to output(/unchanged/).to_stdout
-    expect(requests.map(&:first)).to all(satisfy { |url| !url.include?('provision_ratio') })
+    expect(requests.map(&:first)).to all(satisfy { |url| url.exclude?('provision_ratio') })
 
     payload['banner'].merge!('id' => '211962', 'service_end' => '6:59 p.m., Oct 15, 2026 (JST)')
-    allow(fetcher).to receive(:upload).and_return({ 'game_id' => '211962', 'items' => 9, 'unmatched' => 0 })
-    allow(fetcher).to receive(:rates).and_return(payload['tabs']['1'])
+    allow(fetcher).to receive_messages(upload: { 'game_id' => '211962', 'items' => 9, 'unmatched' => 0 }, rates: payload['tabs']['1'])
     expect { fetcher.run }.to output(/Uploaded banner 211962/).to_stdout
     state = JSON.parse(File.read(File.join(dir, 'cookies-state.json')))
     expect(state).to eq('game_id' => '211962', 'ends_at' => '2026-10-15T19:00:00+09:00')
@@ -126,7 +133,7 @@ RSpec.describe GachaRatesFetcher do
     expect { fetcher.run }.to output(/Uploaded/).to_stdout.and output(/Couldn't read/).to_stderr
     expect(fetcher).to have_received(:alert).with(/checking again in a day/)
     ends_at = Time.iso8601(JSON.parse(File.read(File.join(dir, 'cookies-state.json')))['ends_at'])
-    expect(ends_at).to eq(Time.current + 1.day)
+    expect(ends_at).to eq(1.day.from_now)
   end
 
   it 'reads banner ends at noon and midnight' do

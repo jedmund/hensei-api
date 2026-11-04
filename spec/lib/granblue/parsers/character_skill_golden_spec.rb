@@ -7,13 +7,15 @@ require 'rails_helper'
 # sample characters, so the parser can be refactored (e.g. the #5 builder split)
 # with proof that behavior is unchanged. Regenerate goldens with REGENERATE=1.
 RSpec.describe 'CharacterSkillParser golden snapshots' do
-  samples = {
-    vikala: { granblue_id: '3040252000', name: 'Vikala' },
-    caim: { granblue_id: '3040164000', name: 'Caim' },
-    threo: { granblue_id: '3040032000', name: 'Threo' },
-    wamdus: { granblue_id: '3040419000', name: 'Wamdus' },
-    orologia: { granblue_id: '3040536000', name: 'Orologia' }
-  }
+  def self.samples
+    {
+      vikala: { granblue_id: '3040252000', name: 'Vikala' },
+      caim: { granblue_id: '3040164000', name: 'Caim' },
+      threo: { granblue_id: '3040032000', name: 'Threo' },
+      wamdus: { granblue_id: '3040419000', name: 'Wamdus' },
+      orologia: { granblue_id: '3040536000', name: 'Orologia' }
+    }
+  end
 
   # The goldens were made with the icon snapshot in place: its entries for these characters.
   before { put_icon_snapshot(fixture_dir.join('golden-icons.json').read) }
@@ -36,7 +38,7 @@ RSpec.describe 'CharacterSkillParser golden snapshots' do
   # must come out the same as from the whole payload.
   it 'builds the same from the whole and the sanitized game payloads' do
     Granblue::Parsers::StatusCatalogBuilder.build_all
-    samples.each do |key, sample|
+    self.class.samples.each do |key, sample|
       raw = JSON.parse(File.read(fixture_dir.join("character-#{key}-gamedata.json")))
       graph = ->(c) { Granblue::Parsers::CharacterSkillParser.new(Character.find(c.id)).graph }
       wiki_raw = File.read(fixture_dir.join("character-#{key}-wikidata.txt"))

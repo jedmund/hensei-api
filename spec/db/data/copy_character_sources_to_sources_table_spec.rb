@@ -13,20 +13,6 @@ RSpec.describe 'CopyCharacterSourcesToSourcesTable' do
   let(:page) { '<html><head><title>t</title></head><body><div id="menu">m</div><div id="body"><p>本文</p></div></body></html>' }
   let(:payload) { { 'id' => '1', 'b' => 2, 'ability' => { 'z' => 1, 'a' => 0 } } }
 
-  # The columns as the old code left them (the model no longer writes them).
-  def set_columns(character, **values)
-    conn = Character.connection
-    sets = values.map do |column, value|
-      sql = value.is_a?(Hash) ? "#{conn.quote(JSON.generate(value))}::jsonb" : conn.quote(value)
-      "#{column} = #{sql}"
-    end
-    conn.execute("UPDATE characters SET #{sets.join(', ')} WHERE id = #{conn.quote(character.id)}")
-  end
-
-  def run
-    migration_class.new.tap { |m| m.verbose = false }.up
-  end
-
   let!(:full) do
     create(:character).tap do |c|
       set_columns(c, wiki_raw: '{{Character}}', wiki_raw_fetched_at: fetched_at, wiki_raw_jp: page,
@@ -39,6 +25,20 @@ RSpec.describe 'CopyCharacterSourcesToSourcesTable' do
       Character.connection.execute("UPDATE characters SET game_raw_en = 'null'::jsonb, game_raw_jp = '{}'::jsonb " \
                                    "WHERE id = #{Character.connection.quote(c.id)}")
     end
+  end
+
+  def run
+    migration_class.new.tap { |m| m.verbose = false }.up
+  end
+
+  # The columns as the old code left them (the model no longer writes them).
+  def set_columns(character, **values)
+    conn = Character.connection
+    sets = values.map do |column, value|
+      sql = value.is_a?(Hash) ? "#{conn.quote(JSON.generate(value))}::jsonb" : conn.quote(value)
+      "#{column} = #{sql}"
+    end
+    conn.execute("UPDATE characters SET #{sets.join(', ')} WHERE id = #{conn.quote(character.id)}")
   end
 
   it 'copies each non-blank column into an owned source, trimmed and canonical' do

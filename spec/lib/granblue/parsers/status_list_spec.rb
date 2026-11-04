@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Granblue::Parsers::StatusList do
-  before { described_class.use(File.read(Rails.root.join('spec/fixtures/wiki/status_list_extract.lua'))) }
+  before { described_class.use(Rails.root.join('spec/fixtures/wiki/status_list_extract.lua').read) }
 
   def resolve(name) = described_class.resolve(name)&.to_h&.merge(variant: described_class.resolve(name)&.variant)
 
@@ -48,7 +48,7 @@ RSpec.describe Granblue::Parsers::StatusList do
   end
 
   it 'validates a fetched body: parses, has buffs and debuffs, and resolves every name' do
-    expect(described_class.validate!(File.read(Rails.root.join('spec/fixtures/wiki/status_list_extract.lua')))).to be_a(described_class)
+    expect(described_class.validate!(Rails.root.join('spec/fixtures/wiki/status_list_extract.lua').read)).to be_a(described_class)
     expect { described_class.validate!('return {}') }.to raise_error(described_class::Invalid)
     expect { described_class.validate!('<html>') }.to raise_error(described_class::Invalid)
   end
@@ -58,7 +58,7 @@ RSpec.describe Granblue::Parsers::StatusList do
   end
 
   context 'with the stored source row', :status_list do
-    let(:extract) { File.read(Rails.root.join('spec/fixtures/wiki/status_list_extract.lua')) }
+    let(:extract) { Rails.root.join('spec/fixtures/wiki/status_list_extract.lua').read }
 
     it 'reads the wiki_status_list row, and re-reads it when its sha changes' do
       described_class.reset!

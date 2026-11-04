@@ -2,13 +2,13 @@ require 'rails_helper'
 require Rails.root.join('lib/granblue/classic_lower_catalogue')
 
 RSpec.describe Granblue::ClassicLowerCatalogue do
+  subject(:service) { described_class.new(manifest: { 'entries' => [entry] }) }
+
   let!(:weapon) { create(:weapon, rarity: 1, promotions: [1, 99], release_date: Date.new(2014, 3, 10)) }
   let(:entry) do
     { 'type' => 'Weapon', 'granblue_id' => weapon.granblue_id, 'rarity' => 1,
       'evidence' => { 'kind' => 'catalogue_release_date', 'date' => '2014-03-10' } }
   end
-
-  subject(:service) { described_class.new(manifest: { 'entries' => [entry] }) }
 
   it 'adds all three shared Classic memberships, preserves unrelated flags and reruns' do
     expect(service.preview.first[:after]).to eq([1, 99, 2, 3, 12])

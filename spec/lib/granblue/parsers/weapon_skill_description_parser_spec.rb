@@ -169,7 +169,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillDescriptionParser do
 
   it "keeps the plain C.A. DMG cap apart from the special one in one list (Sword's Charge)" do
     types = parse('Boost to C.A. DMG, C.A. DMG cap, and special C.A. DMG cap based on how many sabres are equipped')
-            .fetch(:clauses).map { |c| c[:boost_type] }
+            .fetch(:clauses).pluck(:boost_type)
     expect(types).to include('ca_dmg', 'ca_dmg_cap', 'sp_ca_cap')
     expect(types).not_to include('dmg_cap')
   end
@@ -180,7 +180,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillDescriptionParser do
   end
 
   describe 'proc and condition text (2026-10 audit)' do
-    def boost_types(desc) = parse(desc)[:clauses].map { |c| c[:boost_type] }
+    def boost_types(desc) = parse(desc)[:clauses].pluck(:boost_type)
 
     it "splits a sentence ending in an all-caps stat and skips its heal proc (Empress-Justice's Virtue)" do
       r = parse("When main weapon: Massive boost to Water allies' {{tt|ATK|'''Modifier:''' EX}}. Water allies restore " \
@@ -301,7 +301,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillDescriptionParser do
     it "doesn't read a critical hit damage cap as Critical (One Sting, One Kill II)" do
       r = parse("'''When main weapon (MC only):''' Every superior elemental attack will be a critical " \
                 "hit.<br />20% boost to all allies' critical hit damage cap.")
-      valued = r[:clauses].select { |c| c[:value] || c[:size] }.map { |c| c[:boost_type] }
+      valued = r[:clauses].select { |c| c[:value] || c[:size] }.pluck(:boost_type)
       expect(valued).not_to include('critical', 'dmg_cap')
     end
   end

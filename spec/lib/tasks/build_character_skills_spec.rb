@@ -7,13 +7,9 @@ RSpec.describe 'character skill build tasks' do
   let(:summary) { CharacterSkills::Build::Runner::Summary.new(failed: 0, empty: 0, results: []) }
   let(:runner) { instance_double(CharacterSkills::Build::Runner, call: summary) }
 
-  before(:all) do
-    Rails.application.load_tasks unless Rake::Task.task_defined?('granblue:build_character_skills')
-  end
-
   around do |example|
     keys = %w[ids all mode limit icons CHARACTER_SKILL_BUILD]
-    saved = keys.to_h { |k| [k, ENV.fetch(k, nil)] }
+    saved = keys.index_with { |k| ENV.fetch(k, nil) }
     keys.each { |k| ENV.delete(k) }
     example.run
   ensure
@@ -21,6 +17,7 @@ RSpec.describe 'character skill build tasks' do
   end
 
   before do
+    Rails.application.load_tasks unless Rake::Task.task_defined?('granblue:build_character_skills')
     allow(CharacterSkills::Build::Runner).to receive(:new).and_return(runner)
     allow(ActiveRecord::Base).to receive(:logger=)
   end

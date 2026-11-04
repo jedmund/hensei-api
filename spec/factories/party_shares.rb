@@ -3,8 +3,8 @@
 FactoryBot.define do
   factory :party_share do
     party
-    association :shareable, factory: :crew
-    association :shared_by, factory: :user
+    shareable factory: %i[crew]
+    shared_by factory: %i[user]
 
     # Ensure the shared_by user owns the party and is in the crew
     after(:build) do |party_share|

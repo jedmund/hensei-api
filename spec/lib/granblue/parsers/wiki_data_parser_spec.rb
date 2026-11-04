@@ -275,7 +275,7 @@ RSpec.describe Granblue::Parsers::WikiDataParser do
 
   describe '.find_weapon_series_by_name' do
     it 'converts name to slug and queries WeaponSeries' do
-      series = double('WeaponSeries', id: 42)
+      series = instance_double(WeaponSeries, id: 42)
       allow(WeaponSeries).to receive(:find_by).with(slug: 'revenant').and_return(series)
 
       result = described_class.find_weapon_series_by_name('Revenant Weapons')

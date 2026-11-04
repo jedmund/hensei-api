@@ -7,7 +7,6 @@ RSpec.describe WeaponSkills::Build::Runner do
   let(:series) { create(:weapon_series, slug: 'spec-series') }
   let!(:sourced) { create(:weapon, granblue_id: '1040000001', weapon_series: series) }
   let!(:slotted) { create(:weapon, granblue_id: '1040000002') }
-  let!(:outside) { create(:weapon, granblue_id: '1040000003') }
   let(:context) do
     WeaponSkills::Build::Context.new(store: WeaponSkills::SourceStore::Memory.new,
                                      overlay: Granblue::CurationSnapshot::Overlay.new([]))
@@ -15,6 +14,7 @@ RSpec.describe WeaponSkills::Build::Runner do
   let(:report) { WeaponSkills::Build::Writer::Report.zero.tap { |r| r.rows_created = 2 } }
 
   before do
+    create(:weapon, granblue_id: '1040000003')
     WeaponSource.create!(weapon: sourced, kind: 'wiki_raw', key: 'Sourced', body: 'page', fetched_at: Time.current)
     WeaponSkill.create!(weapon_granblue_id: slotted.granblue_id, position: 1)
     allow(WeaponSkills::Build).to receive(:for) do |weapon, **|

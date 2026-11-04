@@ -4,10 +4,7 @@ require 'rails_helper'
 
 RSpec.describe Granblue::Parsers::CharacterSkills::JpLocalizer do
   let(:character) { instance_double(Character, wiki_raw_jp: '<html>', style_swap: false, style_name_jp: nil) }
-
-  def version(role, name_jp: nil)
-    { attrs: { variant_role: role, name_jp: name_jp, description_jp: nil } }
-  end
+  let(:parsed_pages) { [] }
 
   before do
     jp = {
@@ -24,7 +21,9 @@ RSpec.describe Granblue::Parsers::CharacterSkills::JpLocalizer do
     end
   end
 
-  let(:parsed_pages) { [] }
+  def version(role, name_jp: nil)
+    { attrs: { variant_role: role, name_jp: name_jp, description_jp: nil } }
+  end
 
   it 'aligns JP base and transform text to ability versions by position' do
     slots = [{ attrs: { kind: 'ability', position: 1 }, versions: [version('base'), version('transform_alt')] }]

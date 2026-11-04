@@ -9,7 +9,7 @@ RSpec.describe CharacterSkills::IconDownloadJob do
     allow(Granblue::Downloaders::AbilityIconDownloader).to receive(:new) do |stem, **|
       instance_double(Granblue::Downloaders::AbilityIconDownloader, download: results.fetch(stem))
     end
-    allow_any_instance_of(described_class).to receive(:throttle)
+    on_new_instances(described_class) { |job| allow(job).to receive(:throttle) }
   end
 
   it 'downloads each stem once to S3, skipping stored icons and counting failures' do

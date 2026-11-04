@@ -68,7 +68,7 @@ RSpec.describe CollectionArtifacts::RawDataClearer do
   end
 
   describe 'rake collection_artifacts:clear_raw_data' do
-    before(:all) do
+    before do
       Rails.application.load_tasks if Rake::Task.tasks.none? { |t| t.name == 'collection_artifacts:clear_raw_data' }
     end
 

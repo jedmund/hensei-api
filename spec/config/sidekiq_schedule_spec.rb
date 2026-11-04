@@ -25,7 +25,7 @@ RSpec.describe 'config/sidekiq.yml schedule' do
   end
 
   it 'leaves the status list and the icon snapshot to their events, not the clock' do
-    classes = schedule.values.map { |job| job['class'] }
+    classes = schedule.values.pluck('class')
     expect(classes).not_to include('Sources::FetchWikiStatusListJob', 'CharacterSkills::ExportIconSnapshotJob')
   end
 end

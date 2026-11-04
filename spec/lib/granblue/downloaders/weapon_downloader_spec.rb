@@ -4,10 +4,10 @@ require 'rails_helper'
 
 RSpec.describe Granblue::Downloaders::WeaponDownloader do
   let(:cdn) { 'https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/weapon' }
-  let(:aws_double) { double('AwsService', file_exists?: false, upload_stream: nil) }
+  let(:aws_double) { instance_double(AwsService, file_exists?: false, upload_stream: nil) }
   let(:weapon) do
-    double('Weapon', granblue_id: '1040515700', name_en: 'Raffiniert Arquebus',
-                     transcendence: false, element_variant_ids: nil)
+    instance_double(Weapon, granblue_id: '1040515700', name_en: 'Raffiniert Arquebus',
+                            transcendence: false, element_variant_ids: nil)
   end
   let(:opened_urls) { [] }
   let(:missing_urls) { [] }
@@ -15,8 +15,7 @@ RSpec.describe Granblue::Downloaders::WeaponDownloader do
   before do
     allow(AwsService).to receive(:new).and_return(aws_double)
     described_class.reset_aws_service
-    allow(Weapon).to receive(:find_by).and_return(weapon)
-    allow(Weapon).to receive(:element_changeable?).and_return(false)
+    allow(Weapon).to receive_messages(find_by: weapon, element_changeable?: false)
 
     # Stub the game CDN: record each URL and hand back a fake image stream
     allow(Granblue::Downloaders::RemoteFile).to receive(:open) do |url, &block|
@@ -70,8 +69,8 @@ RSpec.describe Granblue::Downloaders::WeaponDownloader do
 
     context 'with an element-changeable weapon' do
       let(:weapon) do
-        double('Weapon', granblue_id: '1040501700', name_en: 'Ten-Wolf Gun (Awakened)',
-                         transcendence: false, element_variant_ids: nil)
+        instance_double(Weapon, granblue_id: '1040501700', name_en: 'Ten-Wolf Gun (Awakened)',
+                                transcendence: false, element_variant_ids: nil)
       end
 
       before { allow(Weapon).to receive(:element_changeable?).with(weapon).and_return(true) }

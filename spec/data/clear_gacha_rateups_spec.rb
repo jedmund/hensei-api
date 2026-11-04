@@ -13,7 +13,7 @@ RSpec.describe ClearGachaRateups do
   end
 
   before do
-    connection.execute(<<~SQL)
+    connection.execute(<<~SQL.squish)
       INSERT INTO gacha_rateups (user_id, rate, drawable_type, drawable_id)
       VALUES ('1', 0.3, 'Weapon', '#{weapon.id}'), ('2', 0.5, 'Summon', '#{summon.id}')
     SQL

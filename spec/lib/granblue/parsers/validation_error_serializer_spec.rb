@@ -3,11 +3,11 @@
 require 'rails_helper'
 
 RSpec.describe Granblue::Parsers::ValidationErrorSerializer do
+  subject(:result) { described_class.new(record, field, details).serialize }
+
   let(:record) { Struct.new(:name).new('Test') }
   let(:field) { :name }
   let(:details) { { error: :blank } }
-
-  subject(:result) { described_class.new(record, field, details).serialize }
 
   it 'returns resource from record class name' do
     expect(result[:resource]).to eq(record.class.to_s)

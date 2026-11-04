@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe Granblue::Parsers::CharacterSkills::Builder do
+  subject(:builder) { described_class.new(character, data: data, effect_parser: effect_parser) }
+
   let(:fixtures) { Rails.root.join('spec/fixtures/character_skills') }
   let(:character) do
     build(
@@ -13,8 +15,6 @@ RSpec.describe Granblue::Parsers::CharacterSkills::Builder do
   end
   let(:data) { Granblue::Parsers::CharacterWikiData.new(character) }
   let(:effect_parser) { Granblue::Parsers::CharacterSkills::EffectParser.new({ by_name: {}, by_id: {} }) }
-
-  subject(:builder) { described_class.new(character, data: data, effect_parser: effect_parser) }
 
   it 'returns a graph with the character id, ability/ougi/support slots, and links to built versions only' do
     graph = builder.build
@@ -121,7 +121,7 @@ RSpec.describe Granblue::Parsers::CharacterSkills::Builder do
       end
     end
 
-    context 'for a style row' do
+    describe 'for a style row' do
       let(:character) do
         build(:character, granblue_id: '3040252000', name_en: 'Vikala', wiki_raw: wiki_raw, style_swap: true)
       end

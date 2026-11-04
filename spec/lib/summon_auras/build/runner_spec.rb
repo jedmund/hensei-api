@@ -7,6 +7,19 @@ RSpec.describe SummonAuras::Build::Runner do
 
   let(:io) { StringIO.new }
 
+  let!(:first) { make('2040900001') }
+  let!(:second) { make('2040900002') }
+
+  def auras(summon) = SummonAura.where(summon_granblue_id: summon.granblue_id)
+
+  def run(mode: 'write', **)
+    described_class.new(mode: mode, io: io, **).call
+  end
+
+  def make(granblue_id, raw = wiki, **attrs)
+    Summon.without_aura_build { create(:summon, granblue_id: granblue_id, element: 2, wiki_raw: raw, **attrs) }
+  end
+
   def wiki(main = '50% boost to Water Elemental ATK.', sub: "10% boost to Water allies' HP.")
     <<~WIKI
       {{Summon
@@ -16,19 +29,6 @@ RSpec.describe SummonAuras::Build::Runner do
       }}
     WIKI
   end
-
-  def make(granblue_id, raw = wiki, **attrs)
-    Summon.without_aura_build { create(:summon, granblue_id: granblue_id, element: 2, wiki_raw: raw, **attrs) }
-  end
-
-  def run(mode: 'write', **)
-    described_class.new(mode: mode, io: io, **).call
-  end
-
-  def auras(summon) = SummonAura.where(summon_granblue_id: summon.granblue_id)
-
-  let!(:first) { make('2040900001') }
-  let!(:second) { make('2040900002') }
 
   it 'builds every stale summon and stores its fingerprint' do
     summary = run
@@ -119,7 +119,7 @@ RSpec.describe SummonAuras::Build::Runner do
     end
 
     it 'never raises in shadow mode' do
-      allow_any_instance_of(described_class).to receive(:scope).and_raise(RuntimeError, 'boom')
+      on_new_instances(described_class) { |runner| allow(runner).to receive(:scope).and_raise(RuntimeError, 'boom') }
       expect { described_class.deploy(mode: 'shadow', io: io) }.not_to raise_error
       expect(io.string).to include('build_summon_auras (shadow) failed; the deploy continues')
     end

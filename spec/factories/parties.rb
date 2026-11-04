@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :party do
-    association :user
+    user
 
     # Use a sequence for unique party names (optional).
     sequence(:name) { |n| "Party #{n}" }

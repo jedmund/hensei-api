@@ -6,7 +6,7 @@ require 'rake'
 # The JSON snapshot loaders own canonical rows only. A version-linked row with the
 # same key must never be matched, overwritten or claimed by them.
 RSpec.describe 'weapon-skill JSON loaders' do
-  before(:all) do
+  before do
     Rails.application.load_tasks if Rake::Task.tasks.none? { |t| t.name == 'granblue:load_weapon_skill_data' }
   end
 

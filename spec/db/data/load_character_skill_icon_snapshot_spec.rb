@@ -8,12 +8,12 @@ RSpec.describe 'LoadCharacterSkillIconSnapshot' do
     LoadCharacterSkillIconSnapshot
   end
 
+  # The committed file is gone (PR 7b drop); a stand-in as it was exported.
+  let(:path) { Rails.root.join('tmp', "icons-#{SecureRandom.hex(4)}.json") }
+
   def run
     migration_class.new.tap { |m| m.verbose = false }.up
   end
-
-  # The committed file is gone (PR 7b drop); a stand-in as it was exported.
-  let(:path) { Rails.root.join('tmp', "icons-#{SecureRandom.hex(4)}.json") }
 
   after { FileUtils.rm_f(path) }
 

@@ -9,9 +9,9 @@ require 'rails_helper'
 # character-super-cidala-gamedata.json is the English-shaped copy of the game's own style-2
 # response (character-super-cidala-gamedata-jp.json, D39). Regenerate with REGENERATE=1.
 RSpec.describe 'CharacterSkillParser golden snapshots for a style shift' do
-  granblue_id = '3040377000'
-  base_icons = %w[1640_1 1641_1 1642_3 2529_3]
-  style_icons = %w[2559_3 2560_3 2561_1]
+  let(:granblue_id) { '3040377000' }
+  let(:base_icons) { %w[1640_1 1641_1 1642_3 2529_3] }
+  let(:style_icons) { %w[2559_3 2560_3 2561_1] }
 
   let(:fixture_dir) { Rails.root.join('spec/fixtures/character_skills') }
   let(:golden_dir) { fixture_dir.join('golden') }

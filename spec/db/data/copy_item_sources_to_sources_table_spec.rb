@@ -13,20 +13,6 @@ RSpec.describe 'CopyItemSourcesToSourcesTable' do
   let(:page) { '<html><head><title>t</title></head><body><div id="menu">m</div><div id="body"><p>本文</p></div></body></html>' }
   let(:payload) { { 'name' => 'Blade', 'master' => { 'z' => 1, 'a' => 0 }, 'user_id' => 42 } }
 
-  # The columns as the old code left them (the models no longer write them).
-  def set_columns(record, **values)
-    conn = record.class.connection
-    sets = values.map do |column, value|
-      sql = value.is_a?(Hash) ? "#{conn.quote(JSON.generate(value))}::jsonb" : conn.quote(value)
-      "#{column} = #{sql}"
-    end
-    conn.execute("UPDATE #{record.class.table_name} SET #{sets.join(', ')} WHERE id = #{conn.quote(record.id)}")
-  end
-
-  def run
-    migration_class.new.tap { |m| m.verbose = false }.up
-  end
-
   let!(:weapon) do
     create(:weapon).tap do |w|
       set_columns(w, wiki_raw: '{{Weapon}}', wiki_raw_fetched_at: fetched_at, wiki_raw_jp: page,
@@ -40,6 +26,20 @@ RSpec.describe 'CopyItemSourcesToSourcesTable' do
       Weapon.connection.execute("UPDATE weapons SET game_raw_en = 'null'::jsonb, game_raw_jp = '{}'::jsonb " \
                                 "WHERE id = #{Weapon.connection.quote(w.id)}")
     end
+  end
+
+  def run
+    migration_class.new.tap { |m| m.verbose = false }.up
+  end
+
+  # The columns as the old code left them (the models no longer write them).
+  def set_columns(record, **values)
+    conn = record.class.connection
+    sets = values.map do |column, value|
+      sql = value.is_a?(Hash) ? "#{conn.quote(JSON.generate(value))}::jsonb" : conn.quote(value)
+      "#{column} = #{sql}"
+    end
+    conn.execute("UPDATE #{record.class.table_name} SET #{sets.join(', ')} WHERE id = #{conn.quote(record.id)}")
   end
 
   it 'copies each non-blank column into an owned source, trimmed, sanitized and canonical' do

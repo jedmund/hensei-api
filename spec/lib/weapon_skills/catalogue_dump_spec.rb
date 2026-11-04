@@ -45,7 +45,7 @@ RSpec.describe WeaponSkills::CatalogueDump do
   end
 
   describe 'granblue:export_catalogue_dump' do
-    before(:all) { Rails.application.load_tasks unless Rake::Task.task_defined?('granblue:export_catalogue_dump') }
+    before { Rails.application.load_tasks unless Rake::Task.task_defined?('granblue:export_catalogue_dump') }
 
     around do |example|
       saved = ENV.to_h.slice('publish', 'tag')

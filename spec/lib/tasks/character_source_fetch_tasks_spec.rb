@@ -8,14 +8,10 @@ require 'rake'
 RSpec.describe 'character source fetch tasks' do
   let(:tmp_dir) { Rails.root.join('tmp', "source_fetch_spec_#{Process.pid}") }
 
-  before(:all) do
-    Rails.application.load_tasks unless Rake::Task.task_defined?('granblue:character_skill_coverage')
-  end
-
   around do |example|
     keys = %w[type id ids rarity force delay changed_out build missing model limit throttle format out s3 s3_delay
               debug lang style ACCESS_TOKEN WING MIDSHIP]
-    saved = keys.to_h { |k| [k, ENV.fetch(k, nil)] }
+    saved = keys.index_with { |k| ENV.fetch(k, nil) }
     keys.each { |k| ENV.delete(k) }
     example.run
   ensure
@@ -24,6 +20,7 @@ RSpec.describe 'character source fetch tasks' do
   end
 
   before do
+    Rails.application.load_tasks unless Rake::Task.task_defined?('granblue:character_skill_coverage')
     allow(Granblue::WikiThrottle).to receive(:wait)
     allow(ActiveRecord::Base).to receive(:logger).and_return(Logger.new(IO::NULL))
     allow(ActiveRecord::Base).to receive(:logger=)
@@ -64,12 +61,12 @@ RSpec.describe 'character source fetch tasks' do
     end
     let!(:blank_sr) { create(:character, granblue_id: '3030000103', name_en: 'Lost', wiki_en: 'Lost', rarity: 2, wiki_raw: nil) }
     let!(:filled_r) { create(:character, granblue_id: '3020000104', name_en: 'Fine', wiki_en: 'Fine', rarity: 1, wiki_raw: '{{R}}') }
-    let!(:untitled_sr) { create(:character, granblue_id: '3030000105', name_en: 'Untitled', wiki_en: '', rarity: 2, wiki_raw: nil) }
 
     # The test database carries seeded characters; rarity= runs are narrowed to this spec's rows.
     let(:own_ids) { '3040000101,3040000102,3030000103,3020000104,3030000105' }
 
     before do
+      create(:character, granblue_id: '3030000105', name_en: 'Untitled', wiki_en: '', rarity: 2, wiki_raw: nil)
       stub_wiki_page('Same', '{{Same}}')
       stub_wiki_page('Same (Style)', '{{New style}}')
       stub_wiki_page('Rebalanced', '{{New}}')
@@ -179,17 +176,17 @@ RSpec.describe 'character source fetch tasks' do
   end
 
   describe 'granblue:download_jp_wiki' do
-    let!(:cached) do
-      create(:character, granblue_id: '3040000201', name_jp: 'キャッシュ', wiki_ja: '', rarity: 3, wiki_raw_jp: '<html>same</html>')
-    end
-    let!(:missing) do
+    let(:missing) do
       create(:character, granblue_id: '3040000202', name_jp: 'ミッシング', wiki_ja: '', rarity: 3, wiki_raw_jp: nil)
     end
-    let!(:stale) do
+    let(:stale) do
       create(:character, granblue_id: '3040000203', name_jp: 'ステイル', wiki_ja: '', rarity: 3, wiki_raw_jp: '<html>old</html>')
     end
 
     before do
+      create(:character, granblue_id: '3040000201', name_jp: 'キャッシュ', wiki_ja: '', rarity: 3, wiki_raw_jp: '<html>same</html>')
+      missing
+      stale
       allow(Granblue::Parsers::JpWiki).to receive(:new).and_wrap_original do |original, **kwargs|
         original.call(**kwargs).tap do |client|
           allow(client).to receive(:fetch) { |title| title.start_with?('キャッシュ') ? '<html>same</html>' : '<html>new</html>' }
@@ -298,7 +295,7 @@ RSpec.describe 'character source fetch tasks' do
     it 'writes the gaps with format=csv to out=' do
       path = tmp_dir.join('coverage.csv')
       invoke('granblue:character_skill_coverage', ids: '3040000401', format: 'csv', out: path)
-      expect(CSV.read(path, headers: true).map { |r| r['check'] }).to include('wiki_raw_blank', 'no_game_raw_en')
+      expect(CSV.read(path, headers: true).pluck('check')).to include('wiki_raw_blank', 'no_game_raw_en')
     end
 
     it 'HEAD-checks icons through AwsService with s3=true' do

@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :raid do
-    association :group, factory: :raid_group
+    group factory: %i[raid_group]
     sequence(:name_en) { |n| "Test Raid #{n}" }
     name_jp { 'テストレイド' }
     sequence(:slug) { |n| "test-raid-#{n}" }
@@ -40,7 +40,7 @@ FactoryBot.define do
 
     # An Evoking Solomonis zone.
     trait :solomonis_zone do
-      association :group, factory: %i[raid_group solomonis]
+      group factory: %i[raid_group solomonis]
       sequence(:name_en) { |n| "Test Microcosm #{n}" }
       name_jp { nil }
       sequence(:slug) { |n| "test-microcosm-#{n}" }

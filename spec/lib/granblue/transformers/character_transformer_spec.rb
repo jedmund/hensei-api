@@ -93,7 +93,7 @@ RSpec.describe Granblue::Transformers::CharacterTransformer do
       }
       result = described_class.new(data).transform
       expect(result.length).to eq(2)
-      expect(result.map { |c| c[:name] }).to contain_exactly('Katalina', 'Zeta')
+      expect(result.pluck(:name)).to contain_exactly('Katalina', 'Zeta')
     end
   end
 end

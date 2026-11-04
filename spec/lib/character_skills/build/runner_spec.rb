@@ -7,6 +7,23 @@ RSpec.describe CharacterSkills::Build::Runner do
 
   let(:io) { StringIO.new }
 
+  let!(:first) { make('3040900001') }
+  let!(:second) { make('3040900002') }
+
+  def skill_ids(character)
+    CharacterSkillVersion.joins(:character_skill).where(character_skills: { character_id: character.id }).order(:id).pluck(:id)
+  end
+
+  def run(mode: 'write', **)
+    described_class.new(mode: mode, io: io, **).call
+  end
+
+  def make(granblue_id, **attrs)
+    Character.without_skill_build do
+      create(:character, granblue_id: granblue_id, element: 1, wiki_raw: wiki, **attrs)
+    end
+  end
+
   def wiki(name = 'Fire', passive: 'Boost.')
     <<~WIKI
       {{Character
@@ -21,23 +38,6 @@ RSpec.describe CharacterSkills::Build::Runner do
       }}
     WIKI
   end
-
-  def make(granblue_id, **attrs)
-    Character.without_skill_build do
-      create(:character, granblue_id: granblue_id, element: 1, wiki_raw: wiki, **attrs)
-    end
-  end
-
-  def run(mode: 'write', **)
-    described_class.new(mode: mode, io: io, **).call
-  end
-
-  def skill_ids(character)
-    CharacterSkillVersion.joins(:character_skill).where(character_skills: { character_id: character.id }).order(:id).pluck(:id)
-  end
-
-  let!(:first) { make('3040900001') }
-  let!(:second) { make('3040900002') }
 
   describe 'instant statuses that last (D56)' do
     it 'lists the mentions it counted as buffs or debuffs after the summary, for review' do
@@ -233,8 +233,10 @@ RSpec.describe CharacterSkills::Build::Runner do
 
   describe 'icon_fallbacks' do
     it 'lists versions whose icon the builder took from the wiki stem' do
-      allow_any_instance_of(Granblue::Parsers::CharacterSkillParser).to receive(:graph).and_wrap_original do |original|
-        original.call.tap { |graph| graph[:slots].first[:versions].first[:game_icon_source] = 'wiki' }
+      on_new_instances(Granblue::Parsers::CharacterSkillParser) do |parser|
+        allow(parser).to receive(:graph).and_wrap_original do |original|
+          original.call.tap { |graph| graph[:slots].first[:versions].first[:game_icon_source] = 'wiki' }
+        end
       end
       summary = run(characters: [first])
       expect(summary.results.first.icon_fallbacks).to eq([{ kind: 'ability', position: 1, ordinal: 1, name: { en: 'Fire', ja: nil } }])

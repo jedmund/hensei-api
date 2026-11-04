@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :character_series_membership do
-    association :character
-    association :character_series
+    character
+    character_series
   end
 end

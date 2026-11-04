@@ -2,6 +2,8 @@ require 'rails_helper'
 require Rails.root.join('lib/granblue/banner_catalogue_reconciliation')
 
 RSpec.describe Granblue::BannerCatalogueReconciliation do
+  subject(:service) { described_class.new(manifest: manifest) }
+
   let!(:existing) { create(:weapon, granblue_id: '1040999901', rarity: 3, promotions: [3, 10, 99]) }
   let!(:character) { create(:character, granblue_id: '3030999901', rarity: 2, element: 1, season: nil) }
   let(:attributes) do
@@ -15,10 +17,8 @@ RSpec.describe Granblue::BannerCatalogueReconciliation do
     ], 'new_weapons' => [attributes] }
   end
 
-  subject(:service) { described_class.new(manifest: manifest) }
-
   it 'previews, creates canonical recruits, preserves UUIDs and unrelated promotions, and reruns' do
-    expect(service.preview.map { |e| e[:action] }).to eq(%w[update create])
+    expect(service.preview.pluck(:action)).to eq(%w[update create])
     expect(Weapon.find_by(granblue_id: attributes['granblue_id'])).to be_nil
     id = existing.id
     service.apply!

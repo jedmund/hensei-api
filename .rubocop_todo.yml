@@ -6,55 +6,12 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 62
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: EnforcedStyle, NonImplicitAssociationMethodNames.
-# SupportedStyles: explicit, implicit
-FactoryBot/AssociationStyle:
-  Exclude:
-    - 'spec/factories/arcarum_blessings.rb'
-    - 'spec/factories/character_series_memberships.rb'
-    - 'spec/factories/character_skill_version_links.rb'
-    - 'spec/factories/character_skill_versions.rb'
-    - 'spec/factories/character_skills.rb'
-    - 'spec/factories/collection_artifacts.rb'
-    - 'spec/factories/collection_characters.rb'
-    - 'spec/factories/collection_job_accessories.rb'
-    - 'spec/factories/collection_summons.rb'
-    - 'spec/factories/collection_weapons.rb'
-    - 'spec/factories/crew_gw_participations.rb'
-    - 'spec/factories/crew_rosters.rb'
-    - 'spec/factories/events.rb'
-    - 'spec/factories/favorites.rb'
-    - 'spec/factories/grid_artifacts.rb'
-    - 'spec/factories/grid_characters.rb'
-    - 'spec/factories/grid_summons.rb'
-    - 'spec/factories/grid_weapons.rb'
-    - 'spec/factories/gw_individual_scores.rb'
-    - 'spec/factories/job_accessories.rb'
-    - 'spec/factories/job_skills.rb'
-    - 'spec/factories/parties.rb'
-    - 'spec/factories/party_shares.rb'
-    - 'spec/factories/playlists.rb'
-    - 'spec/factories/raids.rb'
-    - 'spec/factories/skill_effects.rb'
-    - 'spec/factories/solomonis_guide_effects.rb'
-    - 'spec/factories/stickers.rb'
-    - 'spec/factories/substitutions.rb'
-    - 'spec/factories/weapon_awakenings.rb'
-    - 'spec/factories/weapon_key_series.rb'
-    - 'spec/factories/weapon_series_variants.rb'
-    - 'spec/factories/weapon_skill_versions.rb'
-    - 'spec/factories/weapon_skills.rb'
-    - 'spec/factories/weapons.rb'
-
 # Offense count: 4
 # This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: EnforcedStyle, ExplicitOnly.
 # SupportedStyles: create_list, n_times
 FactoryBot/CreateList:
   Exclude:
-    - 'spec/lib/character_skills/icon_snapshot_spec.rb'
     - 'spec/models/solomonis/solomonis_party_spec.rb'
     - 'spec/services/support_summon_import_service_spec.rb'
 
@@ -499,12 +456,6 @@ Performance/RegexpMatch:
 # Offense count: 31
 RSpec/AnyInstance:
   Exclude:
-    - 'spec/jobs/character_skills/icon_download_job_spec.rb'
-    - 'spec/jobs/character_skills/refresh_job_spec.rb'
-    - 'spec/lib/character_skills/build/runner_spec.rb'
-    - 'spec/lib/granblue/parsers/character_skills/jp_skill_text_spec.rb'
-    - 'spec/lib/granblue/parsers/status_catalog_builder_spec.rb'
-    - 'spec/lib/summon_auras/build/runner_spec.rb'
     - 'spec/services/granblue/wiki_fetch_dates_spec.rb'
     - 'spec/services/granblue/wiki_fetch_only_spec.rb'
 
@@ -517,13 +468,6 @@ RSpec/BeEq:
 # Offense count: 8
 RSpec/BeforeAfterAll:
   Exclude:
-    - 'spec/lib/collection_artifacts/raw_data_clearer_spec.rb'
-    - 'spec/lib/tasks/build_character_skills_spec.rb'
-    - 'spec/lib/tasks/build_weapon_skills_spec.rb'
-    - 'spec/lib/tasks/character_source_fetch_tasks_spec.rb'
-    - 'spec/lib/tasks/database_restore_spec.rb'
-    - 'spec/lib/tasks/weapon_skill_loaders_spec.rb'
-    - 'spec/lib/weapon_skills/catalogue_dump_spec.rb'
     - 'spec/models/grid_characters_spec.rb'
 
 # Offense count: 214
@@ -531,8 +475,6 @@ RSpec/BeforeAfterAll:
 # Prefixes: when, with, without
 RSpec/ContextWording:
   Exclude:
-    - 'spec/lib/granblue/parsers/character_skills/builder_spec.rb'
-    - 'spec/lib/granblue/parsers/weapon_skill_parser_spec.rb'
     - 'spec/models/character_skill_spec.rb'
     - 'spec/models/character_spec.rb'
     - 'spec/models/collection_artifact_spec.rb'
@@ -550,7 +492,6 @@ RSpec/ContextWording:
     - 'spec/models/weapon_skill_spec.rb'
     - 'spec/models/weapon_skill_version_spec.rb'
     - 'spec/models/weapon_spec.rb'
-    - 'spec/scripts/fetch_gacha_rates_spec.rb'
     - 'spec/services/character_image_download_service_spec.rb'
     - 'spec/services/character_import_service_spec.rb'
     - 'spec/services/grid_damage/calculator_spec.rb'
@@ -560,36 +501,6 @@ RSpec/ContextWording:
     - 'spec/services/summon_image_download_service_spec.rb'
     - 'spec/services/weapon_image_download_service_spec.rb'
     - 'spec/services/weapon_import_service_spec.rb'
-
-# Offense count: 25
-# Configuration parameters: IgnoredMetadata.
-RSpec/DescribeClass:
-  Exclude:
-    - 'spec/config/cors_spec.rb'
-    - 'spec/config/sidekiq_schedule_spec.rb'
-    - 'spec/data/solomonis_data_migrations_spec.rb'
-    - 'spec/lib/granblue/importers/import_error_spec.rb'
-    - 'spec/lib/granblue/parsers/character_skill_golden_spec.rb'
-    - 'spec/lib/granblue/parsers/character_skill_style_golden_spec.rb'
-    - 'spec/lib/granblue/parsers/legacy_fetch_loops_spec.rb'
-    - 'spec/lib/tasks/build_character_skills_spec.rb'
-    - 'spec/lib/tasks/build_weapon_skills_spec.rb'
-    - 'spec/lib/tasks/character_source_fetch_tasks_spec.rb'
-    - 'spec/lib/tasks/database_restore_spec.rb'
-    - 'spec/lib/tasks/weapon_skill_loaders_spec.rb'
-    - 'spec/lib/weapon_skills/build/structure/parts_spec.rb'
-    - 'spec/models/item_sources_spec.rb'
-    - 'spec/models/weapon_skill_integrity_spec.rb'
-    - 'spec/models/weapon_skill_resolution_spec.rb'
-    - 'spec/services/gacha_simulation/cache_and_cost_spec.rb'
-    - 'spec/services/granblue/wiki_fetch_dates_spec.rb'
-    - 'spec/services/granblue/wiki_fetch_only_spec.rb'
-    - 'spec/services/grid_damage/dark_opus_key_data_spec.rb'
-    - 'spec/services/grid_damage/draconic_teluma_data_spec.rb'
-    - 'spec/services/grid_damage/odious_exalto_spec.rb'
-    - 'spec/services/grid_damage/rose_crystal_series_spec.rb'
-    - 'spec/services/grid_damage/ultima_key_data_spec.rb'
-    - 'spec/services/grid_damage/unresolved_family_data_spec.rb'
 
 # Offense count: 5
 RSpec/DescribeMethod:
@@ -642,11 +553,6 @@ RSpec/ExpectChange:
   Exclude:
     - 'spec/services/party_difficulty/calibration_spec.rb'
 
-# Offense count: 1
-RSpec/ExpectInHook:
-  Exclude:
-    - 'spec/scripts/fetch_gacha_rates_spec.rb'
-
 # Offense count: 2
 # This cop supports safe autocorrection (--autocorrect).
 RSpec/HooksBeforeExamples:
@@ -657,7 +563,6 @@ RSpec/HooksBeforeExamples:
 # Offense count: 3
 RSpec/IdenticalEqualityAssertion:
   Exclude:
-    - 'spec/lib/weapon_skills/build/fingerprint_spec.rb'
     - 'spec/models/job_accessory_spec.rb'
     - 'spec/models/job_skill_spec.rb'
 
@@ -665,7 +570,6 @@ RSpec/IdenticalEqualityAssertion:
 # Configuration parameters: Max, AllowedIdentifiers, AllowedPatterns.
 RSpec/IndexedLet:
   Exclude:
-    - 'spec/lib/weapon_skills/version_text/backfill_spec.rb'
     - 'spec/models/crew_membership_spec.rb'
     - 'spec/models/crew_spec.rb'
     - 'spec/models/party_share_spec.rb'
@@ -679,19 +583,12 @@ RSpec/InstanceVariable:
   Exclude:
     - 'spec/models/artifact_skill_spec.rb'
     - 'spec/models/grid_characters_spec.rb'
-    - 'spec/scripts/fetch_gacha_rates_spec.rb'
     - 'spec/services/granblue/weapon_skill_data_ownership_auditor_spec.rb'
 
 # Offense count: 22
 # This cop supports safe autocorrection (--autocorrect).
 RSpec/LeadingSubject:
   Exclude:
-    - 'spec/lib/granblue/banner_catalogue_reconciliation_spec.rb'
-    - 'spec/lib/granblue/classic_lower_catalogue_spec.rb'
-    - 'spec/lib/granblue/parsers/character_skills/builder_spec.rb'
-    - 'spec/lib/granblue/parsers/character_skills/effect_parser_spec.rb'
-    - 'spec/lib/granblue/parsers/validation_error_serializer_spec.rb'
-    - 'spec/lib/granblue/parsers/validation_errors_serializer_spec.rb'
     - 'spec/models/collection_character_spec.rb'
     - 'spec/models/collection_job_accessory_spec.rb'
     - 'spec/models/collection_summon_spec.rb'
@@ -708,7 +605,6 @@ RSpec/LeadingSubject:
 # Offense count: 10
 RSpec/LeakyConstantDeclaration:
   Exclude:
-    - 'spec/lib/granblue/extractors/weapon_skill_data_extractor_spec.rb'
     - 'spec/services/grid_damage/aggregator_spec.rb'
     - 'spec/services/grid_damage/draconic_teluma_data_spec.rb'
     - 'spec/services/grid_damage/effects_spec.rb'
@@ -719,9 +615,6 @@ RSpec/LeakyConstantDeclaration:
 # Offense count: 13
 RSpec/LeakyLocalVariable:
   Exclude:
-    - 'spec/lib/character_skills/build/writer_spec.rb'
-    - 'spec/lib/granblue/parsers/character_skill_golden_spec.rb'
-    - 'spec/lib/granblue/parsers/character_skill_style_golden_spec.rb'
     - 'spec/services/icon_upload_validator_spec.rb'
 
 # Offense count: 7
@@ -734,9 +627,6 @@ RSpec/LetBeforeExamples:
 # Offense count: 133
 RSpec/LetSetup:
   Exclude:
-    - 'spec/lib/character_skills/coverage_spec.rb'
-    - 'spec/lib/tasks/character_source_fetch_tasks_spec.rb'
-    - 'spec/lib/weapon_skills/build/runner_spec.rb'
     - 'spec/models/character_spec.rb'
     - 'spec/models/collection_character_spec.rb'
     - 'spec/models/crew_gw_participation_spec.rb'
@@ -748,7 +638,6 @@ RSpec/LetSetup:
     - 'spec/services/summon_import_service_conflict_spec.rb'
     - 'spec/services/weapon_import_service_conflict_spec.rb'
     - 'spec/services/weapon_import_service_spec.rb'
-    - 'spec/support/wiki_import_catalogue.rb'
 
 # Offense count: 13
 # This cop supports safe autocorrection (--autocorrect).
@@ -762,10 +651,6 @@ RSpec/MatchWithSimpleRegex:
 # SupportedStyles: have_received, receive
 RSpec/MessageSpies:
   Exclude:
-    - 'spec/lib/granblue/downloaders/base_downloader_spec.rb'
-    - 'spec/lib/granblue/extractors/key_skill_extractor_spec.rb'
-    - 'spec/lib/granblue/parsers/wiki_spec.rb'
-    - 'spec/lib/tasks/database_restore_spec.rb'
     - 'spec/models/weapon_skill_version_spec.rb'
     - 'spec/services/gacha_simulation/cache_and_cost_spec.rb'
     - 'spec/services/processors/base_processor_spec.rb'
@@ -773,9 +658,6 @@ RSpec/MessageSpies:
 # Offense count: 5
 RSpec/MultipleDescribes:
   Exclude:
-    - 'spec/jobs/party_participation/sweep_job_spec.rb'
-    - 'spec/lib/granblue/importers/import_error_spec.rb'
-    - 'spec/lib/weapon_skills/build_skill_level_spec.rb'
     - 'spec/models/party_remix_substitutions_spec.rb'
 
 # Offense count: 89
@@ -813,41 +695,14 @@ RSpec/PendingWithoutReason:
     - 'spec/services/processors/weapon_processor_spec.rb'
 
 # Offense count: 4
-# This cop supports unsafe autocorrection (--autocorrect-all).
-RSpec/ReceiveMessages:
-  Exclude:
-    - 'spec/lib/granblue/downloaders/weapon_downloader_spec.rb'
-    - 'spec/scripts/fetch_gacha_rates_spec.rb'
-
-# Offense count: 4
 RSpec/RepeatedExample:
   Exclude:
     - 'spec/models/substitution_spec.rb'
-
-# Offense count: 2
-RSpec/RepeatedExampleGroupDescription:
-  Exclude:
-    - 'spec/lib/weapon_skills/build/structure/parts_spec.rb'
 
 # Offense count: 141
 # This cop supports safe autocorrection (--autocorrect).
 RSpec/ScatteredLet:
   Exclude:
-    - 'spec/data/decode_percent_encoded_jp_wiki_titles_spec.rb'
-    - 'spec/data/fix_stale_wiki_titles_spec.rb'
-    - 'spec/data/normalize_premium_and_collab_pools_spec.rb'
-    - 'spec/data/null_blank_weapon_text_fields_spec.rb'
-    - 'spec/data/null_zero_weapon_awakening_levels_spec.rb'
-    - 'spec/data/raise_transcended_dark_opus_caps_spec.rb'
-    - 'spec/db/data/copy_character_sources_to_sources_table_spec.rb'
-    - 'spec/db/data/copy_item_sources_to_sources_table_spec.rb'
-    - 'spec/db/data/load_character_skill_icon_snapshot_spec.rb'
-    - 'spec/jobs/character_skills/refresh_job_spec.rb'
-    - 'spec/lib/character_skills/build/runner_spec.rb'
-    - 'spec/lib/character_skills/coverage_spec.rb'
-    - 'spec/lib/granblue/parsers/character_skills/jp_localizer_spec.rb'
-    - 'spec/lib/summon_auras/build/runner_spec.rb'
-    - 'spec/lib/weapon_skills/build/rows_spec.rb'
     - 'spec/services/party_difficulty/calibration_spec.rb'
 
 # Offense count: 13
@@ -855,12 +710,9 @@ RSpec/ScatteredLet:
 # SupportedInflectors: default, active_support
 RSpec/SpecFilePathFormat:
   Exclude:
-    - 'spec/lib/granblue/parsers/character_skill_status_lookup_spec.rb'
-    - 'spec/lib/weapon_skills/source_store_spec.rb'
     - 'spec/models/grid_characters_spec.rb'
     - 'spec/models/grid_summons_spec.rb'
     - 'spec/models/solomonis/solomonis_party_spec.rb'
-    - 'spec/scripts/fetch_gacha_rates_spec.rb'
     - 'spec/services/granblue/golden_fixture_loader_spec.rb'
     - 'spec/services/party_difficulty/weapon_tier_match_spec.rb'
     - 'spec/services/processors/base_processor_spec.rb'
@@ -870,41 +722,12 @@ RSpec/SpecFilePathFormat:
 # Offense count: 3
 RSpec/StubbedMock:
   Exclude:
-    - 'spec/lib/granblue/parsers/wiki_spec.rb'
     - 'spec/services/gacha_simulation/cache_and_cost_spec.rb'
-
-# Offense count: 12
-RSpec/SubjectStub:
-  Exclude:
-    - 'spec/data/add_exo_crucible_raids_spec.rb'
-    - 'spec/data/add_records_of_the_ten_raids_spec.rb'
-    - 'spec/data/decode_percent_encoded_jp_wiki_titles_spec.rb'
-    - 'spec/data/fix_class_ii_job_ids_spec.rb'
-    - 'spec/data/fix_stale_wiki_titles_spec.rb'
-    - 'spec/data/null_blank_weapon_text_fields_spec.rb'
-    - 'spec/data/null_zero_weapon_awakening_levels_spec.rb'
-    - 'spec/data/prefix_event_kamigame_paths_spec.rb'
-    - 'spec/data/raise_transcended_dark_opus_caps_spec.rb'
-
-# Offense count: 18
-# This cop supports unsafe autocorrection (--autocorrect-all).
-RSpec/VerifiedDoubleReference:
-  Exclude:
-    - 'spec/lib/granblue/parsers/character_skills/effect_parser_spec.rb'
 
 # Offense count: 39
 # Configuration parameters: IgnoreNameless, IgnoreSymbolicNames.
 RSpec/VerifiedDoubles:
   Exclude:
-    - 'spec/config/cors_spec.rb'
-    - 'spec/lib/granblue/downloaders/base_downloader_spec.rb'
-    - 'spec/lib/granblue/downloaders/download_manager_spec.rb'
-    - 'spec/lib/granblue/downloaders/summon_downloader_spec.rb'
-    - 'spec/lib/granblue/downloaders/weapon_downloader_spec.rb'
-    - 'spec/lib/granblue/parsers/base_parser_spec.rb'
-    - 'spec/lib/granblue/parsers/validation_errors_serializer_spec.rb'
-    - 'spec/lib/granblue/parsers/wiki_data_parser_spec.rb'
-    - 'spec/lib/granblue/parsers/wiki_spec.rb'
     - 'spec/services/artifact_image_download_service_spec.rb'
     - 'spec/services/aws_service_spec.rb'
     - 'spec/services/character_image_download_service_spec.rb'
@@ -913,22 +736,11 @@ RSpec/VerifiedDoubles:
     - 'spec/services/summon_image_download_service_spec.rb'
     - 'spec/services/weapon_image_download_service_spec.rb'
 
-# Offense count: 1
-RSpecRails/ReceivePerformLater:
-  Exclude:
-    - 'spec/data/decode_percent_encoded_jp_wiki_titles_spec.rb'
-
 # Offense count: 2
 # This cop supports unsafe autocorrection (--autocorrect-all).
 RSpecRails/TravelAround:
   Exclude:
     - 'spec/services/granblue/wiki_fetch_dates_spec.rb'
-
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-Rails/DurationArithmetic:
-  Exclude:
-    - 'spec/scripts/fetch_gacha_rates_spec.rb'
 
 # Offense count: 18
 # This cop supports unsafe autocorrection (--autocorrect-all).
@@ -942,34 +754,13 @@ Rails/FindEach:
 # This cop supports unsafe autocorrection (--autocorrect-all).
 Rails/IndexWith:
   Exclude:
-    - 'spec/lib/tasks/build_character_skills_spec.rb'
-    - 'spec/lib/tasks/build_weapon_skills_spec.rb'
-    - 'spec/lib/tasks/character_source_fetch_tasks_spec.rb'
     - 'spec/models/solomonis/seal_state_spec.rb'
     - 'spec/services/client_ip_resolver_spec.rb'
-
-# Offense count: 43
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Rails/NegateInclude:
-  Exclude:
-    - 'spec/scripts/fetch_gacha_rates_spec.rb'
 
 # Offense count: 204
 # This cop supports unsafe autocorrection (--autocorrect-all).
 Rails/Pluck:
   Exclude:
-    - 'spec/config/sidekiq_schedule_spec.rb'
-    - 'spec/jobs/character_skills/export_icon_snapshot_job_spec.rb'
-    - 'spec/lib/character_skills/coverage_spec.rb'
-    - 'spec/lib/granblue/banner_catalogue_reconciliation_spec.rb'
-    - 'spec/lib/granblue/parsers/character_skills/effect_parser_spec.rb'
-    - 'spec/lib/granblue/parsers/jp_wiki_skill_parser_spec.rb'
-    - 'spec/lib/granblue/parsers/weapon_skill_description_parser_spec.rb'
-    - 'spec/lib/granblue/parsers/wiki_source_store_spec.rb'
-    - 'spec/lib/granblue/transformers/character_transformer_spec.rb'
-    - 'spec/lib/tasks/character_source_fetch_tasks_spec.rb'
-    - 'spec/lib/weapon_skills/build/structure/tiers_spec.rb'
-    - 'spec/lib/weapon_skills/parity_snapshot_spec.rb'
     - 'spec/services/character_import_service_spec.rb'
     - 'spec/services/gacha_simulation/banner_spec.rb'
     - 'spec/services/granblue/curation_auto_export_spec.rb'
@@ -986,14 +777,6 @@ Rails/Pluck:
 # This cop supports unsafe autocorrection (--autocorrect-all).
 Rails/RootPathnameMethods:
   Exclude:
-    - 'spec/lib/character_skills/status_verb_rules_spec.rb'
-    - 'spec/lib/granblue/extractors/weapon_skill_data_extractor_spec.rb'
-    - 'spec/lib/granblue/parsers/jp_wiki_skill_parser_spec.rb'
-    - 'spec/lib/granblue/parsers/lua_table_spec.rb'
-    - 'spec/lib/granblue/parsers/status_catalog_builder_spec.rb'
-    - 'spec/lib/granblue/parsers/status_list_spec.rb'
-    - 'spec/lib/granblue/parsers/status_name_spec.rb'
-    - 'spec/rails_helper.rb'
     - 'spec/services/gacha_simulation/compiler_spec.rb'
     - 'spec/services/grid_damage/dark_opus_key_data_spec.rb'
     - 'spec/services/grid_damage/draconic_teluma_data_spec.rb'
@@ -1001,12 +784,6 @@ Rails/RootPathnameMethods:
     - 'spec/services/processors/character_processor_spec.rb'
     - 'spec/services/processors/summon_processor_spec.rb'
     - 'spec/services/sources/wiki_status_list_spec.rb'
-
-# Offense count: 2
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Rails/SquishedSQLHeredocs:
-  Exclude:
-    - 'spec/data/clear_gacha_rateups_spec.rb'
 
 # Offense count: 3
 Rails/UniqueValidationWithoutIndex:
@@ -1215,3 +992,4 @@ Style/SymbolProc:
 Style/ZeroLengthPredicate:
   Exclude:
     - 'lib/post_deployment/manager.rb'
+

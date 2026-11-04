@@ -21,8 +21,8 @@ RSpec.describe WeaponSkills::VersionText::Backfill do
     let(:weapon) { create(:weapon, name_en: 'Altruism-Soul Staff', wiki_en: 'Altruism-Soul Staff') }
     # The shared skill row carries tier II's text: the leak this column fixes.
     let(:leaked) { 'Boost to ATK. (Boost to elemental ATK and specs for staff-specialty allies.)' }
-    let!(:tier1) { version_on(weapon, position: 1, ordinal: 0, name: "Ultimate Wisdom's Shine", skill_text: leaked) }
-    let!(:tier2) { version_on(weapon, position: 4, ordinal: 0, name: "Ultimate Wisdom's Shine II", skill_text: leaked) }
+    let!(:shine) { version_on(weapon, position: 1, ordinal: 0, name: "Ultimate Wisdom's Shine", skill_text: leaked) }
+    let!(:shine_ii) { version_on(weapon, position: 4, ordinal: 0, name: "Ultimate Wisdom's Shine II", skill_text: leaked) }
 
     before do
       raw = "{{Weapon/Common/Celestial\n|name=Altruism-Soul Staff\n|s2_name=Ultimate Wisdom's Shine\n" \
@@ -39,12 +39,12 @@ RSpec.describe WeaponSkills::VersionText::Backfill do
     it 'gives tier I and tier II their own texts, with no E. ATK on tier I' do
       result = described_class.run(store: store)
 
-      text1 = WeaponSkills::VersionText.for(tier1.reload, :en)
-      text2 = WeaponSkills::VersionText.for(tier2.reload, :en)
+      text1 = WeaponSkills::VersionText.for(shine.reload, :en)
+      text2 = WeaponSkills::VersionText.for(shine_ii.reload, :en)
       expect(text1).not_to eq(text2)
       expect(text1).not_to match(/elemental ATK/i)
       expect(text2).to match(/elemental ATK/i)
-      expect(WeaponSkills::VersionText.for(tier1, :jp)).to eq('攻撃力上昇')
+      expect(WeaponSkills::VersionText.for(shine, :jp)).to eq('攻撃力上昇')
       expect(result.en_sources).to eq(expanded: 2)
       expect(result.fallbacks).to be_empty
     end

@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe 'WeaponSkills::Build::Structure parts' do
-  describe WeaponSkills::Build::Structure::Wikitext do
+  describe WeaponSkills::Build::Structure::Wikitext, '.fields' do
     it 'ends a field at the first top-level pipe and reads the fields after it' do
       page = "|s1_desc=Boost {{tt|ATK|big}} [[Weapon_Skills|stuff]] (Big DMG)|s2_name=Tsunami's Might\n" \
              '|s3_desc=Ends in empty parameters.||'
@@ -13,6 +13,10 @@ RSpec.describe 'WeaponSkills::Build::Structure parts' do
         's2_name' => "Tsunami's Might",
         's3_desc' => 'Ends in empty parameters.'
       )
+    end
+
+    it 'stops at Gameplay Notes' do
+      expect(described_class.fields("|s1_name=A\n== Gameplay Notes ==\n|s2_name=B")).not_to have_key('s2_name')
     end
   end
 
@@ -57,7 +61,7 @@ RSpec.describe 'WeaponSkills::Build::Structure parts' do
     end
   end
 
-  describe WeaponSkills::Build::Structure::Wikitext do
+  describe WeaponSkills::Build::Structure::Wikitext, '.merge_template' do
     let(:template) do
       <<~WIKI
         {{ #vardefine: epic_release_date | {{{release_date|2017-07-24}}} }}{{Weapon
@@ -97,10 +101,6 @@ RSpec.describe 'WeaponSkills::Build::Structure parts' do
 
     it 'keeps the literal (read as level 0, as today) when the condition is false' do
       expect(merged('|release_date=2020-01-01')['s2_lvl']).to start_with('{{ #ifeq')
-    end
-
-    it 'stops at Gameplay Notes' do
-      expect(described_class.fields("|s1_name=A\n== Gameplay Notes ==\n|s2_name=B")).not_to have_key('s2_name')
     end
   end
 

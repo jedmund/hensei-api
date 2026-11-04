@@ -2,8 +2,8 @@
 
 FactoryBot.define do
   factory :skill_effect do
-    association :character_skill_version
-    association :status
+    character_skill_version
+    status
     sequence(:ordinal) { |n| n }
     effect_type { :grant_status }
     target { :caster }

@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :crew_roster do
     crew
-    association :created_by, factory: :user
+    created_by factory: %i[user]
     name { 'Fire' }
     element { 1 }
     items { [] }

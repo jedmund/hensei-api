@@ -6,17 +6,17 @@ RSpec.describe NormalizePremiumAndCollabPools do
 
   let(:ordinary) { [1, 4, 5, 6, 7, 8, 9, 10, 11] }
 
-  # The canonical seed already carries some of these items.
-  def upsert(model, factory, granblue_id, attributes)
-    model.find_by(granblue_id: granblue_id)&.tap { |row| row.update_columns(attributes) } ||
-      create(factory, granblue_id: granblue_id, **attributes)
-  end
-
   let!(:reviewed) do
     described_class::CHANGES.to_h do |change|
       model, factory = change[:type] == 'Weapon' ? [Weapon, :weapon] : [Summon, :summon]
       [change[:granblue_id], upsert(model, factory, change[:granblue_id], name_en: change[:name], promotions: change[:before])]
     end
+  end
+
+  # The canonical seed already carries some of these items.
+  def upsert(model, factory, granblue_id, attributes)
+    model.find_by(granblue_id: granblue_id)&.tap { |row| row.update_columns(attributes) } ||
+      create(factory, granblue_id: granblue_id, **attributes)
   end
 
   it 'brings every Premium item up to every non-Classic pool, keeping Classic pools' do

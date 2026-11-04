@@ -2,8 +2,8 @@
 
 FactoryBot.define do
   factory :grid_artifact do
-    association :grid_character
-    association :artifact
+    grid_character
+    artifact
     # Default to light to match the canonical character (Rosamia SSR, element 6/light)
     element { 'light' }
     level { 1 }
@@ -31,7 +31,7 @@ FactoryBot.define do
     end
 
     trait :quirk do
-      association :artifact, factory: %i[artifact quirk]
+      artifact factory: %i[artifact quirk]
       proficiency { :sabre }
       level { 1 }
       skill1 { {} }

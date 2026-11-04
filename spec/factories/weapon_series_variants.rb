@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :weapon_series_variant do
-    association :weapon_series
+    weapon_series
 
     trait :ccw_replica do
       has_weapon_keys { true }
