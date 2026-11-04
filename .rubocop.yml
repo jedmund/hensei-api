@@ -105,8 +105,27 @@ Naming/PredicateMethod:
     - update_mention_for_entity
 
 # --- Rails ---
-# Specs set up state with update_column and friends on purpose
+# Bulk relation writes (update_all, insert_all, upsert_all, touch_all) exist to
+# change many rows in one statement without loading models, so skipping
+# callbacks there is always deliberate. The cop still flags single-record skips
+# (update_column(s), update_attribute, touch, toggle!, counters), where
+# bypassing a validation or callback by accident is the real risk.
+# Specs set up state with update_column and friends on purpose.
 Rails/SkipsModelValidations:
+  ForbiddenMethods:
+    - decrement!
+    - decrement_counter
+    - increment!
+    - increment_counter
+    - insert
+    - insert!
+    - toggle!
+    - touch
+    - update_attribute
+    - update_column
+    - update_columns
+    - update_counters
+    - upsert
   Exclude:
     - 'spec/**/*'
 
