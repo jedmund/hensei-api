@@ -11,7 +11,8 @@ RSpec.describe CrewGwParticipation, type: :model do
   describe 'validations' do
     let!(:crew) { create(:crew) }
     let!(:gw_event) { create(:gw_event) }
-    let!(:existing_participation) { create(:crew_gw_participation, crew: crew, event: gw_event) }
+
+    before { create(:crew_gw_participation, crew: crew, event: gw_event) }
 
     it 'requires unique crew and gw_event combination' do
       duplicate = build(:crew_gw_participation, crew: crew, event: gw_event)

@@ -9,11 +9,11 @@ RSpec.describe SupportSummon, type: :model do
 
   describe 'enums' do
     it 'defines the seven sections' do
-      expect(SupportSummon.sections.keys).to match_array(%w[misc fire water earth wind light dark])
+      expect(described_class.sections.keys).to match_array(%w[misc fire water earth wind light dark])
     end
 
     it "maps section integers to the game's element numbers, with misc as 0" do
-      expect(SupportSummon.sections).to eq(
+      expect(described_class.sections).to eq(
         'misc' => 0, 'fire' => 1, 'water' => 2, 'earth' => 3, 'wind' => 4, 'light' => 5, 'dark' => 6
       )
     end
@@ -24,7 +24,7 @@ RSpec.describe SupportSummon, type: :model do
 
     describe 'position bounds per section' do
       %w[wind fire water earth dark light].each do |section|
-        context "#{section} section" do
+        context "with the #{section} section" do
           it 'accepts positions 0, 1, 2' do
             (0..2).each do |position|
               row = build(:support_summon, user: user, section: section, position: position)
@@ -45,7 +45,7 @@ RSpec.describe SupportSummon, type: :model do
         end
       end
 
-      context 'misc section' do
+      context 'with the misc section' do
         it 'accepts positions 0, 1, 2, 3' do
           (0..3).each do |position|
             row = build(:support_summon, user: user, section: :misc, position: position)
@@ -119,13 +119,13 @@ RSpec.describe SupportSummon, type: :model do
     it 'is removed when its CollectionSummon is destroyed' do
       cs = create(:collection_summon, user: user)
       support = create(:support_summon, user: user, collection_summon: cs)
-      expect { cs.destroy }.to change(SupportSummon, :count).by(-1)
-      expect(SupportSummon.find_by(id: support.id)).to be_nil
+      expect { cs.destroy }.to change(described_class, :count).by(-1)
+      expect(described_class.find_by(id: support.id)).to be_nil
     end
 
     it 'is removed when its User is destroyed' do
       create(:support_summon, user: user)
-      expect { user.destroy }.to change(SupportSummon, :count).by(-1)
+      expect { user.destroy }.to change(described_class, :count).by(-1)
     end
   end
 
@@ -147,7 +147,7 @@ RSpec.describe SupportSummon, type: :model do
       it 'returns only rows in the given section' do
         fire = create(:support_summon, user: user, section: :fire, position: 0)
         create(:support_summon, user: user, section: :water, position: 0)
-        expect(SupportSummon.by_section(:fire)).to contain_exactly(fire)
+        expect(described_class.by_section(:fire)).to contain_exactly(fire)
       end
     end
   end

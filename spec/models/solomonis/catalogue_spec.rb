@@ -24,7 +24,7 @@ RSpec.describe 'Evoking Solomonis catalogues', type: :model do
       plain = create(:character)
       expect(evoker).to be_solomonis_route_eligible
       expect(plain).not_to be_solomonis_route_eligible
-      expect(Character.solomonis_route_evokers).to eq([evoker])
+      expect(described_class.solomonis_route_evokers).to eq([evoker])
       expect(evoker.solomonis_zone.solomonis_evokers).to eq([evoker])
     end
   end

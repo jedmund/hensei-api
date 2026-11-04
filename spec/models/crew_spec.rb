@@ -13,7 +13,7 @@ RSpec.describe Crew, type: :model do
     it { is_expected.to validate_length_of(:name).is_at_most(100) }
     it { is_expected.to validate_length_of(:gamertag).is_at_most(4) }
 
-    context 'granblue_crew_id uniqueness' do
+    describe 'granblue_crew_id uniqueness' do
       it 'validates uniqueness' do
         create(:crew, granblue_crew_id: 'ABC123')
         crew2 = build(:crew, granblue_crew_id: 'ABC123')
@@ -57,41 +57,41 @@ RSpec.describe Crew, type: :model do
   describe '#vice_captains' do
     let(:crew) { create(:crew) }
     let(:captain_user) { create(:user) }
-    let(:vc1) { create(:user) }
-    let(:vc2) { create(:user) }
+    let(:first_vice_captain) { create(:user) }
+    let(:second_vice_captain) { create(:user) }
     let(:member_user) { create(:user) }
 
     before do
       create(:crew_membership, :captain, crew: crew, user: captain_user)
-      create(:crew_membership, :vice_captain, crew: crew, user: vc1)
-      create(:crew_membership, :vice_captain, crew: crew, user: vc2)
+      create(:crew_membership, :vice_captain, crew: crew, user: first_vice_captain)
+      create(:crew_membership, :vice_captain, crew: crew, user: second_vice_captain)
       create(:crew_membership, crew: crew, user: member_user)
     end
 
     it 'returns all vice captains' do
-      expect(crew.vice_captains).to contain_exactly(vc1, vc2)
+      expect(crew.vice_captains).to contain_exactly(first_vice_captain, second_vice_captain)
     end
 
     it 'does not include retired vice captains' do
-      crew.crew_memberships.find_by(user: vc1).retire!
-      expect(crew.vice_captains).to contain_exactly(vc2)
+      crew.crew_memberships.find_by(user: first_vice_captain).retire!
+      expect(crew.vice_captains).to contain_exactly(second_vice_captain)
     end
   end
 
   describe '#officers' do
     let(:crew) { create(:crew) }
     let(:captain_user) { create(:user) }
-    let(:vc1) { create(:user) }
+    let(:first_vice_captain) { create(:user) }
     let(:member_user) { create(:user) }
 
     before do
       create(:crew_membership, :captain, crew: crew, user: captain_user)
-      create(:crew_membership, :vice_captain, crew: crew, user: vc1)
+      create(:crew_membership, :vice_captain, crew: crew, user: first_vice_captain)
       create(:crew_membership, crew: crew, user: member_user)
     end
 
     it 'returns captain and vice captains' do
-      expect(crew.officers).to contain_exactly(captain_user, vc1)
+      expect(crew.officers).to contain_exactly(captain_user, first_vice_captain)
     end
 
     it 'does not include regular members' do

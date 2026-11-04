@@ -36,7 +36,7 @@ RSpec.describe CharacterSkill, type: :model do
     it { is_expected.to validate_presence_of(:position) }
     it { is_expected.to validate_numericality_of(:position).only_integer.is_greater_than_or_equal_to(0) }
 
-    context 'position uniqueness' do
+    describe 'position uniqueness' do
       let(:character) { create(:character) }
 
       it 'validates uniqueness scoped to character and kind' do

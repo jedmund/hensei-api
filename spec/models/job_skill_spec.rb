@@ -10,7 +10,7 @@ RSpec.describe JobSkill, type: :model do
   describe 'equality' do
     it 'considers two job skills with the same id as equal' do
       skill = create(:job_skill)
-      expect(skill).to eq(skill)
+      expect(described_class.find(skill.id)).to eq(skill)
     end
 
     it 'considers two different job skills as not equal' do

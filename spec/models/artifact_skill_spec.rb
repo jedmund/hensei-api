@@ -64,7 +64,7 @@ RSpec.describe ArtifactSkill, type: :model do
 
   describe 'enums' do
     it 'defines skill_group enum' do
-      expect(ArtifactSkill.skill_groups).to eq(
+      expect(described_class.skill_groups).to eq(
         'group_i' => 1,
         'group_ii' => 2,
         'group_iii' => 3
@@ -72,7 +72,7 @@ RSpec.describe ArtifactSkill, type: :model do
     end
 
     it 'defines polarity enum' do
-      expect(ArtifactSkill.polarities).to eq(
+      expect(described_class.polarities).to eq(
         'positive' => 'positive',
         'negative' => 'negative'
       )
@@ -80,59 +80,59 @@ RSpec.describe ArtifactSkill, type: :model do
   end
 
   describe '.for_slot' do
-    before do
-      # Use unique modifiers that won't conflict with seeded data
-      @group_i_skill = create(:artifact_skill, :group_i, modifier: 6000)
-      @group_ii_skill = create(:artifact_skill, :group_ii, modifier: 6001)
-      @group_iii_skill = create(:artifact_skill, :group_iii, modifier: 6002)
-    end
+    # Use unique modifiers that won't conflict with seeded data
+    let!(:group_i_skill) { create(:artifact_skill, :group_i, modifier: 6000) }
+    let!(:group_ii_skill) { create(:artifact_skill, :group_ii, modifier: 6001) }
+    let!(:group_iii_skill) { create(:artifact_skill, :group_iii, modifier: 6002) }
 
     it 'returns Group I skills for slot 1' do
-      expect(ArtifactSkill.for_slot(1)).to include(@group_i_skill)
-      expect(ArtifactSkill.for_slot(1)).not_to include(@group_ii_skill)
+      expect(described_class.for_slot(1)).to include(group_i_skill)
+      expect(described_class.for_slot(1)).not_to include(group_ii_skill)
     end
 
     it 'returns Group I skills for slot 2' do
-      expect(ArtifactSkill.for_slot(2)).to include(@group_i_skill)
-      expect(ArtifactSkill.for_slot(2)).not_to include(@group_ii_skill)
+      expect(described_class.for_slot(2)).to include(group_i_skill)
+      expect(described_class.for_slot(2)).not_to include(group_ii_skill)
     end
 
     it 'returns Group II skills for slot 3' do
-      expect(ArtifactSkill.for_slot(3)).to include(@group_ii_skill)
-      expect(ArtifactSkill.for_slot(3)).not_to include(@group_i_skill)
+      expect(described_class.for_slot(3)).to include(group_ii_skill)
+      expect(described_class.for_slot(3)).not_to include(group_i_skill)
     end
 
     it 'returns Group III skills for slot 4' do
-      expect(ArtifactSkill.for_slot(4)).to include(@group_iii_skill)
-      expect(ArtifactSkill.for_slot(4)).not_to include(@group_i_skill)
+      expect(described_class.for_slot(4)).to include(group_iii_skill)
+      expect(described_class.for_slot(4)).not_to include(group_i_skill)
     end
   end
 
   describe '.find_skill' do
+    let(:test_skill) { create(:artifact_skill, skill_group: :group_i, modifier: 7000) }
+
     before do
-      ArtifactSkill.clear_cache!
-      @test_skill = create(:artifact_skill, skill_group: :group_i, modifier: 7000)
+      described_class.clear_cache!
+      test_skill
     end
 
     after do
-      ArtifactSkill.clear_cache!
+      described_class.clear_cache!
     end
 
     it 'finds skill by group number and modifier' do
-      ArtifactSkill.clear_cache!
-      found = ArtifactSkill.find_skill(1, 7000)
-      expect(found).to eq(@test_skill)
+      described_class.clear_cache!
+      found = described_class.find_skill(1, 7000)
+      expect(found).to eq(test_skill)
     end
 
     it 'returns nil for non-existent skill' do
-      ArtifactSkill.clear_cache!
-      expect(ArtifactSkill.find_skill(1, 99999)).to be_nil
+      described_class.clear_cache!
+      expect(described_class.find_skill(1, 99999)).to be_nil
     end
 
     it 'caches skills for performance' do
-      ArtifactSkill.clear_cache!
-      ArtifactSkill.find_skill(1, 7000)
-      expect(ArtifactSkill.instance_variable_get(:@cached_skills)).not_to be_nil
+      described_class.clear_cache!
+      described_class.find_skill(1, 7000)
+      expect(described_class.instance_variable_get(:@cached_skills)).not_to be_nil
     end
   end
 

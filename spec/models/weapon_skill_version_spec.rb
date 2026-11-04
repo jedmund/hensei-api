@@ -29,7 +29,7 @@ RSpec.describe WeaponSkillVersion, type: :model do
     it { is_expected.to validate_presence_of(:ordinal) }
     it { is_expected.to validate_numericality_of(:ordinal).only_integer.is_greater_than_or_equal_to(0) }
 
-    context 'skill_modifier inclusion' do
+    describe 'skill_modifier inclusion' do
       it 'allows nil' do
         expect(build(:weapon_skill_version, skill_modifier: nil)).to be_valid
       end
@@ -66,8 +66,9 @@ RSpec.describe WeaponSkillVersion, type: :model do
   describe '#weapon_skill_data' do
     it 'looks up scaling by modifier/series/size' do
       version = build(:weapon_skill_version, skill_modifier: 'Might', skill_series: :normal, skill_size: :big)
-      expect(WeaponSkillDatum).to receive(:for_skill).with(modifier: 'Might', series: 'normal', size: 'big')
+      allow(WeaponSkillDatum).to receive(:for_skill)
       version.weapon_skill_data
+      expect(WeaponSkillDatum).to have_received(:for_skill).with(modifier: 'Might', series: 'normal', size: 'big')
     end
   end
 

@@ -16,7 +16,8 @@ RSpec.describe GwIndividualScore, type: :model do
     describe 'round uniqueness per player' do
       let!(:participation) { create(:crew_gw_participation) }
       let!(:membership) { create(:crew_membership, crew: participation.crew) }
-      let!(:existing_score) do
+
+      before do
         create(:gw_individual_score,
                crew_gw_participation: participation,
                crew_membership: membership,
@@ -53,7 +54,7 @@ RSpec.describe GwIndividualScore, type: :model do
 
   describe 'round enum' do
     it 'has expected round values' do
-      expect(GwIndividualScore.rounds.keys).to contain_exactly(
+      expect(described_class.rounds.keys).to contain_exactly(
         'preliminaries', 'interlude', 'finals_day_1', 'finals_day_2', 'finals_day_3', 'finals_day_4'
       )
     end

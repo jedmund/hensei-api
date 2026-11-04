@@ -160,7 +160,7 @@ RSpec.describe User, type: :model do
     it 'validates length minimum' do
       user = build(:user, display_name: 'ab')
       expect(user).not_to be_valid
-      expect(user.errors[:display_name].join).to match(/too short/)
+      expect(user.errors[:display_name].join).to include('too short')
     end
 
     it 'validates length maximum' do
@@ -203,7 +203,7 @@ RSpec.describe User, type: :model do
     it 'rejects descriptions over 140 characters' do
       user = build(:user, description: 'a' * 141)
       expect(user).not_to be_valid
-      expect(user.errors[:description].join).to match(/too long/)
+      expect(user.errors[:description].join).to include('too long')
     end
 
     it 'allows descriptions at exactly 140 characters' do
@@ -321,35 +321,35 @@ RSpec.describe User, type: :model do
   end
 
   describe '#in_same_crew_as?' do
-    let(:user1) { create(:user) }
-    let(:user2) { create(:user) }
+    let(:first_user) { create(:user) }
+    let(:second_user) { create(:user) }
     let(:crew) { create(:crew) }
 
     it 'returns false when neither user is in a crew' do
-      expect(user1.in_same_crew_as?(user2)).to be false
+      expect(first_user.in_same_crew_as?(second_user)).to be false
     end
 
     it 'returns false when only one user is in a crew' do
-      create(:crew_membership, :captain, crew: crew, user: user1)
-      expect(user1.in_same_crew_as?(user2)).to be false
+      create(:crew_membership, :captain, crew: crew, user: first_user)
+      expect(first_user.in_same_crew_as?(second_user)).to be false
     end
 
     it 'returns true when both users are in the same crew' do
-      create(:crew_membership, :captain, crew: crew, user: user1)
-      create(:crew_membership, crew: crew, user: user2)
-      expect(user1.in_same_crew_as?(user2)).to be true
+      create(:crew_membership, :captain, crew: crew, user: first_user)
+      create(:crew_membership, crew: crew, user: second_user)
+      expect(first_user.in_same_crew_as?(second_user)).to be true
     end
 
     it 'returns false when users are in different crews' do
       crew2 = create(:crew)
-      create(:crew_membership, :captain, crew: crew, user: user1)
-      create(:crew_membership, :captain, crew: crew2, user: user2)
-      expect(user1.in_same_crew_as?(user2)).to be false
+      create(:crew_membership, :captain, crew: crew, user: first_user)
+      create(:crew_membership, :captain, crew: crew2, user: second_user)
+      expect(first_user.in_same_crew_as?(second_user)).to be false
     end
 
     it 'returns false when other_user is nil' do
-      create(:crew_membership, :captain, crew: crew, user: user1)
-      expect(user1.in_same_crew_as?(nil)).to be false
+      create(:crew_membership, :captain, crew: crew, user: first_user)
+      expect(first_user.in_same_crew_as?(nil)).to be false
     end
   end
 
@@ -492,14 +492,14 @@ RSpec.describe User, type: :model do
 
   describe 'password validations' do
     it 'requires password on create' do
-      user = User.new(username: 'testuser', email: 'test@example.com')
+      user = described_class.new(username: 'testuser', email: 'test@example.com')
       expect(user).not_to be_valid
       expect(user.errors[:password]).to be_present
     end
 
     it 'requires minimum 8 characters' do
-      user = User.new(username: 'testuser', email: 'test@example.com',
-                      password: 'short', password_confirmation: 'short')
+      user = described_class.new(username: 'testuser', email: 'test@example.com',
+                                 password: 'short', password_confirmation: 'short')
       expect(user).not_to be_valid
       expect(user.errors[:password].join).to match(/too short|minimum/)
     end

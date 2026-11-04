@@ -18,7 +18,7 @@ RSpec.describe Job, type: :model do
   describe 'search' do
     it 'can search by English name' do
       job = create(:job, name_en: 'Berserker')
-      results = Job.en_search('Berserker')
+      results = described_class.en_search('Berserker')
       expect(results).to include(job)
     end
   end
@@ -49,9 +49,9 @@ RSpec.describe Job, type: :model do
 
     it 'finds a job by uuid or granblue_id' do
       job = create(:job)
-      expect(Job.find_by_route_id(job.id)).to eq(job)
-      expect(Job.find_by_route_id(job.granblue_id)).to eq(job)
-      expect(Job.find_by_route_id('')).to be_nil
+      expect(described_class.find_by_route_id(job.id)).to eq(job)
+      expect(described_class.find_by_route_id(job.granblue_id)).to eq(job)
+      expect(described_class.find_by_route_id('')).to be_nil
     end
   end
 end

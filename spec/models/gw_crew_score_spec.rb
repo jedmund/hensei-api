@@ -13,7 +13,8 @@ RSpec.describe GwCrewScore, type: :model do
 
     describe 'round uniqueness' do
       let!(:participation) { create(:crew_gw_participation) }
-      let!(:existing_score) { create(:gw_crew_score, crew_gw_participation: participation, round: :preliminaries) }
+
+      before { create(:gw_crew_score, crew_gw_participation: participation, round: :preliminaries) }
 
       it 'requires unique round per participation' do
         duplicate = build(:gw_crew_score, crew_gw_participation: participation, round: :preliminaries)
@@ -31,7 +32,7 @@ RSpec.describe GwCrewScore, type: :model do
 
   describe 'round enum' do
     it 'has expected round values' do
-      expect(GwCrewScore.rounds.keys).to contain_exactly(
+      expect(described_class.rounds.keys).to contain_exactly(
         'preliminaries', 'interlude', 'finals_day_1', 'finals_day_2', 'finals_day_3', 'finals_day_4'
       )
     end

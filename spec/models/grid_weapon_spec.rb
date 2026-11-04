@@ -3,15 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe GridWeapon, type: :model do
-  it { is_expected.to belong_to(:weapon) }
-  it { is_expected.to belong_to(:party) }
-  it { is_expected.to belong_to(:weapon_key1).optional }
-  it { is_expected.to belong_to(:weapon_key2).optional }
-  it { is_expected.to belong_to(:weapon_key3).optional }
-  it { is_expected.to belong_to(:weapon_key4).optional }
-  it { is_expected.to belong_to(:awakening).optional }
-  it { is_expected.to belong_to(:collection_weapon).optional }
-
   # Setup common test objects using FactoryBot.
   let(:party) { create(:party) }
   let(:default_series) { create(:weapon_series, extra: false) }
@@ -25,8 +16,17 @@ RSpec.describe GridWeapon, type: :model do
           transcendence_step: 0)
   end
 
+  it { is_expected.to belong_to(:weapon) }
+  it { is_expected.to belong_to(:party) }
+  it { is_expected.to belong_to(:weapon_key1).optional }
+  it { is_expected.to belong_to(:weapon_key2).optional }
+  it { is_expected.to belong_to(:weapon_key3).optional }
+  it { is_expected.to belong_to(:weapon_key4).optional }
+  it { is_expected.to belong_to(:awakening).optional }
+  it { is_expected.to belong_to(:collection_weapon).optional }
+
   describe 'Validations' do
-    context 'Presence validations' do
+    describe 'Presence validations' do
       it 'requires a party' do
         grid_weapon.party = nil
         grid_weapon.validate
@@ -35,156 +35,155 @@ RSpec.describe GridWeapon, type: :model do
       end
     end
 
-    context 'Custom validations' do
-      describe '#compatible_with_position' do
-        context 'when position is within extra positions [9, 10, 11]' do
-          before { grid_weapon.position = 9 }
+    # Custom validations
+    describe '#compatible_with_position' do
+      context 'when position is within extra positions [9, 10, 11]' do
+        before { grid_weapon.position = 9 }
 
-          context 'and weapon series is NOT in allowed extra series' do
-            # default_series has extra: false, so this should fail
-            it 'adds an error on :series' do
-              grid_weapon.validate
-              expect(grid_weapon.errors[:series]).to include('must be compatible with position')
-            end
-          end
-
-          context 'and weapon is extra-eligible' do
-            let(:extra_series) { create(:weapon_series, extra: true) }
-            let(:extra_weapon) { create(:weapon, limit: false, extra: true, weapon_series: extra_series) }
-
-            before { grid_weapon.weapon = extra_weapon }
-
-            it 'is valid with respect to position compatibility' do
-              grid_weapon.validate
-              expect(grid_weapon.errors[:series]).to be_empty
-            end
-          end
-
-          context 'and weapon has extra_prerequisite' do
-            let(:extra_series) { create(:weapon_series, extra: true) }
-            let(:prereq_weapon) { create(:weapon, limit: false, extra: true, weapon_series: extra_series, extra_prerequisite: 4, flb: true) }
-
-            before { grid_weapon.weapon = prereq_weapon }
-
-            it 'rejects placement when uncap_level is below prerequisite' do
-              grid_weapon.uncap_level = 3
-              grid_weapon.validate
-              expect(grid_weapon.errors[:uncap_level]).to include('must meet extra prerequisite')
-            end
-
-            it 'allows placement when uncap_level meets prerequisite' do
-              grid_weapon.uncap_level = 4
-              grid_weapon.validate
-              expect(grid_weapon.errors[:uncap_level]).to be_empty
-            end
-
-            it 'allows placement when uncap_level exceeds prerequisite' do
-              grid_weapon.uncap_level = 5
-              grid_weapon.validate
-              expect(grid_weapon.errors[:uncap_level]).to be_empty
-            end
-          end
-        end
-
-        context 'when position is not in extra positions' do
-          before { grid_weapon.position = 2 }
-
-          it 'does not add an error on :series' do
+        context 'when the weapon series is NOT in allowed extra series' do
+          # default_series has extra: false, so this should fail
+          it 'adds an error on :series' do
             grid_weapon.validate
-            expect(grid_weapon.errors[:series]).to be_empty
+            expect(grid_weapon.errors[:series]).to include('must be compatible with position')
           end
         end
 
-        context 'when updating position to an extra slot' do
+        context 'when the weapon is extra-eligible' do
           let(:extra_series) { create(:weapon_series, extra: true) }
           let(:extra_weapon) { create(:weapon, limit: false, extra: true, weapon_series: extra_series) }
-          let(:non_extra_weapon) { create(:weapon, limit: false, extra: false, weapon_series: default_series) }
 
-          it 'blocks non-extra weapon from moving to extra slot' do
-            gw = create(:grid_weapon, party: party, weapon: non_extra_weapon, position: 0, uncap_level: 3)
-            gw.position = 9
-            expect(gw).not_to be_valid
-            expect(gw.errors[:series]).to include('must be compatible with position')
-          end
+          before { grid_weapon.weapon = extra_weapon }
 
-          it 'allows extra weapon to move to extra slot' do
-            gw = create(:grid_weapon, party: party, weapon: extra_weapon, position: 0, uncap_level: 3)
-            gw.position = 9
-            expect(gw).to be_valid
-          end
-        end
-      end
-
-      describe '#no_duplicate_weapon_keys' do
-        let(:weapon_key) { create(:weapon_key, slot: 0) }
-
-        it 'rejects duplicate weapon keys' do
-          grid_weapon.weapon_key1 = weapon_key
-          grid_weapon.weapon_key2 = weapon_key
-          grid_weapon.validate
-          expect(grid_weapon.errors[:weapon_keys]).to include('cannot have duplicate keys')
-        end
-
-        it 'allows different weapon keys' do
-          weapon_key2 = create(:weapon_key, slot: 1)
-          grid_weapon.weapon_key1 = weapon_key
-          grid_weapon.weapon_key2 = weapon_key2
-          grid_weapon.validate
-          expect(grid_weapon.errors[:weapon_keys]).to be_empty
-        end
-      end
-
-      describe '#no_duplicate_weapon_key_slots' do
-        it 'rejects keys with the same slot in different positions' do
-          key_a = create(:weapon_key, slot: 1)
-          key_b = create(:weapon_key, slot: 1)
-          grid_weapon.weapon_key1 = key_a
-          grid_weapon.weapon_key2 = key_b
-          grid_weapon.validate
-          expect(grid_weapon.errors[:weapon_keys]).to include('cannot have multiple keys for the same slot')
-        end
-
-        it 'allows keys with different slots' do
-          key_a = create(:weapon_key, slot: 0)
-          key_b = create(:weapon_key, slot: 1)
-          grid_weapon.weapon_key1 = key_a
-          grid_weapon.weapon_key2 = key_b
-          grid_weapon.validate
-          expect(grid_weapon.errors[:weapon_keys]).to be_empty
-        end
-      end
-
-      describe '#no_conflicts' do
-        context 'when there is a conflicting grid weapon in the party' do
-          let(:limited_series) { create(:weapon_series) }
-          let(:limited_weapon) { create(:weapon, limit: true, weapon_series: limited_series) }
-
-          before do
-            # Create an existing grid weapon in the party using that limited weapon.
-            create(:grid_weapon, party: party, weapon: limited_weapon, position: 1)
-            # Set up grid_weapon to use the same limited weapon in a different position.
-            grid_weapon.weapon = limited_weapon
-            grid_weapon.position = 2
-          end
-
-          it 'adds an error on :series about conflicts' do
-            grid_weapon.validate
-            expect(grid_weapon.errors[:series]).to include('must not conflict with existing weapons')
-          end
-        end
-
-        context 'when there is no conflicting grid weapon' do
-          it 'has no conflict errors' do
+          it 'is valid with respect to position compatibility' do
             grid_weapon.validate
             expect(grid_weapon.errors[:series]).to be_empty
           end
+        end
+
+        context 'when the weapon has extra_prerequisite' do
+          let(:extra_series) { create(:weapon_series, extra: true) }
+          let(:prereq_weapon) { create(:weapon, limit: false, extra: true, weapon_series: extra_series, extra_prerequisite: 4, flb: true) }
+
+          before { grid_weapon.weapon = prereq_weapon }
+
+          it 'rejects placement when uncap_level is below prerequisite' do
+            grid_weapon.uncap_level = 3
+            grid_weapon.validate
+            expect(grid_weapon.errors[:uncap_level]).to include('must meet extra prerequisite')
+          end
+
+          it 'allows placement when uncap_level meets prerequisite' do
+            grid_weapon.uncap_level = 4
+            grid_weapon.validate
+            expect(grid_weapon.errors[:uncap_level]).to be_empty
+          end
+
+          it 'allows placement when uncap_level exceeds prerequisite' do
+            grid_weapon.uncap_level = 5
+            grid_weapon.validate
+            expect(grid_weapon.errors[:uncap_level]).to be_empty
+          end
+        end
+      end
+
+      context 'when position is not in extra positions' do
+        before { grid_weapon.position = 2 }
+
+        it 'does not add an error on :series' do
+          grid_weapon.validate
+          expect(grid_weapon.errors[:series]).to be_empty
+        end
+      end
+
+      context 'when updating position to an extra slot' do
+        let(:extra_series) { create(:weapon_series, extra: true) }
+        let(:extra_weapon) { create(:weapon, limit: false, extra: true, weapon_series: extra_series) }
+        let(:non_extra_weapon) { create(:weapon, limit: false, extra: false, weapon_series: default_series) }
+
+        it 'blocks non-extra weapon from moving to extra slot' do
+          gw = create(:grid_weapon, party: party, weapon: non_extra_weapon, position: 0, uncap_level: 3)
+          gw.position = 9
+          expect(gw).not_to be_valid
+          expect(gw.errors[:series]).to include('must be compatible with position')
+        end
+
+        it 'allows extra weapon to move to extra slot' do
+          gw = create(:grid_weapon, party: party, weapon: extra_weapon, position: 0, uncap_level: 3)
+          gw.position = 9
+          expect(gw).to be_valid
+        end
+      end
+    end
+
+    describe '#no_duplicate_weapon_keys' do
+      let(:weapon_key) { create(:weapon_key, slot: 0) }
+
+      it 'rejects duplicate weapon keys' do
+        grid_weapon.weapon_key1 = weapon_key
+        grid_weapon.weapon_key2 = weapon_key
+        grid_weapon.validate
+        expect(grid_weapon.errors[:weapon_keys]).to include('cannot have duplicate keys')
+      end
+
+      it 'allows different weapon keys' do
+        weapon_key2 = create(:weapon_key, slot: 1)
+        grid_weapon.weapon_key1 = weapon_key
+        grid_weapon.weapon_key2 = weapon_key2
+        grid_weapon.validate
+        expect(grid_weapon.errors[:weapon_keys]).to be_empty
+      end
+    end
+
+    describe '#no_duplicate_weapon_key_slots' do
+      it 'rejects keys with the same slot in different positions' do
+        key_a = create(:weapon_key, slot: 1)
+        key_b = create(:weapon_key, slot: 1)
+        grid_weapon.weapon_key1 = key_a
+        grid_weapon.weapon_key2 = key_b
+        grid_weapon.validate
+        expect(grid_weapon.errors[:weapon_keys]).to include('cannot have multiple keys for the same slot')
+      end
+
+      it 'allows keys with different slots' do
+        key_a = create(:weapon_key, slot: 0)
+        key_b = create(:weapon_key, slot: 1)
+        grid_weapon.weapon_key1 = key_a
+        grid_weapon.weapon_key2 = key_b
+        grid_weapon.validate
+        expect(grid_weapon.errors[:weapon_keys]).to be_empty
+      end
+    end
+
+    describe '#no_conflicts' do
+      context 'when there is a conflicting grid weapon in the party' do
+        let(:limited_series) { create(:weapon_series) }
+        let(:limited_weapon) { create(:weapon, limit: true, weapon_series: limited_series) }
+
+        before do
+          # Create an existing grid weapon in the party using that limited weapon.
+          create(:grid_weapon, party: party, weapon: limited_weapon, position: 1)
+          # Set up grid_weapon to use the same limited weapon in a different position.
+          grid_weapon.weapon = limited_weapon
+          grid_weapon.position = 2
+        end
+
+        it 'adds an error on :series about conflicts' do
+          grid_weapon.validate
+          expect(grid_weapon.errors[:series]).to include('must not conflict with existing weapons')
+        end
+      end
+
+      context 'when there is no conflicting grid weapon' do
+        it 'has no conflict errors' do
+          grid_weapon.validate
+          expect(grid_weapon.errors[:series]).to be_empty
         end
       end
     end
   end
 
   describe 'Callbacks' do
-    context 'before_save :mainhand?' do
+    describe 'before_save :mainhand?' do
       it 'sets mainhand to true if position is -1' do
         grid_weapon.position = -1
         grid_weapon.save!
@@ -233,8 +232,8 @@ RSpec.describe GridWeapon, type: :model do
       it 'returns only orphaned grid weapons' do
         orphaned_gw
         normal_gw
-        expect(GridWeapon.orphaned).to include(orphaned_gw)
-        expect(GridWeapon.orphaned).not_to include(normal_gw)
+        expect(described_class.orphaned).to include(orphaned_gw)
+        expect(described_class.orphaned).not_to include(normal_gw)
       end
     end
 
@@ -242,8 +241,8 @@ RSpec.describe GridWeapon, type: :model do
       it 'returns only non-orphaned grid weapons' do
         orphaned_gw
         normal_gw
-        expect(GridWeapon.not_orphaned).to include(normal_gw)
-        expect(GridWeapon.not_orphaned).not_to include(orphaned_gw)
+        expect(described_class.not_orphaned).to include(normal_gw)
+        expect(described_class.not_orphaned).not_to include(orphaned_gw)
       end
     end
   end

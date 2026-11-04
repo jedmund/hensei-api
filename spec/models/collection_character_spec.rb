@@ -8,17 +8,17 @@ RSpec.describe CollectionCharacter, type: :model do
   end
 
   describe 'validations' do
+    subject(:collection_character) { build(:collection_character, user: user, character: character) }
+
     let(:user) { create(:user) }
     let(:character) { create(:character, :transcendable) }
-
-    subject { build(:collection_character, user: user, character: character) }
 
     describe 'basic validations' do
       it { is_expected.to validate_inclusion_of(:uncap_level).in_range(0..6) }
 
       it 'rejects negative transcendence stages' do
-        subject.transcendence_step = -1
-        expect(subject).not_to be_valid
+        collection_character.transcendence_step = -1
+        expect(collection_character).not_to be_valid
       end
 
       it { is_expected.to validate_inclusion_of(:awakening_level).in_range(1..10) }
@@ -153,22 +153,22 @@ RSpec.describe CollectionCharacter, type: :model do
 
     describe '.by_element' do
       it 'returns characters of specified element' do
-        expect(CollectionCharacter.by_element(0)).to include(fire_collection)
-        expect(CollectionCharacter.by_element(0)).not_to include(water_collection)
+        expect(described_class.by_element(0)).to include(fire_collection)
+        expect(described_class.by_element(0)).not_to include(water_collection)
       end
     end
 
     describe '.by_rarity' do
       it 'returns characters of specified rarity' do
-        expect(CollectionCharacter.by_rarity(3)).to include(ssr_collection)
-        expect(CollectionCharacter.by_rarity(3)).not_to include(sr_collection)
+        expect(described_class.by_rarity(3)).to include(ssr_collection)
+        expect(described_class.by_rarity(3)).not_to include(sr_collection)
       end
     end
 
     describe '.transcended' do
       it 'returns only transcended characters' do
-        expect(CollectionCharacter.transcended).to include(transcended)
-        expect(CollectionCharacter.transcended).not_to include(fire_collection)
+        expect(described_class.transcended).to include(transcended)
+        expect(described_class.transcended).not_to include(fire_collection)
       end
     end
 
@@ -180,28 +180,33 @@ RSpec.describe CollectionCharacter, type: :model do
       let!(:zodiac_char) { create(:character) }
       let!(:no_series_char) { create(:character) }
 
-      let!(:grand_membership) { create(:character_series_membership, character: grand_char, character_series: grand_series) }
-      let!(:zodiac_membership) { create(:character_series_membership, character: zodiac_char, character_series: zodiac_series) }
+      let(:grand_collection) { create(:collection_character, character: grand_char) }
+      let(:zodiac_collection) { create(:collection_character, character: zodiac_char) }
+      let(:no_series_collection) { create(:collection_character, character: no_series_char) }
 
-      let!(:grand_collection) { create(:collection_character, character: grand_char) }
-      let!(:zodiac_collection) { create(:collection_character, character: zodiac_char) }
-      let!(:no_series_collection) { create(:collection_character, character: no_series_char) }
+      before do
+        create(:character_series_membership, character: grand_char, character_series: grand_series)
+        create(:character_series_membership, character: zodiac_char, character_series: zodiac_series)
+        grand_collection
+        zodiac_collection
+        no_series_collection
+      end
 
       it 'returns characters belonging to specified series' do
-        results = CollectionCharacter.by_series([grand_series.id])
+        results = described_class.by_series([grand_series.id])
         expect(results).to include(grand_collection)
         expect(results).not_to include(zodiac_collection, no_series_collection)
       end
 
       it 'supports multiple series IDs (OR logic)' do
-        results = CollectionCharacter.by_series([grand_series.id, zodiac_series.id])
+        results = described_class.by_series([grand_series.id, zodiac_series.id])
         expect(results).to include(grand_collection, zodiac_collection)
         expect(results).not_to include(no_series_collection)
       end
 
       it 'does not return duplicates when character belongs to multiple matched series' do
         create(:character_series_membership, character: grand_char, character_series: zodiac_series)
-        results = CollectionCharacter.by_series([grand_series.id, zodiac_series.id])
+        results = described_class.by_series([grand_series.id, zodiac_series.id])
         expect(results.count).to eq(2)
       end
     end
@@ -212,8 +217,8 @@ RSpec.describe CollectionCharacter, type: :model do
         # so we bypass it with update_column to create a record without one
         fire_collection.update_column(:awakening_id, nil)
 
-        expect(CollectionCharacter.with_awakening).to include(awakened)
-        expect(CollectionCharacter.with_awakening).not_to include(fire_collection)
+        expect(described_class.with_awakening).to include(awakened)
+        expect(described_class.with_awakening).not_to include(fire_collection)
       end
     end
   end

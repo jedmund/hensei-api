@@ -9,13 +9,13 @@ RSpec.describe CollectionArtifact, type: :model do
   end
 
   describe 'validations' do
-    subject { build(:collection_artifact, skill1: {}, skill2: {}, skill3: {}, skill4: {}) }
+    subject(:collection_artifact) { build(:collection_artifact, skill1: {}, skill2: {}, skill3: {}, skill4: {}) }
 
     it { is_expected.to validate_presence_of(:element) }
 
     it 'validates presence of level' do
-      subject.level = nil
-      expect(subject).not_to be_valid
+      collection_artifact.level = nil
+      expect(collection_artifact).not_to be_valid
     end
 
     it 'validates level is between 1 and 5' do
@@ -33,7 +33,7 @@ RSpec.describe CollectionArtifact, type: :model do
 
   describe 'enums' do
     it 'defines element enum' do
-      expect(CollectionArtifact.elements).to include(
+      expect(described_class.elements).to include(
         'fire' => 1,
         'water' => 2,
         'earth' => 3,
@@ -44,7 +44,7 @@ RSpec.describe CollectionArtifact, type: :model do
     end
 
     it 'defines proficiency enum' do
-      expect(CollectionArtifact.proficiencies).to include(
+      expect(described_class.proficiencies).to include(
         'sabre' => 1,
         'dagger' => 2
       )
@@ -52,7 +52,7 @@ RSpec.describe CollectionArtifact, type: :model do
   end
 
   describe '#effective_proficiency' do
-    context 'for standard artifact' do
+    context 'with a standard artifact' do
       let(:artifact) { create(:artifact, proficiency: :dagger) }
 
       it 'returns proficiency from base artifact' do
@@ -64,7 +64,7 @@ RSpec.describe CollectionArtifact, type: :model do
       end
     end
 
-    context 'for quirk artifact' do
+    context 'with a quirk artifact' do
       let(:artifact) { create(:artifact, :quirk) }
 
       it 'returns proficiency from instance' do
