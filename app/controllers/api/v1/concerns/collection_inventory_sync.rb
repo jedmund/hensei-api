@@ -21,7 +21,7 @@ module Api
           options = import_params
           return render_missing_data if options[:data].blank?
 
-          service = item_config.import_service.new(current_user, options[:data], filter: options[:filter])
+          service = item_type.import_service.new(current_user, options[:data], filter: options[:filter])
           items_to_delete = service.preview_deletions
 
           render json: {
@@ -78,7 +78,7 @@ module Api
         end
 
         def deletion_preview(item)
-          catalog = item.public_send(item_config.type)
+          catalog = item.public_send(item_type.type)
           {
             id: item.id,
             game_id: item.game_id,
@@ -98,7 +98,7 @@ module Api
           granblue_id = image_id || (item['master'] || {})['id']
           return if granblue_id.blank?
 
-          catalog = item_config.catalog.find_by(granblue_id: resolve_granblue_id(granblue_id))
+          catalog = item_type.catalog.find_by(granblue_id: resolve_granblue_id(granblue_id))
           return unless catalog
           # Already matched by game_id: no conflict
           return if current_user_items.exists?(game_id: game_id.to_s)

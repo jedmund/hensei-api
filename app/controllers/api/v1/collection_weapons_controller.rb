@@ -12,7 +12,6 @@ module Api
                       catalog_blueprint: WeaponBlueprint,
                       catalog_view: :grid,
                       import_service: WeaponImportService,
-                      proficiency_column: :proficiency,
                       permitted: %i[
                         weapon_id uncap_level transcendence_step
                         weapon_key1_id weapon_key2_id weapon_key3_id weapon_key4_id
@@ -30,21 +29,15 @@ module Api
                       unowned_includes: [
                         :weapon_series, :weapon_series_variant,
                         { recruited_character: :character_series_records }
-                      ]
+                      ],
+                      owned_filters: {
+                        weapon_id: CollectionItemQuery::Filter.exact(:by_weapon),
+                        proficiency: :by_proficiency
+                      },
+                      unowned_filters: { proficiency: :proficiency, series: :weapon_series_id },
+                      proficiency_column: :proficiency
 
       private
-
-      def filter_owned_by_type(scope)
-        scope = scope.by_weapon(params[:weapon_id]) if params[:weapon_id]
-        scope = scope.by_proficiency(array_param(:proficiency)) if params[:proficiency]
-        scope
-      end
-
-      def filter_unowned_by_type(scope)
-        scope = scope.where(proficiency: array_param(:proficiency)) if params[:proficiency]
-        scope = scope.where(weapon_series_id: array_param(:series)) if params[:series]
-        scope
-      end
 
       # Clears an imported skill level when the uncap changes without a new one.
       def assign_item_attributes(item, attrs)
