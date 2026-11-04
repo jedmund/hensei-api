@@ -53,31 +53,8 @@ module Granblue
 
         # Process keys sorted numerically.
         data.keys.sort_by(&:to_i).each do |key|
-          summon_data = data[key]
-          Rails.logger.debug { "[TRANSFORM] Processing summon: #{summon_data['master']['name'] if summon_data['master']}" }
-
-          master, param = get_master_param(summon_data)
-          unless master && param
-            Rails.logger.debug '[TRANSFORM] Skipping summon - missing master or param data'
-            next
-          end
-
-          # Build the base summon hash.
-          summon = {
-            name: master['name'],
-            id: master['id'],
-            uncap: param['evolution'].to_i
-          }
-
-          # Calculate and add transcendence level.
-          level = param['level'].to_i
-          summon[:transcend] = calculate_transcendence_level(level)
-
-          # Mark quick summon status if this summon matches quick_summon_id.
-          summon[:qs] = true if @quick_summon_id && param['id'].to_s == @quick_summon_id.to_s
-
-          # Include subaura (sub_skill) information if present.
-          summon[:sub_aura] = summon_data['sub_skill']['name'] if summon_data['sub_skill'].is_a?(Hash) && summon_data['sub_skill']['name']
+          summon = transform_summon(data[key])
+          next unless summon
 
           # Place the summon in the proper 0-indexed slot.
           summons[key.to_i - 1] = summon
@@ -89,6 +66,34 @@ module Granblue
       end
 
       private
+
+      # @param summon_data [Hash] one summon's raw data, with master and param
+      # @return [Hash, nil] the transformed summon, or nil without master or param data
+      def transform_summon(summon_data)
+        Rails.logger.debug { "[TRANSFORM] Processing summon: #{summon_data['master']['name'] if summon_data['master']}" }
+
+        master, param = get_master_param(summon_data)
+        unless master && param
+          Rails.logger.debug '[TRANSFORM] Skipping summon - missing master or param data'
+          return
+        end
+
+        # Build the base summon hash, with the transcendence level from the summon's level.
+        summon = {
+          name: master['name'],
+          id: master['id'],
+          uncap: param['evolution'].to_i,
+          transcend: calculate_transcendence_level(param['level'].to_i)
+        }
+
+        # Mark quick summon status if this summon matches quick_summon_id.
+        summon[:qs] = true if @quick_summon_id && param['id'].to_s == @quick_summon_id.to_s
+
+        # Include subaura (sub_skill) information if present.
+        sub_skill = summon_data['sub_skill']
+        summon[:sub_aura] = sub_skill['name'] if sub_skill.is_a?(Hash) && sub_skill['name']
+        summon
+      end
 
       # Calculates transcendence level based on summon level
       # @param level [Integer, nil] Current summon level

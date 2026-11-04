@@ -2,234 +2,101 @@
 
 module Processors
   ##
-  # SummonProcessor processes an array of summon data and creates GridSummon records.
-  # It handles different summon types based on the +type+ parameter:
-  #   - :normal => standard summons
-  #   - :friend => friend summon (fixed position and uncap logic)
-  #   - :sub    => sub summons (position based on order)
+  # SummonProcessor builds GridSummon records from a deck: the main grid
+  # summons, the friend summon (position 6, at its max uncap) and the sub
+  # summons (positions 4 and 5).
   #
   # @example
-  #   normal_processor = SummonProcessor.new(party, summons_array, :normal, quick_summon_id)
-  #   normal_processor.process
-  #
-  #   friend_processor = SummonProcessor.new(party, [friend_summon_name], :friend)
-  #   friend_processor.process
-  class SummonProcessor < BaseProcessor
-    TRANSCENDENCE_LEVELS = [200, 210, 220, 230, 240, 250].freeze
-
-    ##
-    # Initializes a new SummonProcessor.
-    #
-    # @param party [Party] the Party record.
-    # @param data [Hash] the deck hash.
-    # @param type [Symbol] the type of summon (:normal, :friend, or :sub).
-    # @param quick_summon_id [String, nil] (optional) the quick summon identifier.
-    # @param options [Hash] additional options.
-    def initialize(party, data, type = :normal, options = {})
-      super(party, data, options)
-      @party = party
-      @data = data
-      @type = type
-    end
-
-    ##
-    # Processes summon data and creates GridSummon records.
-    #
-    # @return [void]
-    def process
-      unless @data.is_a?(Hash)
-        Rails.logger.error "[SUMMON] Invalid data format: expected a Hash, got #{@data.class}"
-        return
-      end
-
-      unless @data.key?('deck') && @data['deck'].key?('pc')
-        Rails.logger.error '[SUMMON] Missing npc data in deck JSON'
-        return
-      end
-
-      @data = @data.with_indifferent_access
-      summons_data = @data.dig('deck', 'pc', 'summons')
-      sub_summons_data = @data.dig('deck', 'pc', 'sub_summons')
-
-      grid_summons = process_summons(summons_data, sub: false)
-      friend_summon = process_friend_summon
-      sub_summons = process_summons(sub_summons_data, sub: true)
-
-      summons = [*grid_summons, friend_summon, *sub_summons].compact
-
-      summons.each do |summon|
-        summon.save!
-        if summon.collection_summon.present?
-          update_collection_from_game(summon)
-          begin
-            summon.sync_from_collection!
-          rescue ActiveRecord::RecordInvalid => e
-            Rails.logger.error "[SUMMON] Sync from collection failed, reverting: #{e.record.errors.full_messages.join(', ')}"
-            summon.reload
-          end
-        end
-      rescue ActiveRecord::RecordInvalid => e
-        Rails.logger.error "[SUMMON] Failed to create GridSummon: #{e.record.errors.full_messages.join(', ')}"
-        add_warning('item_skipped', summon, summon.summon)
-        discard_unsaved(summon, :summons)
-      end
-    end
+  #   processor = Processors::SummonProcessor.new(party, deck_data)
+  #   processor.process
+  class SummonProcessor < GridItemProcessor
+    grid_item :summon, deck_path: %w[deck pc], association: :summons
 
     private
 
-    attr_reader :type
-
-    def update_collection_from_game(grid_summon)
-      cs = grid_summon.collection_summon
-      return unless cs.summon_id == grid_summon.summon_id
-
-      updates = {}
-      updates[:uncap_level] = grid_summon.uncap_level if grid_summon.uncap_level > cs.uncap_level
-      updates[:transcendence_step] = grid_summon.transcendence_step if grid_summon.transcendence_step > cs.transcendence_step
-
-      return unless updates.any?
-
-      cs.update!(updates)
-      Rails.logger.info "[SUMMON] Updated collection summon #{cs.id} from game data: #{updates}"
+    def build_items
+      pc = @data.dig('deck', 'pc')
+      [*build_summons(pc['summons'], sub: false), build_friend_summon, *build_summons(pc['sub_summons'], sub: true)].compact
     end
 
     ##
-    # Processes a set of summon data and creates GridSummon records.
+    # Builds the main grid or sub summons.
     #
-    # @param summons [Hash] the summon data
-    # @param sub [Boolean] true if we are polling sub summons
+    # @param summons [Hash] the summon data, keyed by slot
+    # @param sub [Boolean] true for the sub summons
     # @return [Array<GridSummon>]
-    def process_summons(summons, sub: false)
-      # Only main-grid summons can be quick summons. A missing or zero ID never
-      # matches, so a deck without a quick summon (or summons without IDs)
-      # marks none.
-      quick_summon_id = sub ? nil : @data.dig('deck', 'pc', 'quick_user_summon_id').to_i
-      quick_summon_id = nil unless quick_summon_id&.positive?
-
-      summons.filter_map do |key, raw_summon|
-        next if raw_summon.nil? || raw_summon['param'].nil? || raw_summon['master'].nil?
-
-        summon_params = raw_summon['param']
-        summon_id = raw_summon['master']['id']
-        summon = Summon.find_by(granblue_id: transform_id(summon_id))
-
-        unless summon
-          Rails.logger.error "[SUMMON] Summon not found with id #{summon_id}"
-          next
-        end
-
-        position = if sub
-                     key.to_i + 3
-                   else
-                     key.to_i == 1 ? -1 : key.to_i - 2
-                   end
-
-        grid_summon = GridSummon.new({
-                                       party: @party,
-                                       summon: summon,
-                                       position: position,
-                                       main: !sub && key.to_i == 1,
-                                       friend: false,
-                                       quick_summon: !quick_summon_id.nil? && summon_params['id'].to_i == quick_summon_id,
-                                       uncap_level: summon_params['evolution'].to_i,
-                                       transcendence_step: level_to_transcendence(summon_params['level'].to_i),
-                                       created_at: Time.current,
-                                       updated_at: Time.current
-                                     })
-
-        # Link to collection summon if available, or create one
-        game_id = summon_params['id']
-        if game_id.present?
-          collection_summon = @party.user.collection_summons.find_by(game_id: game_id.to_s)
-
-          if collection_summon.nil? && @party.user.import_weapons
-            begin
-              collection_summon = @party.user.collection_summons.create!(
-                summon_id: grid_summon.summon_id,
-                game_id: game_id.to_s,
-                uncap_level: grid_summon.uncap_level,
-                transcendence_step: grid_summon.transcendence_step
-              )
-            rescue StandardError => e
-              Rails.logger.error "[SUMMON] Failed to create collection summon during import: #{e.message}"
-              collection_summon = nil
-            end
-          end
-
-          grid_summon.collection_summon = collection_summon if collection_summon
-        end
-
-        grid_summon
-      end
+    def build_summons(summons, sub:)
+      # Only main-grid summons can be quick summons.
+      quick_id = sub ? nil : quick_summon_id
+      summons.filter_map { |key, raw_summon| build_summon(key.to_i, raw_summon, sub:, quick_id:) }
     end
 
-    ##
-    # Processes friend summon data and creates a GridSummon record.
-    #
-    # @return [GridSummon]
-    def process_friend_summon
+    # The deck's quick summon, or nil: a missing or zero id never matches, so a
+    # deck without a quick summon (or summons without ids) marks none.
+    def quick_summon_id
+      id = @data.dig('deck', 'pc', 'quick_user_summon_id').to_i
+      id if id.positive?
+    end
+
+    def build_summon(slot, raw_summon, sub:, quick_id:)
+      return if incomplete?(raw_summon)
+
+      param = raw_summon['param']
+      summon = find_summon(raw_summon['master']['id'])
+      return unless summon
+
+      grid_summon = new_grid_summon(
+        summon,
+        position: summon_position(slot, sub),
+        main: !sub && slot == 1,
+        friend: false,
+        quick_summon: !quick_id.nil? && param['id'].to_i == quick_id,
+        uncap_level: param['evolution'].to_i,
+        transcendence_step: level_to_transcendence(param['level'].to_i)
+      )
+      link_collection_summon(grid_summon, param['id'])
+      grid_summon
+    end
+
+    # Slot 1 is the main summon (-1), the others follow from 0; sub summons sit after the grid.
+    def summon_position(slot, sub)
+      return slot + 3 if sub
+
+      slot == 1 ? -1 : slot - 2
+    end
+
+    def find_summon(game_id)
+      summon = Summon.find_by(granblue_id: SummonIdMapping.resolve(game_id))
+      log_error "Summon not found with id #{game_id}" unless summon
+      summon
+    end
+
+    def build_friend_summon
       summon_name = @data.dig('deck', 'pc', 'damage_info', 'summon_name')
       summon = Summon.find_by('name_en = ? OR name_jp = ?', summon_name, summon_name)
 
       unless summon
-        Rails.logger.error "[SUMMON] Friend summon not found: #{summon_name}"
+        log_error "Friend summon not found: #{summon_name}"
         return nil
       end
 
-      GridSummon.new({
-                       party: @party,
-                       summon: summon,
-                       position: 6,
-                       main: false,
-                       friend: true,
-                       quick_summon: false,
-                       uncap_level: summon.max_uncap_level,
-                       transcendence_step: summon.max_transcendence_step,
-                       created_at: Time.current,
-                       updated_at: Time.current
-                     })
+      new_grid_summon(summon, position: GridSummon::FRIEND_POSITION, main: false, friend: true, quick_summon: false,
+                              uncap_level: summon.max_uncap_level, transcendence_step: summon.max_transcendence_step)
     end
 
-    ##
-    # Determines the uncap level for a friend summon based on its ULb and FLb flags.
-    #
-    # @param summon_data [Hash] the summon data.
-    # @return [Integer] the computed uncap level.
-    def determine_friend_uncap(summon_data)
-      if summon_data[:ulb]
-        5
-      elsif summon_data[:flb]
-        4
-      else
-        3
-      end
+    def new_grid_summon(summon, **attrs)
+      GridSummon.new(party: @party, summon: summon, **attrs, created_at: Time.current, updated_at: Time.current)
     end
 
-    ##
-    # Converts a given level, rounded down to the nearest 10,
-    # to its corresponding transcendence step.
-    #
-    # If level is 200, returns 0; if level is 250, returns 5.
-    #
-    # @param level [Integer] the summon's level
-    # @return [Integer] the transcendence step
-    def level_to_transcendence(level)
-      return 0 if level < 200
+    # Links to the collection summon with the game's copy id, creating one when the
+    # user imports to their collection. A summon without an id isn't linked.
+    def link_collection_summon(grid_summon, game_id)
+      return if game_id.blank?
 
-      floored_level = (level / 10).floor * 10
-      TRANSCENDENCE_LEVELS.index(floored_level) || 0
-    end
-
-    ##
-    # Transforms 5★ Arcarum-series summon IDs into their 4★ variants,
-    # as that's what is stored in the database.
-    #
-    # If an unrelated ID, or the 4★ ID is passed, then returns the input.
-    #
-    # @param id [String] the ID to match
-    # @return [String] the resulting ID
-    def transform_id(id)
-      SummonIdMapping.resolve(id)
+      link_collection(grid_summon, { game_id: game_id.to_s },
+                      summon_id: grid_summon.summon_id,
+                      uncap_level: grid_summon.uncap_level,
+                      transcendence_step: grid_summon.transcendence_step)
     end
   end
 end

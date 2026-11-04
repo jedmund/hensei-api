@@ -52,10 +52,7 @@ module Granblue
             next
           end
 
-          before = record.wiki_raw_jp
-          html = downloader.download(force: force)
-          summary.fetched!(record.granblue_id, before: before, after: html)
-          print_progress(progress, total, label(record), before == html ? 'unchanged' : 'changed', start_time, io: io)
+          print_progress(progress, total, label(record), store_page(downloader, summary, force: force), start_time, io: io)
         rescue StandardError => e
           summary.error!(record.granblue_id, "#{e.message} (#{title})", label: label(record))
           print_progress(progress, total, label(record), "ERR: #{e.message}", start_time, io: io)
@@ -65,6 +62,15 @@ module Granblue
 
         print_summary(summary, start_time, io: io)
         { downloaded: summary.fetched, skipped: summary.skipped, errors: summary.errors, summary: summary }
+      end
+
+      # Downloads one record's page and counts it on the summary.
+      # @return [String] 'changed' or 'unchanged'
+      def self.store_page(downloader, summary, force:)
+        before = downloader.record.wiki_raw_jp
+        html = downloader.download(force: force)
+        summary.fetched!(downloader.record.granblue_id, before: before, after: html)
+        before == html ? 'unchanged' : 'changed'
       end
 
       def self.backfill_scope(model, ids:, missing:, force:)
@@ -152,6 +158,8 @@ module Granblue
       def self.label(record)
         record.try(:name_en).presence || record.try(:granblue_id) || record.id
       end
+
+      attr_reader :record
 
       def initialize(record, client: nil, jp_title: nil)
         @record = record

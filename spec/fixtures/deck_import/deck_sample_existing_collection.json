@@ -1,0 +1,241 @@
+{
+  "characters": [
+    {
+      "position": 0,
+      "granblue_id": "3040425000",
+      "uncap_level": 4,
+      "transcendence_step": 0,
+      "perpetuity": true,
+      "awakening": "character-balanced",
+      "awakening_level": 1,
+      "collection": {
+        "granblue_id": "3040425000",
+        "uncap_level": 4,
+        "transcendence_step": 0,
+        "perpetuity": true,
+        "awakening": "character-balanced",
+        "awakening_level": 1
+      }
+    },
+    {
+      "position": 1,
+      "granblue_id": "3040499000",
+      "uncap_level": 4,
+      "transcendence_step": 0,
+      "perpetuity": true,
+      "awakening": "character-balanced",
+      "awakening_level": 1,
+      "collection": {
+        "granblue_id": "3040499000",
+        "uncap_level": 4,
+        "transcendence_step": 0,
+        "perpetuity": true,
+        "awakening": "character-balanced",
+        "awakening_level": 1
+      }
+    },
+    {
+      "position": 2,
+      "granblue_id": "3040519000",
+      "uncap_level": 4,
+      "transcendence_step": 0,
+      "perpetuity": true,
+      "awakening": "character-balanced",
+      "awakening_level": 1,
+      "collection": {
+        "granblue_id": "3040519000",
+        "uncap_level": 4,
+        "transcendence_step": 0,
+        "perpetuity": true,
+        "awakening": "character-balanced",
+        "awakening_level": 1
+      }
+    },
+    {
+      "position": 3,
+      "granblue_id": "3040161000",
+      "uncap_level": 5,
+      "transcendence_step": 0,
+      "perpetuity": false,
+      "awakening": "character-balanced",
+      "awakening_level": 1,
+      "collection": {
+        "granblue_id": "3040161000",
+        "uncap_level": 5,
+        "transcendence_step": 0,
+        "perpetuity": false,
+        "awakening": "character-balanced",
+        "awakening_level": 1
+      }
+    },
+    {
+      "position": 4,
+      "granblue_id": "3040167000",
+      "uncap_level": 5,
+      "transcendence_step": 0,
+      "perpetuity": true,
+      "awakening": "character-balanced",
+      "awakening_level": 1,
+      "collection": {
+        "granblue_id": "3040167000",
+        "uncap_level": 5,
+        "transcendence_step": 0,
+        "perpetuity": true,
+        "awakening": "character-balanced",
+        "awakening_level": 1
+      }
+    }
+  ],
+  "summons": [
+    {
+      "position": -1,
+      "granblue_id": "2040094000",
+      "main": true,
+      "friend": false,
+      "quick_summon": false,
+      "uncap_level": 6,
+      "transcendence_step": 5,
+      "collection": {
+        "game_id": "591430969",
+        "uncap_level": 6,
+        "transcendence_step": 5
+      }
+    },
+    {
+      "position": 0,
+      "granblue_id": "2040158000",
+      "main": false,
+      "friend": false,
+      "quick_summon": false,
+      "uncap_level": 3,
+      "transcendence_step": 0,
+      "collection": {
+        "game_id": "837889690",
+        "uncap_level": 3,
+        "transcendence_step": 0
+      }
+    },
+    {
+      "position": 1,
+      "granblue_id": "2040425000",
+      "main": false,
+      "friend": false,
+      "quick_summon": false,
+      "uncap_level": 4,
+      "transcendence_step": 0,
+      "collection": {
+        "game_id": "1381579085",
+        "uncap_level": 4,
+        "transcendence_step": 0
+      }
+    },
+    {
+      "position": 2,
+      "granblue_id": "2040244000",
+      "main": false,
+      "friend": false,
+      "quick_summon": false,
+      "uncap_level": 5,
+      "transcendence_step": 0,
+      "collection": {
+        "game_id": "837027170",
+        "uncap_level": 5,
+        "transcendence_step": 0
+      }
+    },
+    {
+      "position": 3,
+      "granblue_id": "2040056000",
+      "main": false,
+      "friend": false,
+      "quick_summon": true,
+      "uncap_level": 6,
+      "transcendence_step": 5,
+      "collection": {
+        "game_id": "675435184",
+        "uncap_level": 6,
+        "transcendence_step": 5
+      }
+    },
+    {
+      "position": 4,
+      "granblue_id": "2040398000",
+      "main": false,
+      "friend": false,
+      "quick_summon": false,
+      "uncap_level": 4,
+      "transcendence_step": 0,
+      "collection": {
+        "game_id": "1160191630",
+        "uncap_level": 4,
+        "transcendence_step": 0
+      }
+    },
+    {
+      "position": 5,
+      "granblue_id": "2040306000",
+      "main": false,
+      "friend": false,
+      "quick_summon": false,
+      "uncap_level": 4,
+      "transcendence_step": 0,
+      "collection": {
+        "game_id": "827452109",
+        "uncap_level": 4,
+        "transcendence_step": 0
+      }
+    },
+    {
+      "position": 6,
+      "granblue_id": "2040056000",
+      "main": false,
+      "friend": true,
+      "quick_summon": false,
+      "uncap_level": 6,
+      "transcendence_step": 5,
+      "collection": null
+    }
+  ],
+  "weapons": [
+    {
+      "position": 6,
+      "granblue_id": "1040310600",
+      "mainhand": false,
+      "uncap_level": 6,
+      "transcendence_step": 5,
+      "element": null,
+      "awakening": null,
+      "awakening_level": 1,
+      "keys": [
+        null,
+        null,
+        null
+      ],
+      "ax": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "collection": {
+        "game_id": "2679385223",
+        "uncap_level": 6,
+        "transcendence_step": 5,
+        "element": null,
+        "keys": [
+          null,
+          null,
+          null
+        ],
+        "awakening": null,
+        "awakening_level": 1
+      }
+    }
+  ],
+  "warnings": [],
+  "counts": {
+    "collection_characters": 5,
+    "collection_summons": 7,
+    "collection_weapons": 1
+  }
+}

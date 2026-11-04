@@ -2,12 +2,14 @@
 
 module Processors
   ##
-  # CharacterProcessor processes an array of character data and creates GridCharacter records.
+  # CharacterProcessor builds GridCharacter records from a deck's characters.
   #
   # @example
-  #   processor = Processors::CharacterProcessor.new(party, transformed_characters_array)
+  #   processor = Processors::CharacterProcessor.new(party, deck_data)
   #   processor.process
-  class CharacterProcessor < BaseProcessor
+  class CharacterProcessor < GridItemProcessor
+    grid_item :character, deck_path: %w[deck npc], association: :characters
+
     CHARACTER_AWAKENING_MAPPING = {
       1 => 'character-balanced',
       2 => 'character-atk',
@@ -15,112 +17,44 @@ module Processors
       4 => 'character-multi'
     }.freeze
 
-    def initialize(party, data, _type = :normal, options = {})
-      super(party, data, options)
-      @party = party
-      @data = data
-    end
-
-    ##
-    # Processes character data.
-    #
-    # Iterates over each character hash in +data+ and creates a new GridCharacter record.
-    # Expects each character hash to include keys such as :id, :position, :uncap, etc.
-    #
-    # @return [void]
-    def process
-      unless @data.is_a?(Hash)
-        Rails.logger.error "[CHARACTER] Invalid data format: expected a Hash, got #{@data.class}"
-        return
-      end
-
-      unless @data.key?('deck') && @data['deck'].key?('npc')
-        Rails.logger.error '[CHARACTER] Missing npc data in deck JSON'
-        return
-      end
-
-      @data = @data.with_indifferent_access
-      characters_data = @data.dig('deck', 'npc')
-
-      grid_characters = process_characters(characters_data)
-      grid_characters.each do |grid_character|
-        grid_character.save!
-        if grid_character.collection_character.present?
-          update_collection_from_game(grid_character)
-          begin
-            grid_character.sync_from_collection!
-          rescue ActiveRecord::RecordInvalid => e
-            Rails.logger.error "[CHARACTER] Sync from collection failed, reverting: #{e.record.errors.full_messages.join(', ')}"
-            grid_character.reload
-          end
-        end
-      rescue ActiveRecord::RecordInvalid => e
-        Rails.logger.error "[CHARACTER] Failed to create GridCharacter: #{e.record.errors.full_messages.join(', ')}"
-      end
-    end
-
     private
 
-    def update_collection_from_game(grid_character)
-      cc = grid_character.collection_character
-      return unless cc.character_id == grid_character.character_id
-
-      updates = {}
-      updates[:uncap_level] = grid_character.uncap_level if grid_character.uncap_level > cc.uncap_level
-      updates[:transcendence_step] = grid_character.transcendence_step if grid_character.transcendence_step > cc.transcendence_step
-
-      # Sync game-derived customizations so sync_from_collection! round-trips correctly
-      if grid_character.awakening_id.present?
-        updates[:awakening_id] = grid_character.awakening_id
-        updates[:awakening_level] = grid_character.awakening_level || 1
-      end
-      updates[:perpetuity] = grid_character.perpetuity
-
-      cc.update!(updates)
-      Rails.logger.info "[CHARACTER] Updated collection character #{cc.id} from game data: #{updates}"
-    rescue ActiveRecord::RecordInvalid => e
-      Rails.logger.warn "[CHARACTER] Could not update collection character #{cc.id}: #{e.record.errors.full_messages.join(', ')}"
+    def build_items
+      @data.dig('deck', 'npc').filter_map { |key, raw_character| build_character(key.to_i, raw_character) }
     end
 
-    def process_characters(characters_data)
-      characters_data.filter_map do |key, raw_character|
-        next if raw_character.nil? || raw_character['param'].nil? || raw_character['master'].nil?
+    # Characters don't report skipped items to the client; they're only logged.
+    def skip_item(_item, error)
+      log_error "Failed to create GridCharacter: #{error.record.errors.full_messages.join(', ')}"
+    end
 
-        position = key.to_i - 1
+    def build_character(slot, raw_character)
+      return if incomplete?(raw_character)
 
-        # Find the Character record by its granblue_id, respecting style change.
-        character_id = raw_character.dig('master', 'id')
-        style = raw_character.dig('param', 'style')
-
-        character = find_imported_character(character_id, style)
-
-        unless character
-          Rails.logger.error "[CHARACTER] Character not found with id #{character_id}"
-          next
-        end
-
-        arousal_form = raw_character.dig('param', 'npc_arousal_form').to_i
-        awakening_slug = CHARACTER_AWAKENING_MAPPING[arousal_form] || 'character-balanced'
-        awakening = Awakening.find_by(slug: awakening_slug, object_type: 'Character')
-        transcendence_step = [raw_character.dig('param', 'phase').to_i,
-                              character.max_transcendence_stage].min
-        uncap_level = raw_character.dig('param', 'evolution').to_i
-        uncap_level = [uncap_level, character.max_uncap_level].min
-
-        grid_character = GridCharacter.new(
-          party_id: @party.id,
-          character_id: character.id,
-          uncap_level: uncap_level,
-          transcendence_step: transcendence_step,
-          position: position,
-          perpetuity: raw_character.dig('param', 'has_npcaugment_constant'),
-          awakening: awakening
-        )
-
-        link_collection_character(grid_character, character)
-
-        grid_character
+      param = raw_character['param']
+      character_id = raw_character.dig('master', 'id')
+      character = find_imported_character(character_id, param['style'])
+      unless character
+        log_error "Character not found with id #{character_id}"
+        return
       end
+
+      grid_character = GridCharacter.new(
+        party_id: @party.id,
+        character_id: character.id,
+        uncap_level: [param['evolution'].to_i, character.max_uncap_level].min,
+        transcendence_step: [param['phase'].to_i, character.max_transcendence_stage].min,
+        position: slot - 1,
+        perpetuity: param['has_npcaugment_constant'],
+        awakening: awakening_for(param['npc_arousal_form'].to_i)
+      )
+      link_collection_character(grid_character, character)
+      grid_character
+    end
+
+    def awakening_for(arousal_form)
+      slug = CHARACTER_AWAKENING_MAPPING[arousal_form] || 'character-balanced'
+      Awakening.find_by(slug: slug, object_type: 'Character')
     end
 
     # The Character for a game id, preferring the style the game reports (style 2 is
@@ -133,28 +67,21 @@ module Processors
     # Links the grid character to the user's collection character, creating one when
     # the user imports to their collection.
     def link_collection_character(grid_character, character)
-      collection_character = @party.user.collection_characters.find_by(character_id: character.id)
-
-      if collection_character.nil? && @party.user.import_weapons
-        begin
-          collection_character = @party.user.collection_characters.create!(
-            character_id: character.id,
-            uncap_level: grid_character.uncap_level,
-            transcendence_step: grid_character.transcendence_step,
-            perpetuity: grid_character.perpetuity
-          )
-        rescue StandardError => e
-          Rails.logger.error "[CHARACTER] Failed to create collection character during import: #{e.message}"
-          collection_character = nil
-        end
-      end
-
-      grid_character.collection_character = collection_character if collection_character
+      link_collection(grid_character, { character_id: character.id },
+                      uncap_level: grid_character.uncap_level,
+                      transcendence_step: grid_character.transcendence_step,
+                      perpetuity: grid_character.perpetuity)
     end
 
-    # Converts a value to a boolean.
-    def parse_boolean(val)
-      val.to_s.downcase == 'true'
+    # The awakening and perpetuity ring, so sync_from_collection! round-trips them.
+    def game_customizations(grid_character)
+      updates = {}
+      if grid_character.awakening_id.present?
+        updates[:awakening_id] = grid_character.awakening_id
+        updates[:awakening_level] = grid_character.awakening_level || 1
+      end
+      updates[:perpetuity] = grid_character.perpetuity
+      updates
     end
   end
 end

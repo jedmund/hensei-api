@@ -1,0 +1,230 @@
+{
+  "lang": "ja",
+  "name": "ルシゼロ",
+  "class": "Manadiver",
+  "extra": false,
+  "subskills": [],
+  "characters": [
+    {
+      "name": "Percival",
+      "id": "3040425000",
+      "uncap": 4,
+      "ringed": true
+    },
+    {
+      "name": "Zeta",
+      "id": "3040499000",
+      "uncap": 4,
+      "ringed": true
+    },
+    {
+      "name": "Fenie",
+      "id": "3040519000",
+      "uncap": 4,
+      "ringed": true
+    },
+    {
+      "name": "Fraux",
+      "id": "3040161000",
+      "uncap": 5
+    },
+    {
+      "name": "Alanaan",
+      "id": "3040167000",
+      "uncap": 5,
+      "ringed": true
+    }
+  ],
+  "weapons": [
+    {
+      "name": "Phoenix's Torch",
+      "id": "1040422700",
+      "uncap": 4,
+      "keys": [
+        "2347",
+        "2353",
+        "2354"
+      ]
+    },
+    {
+      "name": "Lord of Flames",
+      "id": "1040023700",
+      "uncap": 4,
+      "keys": [
+        "1913",
+        "375"
+      ]
+    },
+    {
+      "name": "Lord of Flames",
+      "id": "1040023700",
+      "uncap": 4,
+      "keys": [
+        "1913",
+        "375"
+      ]
+    },
+    {
+      "name": "Lord of Flames",
+      "id": "1040023700",
+      "uncap": 4,
+      "keys": [
+        "1913",
+        "375"
+      ]
+    },
+    {
+      "name": "Overrider",
+      "id": "1040218900",
+      "uncap": 4,
+      "keys": [
+        "2025",
+        "845",
+        "2174"
+      ]
+    },
+    {
+      "name": "Overrider",
+      "id": "1040218900",
+      "uncap": 4,
+      "keys": [
+        "2025",
+        "845",
+        "2174"
+      ]
+    },
+    {
+      "name": "Overrider",
+      "id": "1040218900",
+      "uncap": 4,
+      "keys": [
+        "2025",
+        "845",
+        "2174"
+      ]
+    },
+    {
+      "name": "Scythe of Repudiation",
+      "id": "1040310600",
+      "uncap": 6,
+      "transcend": 5,
+      "keys": [
+        "2192",
+        "2209",
+        "2212"
+      ]
+    },
+    {
+      "name": "Extinction Blade Mk II",
+      "id": "1040025100",
+      "uncap": 4,
+      "awakening": {
+        "type": "Defense",
+        "lvl": 20
+      },
+      "keys": [
+        "426",
+        "845",
+        "1656"
+      ]
+    },
+    {
+      "name": "Altruism-Soul Staff",
+      "id": "1040423300",
+      "uncap": 4,
+      "keys": [
+        "1844",
+        "2252",
+        "2280"
+      ]
+    },
+    {
+      "name": "Ultima Staff",
+      "id": "1040410800",
+      "attr": 3,
+      "uncap": 5,
+      "keys": [
+        "711",
+        "758",
+        "1808"
+      ]
+    },
+    {
+      "name": "Worldstorming Aetos",
+      "id": "1040815200",
+      "uncap": 4,
+      "awakening": {
+        "type": "Skill DMG",
+        "lvl": 10
+      },
+      "keys": [
+        "1996",
+        "2165"
+      ]
+    },
+    {
+      "name": "Refrain of Blazing Vigor",
+      "id": "1040815900",
+      "uncap": 5,
+      "keys": [
+        "1453",
+        "2049",
+        "1228"
+      ]
+    }
+  ],
+  "summons": [
+    {
+      "name": "Agni",
+      "id": "2040094000",
+      "uncap": 6,
+      "transcend": 5,
+      "sub_aura": "Agni's Aura"
+    },
+    {
+      "name": "Qilin",
+      "id": "2040158000",
+      "uncap": 3,
+      "transcend": 1
+    },
+    {
+      "name": "Triple Zero",
+      "id": "2040425000",
+      "uncap": 4,
+      "transcend": 1,
+      "sub_aura": "Vying of Twelve Wings"
+    },
+    {
+      "name": "The Sun",
+      "id": "2040321000",
+      "uncap": 5,
+      "transcend": 1,
+      "sub_aura": "The Sun's Aura"
+    },
+    {
+      "name": "Lucifer",
+      "id": "2040056000",
+      "uncap": 6,
+      "transcend": 5,
+      "qs": true,
+      "sub_aura": "Lucifer's Aura"
+    }
+  ],
+  "sub_summons": [
+    {
+      "name": "Wilnas",
+      "id": "2040398000",
+      "uncap": 4,
+      "transcend": 1,
+      "sub_aura": "Wilnas's Aura"
+    },
+    {
+      "name": "Michael",
+      "id": "2040306000",
+      "uncap": 4,
+      "transcend": 1,
+      "sub_aura": "Michael's Aura"
+    }
+  ],
+  "friend_summon": "Lucifer"
+}

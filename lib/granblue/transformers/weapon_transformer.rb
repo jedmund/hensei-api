@@ -44,29 +44,10 @@ module Granblue
           # Skip entries missing required master/param data
           next unless weapon_data['master'] && weapon_data['param']
 
-          master = weapon_data['master']
-          param = weapon_data['param']
-
-          Rails.logger.debug { "[TRANSFORM] Processing weapon: #{master['name']}" }
-
-          # Transform base weapon attributes (ID, name, uncap level, etc)
-          weapon = transform_base_attributes(master, param)
-          Rails.logger.debug { "[TRANSFORM] Base weapon attributes: #{weapon}" }
-
-          # Add awakening data if present
-          weapon.merge!(transform_awakening(param))
-          Rails.logger.debug { "[TRANSFORM] After awakening: #{weapon[:awakening] if weapon[:awakening]}" }
-
-          # Add AX skills if present
-          weapon.merge!(transform_ax_skills(param))
-          Rails.logger.debug { "[TRANSFORM] After AX skills: #{weapon[:ax] if weapon[:ax]}" }
-
-          # Add weapon keys if present
-          weapon.merge!(transform_weapon_keys(weapon_data))
-          Rails.logger.debug { "[TRANSFORM] After weapon keys: #{weapon[:keys] if weapon[:keys]}" }
+          weapon = transform_weapon(weapon_data)
 
           # Only add weapons with valid IDs
-          weapons << weapon unless master['id'].nil?
+          weapons << weapon unless weapon_data['master']['id'].nil?
           Rails.logger.info "[TRANSFORM] Successfully processed weapon #{weapon[:name]}"
         end
 
@@ -75,6 +56,32 @@ module Granblue
       end
 
       private
+
+      # @param weapon_data [Hash] one weapon's raw data, with master and param
+      # @return [Hash] the transformed weapon
+      def transform_weapon(weapon_data)
+        master = weapon_data['master']
+        param = weapon_data['param']
+
+        Rails.logger.debug { "[TRANSFORM] Processing weapon: #{master['name']}" }
+
+        # Transform base weapon attributes (ID, name, uncap level, etc)
+        weapon = transform_base_attributes(master, param)
+        Rails.logger.debug { "[TRANSFORM] Base weapon attributes: #{weapon}" }
+
+        # Add awakening data if present
+        weapon.merge!(transform_awakening(param))
+        Rails.logger.debug { "[TRANSFORM] After awakening: #{weapon[:awakening] if weapon[:awakening]}" }
+
+        # Add AX skills if present
+        weapon.merge!(transform_ax_skills(param))
+        Rails.logger.debug { "[TRANSFORM] After AX skills: #{weapon[:ax] if weapon[:ax]}" }
+
+        # Add weapon keys if present
+        weapon.merge!(transform_weapon_keys(weapon_data))
+        Rails.logger.debug { "[TRANSFORM] After weapon keys: #{weapon[:keys] if weapon[:keys]}" }
+        weapon
+      end
 
       # Transforms the core weapon attributes from master and param data
       # @param master [Hash] Master data containing basic weapon information
