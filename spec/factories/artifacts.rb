@@ -2,8 +2,8 @@
 
 FactoryBot.define do
   factory :artifact do
-    # Use UUID-like sequence to ensure uniqueness across test runs
-    sequence(:granblue_id) { |n| "9#{SecureRandom.hex(4)}#{n}" }
+    # Eleven digits, so these never match the shorter ids specs set explicitly
+    sequence(:granblue_id) { |n| "9#{n.to_s.rjust(10, '0')}" }
     sequence(:name_en) { |n| "Test Artifact #{n}" }
     name_jp { 'テストアーティファクト' }
     proficiency { :sabre }
@@ -13,7 +13,7 @@ FactoryBot.define do
     trait :quirk do
       rarity { :quirk }
       proficiency { nil }
-      sequence(:granblue_id) { |n| "8#{SecureRandom.hex(4)}#{n}" }
+      sequence(:granblue_id) { |n| "8#{n.to_s.rjust(10, '0')}" }
       sequence(:name_en) { |n| "Quirk Artifact #{n}" }
       name_jp { 'クィルクアーティファクト' }
     end

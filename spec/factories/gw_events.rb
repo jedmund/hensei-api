@@ -11,7 +11,7 @@ FactoryBot.define do
 
     kind { :unite_and_fight }
     series { 'unite_and_fight' }
-    element { %i[Fire Water Earth Wind Light Dark].sample }
+    element { :Fire }
     sequence(:event_number) { |n| n }
     name_en { "Unite and Fight ##{event_number}" }
     name_jp { "星の古戦場 第#{event_number}回" }

@@ -1,10 +1,10 @@
 FactoryBot.define do
   factory :weapon_key do
-    sequence(:name_en) { "Pendulum of #{%w[Strife Sagacity Prosperity Forbiddance Temperament].sample}" }
+    sequence(:name_en) { |n| "Pendulum #{n.to_s.rjust(3, '0')}" }
     name_jp { '鍵' }
-    slot { rand(1..3) }
-    group { rand(1..5) }
-    order { rand(1..20) }
+    slot { 1 }
+    group { 1 }
+    sequence(:order) { |n| n }
     sequence(:slug) { |n| "key-#{n}" }
     sequence(:granblue_id) { |n| n.to_s }
     series { [3, 27] } # Opus and Draconic weapons (legacy)
