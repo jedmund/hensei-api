@@ -47,8 +47,8 @@ module Api
         # Build a new grid summon using permitted parameters merged with party and summon IDs.
         # Set the uncap_level to the summon's maximum uncap level regardless of what the client sent.
         grid_summon = build_grid_summon.tap do |gs|
-          gs.uncap_level = compute_max_uncap_level(gs.summon)
-          gs.transcendence_step = compute_max_transcendence_step(gs.summon)
+          gs.uncap_level = gs.summon.max_uncap_level
+          gs.transcendence_step = gs.summon.max_transcendence_step
         end
 
         # If the grid summon is valid (i.e. it passes all validations), then save it normally.
@@ -256,25 +256,6 @@ module Api
       def conflict_error?(grid_summon)
         grid_summon.errors[:series].include?('must not conflict with existing summons') &&
           grid_summon.conflicts(party).present?
-      end
-
-      ##
-      # Caps the uncap level by the summon's flags. Sending a transcendence
-      # step on a summon that can transcend raises the uncap to its max; a
-      # summon that can't stays at step 0.
-      #
-      # @return [void]
-      def apply_uncap_level
-        summon = @grid_item.summon
-        max_level = compute_max_uncap_level(summon)
-        step_param = summon_params[:transcendence_step]
-        transcending = summon.transcendence && step_param.present?
-
-        greater_than_max_uncap = summon_params[:uncap_level].to_i > max_level
-        new_uncap_level = greater_than_max_uncap || (transcending && step_param.to_i.positive?) ? max_level : summon_params[:uncap_level]
-        new_transcendence_step = transcending ? [step_param.to_i, 5].min : 0
-
-        @grid_item.assign_attributes(uncap_level: new_uncap_level, transcendence_step: new_transcendence_step)
       end
 
       ##

@@ -14,7 +14,6 @@
 # always @grid_item, and @party is always the party the row belongs to.
 #
 # Hooks a controller can override:
-# - apply_uncap_level (required): assigns the uncap fields from the request
 # - before_position_save(new_position): side effects of a move, before saving
 # - after_position_save(old_position, new_position): returns extra response keys
 # - moved_grid_item_json: the moved row as rendered in the move response
@@ -63,7 +62,8 @@ module GridItemActions
   #
   # @return [void]
   def update_uncap_level
-    apply_uncap_level
+    uncap = grid_item_params(:uncap_level, :transcendence_step)
+    @grid_item.apply_uncap(uncap_level: uncap[:uncap_level], transcendence_step: uncap[:transcendence_step])
 
     if @grid_item.save
       render json: grid_item_type.blueprint.render(@grid_item, view: :uncap, root: grid_item_type.root), status: :ok
@@ -311,23 +311,6 @@ module GridItemActions
                                       "conflict_#{name}s": conflicts,
                                       "incoming_#{name}": incoming,
                                       incoming_position: incoming_position)
-  end
-
-  # Weapons and summons cap the uncap by their flags; characters override both.
-  def compute_max_uncap_level(item)
-    if item.transcendence
-      6
-    elsif item.ulb
-      5
-    elsif item.flb
-      4
-    else
-      3
-    end
-  end
-
-  def compute_max_transcendence_step(item)
-    item.transcendence ? 5 : 0
   end
 
   ##

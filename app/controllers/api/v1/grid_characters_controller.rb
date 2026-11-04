@@ -122,8 +122,8 @@ module Api
           party_id: @party.id,
           character_id: incoming.id,
           position: resolve_params[:position],
-          uncap_level: compute_max_uncap_level(incoming),
-          transcendence_step: compute_max_transcendence_step(incoming)
+          uncap_level: incoming.max_uncap_level,
+          transcendence_step: incoming.max_transcendence_stage
         )
         @party.mark_updated!
         render json: GridCharacterBlueprint.render(grid_character,
@@ -172,36 +172,13 @@ module Api
           character_params.except(:rings, :awakening).merge(
             party_id: @party.id,
             character_id: @incoming_character.id,
-            uncap_level: compute_max_uncap_level(@incoming_character),
-            transcendence_step: compute_max_transcendence_step(@incoming_character)
+            uncap_level: @incoming_character.max_uncap_level,
+            transcendence_step: @incoming_character.max_transcendence_stage
           )
         )
         assign_transformed_attributes(grid_character, processed_params)
         assign_raw_attributes(grid_character)
         grid_character
-      end
-
-      ##
-      # Characters know their own caps: special characters run Base 3, FLB 4,
-      # ULB 5; regular ones Base 4, FLB 5, Transcendence 6.
-      #
-      # @param character [Character] the character to compute max uncap for.
-      # @return [Integer] the maximum uncap level.
-      def compute_max_uncap_level(character)
-        character.max_uncap_level
-      end
-
-      def compute_max_transcendence_step(character)
-        character.max_transcendence_stage
-      end
-
-      ##
-      # Takes the requested uncap level and transcendence step as sent.
-      #
-      # @return [void]
-      def apply_uncap_level
-        @grid_item.uncap_level = character_params[:uncap_level]
-        @grid_item.transcendence_step = character_params[:transcendence_step].to_i
       end
 
       # Moving between the main and extra slots closes the gap in the main slots.
