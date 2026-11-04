@@ -8,19 +8,19 @@ RSpec.describe NullBlankWeaponTextFields do
 
   let(:stamp) { Time.zone.parse('2026-01-01 00:00') }
 
+  let!(:blank) do
+    stored({ wiki_en: '', wiki_ja: '', gamewith: '', kamigame: '', name_jp: '', recruits: '', forged_from: '' })
+  end
+  let!(:filled) { stored({ wiki_en: 'Page', wiki_ja: '武器/ページ', gamewith: '123', kamigame: 'x', name_jp: '武器' }) }
+
+  before { allow(migration).to receive(:say) }
+
   # Stored as the legacy rows are: update_columns skips validations and normalization.
   def stored(attributes, *traits)
     weapon = create(:weapon, *traits)
     weapon.update_columns(attributes.merge(updated_at: stamp))
     weapon
   end
-
-  before { allow(migration).to receive(:say) }
-
-  let!(:blank) do
-    stored({ wiki_en: '', wiki_ja: '', gamewith: '', kamigame: '', name_jp: '', recruits: '', forged_from: '' })
-  end
-  let!(:filled) { stored({ wiki_en: 'Page', wiki_ja: '武器/ページ', gamewith: '123', kamigame: 'x', name_jp: '武器' }) }
 
   it 'sets blank text fields to NULL and stamps updated_at, rerunnably' do
     2.times do

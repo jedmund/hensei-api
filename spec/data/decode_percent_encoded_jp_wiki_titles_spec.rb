@@ -8,18 +8,18 @@ RSpec.describe DecodePercentEncodedJpWikiTitles do
 
   let(:truncated) { '%A5%B7%A5%E3%A5%EB%A5%ED%A5%C3%A5%C6%20%28SSR%29%A5%' }
 
+  let!(:utf8_character) { stored(:character, '%E3%83%86%E3%83%95%E3%83%8C%E3%83%88+%28SSR%29') }
+  let!(:euc_weapon) { stored(:weapon, '%C9%F0%B4%EF%2F%A5%DE%A5%F3%A5%C7%A5%C8%20%28SSR%29') }
+  let!(:mixed_summon) { stored(:summon, '召喚石/東堂+葵+%28SSR%29') }
+  let!(:plain_summon) { stored(:summon, '召喚石/アグニス (SSR)') }
+  let!(:broken_character) { stored(:character, truncated) }
+
   # Stored as the legacy rows are: update_columns skips the model's normalization.
   def stored(factory, wiki_ja)
     record = Character.without_skill_build { create(factory) }
     record.update_columns(wiki_ja: wiki_ja)
     record
   end
-
-  let!(:utf8_character) { stored(:character, '%E3%83%86%E3%83%95%E3%83%8C%E3%83%88+%28SSR%29') }
-  let!(:euc_weapon) { stored(:weapon, '%C9%F0%B4%EF%2F%A5%DE%A5%F3%A5%C7%A5%C8%20%28SSR%29') }
-  let!(:mixed_summon) { stored(:summon, '召喚石/東堂+葵+%28SSR%29') }
-  let!(:plain_summon) { stored(:summon, '召喚石/アグニス (SSR)') }
-  let!(:broken_character) { stored(:character, truncated) }
 
   before { allow(migration).to receive(:say) }
 
@@ -42,10 +42,6 @@ RSpec.describe DecodePercentEncodedJpWikiTitles do
   end
 
   it 'starts no skill build' do
-    allow(CharacterSkills::BuildJob).to receive(:perform_later)
-
-    migration.up
-
-    expect(CharacterSkills::BuildJob).not_to have_received(:perform_later)
+    expect { migration.up }.not_to have_enqueued_job(CharacterSkills::BuildJob)
   end
 end

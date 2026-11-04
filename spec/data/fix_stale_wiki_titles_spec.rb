@@ -10,7 +10,12 @@ RSpec.describe FixStaleWikiTitles do
   # Weapon#wiki_raw read `sources` since PR 7b).
   let(:stored) { described_class::StoredSource }
 
-  def column_page(weapon) = Weapon.where(id: weapon.id).pick(Arel.sql('wiki_raw'))
+  let!(:weapons) do
+    described_class::WEAPONS.to_h { |granblue_id, (from, _)| [granblue_id, row(Weapon, granblue_id, from)] }
+  end
+  let!(:characters) do
+    described_class::CHARACTERS.to_h { |granblue_id, (from, _)| [granblue_id, row(Character, granblue_id, from)] }
+  end
 
   # The canonical seed may already carry some of these rows.
   def row(model, granblue_id, wiki_en)
@@ -18,12 +23,7 @@ RSpec.describe FixStaleWikiTitles do
     record || create(model.name.underscore.to_sym, granblue_id: granblue_id, wiki_en: wiki_en)
   end
 
-  let!(:weapons) do
-    described_class::WEAPONS.to_h { |granblue_id, (from, _)| [granblue_id, row(Weapon, granblue_id, from)] }
-  end
-  let!(:characters) do
-    described_class::CHARACTERS.to_h { |granblue_id, (from, _)| [granblue_id, row(Character, granblue_id, from)] }
-  end
+  def column_page(weapon) = Weapon.where(id: weapon.id).pick(Arel.sql('wiki_raw'))
 
   it 'retitles every row without touching names, rerunnably' do
     raphael = weapons['1040505700']

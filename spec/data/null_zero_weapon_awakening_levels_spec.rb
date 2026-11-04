@@ -8,17 +8,17 @@ RSpec.describe NullZeroWeaponAwakeningLevels do
 
   let(:stamp) { Time.zone.parse('2026-01-01 00:00') }
 
+  let!(:zero) { stored({ max_awakening_level: 0 }) }
+  let!(:awakened) { stored({ max_awakening_level: 15 }) }
+
+  before { allow(migration).to receive(:say) }
+
   # Stored as the legacy rows are: update_columns skips validations and normalization.
   def stored(attributes, *traits)
     weapon = create(:weapon, *traits)
     weapon.update_columns(attributes.merge(updated_at: stamp))
     weapon
   end
-
-  before { allow(migration).to receive(:say) }
-
-  let!(:zero) { stored({ max_awakening_level: 0 }) }
-  let!(:awakened) { stored({ max_awakening_level: 15 }) }
 
   it 'sets zero awakening levels to NULL, rerunnably, and leaves real levels alone' do
     2.times do
