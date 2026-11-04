@@ -1110,14 +1110,6 @@ Rails/Blank:
     - 'app/controllers/api/v1/weapons_controller.rb'
     - 'app/controllers/concerns/collection_source_concern.rb'
 
-# Offense count: 2
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforceForPrefixed.
-Rails/Delegate:
-  Exclude:
-    - 'app/services/granblue/golden_fixture.rb'
-    - 'lib/tasks/deploy.rake'
-
 # Offense count: 1
 # This cop supports safe autocorrection (--autocorrect).
 Rails/DurationArithmetic:
@@ -1262,12 +1254,6 @@ Rails/Presence:
     - 'app/controllers/api/v1/grid_artifacts_controller.rb'
     - 'app/controllers/concerns/party_querying_concern.rb'
 
-# Offense count: 1
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Rails/RakeEnvironment:
-  Exclude:
-    - 'lib/tasks/export_all.rake'
-
 # Offense count: 9
 # This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: AllowedReceivers.
@@ -1295,14 +1281,6 @@ Rails/ResponseParsedBody:
 # This cop supports unsafe autocorrection (--autocorrect-all).
 Rails/RootPathnameMethods:
   Exclude:
-    - 'lib/post_deployment/data_importer.rb'
-    - 'lib/tasks/deploy.rake'
-    - 'lib/tasks/download_all_images.rake'
-    - 'lib/tasks/download_images.rake'
-    - 'lib/tasks/durability_check.rake'
-    - 'lib/tasks/import_data.rake'
-    - 'lib/tasks/weapon_skill_data.rake'
-    - 'lib/tasks/weapon_skill_effects.rake'
     - 'spec/lib/character_skills/status_verb_rules_spec.rb'
     - 'spec/lib/granblue/extractors/weapon_skill_data_extractor_spec.rb'
     - 'spec/lib/granblue/parsers/jp_wiki_skill_parser_spec.rb'
@@ -1333,7 +1311,6 @@ Rails/SkipsModelValidations:
 # This cop supports unsafe autocorrection (--autocorrect-all).
 Rails/SquishedSQLHeredocs:
   Exclude:
-    - 'lib/tasks/database.rake'
     - 'spec/data/clear_gacha_rateups_spec.rb'
 
 # Offense count: 98

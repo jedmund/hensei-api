@@ -156,7 +156,7 @@ namespace :deploy do
     nil
   end
 
-  def promotions_from_obtain(obtain)
+  def promotions_from_obtain(obtain) # rubocop:disable Rails/Delegate -- a rake helper on main, where delegate is undefined
     Granblue::Parsers::Wiki.promotions_from_obtain(obtain)
   end
 
@@ -213,8 +213,8 @@ namespace :deploy do
     include LoggingHelper
 
     # Load all required files
-    Dir[Rails.root.join("lib/post_deployment/**/*.rb")].each { |file| require file }
-    Dir[Rails.root.join("lib/granblue/**/*.rb")].each { |file| require file }
+    Rails.root.glob("lib/post_deployment/**/*.rb").each { |file| require file }
+    Rails.root.glob("lib/granblue/**/*.rb").each { |file| require file }
 
     # Ensure Rails environment is loaded
     Rails.application.eager_load!

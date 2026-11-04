@@ -115,9 +115,7 @@ module Granblue
         "{\n#{meta.join(",\n")},\n  \"tables\": {\n#{tables.join(",\n")}\n  }\n}\n"
       end
 
-      def connection
-        ActiveRecord::Base.connection
-      end
+      delegate :connection, to: :'ActiveRecord::Base'
     end
 
     # Records every SELECT the calculator runs for the party's references, re-runs each one

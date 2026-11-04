@@ -44,7 +44,7 @@ namespace :db do
 
     if ENV['CLEAN']
       puts 'Dropping and recreating database...'
-      ActiveRecord::Base.connection.execute(<<~SQL)
+      ActiveRecord::Base.connection.execute(<<~SQL.squish)
         SELECT pg_terminate_backend(pid)
         FROM pg_stat_activity
         WHERE datname = '#{local_db}' AND pid <> pg_backend_pid()
