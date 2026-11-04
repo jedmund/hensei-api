@@ -1,25 +1,23 @@
 # frozen_string_literal: true
 
 ##
-# Service for importing characters from game JSON data.
-# Parses the game's character inventory data and creates CollectionCharacter records.
+# Imports characters into the user's CollectionCharacter records. The shared
+# flow is CollectionImport::Base.
 #
 # Supports two data formats:
 # 1. Game inventory format: { param: { id: ... }, master: { id: granblue_id } }
 # 2. Extension stats format: { granblue_id: '...', awakening_type: 1, ring1: {...}, ... }
 #
-# Note: Unlike weapons and summons, characters are unique per user - each character
-# can only be in a user's collection once.
+# Unlike weapons and summons, characters are unique per user: each character
+# is in a user's collection at most once, so an item matches the user's copy
+# by character, not by game_id, and there is no deletion sync.
 #
 # @example Import characters for a user
-#   service = CharacterImportService.new(user, game_data)
-#   result = service.import
-#   if result.success?
-#     puts "Imported #{result.created.size} characters"
-#   end
+#   result = CharacterImportService.new(user, game_data).import
+#   result.created.size # => characters added
 #
-class CharacterImportService
-  Result = Struct.new(:success?, :created, :updated, :skipped, :errors, keyword_init: true)
+class CharacterImportService < CollectionImport::Base
+  collection_import :character
 
   # Map GBF npc_arousal_form to hensei awakening slugs
   # GBF character awakenings: 1=Balanced, 2=Attack, 3=Defense, 4=Multiattack
@@ -31,327 +29,114 @@ class CharacterImportService
     # All others default to character-balanced
   }.freeze
 
+  RING_SLOTS = %w[ring1 ring2 ring3 ring4 earring].freeze
+
   def initialize(user, game_data, options = {})
-    @user = user
-    @game_data = game_data
-    @update_existing = options[:update_existing] || false
-    @created = []
-    @updated = []
-    @skipped = []
-    @errors = []
-    @default_awakening = nil
+    super
     @awakening_cache = {}
   end
 
   ##
-  # Imports characters from game data.
-  #
-  # @return [Result] Import result with counts and errors
-  def import
-    items = extract_items
-    return Result.new(success?: false, created: [], updated: [], skipped: [], errors: ['No character items found in data']) if items.empty?
-
-    ActiveRecord::Base.transaction do
-      items.each_with_index do |item, index|
-        import_item(item, index)
-      rescue StandardError => e
-        @errors << { index: index, game_id: item.dig('param', 'id'), error: e.message }
-      end
-    end
-
-    Result.new(
-      success?: @errors.empty?,
-      created: @created,
-      updated: @updated,
-      skipped: @skipped,
-      errors: @errors
-    )
-  end
-
-  ##
-  # Dry-run: returns the diff that `import` (with update_existing: true) would apply
-  # to each already-owned CollectionCharacter. Handles both the game inventory format
-  # (param/master) and the extension stats format (granblue_id at top level).
+  # Dry run: the diff that import with update_existing would apply to each
+  # character the user owns, in either format. Characters the user doesn't
+  # own are left out.
   #
   # @return [Array<Hash>] one entry per changed record: { granblue_id:, changes: [...] }
   def preview_updates
-    items = extract_items
-    return [] if items.empty?
+    extract_items.filter_map do |item|
+      granblue_id = item_granblue_id(item)
+      next if granblue_id.blank?
 
-    updates = []
+      character = find_character(granblue_id)
+      existing = character && collection.find_by(character_id: character.id)
+      next unless existing
 
-    items.each do |item|
-      update = if item['granblue_id'].present?
-                 preview_stats_format(item)
-               else
-                 preview_game_format(item)
-               end
-      updates << update if update
+      existing.assign_attributes(build_attrs(item, character))
+      next if existing.changes.empty?
+
+      { granblue_id: character.granblue_id, changes: CollectionImport::ChangeFormatter.format(existing.changes) }
     end
-
-    updates
   end
 
   private
 
-  def preview_game_format(item)
-    master = item['master'] || {}
-    granblue_id = master['id']
-    return nil unless granblue_id.present?
-
-    character = find_character(granblue_id)
-    return nil unless character
-
-    existing = @user.collection_characters.find_by(character_id: character.id)
-    return nil unless existing
-
-    attrs = build_collection_character_attrs(item, character)
-    existing.assign_attributes(attrs)
-    return nil if existing.changes.empty?
-
-    {
-      granblue_id: character.granblue_id,
-      changes: CollectionImport::ChangeFormatter.format(existing.changes)
-    }
+  # The extension stats format has granblue_id at the top level.
+  def stats_format?(item)
+    item['granblue_id'].present?
   end
 
-  def preview_stats_format(item)
-    granblue_id = item['granblue_id']
-    character = find_character(granblue_id)
-    return nil unless character
-
-    existing = @user.collection_characters.find_by(character_id: character.id)
-    return nil unless existing
-
-    attrs = build_stats_attrs(item, character)
-    existing.assign_attributes(attrs)
-    return nil if existing.changes.empty?
-
-    {
-      granblue_id: character.granblue_id,
-      changes: CollectionImport::ChangeFormatter.format(existing.changes)
-    }
+  def item_granblue_id(item)
+    stats_format?(item) ? item['granblue_id'] : (item['master'] || {})['id']
   end
 
-  def extract_items
-    return @game_data if @game_data.is_a?(Array)
-    return @game_data['list'] if @game_data.is_a?(Hash) && @game_data['list'].is_a?(Array)
+  def import_item(item)
+    character = find_character(item_granblue_id(item))
+    return record_not_found(item) unless character
 
-    []
-  end
-
-  def import_item(item, _index)
-    # Detect format: extension stats format has granblue_id at top level
-    if item['granblue_id'].present?
-      import_stats_format(item)
-    else
-      import_game_format(item)
-    end
-  end
-
-  # Import from game inventory format: { param: {...}, master: { id: granblue_id } }
-  def import_game_format(item)
-    param = item['param'] || {}
-    master = item['master'] || {}
-
-    granblue_id = master['id']
-    game_id = param['id']
-
-    character = find_character(granblue_id)
-    unless character
-      @errors << { game_id: game_id, granblue_id: granblue_id, error: 'Character not found' }
-      return
-    end
-
-    existing = @user.collection_characters.find_by(character_id: character.id)
-
-    if existing
-      if @update_existing
-        update_existing_character(existing, item, character)
-      else
-        @skipped << { game_id: game_id, character_id: character.id, reason: 'Already exists' }
-      end
-      return
-    end
-
-    create_collection_character(item, character)
-  end
-
-  # Import from extension stats format: { granblue_id: '...', awakening_type: 1, ring1: {...}, ... }
-  def import_stats_format(item)
-    granblue_id = item['granblue_id']
-
-    character = find_character(granblue_id)
-    unless character
-      @errors << { granblue_id: granblue_id, error: 'Character not found' }
-      return
-    end
-
-    existing = @user.collection_characters.find_by(character_id: character.id)
-
-    if existing
-      if @update_existing
-        update_existing_stats(existing, item, character)
-      else
-        @skipped << { granblue_id: granblue_id, character_id: character.id, reason: 'Already exists' }
-      end
-      return
-    end
-
-    create_collection_character_from_stats(item, character)
+    save_item(item, character, collection.find_by(character_id: character.id))
   end
 
   def find_character(granblue_id)
     Character.find_by(granblue_id: granblue_id.to_s)
   end
 
-  def create_collection_character(item, character)
-    attrs = build_collection_character_attrs(item, character)
+  def item_ref(item, character = nil)
+    granblue_id = character ? character.granblue_id : item_granblue_id(item)
+    return { granblue_id: granblue_id } if stats_format?(item)
 
-    collection_character = @user.collection_characters.build(attrs)
-
-    if collection_character.save
-      @created << collection_character
-    else
-      @errors << {
-        game_id: item.dig('param', 'id'),
-        granblue_id: character.granblue_id,
-        error: collection_character.errors.full_messages.join(', ')
-      }
-    end
+    { game_id: (item['param'] || {})['id'], granblue_id: granblue_id }
   end
 
-  def update_existing_character(existing, item, character)
-    attrs = build_collection_character_attrs(item, character)
-
-    if existing.update(attrs)
-      @updated << existing
-    else
-      @errors << {
-        game_id: item.dig('param', 'id'),
-        granblue_id: character.granblue_id,
-        error: existing.errors.full_messages.join(', ')
-      }
-    end
+  def skip_entry(item, character, reason)
+    key = stats_format?(item) ? { granblue_id: item['granblue_id'] } : { game_id: (item['param'] || {})['id'] }
+    key.merge(character_id: character.id, reason: reason)
   end
 
-  def build_collection_character_attrs(item, character)
+  def build_attrs(item, character)
+    stats_format?(item) ? build_stats_attrs(item, character) : build_game_attrs(item, character)
+  end
+
+  def build_game_attrs(item, character)
     param = item['param'] || {}
-    awakening_level = parse_awakening_level(param['arousal_level'])
-
-    uncap = parse_uncap_level(param['evolution'])
-    transcendence = [parse_transcendence_step(param['phase']), character.max_transcendence_stage].min
-
-    # Transcended characters have uncap_level 6 (beyond the normal 0-5 range)
-    uncap = 6 if transcendence > 0 && uncap >= 5
-
     attrs = {
       character: character,
-      uncap_level: uncap,
-      transcendence_step: transcendence
+      **game_uncap(param['evolution'], param['phase'], max_transcendence: character.max_transcendence_stage)
     }
 
     # Only set awakening_level if > 1 (requires awakening to be set)
-    # The model's before_save callback will set default awakening
+    awakening_level = parse_awakening_level(param['arousal_level'])
     if awakening_level > 1
-      attrs[:awakening] = default_awakening
+      attrs[:awakening] = find_awakening_by_type(1)
       attrs[:awakening_level] = awakening_level
     end
 
     # Only set perpetuity when true; the field is unreliable (sometimes
     # false even for ringed characters), so never overwrite a known true.
     attrs[:perpetuity] = true if param['has_npcaugment_constant']
-
     attrs
-  end
-
-  def default_awakening
-    @default_awakening ||= Awakening.find_by(slug: 'character-balanced', object_type: 'Character')
-  end
-
-  def parse_uncap_level(evolution)
-    value = evolution.to_i
-    # Evolution 6 = transcended, but uncap_level maxes at 5
-    value.clamp(0, 5)
-  end
-
-  def parse_transcendence_step(phase)
-    value = phase.to_i
-    value.clamp(0, 10)
-  end
-
-  def parse_awakening_level(arousal_level)
-    value = arousal_level.to_i
-    # Default to 1 if not present or 0
-    value = 1 if value < 1
-    value.clamp(1, 10)
-  end
-
-  # Stats format methods
-
-  def create_collection_character_from_stats(item, character)
-    attrs = build_stats_attrs(item, character)
-
-    collection_character = @user.collection_characters.build(attrs)
-
-    if collection_character.save
-      @created << collection_character
-    else
-      @errors << {
-        granblue_id: character.granblue_id,
-        error: collection_character.errors.full_messages.join(', ')
-      }
-    end
-  end
-
-  def update_existing_stats(existing, item, character)
-    attrs = build_stats_attrs(item, character)
-
-    if existing.update(attrs)
-      @updated << existing
-    else
-      @errors << {
-        granblue_id: character.granblue_id,
-        error: existing.errors.full_messages.join(', ')
-      }
-    end
   end
 
   def build_stats_attrs(item, character)
     attrs = { character: character }
 
-    # Uncap level and transcendence
     if item['uncap_level'].present?
-      uncap = parse_uncap_level(item['uncap_level'])
-      transcendence = if item['transcendence_step'].present?
-                        [parse_transcendence_step(item['transcendence_step']), character.max_transcendence_stage].min
-                      else
-                        0
-                      end
-      uncap = 6 if transcendence > 0 && uncap >= 5
-      attrs[:uncap_level] = uncap
-      attrs[:transcendence_step] = transcendence
+      attrs.merge!(game_uncap(item['uncap_level'], item['transcendence_step'].presence,
+                              max_transcendence: character.max_transcendence_stage))
     end
 
-    # Awakening type and level
     if item['awakening_type'].present?
       attrs[:awakening] = find_awakening_by_type(item['awakening_type'])
       attrs[:awakening_level] = parse_awakening_level(item['awakening_level'])
     end
 
-    # Rings (up to 4)
-    attrs[:ring1] = parse_ring(item['ring1']) if item['ring1'].present?
-    attrs[:ring2] = parse_ring(item['ring2']) if item['ring2'].present?
-    attrs[:ring3] = parse_ring(item['ring3']) if item['ring3'].present?
-    attrs[:ring4] = parse_ring(item['ring4']) if item['ring4'].present?
-
-    # Earring
-    attrs[:earring] = parse_ring(item['earring']) if item['earring'].present?
-
-    # Perpetuity ring status
+    RING_SLOTS.each { |slot| attrs[slot.to_sym] = parse_ring(item[slot]) if item[slot].present? }
     attrs[:perpetuity] = item['perpetuity'] if item.key?('perpetuity')
-
     attrs
+  end
+
+  # Below 1 (or missing) is 1; the game's max is 10.
+  def parse_awakening_level(arousal_level)
+    [arousal_level.to_i, 1].max.clamp(1, 10)
   end
 
   def find_awakening_by_type(gbf_type)
@@ -361,11 +146,8 @@ class CharacterImportService
 
   def parse_ring(ring_data)
     return nil unless ring_data.is_a?(Hash)
-    return nil unless ring_data['modifier'].present?
+    return nil if ring_data['modifier'].blank?
 
-    {
-      'modifier' => ring_data['modifier'].to_i,
-      'strength' => ring_data['strength'].to_i
-    }
+    { 'modifier' => ring_data['modifier'].to_i, 'strength' => ring_data['strength'].to_i }
   end
 end

@@ -1078,4 +1078,57 @@ RSpec.describe WeaponImportService, type: :service do
       expect(fields).to include('awakening_id', 'awakening_level')
     end
   end
+
+  describe 'result entries' do
+    # Errors go back to the extension verbatim, so their keys are part of the API.
+    def game_item(game_id, granblue_id, **param)
+      { 'param' => { 'id' => game_id, 'image_id' => granblue_id, 'evolution' => 3, 'phase' => 0, **param },
+        'master' => { 'id' => granblue_id } }
+    end
+
+    let(:weapon) { create(:weapon) }
+
+    it 'records skips by game id' do
+      create(:collection_weapon, user: user, weapon: weapon, game_id: '1')
+      result = described_class.new(user, { 'list' => [game_item(1, weapon.granblue_id), game_item(2, weapon.granblue_id)] },
+                                   conflict_resolutions: { '2' => 'skip' }).import
+
+      expect(result.skipped).to eq([{ game_id: 1, reason: 'Already exists' }, { game_id: 2, reason: 'Skipped by user' }])
+    end
+
+    it 'records a failed save with the catalog granblue_id' do
+      result = described_class.new(user, { 'list' => [game_item(1, weapon.granblue_id, 'evolution' => 5, 'phase' => 2)] })
+                              .import
+
+      expect(result.errors).to eq([{ game_id: 1, granblue_id: weapon.granblue_id,
+                                     error: 'Transcendence step not available for this weapon' }])
+    end
+
+    it 'records an exception with the item index' do
+      allow(Weapon).to receive(:find_by).and_raise(StandardError, 'boom')
+      result = described_class.new(user, { 'list' => [game_item(7, weapon.granblue_id)] }).import
+
+      expect(result.errors).to eq([{ index: 0, game_id: 7, error: 'boom' }])
+      expect(result.success?).to be false
+    end
+
+    it 'keeps the items that worked when another one raises' do
+      other = create(:weapon)
+      allow(Weapon).to receive(:find_by).and_call_original
+      allow(Weapon).to receive(:find_by).with(granblue_id: other.granblue_id).and_raise(StandardError, 'boom')
+
+      result = described_class.new(user, { 'list' => [game_item(1, other.granblue_id), game_item(2, weapon.granblue_id)] })
+                              .import
+
+      expect(result.created.map(&:game_id)).to eq(['2'])
+      expect(user.collection_weapons.pluck(:game_id)).to eq(['2'])
+    end
+
+    it 'answers an empty list with a single message' do
+      result = described_class.new(user, { 'list' => [] }).import
+
+      expect(result.to_h).to eq(success?: false, created: [], updated: [], skipped: [],
+                                errors: ['No weapon items found in data'], reconciliation: nil)
+    end
+  end
 end

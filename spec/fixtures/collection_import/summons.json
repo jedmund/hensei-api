@@ -1,0 +1,38 @@
+{
+  "list": [
+    {
+      "param": {
+        "id": "591430969",
+        "image_id": "2040094000_04",
+        "level": "250",
+        "attack": "4652",
+        "hp": "1513",
+        "quality": "99",
+        "evolution_flag": "0",
+        "evolution": "6",
+        "phase": "4",
+        "is_mypage": true
+      },
+      "master": { "id": "2040094000", "name": "Agni", "attribute": "1", "rarity": "4" }
+    },
+    {
+      "param": {
+        "id": "591430970",
+        "image_id": "2040003000_03",
+        "level": "150",
+        "evolution_flag": "0",
+        "evolution": "5"
+      },
+      "master": { "id": "2040003000", "name": "Bahamut", "attribute": "6", "rarity": "4" }
+    },
+    {
+      "param": {
+        "id": "591430971",
+        "image_id": "2049999900",
+        "level": "1",
+        "evolution": "0"
+      },
+      "master": { "id": "2049999900", "name": "Unknown Summon", "rarity": "4" }
+    }
+  ]
+}

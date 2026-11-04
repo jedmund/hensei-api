@@ -696,4 +696,55 @@ RSpec.describe CharacterImportService, type: :service do
       end
     end
   end
+
+  describe 'result entries' do
+    # Errors go back to the extension verbatim, so their keys are part of the API.
+    let(:character) { create(:character) }
+
+    before do
+      Awakening.find_by(slug: 'character-balanced', object_type: 'Character') ||
+        create(:awakening, :for_character, slug: 'character-balanced')
+    end
+
+    it 'records skips with the character id, keyed by game id or granblue_id' do
+      create(:collection_character, user: user, character: character)
+      items = [{ 'param' => { 'id' => 5, 'evolution' => 3 }, 'master' => { 'id' => character.granblue_id } },
+               { 'granblue_id' => character.granblue_id, 'uncap_level' => 4 }]
+
+      result = described_class.new(user, { 'list' => items }).import
+
+      expect(result.skipped).to eq([
+                                     { game_id: 5, character_id: character.id, reason: 'Already exists' },
+                                     { granblue_id: character.granblue_id, character_id: character.id,
+                                       reason: 'Already exists' }
+                                   ])
+    end
+
+    it 'records unknown characters in each format' do
+      items = [{ 'param' => { 'id' => 5 }, 'master' => { 'id' => '3999999999' } }, { 'granblue_id' => '3999999998' }]
+
+      result = described_class.new(user, { 'list' => items }).import
+
+      expect(result.errors).to eq([
+                                    { game_id: 5, granblue_id: '3999999999', error: 'Character not found' },
+                                    { granblue_id: '3999999998', error: 'Character not found' }
+                                  ])
+    end
+
+    it 'records an exception with the item index' do
+      allow(Character).to receive(:find_by).and_raise(StandardError, 'boom')
+      items = [{ 'param' => { 'id' => 5 }, 'master' => { 'id' => character.granblue_id } },
+               { 'granblue_id' => character.granblue_id }]
+
+      result = described_class.new(user, { 'list' => items }).import
+
+      expect(result.errors).to eq([{ index: 0, game_id: 5, error: 'boom' }, { index: 1, game_id: nil, error: 'boom' }])
+    end
+
+    it 'answers an empty list with a single message' do
+      result = described_class.new(user, { 'list' => [] }).import
+
+      expect(result.errors).to eq(['No character items found in data'])
+    end
+  end
 end

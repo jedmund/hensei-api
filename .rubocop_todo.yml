@@ -175,7 +175,6 @@ Metrics/AbcSize:
     - 'app/controllers/api/v1/gacha_controller.rb'
     - 'app/controllers/api/v1/gw_score_imports_controller.rb'
     - 'app/controllers/api/v1/home_controller.rb'
-    - 'app/controllers/api/v1/import_controller.rb'
     - 'app/controllers/api/v1/jobs_controller.rb'
     - 'app/controllers/api/v1/parties_controller.rb'
     - 'app/controllers/api/v1/playlists_controller.rb'
@@ -186,7 +185,6 @@ Metrics/AbcSize:
     - 'app/models/difficulty.rb'
     - 'app/models/grid_character.rb'
     - 'app/models/grid_weapon.rb'
-    - 'app/services/character_import_service.rb'
     - 'app/services/dataminer.rb'
     - 'app/services/gacha_simulation/banner_import.rb'
     - 'app/services/gacha_simulation/compiler.rb'
@@ -247,13 +245,11 @@ Metrics/AbcSize:
 # Configuration parameters: CountComments, Max, CountAsOne.
 Metrics/ClassLength:
   Exclude:
-    - 'app/controllers/api/v1/import_controller.rb'
     - 'app/controllers/api/v1/parties_controller.rb'
     - 'app/controllers/concerns/admin_collection/query.rb'
     - 'app/models/grid_character.rb'
     - 'app/models/grid_weapon.rb'
     - 'app/models/weapon.rb'
-    - 'app/services/character_import_service.rb'
     - 'app/services/dataminer.rb'
     - 'app/services/party_difficulty/draft_workspace.rb'
     - 'app/services/party_query_builder.rb'
@@ -272,7 +268,6 @@ Metrics/CyclomaticComplexity:
     - 'app/controllers/api/v1/characters_controller.rb'
     - 'app/controllers/api/v1/crew_rosters_controller.rb'
     - 'app/controllers/api/v1/home_controller.rb'
-    - 'app/controllers/api/v1/import_controller.rb'
     - 'app/controllers/api/v1/jobs_controller.rb'
     - 'app/controllers/api/v1/parties_controller.rb'
     - 'app/controllers/api/v1/party_solomonis_controller.rb'
@@ -301,8 +296,6 @@ Metrics/CyclomaticComplexity:
     - 'app/services/processors/summon_processor.rb'
     - 'app/services/processors/weapon_processor.rb'
     - 'app/services/solomonis/party_deck.rb'
-    - 'app/services/summon_import_service.rb'
-    - 'app/services/weapon_import_service.rb'
     - 'lib/granblue/banner_catalogue_reconciliation.rb'
     - 'lib/granblue/extractors/family_template_importer.rb'
     - 'lib/granblue/extractors/key_skill_extractor.rb'
@@ -336,7 +329,6 @@ Metrics/CyclomaticComplexity:
 # Configuration parameters: CountComments, Max, CountAsOne, AllowedMethods, AllowedPatterns.
 Metrics/MethodLength:
   Exclude:
-    - 'app/controllers/api/v1/import_controller.rb'
     - 'app/controllers/api/v1/parties_controller.rb'
     - 'app/controllers/api/v1/substitutions_controller.rb'
     - 'app/controllers/concerns/batch_previewable.rb'
@@ -345,8 +337,6 @@ Metrics/MethodLength:
     - 'app/services/grid_damage/conditions.rb'
     - 'app/services/processors/summon_processor.rb'
     - 'app/services/processors/weapon_processor.rb'
-    - 'app/services/summon_import_service.rb'
-    - 'app/services/weapon_import_service.rb'
     - 'lib/granblue/extractors/weapon_skill_data_extractor.rb'
     - 'lib/granblue/parsers/character_skills/effect_parser.rb'
     - 'lib/granblue/parsers/weapon_skill_description_parser.rb'
@@ -376,7 +366,6 @@ Metrics/PerceivedComplexity:
     - 'app/controllers/api/v1/characters_controller.rb'
     - 'app/controllers/api/v1/crew_rosters_controller.rb'
     - 'app/controllers/api/v1/home_controller.rb'
-    - 'app/controllers/api/v1/import_controller.rb'
     - 'app/controllers/api/v1/jobs_controller.rb'
     - 'app/controllers/api/v1/parties_controller.rb'
     - 'app/controllers/api/v1/party_solomonis_controller.rb'
@@ -389,7 +378,6 @@ Metrics/PerceivedComplexity:
     - 'app/models/job_skill.rb'
     - 'app/models/weapon.rb'
     - 'app/services/character_image_download_service.rb'
-    - 'app/services/character_import_service.rb'
     - 'app/services/dataminer.rb'
     - 'app/services/gacha_simulation/banner_import.rb'
     - 'app/services/gacha_simulation/compiler.rb'
@@ -407,8 +395,6 @@ Metrics/PerceivedComplexity:
     - 'app/services/processors/summon_processor.rb'
     - 'app/services/processors/weapon_processor.rb'
     - 'app/services/solomonis/party_deck.rb'
-    - 'app/services/summon_import_service.rb'
-    - 'app/services/weapon_import_service.rb'
     - 'lib/granblue/banner_catalogue_reconciliation.rb'
     - 'lib/granblue/downloaders/character_downloader.rb'
     - 'lib/granblue/extractors/family_template_importer.rb'
@@ -1167,13 +1153,9 @@ Rails/Blank:
     - 'app/models/user.rb'
     - 'app/models/weapon.rb'
     - 'app/models/weapon_key.rb'
-    - 'app/services/artifact_import_service.rb'
-    - 'app/services/character_import_service.rb'
     - 'app/services/party_difficulty/rules/weapon_awakening_at_least.rb'
     - 'app/services/party_query_builder.rb'
     - 'app/services/processors/bullet_processor.rb'
-    - 'app/services/summon_import_service.rb'
-    - 'app/services/weapon_import_service.rb'
     - 'lib/weapon_skills/build/structure/tiers.rb'
 
 # Offense count: 3
@@ -1329,7 +1311,6 @@ Rails/InverseOf:
 Rails/NegateInclude:
   Exclude:
     - 'app/controllers/api/v1/characters_controller.rb'
-    - 'app/controllers/api/v1/import_controller.rb'
     - 'app/controllers/api/v1/summons_controller.rb'
     - 'app/controllers/api/v1/weapon_skill_versions_controller.rb'
     - 'app/controllers/api/v1/weapons_controller.rb'
@@ -1473,10 +1454,7 @@ Rails/Presence:
     - 'app/controllers/api/v1/grid_artifacts_controller.rb'
     - 'app/controllers/concerns/party_querying_concern.rb'
     - 'app/errors/api/v1/granblue_error.rb'
-    - 'app/services/artifact_import_service.rb'
     - 'app/services/party_query_builder.rb'
-    - 'app/services/summon_import_service.rb'
-    - 'app/services/weapon_import_service.rb'
 
 # Offense count: 1
 # This cop supports unsafe autocorrection (--autocorrect-all).
@@ -1622,7 +1600,6 @@ Rails/StrongParametersExpect:
     - 'app/controllers/api/v1/gw_events_controller.rb'
     - 'app/controllers/api/v1/gw_individual_scores_controller.rb'
     - 'app/controllers/api/v1/gw_score_imports_controller.rb'
-    - 'app/controllers/api/v1/import_controller.rb'
     - 'app/controllers/api/v1/job_skills_controller.rb'
     - 'app/controllers/api/v1/jobs_controller.rb'
     - 'app/controllers/api/v1/parties_controller.rb'
@@ -1785,9 +1762,6 @@ Style/NumericPredicate:
     - 'app/models/collection_character.rb'
     - 'app/models/collection_summon.rb'
     - 'app/models/collection_weapon.rb'
-    - 'app/services/character_import_service.rb'
-    - 'app/services/summon_import_service.rb'
-    - 'app/services/weapon_import_service.rb'
     - 'lib/post_deployment/manager.rb'
     - 'lib/tasks/export_summon.rake'
 

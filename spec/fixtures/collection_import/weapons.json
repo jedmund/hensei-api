@@ -1,0 +1,104 @@
+{
+  "list": [
+    {
+      "param": {
+        "id": 4585965586,
+        "image_id": "1040422700",
+        "level": "150",
+        "attack": "3284",
+        "hp": "496",
+        "evolution": "4",
+        "phase": "0",
+        "bonus_attack": 0,
+        "bonus_hp": 0,
+        "quality": "99",
+        "arousal_level": "1",
+        "arousal_form": "1",
+        "augment_image": [],
+        "augment_skill_icon_image": [],
+        "augment_skill_info": [],
+        "arousal": {
+          "is_arousal_weapon": false,
+          "level": null,
+          "form": null,
+          "form_name": null,
+          "max_level": null,
+          "skill": []
+        },
+        "skill_level": "15"
+      },
+      "master": {
+        "id": "1040422700",
+        "name": "Phoenix's Torch",
+        "attribute": "1",
+        "kind": "5",
+        "rarity": "4",
+        "series_id": "2"
+      }
+    },
+    {
+      "param": {
+        "id": 4585965601,
+        "image_id": "1040310600",
+        "level": "250",
+        "evolution": "5",
+        "phase": "3",
+        "augment_skill_info": [],
+        "arousal": {
+          "is_arousal_weapon": true,
+          "level": 7,
+          "form": 3,
+          "form_name": "Special",
+          "max_level": 15,
+          "skill": []
+        },
+        "skill_level": "20"
+      },
+      "master": {
+        "id": "1040310600",
+        "name": "Yggdrasil Crystal Blade Omega",
+        "attribute": "3",
+        "kind": "1",
+        "rarity": "4",
+        "series_id": "8"
+      }
+    },
+    {
+      "param": {
+        "id": 4585965617,
+        "image_id": "1040213900",
+        "level": "150",
+        "evolution": "5",
+        "phase": "0",
+        "augment_skill_info": [[
+          { "depth": null, "effect_value": "2.5", "show_value": "+2.5%", "skill_id": 1589 },
+          { "depth": null, "effect_value": "2_4", "show_value": "+4%", "skill_id": 1591 }
+        ]],
+        "augment_skill_icon_image": ["ex_skill_atk", "ex_skill_ab_limit"],
+        "odiant": { "exorcision_level": 0, "is_odiant_weapon": false, "max_exorcision_level": 0, "reduction_effect_value": 0 },
+        "arousal": { "is_arousal_weapon": false, "level": null, "form": null },
+        "skill_level": "15"
+      },
+      "master": {
+        "id": "1040213900",
+        "name": "Celeste Claw Omega",
+        "attribute": "5",
+        "kind": "5",
+        "rarity": "4",
+        "series_id": "8"
+      }
+    },
+    {
+      "param": {
+        "id": 4585965620,
+        "image_id": "1049999900",
+        "level": "1",
+        "evolution": "0",
+        "phase": "0",
+        "augment_skill_info": [],
+        "arousal": { "is_arousal_weapon": false, "level": null, "form": null }
+      },
+      "master": { "id": "1049999900", "name": "Unknown Weapon", "rarity": "4" }
+    }
+  ]
+}

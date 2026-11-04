@@ -339,7 +339,7 @@ module Processors
       TRANSCENDENCE_LEVELS.index(floored_level) || 0
     end
 
-    # GBF series_id to WeaponSeries slug mapping (mirrors ImportController::GBF_WEAPON_SERIES_TO_SLUG)
+    # GBF series_id to WeaponSeries slug mapping (a subset of GameDataImport::WEAPON_SERIES_SLUGS)
     GBF_WEAPON_SERIES_TO_SLUG = {
       3 => 'dark-opus', 13 => 'ultima', 17 => 'superlative',
       19 => 'class-champion', 27 => 'draconic', 40 => 'draconic-providence', 44 => 'destroyer'
