@@ -18,9 +18,9 @@ class Api::V1::CrewRostersController < Api::V1::ApiController
     result = { roster: Api::V1::CrewRosterBlueprint.render_as_hash(@roster, view: :full) }
 
     if @roster.items.present?
-      character_ids = @roster.items.select { |i| i['type'] == 'Character' }.map { |i| i['id'] }
-      weapon_ids = @roster.items.select { |i| i['type'] == 'Weapon' }.map { |i| i['id'] }
-      summon_ids = @roster.items.select { |i| i['type'] == 'Summon' }.map { |i| i['id'] }
+      character_ids = @roster.items.select { |i| i['type'] == 'Character' }.pluck('id')
+      weapon_ids = @roster.items.select { |i| i['type'] == 'Weapon' }.pluck('id')
+      summon_ids = @roster.items.select { |i| i['type'] == 'Summon' }.pluck('id')
 
       result[:items] = enrich_items(character_ids, weapon_ids, summon_ids)
       result[:members] = fetch_roster_members(character_ids, weapon_ids, summon_ids)
@@ -92,7 +92,7 @@ class Api::V1::CrewRostersController < Api::V1::ApiController
     end
 
     # Preserve the original ordering from the roster
-    item_order = @roster.items.map { |i| i['id'] }
+    item_order = @roster.items.pluck('id')
     items.sort_by { |i| item_order.index(i[:id]) || items.length }
   end
 

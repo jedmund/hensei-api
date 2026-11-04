@@ -1331,9 +1331,6 @@ Rails/Output:
 # This cop supports unsafe autocorrection (--autocorrect-all).
 Rails/Pluck:
   Exclude:
-    - 'app/controllers/api/v1/crew_rosters_controller.rb'
-    - 'app/controllers/api/v1/grid_character_roles_controller.rb'
-    - 'app/controllers/api/v1/home_controller.rb'
     - 'app/services/character_skills/refresh_batch.rb'
     - 'app/services/gacha_simulation/banner.rb'
     - 'app/services/gacha_simulation/banner_import.rb'
