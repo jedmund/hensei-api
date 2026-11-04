@@ -99,22 +99,7 @@ module PartyDifficulty
       # contribution_sum is what the component scored before dividing by its
       # denominator; its spread is what target_max should be set against.
       def component_section
-        rows = @ruleset.components.map do |c|
-          name = c['name']
-          entries = @results.filter_map { |r| component(r, name) }
-          scored = entries.select { |e| e[:contribution_sum] }
-          sums = scored.map { |e| e[:contribution_sum].to_f }.sort
-          raws = scored.map { |e| e[:raw_score].to_f }.sort
-          fired = scored.count { |e| e[:contribution_sum].to_f.positive? }
-          denominator = scored.first&.dig(:max_weight)
-
-          [
-            name, fmt(c['weight']), c['target_max'] ? fmt(c['target_max']) : '—', fmt(denominator),
-            pct(entries.count { |e| e[:present] }, @results.size), pct(fired, @results.size),
-            fmt(percentile(sums, 50)), fmt(percentile(sums, 90)), fmt(percentile(sums, 99)), fmt(sums.last),
-            fmt(percentile(raws, 50)), fmt(percentile(raws, 99))
-          ].join(' | ').then { |line| "| #{line} |" }
-        end
+        rows = @ruleset.components.map { |c| component_row(c) }
 
         <<~MD.strip
           ## Components
@@ -127,19 +112,29 @@ module PartyDifficulty
         MD
       end
 
-      def rule_section
-        totals = Hash.new { |h, k| h[k] = { parties: 0, points: 0.0 } }
-        @results.each do |r|
-          per_rule = Hash.new(0.0)
-          Array(r.breakdown[:components]).each do |comp|
-            Array(comp[:fired]).each { |f| per_rule[f[:id].to_s.delete_suffix('-additional')] += f[:weight].to_f }
-          end
-          per_rule.each do |id, points|
-            totals[id][:parties] += 1
-            totals[id][:points] += points
-          end
-        end
+      def component_row(comp)
+        entries = @results.filter_map { |r| component(r, comp['name']) }
+        scored = entries.select { |e| e[:contribution_sum] }
+        fired = scored.count { |e| e[:contribution_sum].to_f.positive? }
+        denominator = scored.first&.dig(:max_weight)
 
+        [
+          comp['name'], fmt(comp['weight']), comp['target_max'] ? fmt(comp['target_max']) : '—', fmt(denominator),
+          pct(entries.count { |e| e[:present] }, @results.size), pct(fired, @results.size),
+          *spread_cells(scored)
+        ].join(' | ').then { |line| "| #{line} |" }
+      end
+
+      # The spread of the scored parties' points (before the denominator) and raw scores.
+      def spread_cells(scored)
+        sums = scored.map { |e| e[:contribution_sum].to_f }.sort
+        raws = scored.map { |e| e[:raw_score].to_f }.sort
+        [fmt(percentile(sums, 50)), fmt(percentile(sums, 90)), fmt(percentile(sums, 99)), fmt(sums.last),
+         fmt(percentile(raws, 50)), fmt(percentile(raws, 99))]
+      end
+
+      def rule_section
+        totals = rule_totals
         rules = @ruleset.rules.select { |r| r.fetch('active', true) }
         rows = rules.sort_by { |r| [r['component'], -r['weight'].to_f] }.map do |r|
           t = totals[@ruleset.rule_id(r)]
@@ -156,22 +151,27 @@ module PartyDifficulty
         MD
       end
 
+      # Per rule id: how many parties it fired for and the points it gave them. A
+      # scaling rule's "-additional" row counts toward its own rule.
+      def rule_totals
+        totals = Hash.new { |h, k| h[k] = { parties: 0, points: 0.0 } }
+        @results.each do |r|
+          per_rule = Hash.new(0.0)
+          Array(r.breakdown[:components]).each do |comp|
+            Array(comp[:fired]).each { |f| per_rule[f[:id].to_s.delete_suffix('-additional')] += f[:weight].to_f }
+          end
+          per_rule.each do |id, points|
+            totals[id][:parties] += 1
+            totals[id][:points] += points
+          end
+        end
+        totals
+      end
+
       def movement_section
-        baseline_by_id = @baseline.index_by(&:party_id)
-        pairs = @results.filter_map { |r| (b = baseline_by_id[r.party_id]) && [b, r] }
+        pairs = movement_pairs
         names = @ruleset.tiers.sort_by { |t| t['min_score'].to_f }.pluck('name')
-        baseline_names = pairs.map { |b, _| b.tier }.uniq
-        from_names = baseline_names.compact.sort_by { |n| names.index(n) || 99 } + (baseline_names.include?(nil) ? [nil] : [])
-
-        matrix = from_names.map do |from|
-          cells = names.map { |to| pairs.count { |b, r| b.tier == from && r.tier == to } }
-          "| #{from || '—'} | #{cells.join(' | ')} |"
-        end
-
         changed = pairs.count { |b, r| b.tier_slug != r.tier_slug }
-        movers = pairs.sort_by { |b, r| -(r.score - b.score).abs }.first(TOP_MOVERS).map do |b, r|
-          "| #{r.shortcode} | #{r.name.to_s.tr('|', '/')} | #{fmt(b.score)} (#{b.tier}) | #{fmt(r.score)} (#{r.tier}) |"
-        end
 
         <<~MD.strip
           ## Movement against the baseline
@@ -180,14 +180,38 @@ module PartyDifficulty
 
           | From \\ to | #{names.join(' | ')} |
           |---|#{'---|' * names.size}
-          #{matrix.join("\n")}
+          #{movement_matrix(pairs, names).join("\n")}
 
           ### Largest score changes
 
           | Party | Name | Baseline | Candidate |
           |---|---|---|---|
-          #{movers.join("\n")}
+          #{top_movers(pairs).join("\n")}
         MD
+      end
+
+      # [baseline, candidate] results for each party scored in both runs.
+      def movement_pairs
+        baseline_by_id = @baseline.index_by(&:party_id)
+        @results.filter_map { |r| (b = baseline_by_id[r.party_id]) && [b, r] }
+      end
+
+      # One row per baseline tier (the ruleset's tiers in order, then tiers it no
+      # longer has, then unscored), counting the candidate tier each party landed in.
+      def movement_matrix(pairs, names)
+        baseline_names = pairs.map { |b, _| b.tier }.uniq
+        from_names = baseline_names.compact.sort_by { |n| names.index(n) || 99 } + (baseline_names.include?(nil) ? [nil] : [])
+
+        from_names.map do |from|
+          cells = names.map { |to| pairs.count { |b, r| b.tier == from && r.tier == to } }
+          "| #{from || '—'} | #{cells.join(' | ')} |"
+        end
+      end
+
+      def top_movers(pairs)
+        pairs.sort_by { |b, r| -(r.score - b.score).abs }.first(TOP_MOVERS).map do |b, r|
+          "| #{r.shortcode} | #{r.name.to_s.tr('|', '/')} | #{fmt(b.score)} (#{b.tier}) | #{fmt(r.score)} (#{r.tier}) |"
+        end
       end
 
       def component(result, name)
