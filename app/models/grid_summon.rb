@@ -23,7 +23,7 @@ class GridSummon < ApplicationRecord
 
   has_many :substitutions, as: :grid, dependent: :destroy
   has_many :substitute_of, class_name: 'Substitution', as: :substitute_grid, dependent: :destroy
-  validates_presence_of :party
+  validates :party, presence: true # rubocop:disable Rails/RedundantPresenceValidationOnBelongsTo -- keeps the "can't be blank" message
 
   # Associations the nested blueprint walks. Reused by controllers and the
   # polymorphic substitute-grid preloader so a single source of truth keeps

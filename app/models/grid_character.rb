@@ -43,7 +43,7 @@ class GridCharacter < ApplicationRecord
   ].freeze
 
   # Validations
-  validates_presence_of :party
+  validates :party, presence: true # rubocop:disable Rails/RedundantPresenceValidationOnBelongsTo -- keeps the "can't be blank" message
 
   # Validate that uncap_level is present and numeric, transcendence_step is optional but must be numeric if present.
   validates :uncap_level, presence: true, numericality: { only_integer: true }

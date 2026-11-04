@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class DataVersion < ActiveRecord::Base
+class DataVersion < ApplicationRecord
   validates :filename, presence: true, uniqueness: true
   validates :imported_at, presence: true
 

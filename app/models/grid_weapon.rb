@@ -34,7 +34,7 @@ class GridWeapon < ApplicationRecord
 
   belongs_to :party,
              inverse_of: :weapons
-  validates_presence_of :party
+  validates :party, presence: true # rubocop:disable Rails/RedundantPresenceValidationOnBelongsTo -- keeps the "can't be blank" message
 
   has_many :substitutions, as: :grid, dependent: :destroy
   has_many :substitute_of, class_name: 'Substitution', as: :substitute_grid, dependent: :destroy

@@ -1096,12 +1096,6 @@ Rails/ApplicationController:
   Exclude:
     - 'spec/controllers/concerns/party_authorization_concern_spec.rb'
 
-# Offense count: 1
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Rails/ApplicationRecord:
-  Exclude:
-    - 'app/models/data_version.rb'
-
 # Offense count: 85
 # This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: NilOrEmpty, NotPresent, UnlessPresent.
@@ -1282,12 +1276,6 @@ Rails/RedundantActiveRecordAllMethod:
   Exclude:
     - 'spec/requests/api/v1/stickers_spec.rb'
 
-# Offense count: 2
-# This cop supports safe autocorrection (--autocorrect).
-Rails/RedundantAllowNil:
-  Exclude:
-    - 'app/models/user.rb'
-
 # Offense count: 23
 # This cop supports unsafe autocorrection (--autocorrect-all).
 Rails/ResponseParsedBody:
@@ -1412,14 +1400,6 @@ Rails/UniqueValidationWithoutIndex:
     - 'app/models/user.rb'
     - 'app/models/weapon_skill_datum.rb'
     - 'app/models/weapon_skill_effect.rb'
-
-# Offense count: 3
-# This cop supports safe autocorrection (--autocorrect).
-Rails/Validation:
-  Exclude:
-    - 'app/models/grid_character.rb'
-    - 'app/models/grid_summon.rb'
-    - 'app/models/grid_weapon.rb'
 
 # Offense count: 3
 # This cop supports unsafe autocorrection (--autocorrect-all).
