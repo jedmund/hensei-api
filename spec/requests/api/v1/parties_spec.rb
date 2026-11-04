@@ -110,7 +110,7 @@ RSpec.describe 'Parties API', type: :request do
       end
     end
 
-    context 'viewer_collection' do
+    context 'with viewer_collection' do
       let(:weapon) { create(:weapon, granblue_id: '1040099001') }
       let(:character) { create(:character, granblue_id: '3040099001') }
       let(:summon) { create(:summon, granblue_id: '2040099001') }
@@ -237,7 +237,7 @@ RSpec.describe 'Parties API', type: :request do
       end
     end
 
-    context 'source_collection' do
+    context 'with source_collection' do
       let(:weapon) { create(:weapon, granblue_id: '1040098001') }
       let(:source_user) { create(:user, collection_privacy: :everyone) }
 

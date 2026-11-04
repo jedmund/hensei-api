@@ -547,7 +547,6 @@ RSpec/ChangeByZero:
 # Prefixes: when, with, without
 RSpec/ContextWording:
   Exclude:
-    - 'spec/controllers/concerns/party_authorization_concern_spec.rb'
     - 'spec/lib/granblue/parsers/character_skills/builder_spec.rb'
     - 'spec/lib/granblue/parsers/weapon_skill_parser_spec.rb'
     - 'spec/models/character_skill_spec.rb'
@@ -567,20 +566,6 @@ RSpec/ContextWording:
     - 'spec/models/weapon_skill_spec.rb'
     - 'spec/models/weapon_skill_version_spec.rb'
     - 'spec/models/weapon_spec.rb'
-    - 'spec/requests/api/v1/crew_gw_participations_spec.rb'
-    - 'spec/requests/api/v1/crew_invitations_spec.rb'
-    - 'spec/requests/api/v1/crew_memberships_spec.rb'
-    - 'spec/requests/api/v1/crew_rosters_spec.rb'
-    - 'spec/requests/api/v1/crews_spec.rb'
-    - 'spec/requests/api/v1/grid_character_roles_spec.rb'
-    - 'spec/requests/api/v1/gw_crew_scores_spec.rb'
-    - 'spec/requests/api/v1/gw_events_spec.rb'
-    - 'spec/requests/api/v1/gw_individual_scores_spec.rb'
-    - 'spec/requests/api/v1/job_skills_spec.rb'
-    - 'spec/requests/api/v1/parties_spec.rb'
-    - 'spec/requests/api/v1/party_shares_spec.rb'
-    - 'spec/requests/api/v1/phantom_players_spec.rb'
-    - 'spec/requests/api/v1/user_parties_spec.rb'
     - 'spec/scripts/fetch_gacha_rates_spec.rb'
     - 'spec/services/character_image_download_service_spec.rb'
     - 'spec/services/character_import_service_spec.rb'

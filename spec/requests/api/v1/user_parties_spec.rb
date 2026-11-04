@@ -93,7 +93,7 @@ RSpec.describe 'Api::V1::UserParties', type: :request do
       end
     end
 
-    context 'pagination' do
+    context 'with pagination' do
       it 'includes pagination metadata' do
         get "/api/v1/users/#{user.username}/parties", headers: auth_headers
         expect(response).to have_http_status(:ok)

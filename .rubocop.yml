@@ -149,3 +149,19 @@ RSpec/NestedGroups:
 # `type:` metadata this cop calls redundant is what sets the spec type
 RSpecRails/InferredSpecType:
   Enabled: false
+
+# "as the owner" / "for an anonymous user" name who is making the request,
+# which reads better in request specs than forcing a "when"
+RSpec/ContextWording:
+  Prefixes:
+    - when
+    - with
+    - without
+    - as
+    - for
+
+# Shared contexts define let! records that the including specs reference,
+# which this cop can't see from the support file
+RSpec/LetSetup:
+  Exclude:
+    - 'spec/support/**/*'

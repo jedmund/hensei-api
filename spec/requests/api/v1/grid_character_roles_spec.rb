@@ -95,7 +95,7 @@ RSpec.describe 'GridCharacterRoles API', type: :request do
       end
     end
 
-    context 'unauthenticated' do
+    context 'when unauthenticated' do
       it 'returns unauthorized' do
         post '/api/v1/grid_character_roles', params: valid_params, as: :json
         expect(response).to have_http_status(:unauthorized)
