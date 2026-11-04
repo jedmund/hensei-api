@@ -199,6 +199,45 @@ RSpec.describe 'POST /api/v1/parties/:id/grid_update', type: :request do
     end
   end
 
+  # The batch follows the same slot rules as the single-row endpoints.
+  describe 'slot rules' do
+    it 'refuses a move into an occupied slot and applies nothing' do
+      weapon = create(:grid_weapon, party: party, position: 0)
+      create(:grid_weapon, party: party, position: 2)
+      summon = create(:grid_summon, party: party, position: 1)
+
+      grid_update(party, [
+                    { type: 'remove', entity: 'summon', id: summon.id },
+                    { type: 'move', entity: 'weapon', id: weapon.id, position: 2 }
+                  ])
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(error_message).to eq('Grid update failed: Position 2 is already occupied')
+      expect(weapon.reload.position).to eq(0)
+      expect(GridSummon.exists?(summon.id)).to be(true)
+    end
+
+    it 'refuses a swap out of the main summon slot' do
+      main = create(:grid_summon, party: party, position: -1, main: true)
+      other = create(:grid_summon, party: party, position: 1)
+
+      grid_update(party, [{ type: 'swap', entity: 'summon', source_id: main.id, target_id: other.id }])
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(error_message).to eq('Grid update failed: Cannot swap summons in restricted positions')
+      expect(main.reload.position).to eq(-1)
+    end
+
+    it "sets the party's element when a weapon moves into the mainhand" do
+      weapon = create(:grid_weapon, party: party, position: 0, weapon: create(:weapon, element: 2))
+
+      grid_update(party, [{ type: 'move', entity: 'weapon', id: weapon.id, position: -1 }])
+
+      expect(response).to have_http_status(:ok)
+      expect(party.reload.element).to eq(2)
+    end
+  end
+
   describe 'maintain_character_sequence' do
     let!(:first_character) { create(:grid_character, party: party, position: 0) }
     let!(:second_character) { create(:grid_character, party: party, position: 2) }

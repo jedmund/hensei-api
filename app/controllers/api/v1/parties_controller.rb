@@ -278,29 +278,16 @@ module Api
 
       # Batch updates grid items (weapons, characters, summons) atomically.
       def grid_update
-        operations = grid_update_params[:operations]
-        options = grid_update_params[:options] || {}
-
-        # Validate all operations first
-        validation_errors = validate_grid_operations(operations)
+        batch = PartyGridOperations.new(@party, grid_update_params[:operations],
+                                        maintain_character_sequence: grid_update_params.dig(:options, :maintain_character_sequence))
+        validation_errors = batch.errors
         if validation_errors.any?
           return render_unprocessable_entity_response(
             Api::V1::GranblueError.new("Validation failed: #{validation_errors.join(', ')}")
           )
         end
 
-        changes = []
-
-        ActiveRecord::Base.transaction do
-          operations.each do |operation|
-            change = apply_grid_operation(operation)
-            changes << change if change
-          end
-
-          # Compact character positions if needed
-          compact_party_character_positions if options[:maintain_character_sequence]
-        end
-
+        changes = batch.apply!
         @party.mark_updated!
 
         render json: {
@@ -565,113 +552,6 @@ module Api
         )
       end
 
-      # Validates grid operations before executing.
-      def validate_grid_operations(operations)
-        errors = []
-
-        operations.each_with_index do |op, index|
-          case op[:type]
-          when 'move'
-            errors << "Operation #{index}: missing id" unless op[:id].present?
-            errors << "Operation #{index}: missing position" unless op[:position].present?
-          when 'swap'
-            errors << "Operation #{index}: missing source_id" unless op[:source_id].present?
-            errors << "Operation #{index}: missing target_id" unless op[:target_id].present?
-          when 'remove'
-            errors << "Operation #{index}: missing id" unless op[:id].present?
-          else
-            errors << "Operation #{index}: unknown operation type #{op[:type]}"
-          end
-
-          errors << "Operation #{index}: invalid entity type #{op[:entity]}" unless %w[weapon character summon].include?(op[:entity])
-        end
-
-        errors
-      end
-
-      # Applies a single grid operation.
-      def apply_grid_operation(operation)
-        case operation[:type]
-        when 'move'
-          apply_move_operation(operation)
-        when 'swap'
-          apply_swap_operation(operation)
-        when 'remove'
-          apply_remove_operation(operation)
-        end
-      end
-
-      # Applies a move operation.
-      def apply_move_operation(operation)
-        model_class = grid_model_for_entity(operation[:entity])
-        item = model_class.find_by(id: operation[:id], party_id: @party.id)
-
-        raise ActiveRecord::RecordNotFound, "#{operation[:entity]} #{operation[:id]} not found" unless item
-
-        old_position = item.position
-        item.update!(position: operation[:position])
-
-        {
-          entity: operation[:entity],
-          id: operation[:id],
-          action: 'moved',
-          from: old_position,
-          to: operation[:position]
-        }
-      end
-
-      # Applies a swap operation.
-      def apply_swap_operation(operation)
-        model_class = grid_model_for_entity(operation[:entity])
-        source = model_class.find_by(id: operation[:source_id], party_id: @party.id)
-        target = model_class.find_by(id: operation[:target_id], party_id: @party.id)
-
-        return nil unless source && target
-
-        source_pos = source.position
-        target_pos = target.position
-
-        # Use a temporary position to avoid conflicts
-        source.update!(position: -999)
-        target.update!(position: source_pos)
-        source.update!(position: target_pos)
-
-        {
-          entity: operation[:entity],
-          id: operation[:source_id],
-          action: 'swapped',
-          with: operation[:target_id]
-        }
-      end
-
-      # Applies a remove operation.
-      def apply_remove_operation(operation)
-        model_class = grid_model_for_entity(operation[:entity])
-        item = model_class.find_by(id: operation[:id], party_id: @party.id)
-
-        return nil unless item
-
-        item.destroy
-
-        {
-          entity: operation[:entity],
-          id: operation[:id],
-          action: 'removed'
-        }
-      end
-
-      # Returns the model class for a given entity type.
-      def grid_model_for_entity(entity)
-        case entity
-        when 'weapon'
-          GridWeapon
-        when 'character'
-          GridCharacter
-        when 'summon'
-          GridSummon
-        end
-      end
-
       # Fetches collection items for a user that match the party's grid items.
       # Uses the already-eager-loaded grid associations to extract granblue_ids,
       # then batch-queries the user's collection with WHERE IN.
@@ -704,15 +584,6 @@ module Api
                      []
                    end
         }
-      end
-
-      # Compacts character positions to maintain sequential filling.
-      def compact_party_character_positions
-        main_characters = @party.characters.where(position: 0..4).order(:position)
-
-        main_characters.each_with_index do |char, index|
-          char.update!(position: index) if char.position != index
-        end
       end
     end
   end
