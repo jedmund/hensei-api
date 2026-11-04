@@ -98,4 +98,56 @@ RSpec.describe PartyDifficulty::Calculator do
       expect(score_with(2, geometric.except('growth_ratio')).score).to eq((2 / 3.0 * 100).round(2))
     end
   end
+
+  # A representative party: a weapon component capped by target_max, a character
+  # component scored against its rules' maximum, a summon component with only a
+  # zero-weight rule, a job component without data, and an accessory without rules.
+  describe '#call breakdown for each kind of component' do
+    let(:capped_components) do
+      [
+        DifficultyComponent.new(name: 'weapon', weight: 2.0, enabled: true, min_count_to_score: 0, target_max: 8.0),
+        DifficultyComponent.new(name: 'character', weight: 1.5, enabled: true, min_count_to_score: 0),
+        DifficultyComponent.new(name: 'summon', weight: 1.0, enabled: true, min_count_to_score: 0),
+        DifficultyComponent.new(name: 'job', weight: 1.0, enabled: true, min_count_to_score: 0),
+        DifficultyComponent.new(name: 'accessory', weight: 1.0, enabled: true, min_count_to_score: 0)
+      ]
+    end
+    let(:rules) do
+      [
+        stub_rule('00000000-0000-0000-0000-000000000001', 'weapon', 1.5, [1.0, 0.5, 0.5],
+                  'scale_by_count' => true, 'max_count' => 3, 'growth_ratio' => 1.5),
+        stub_rule('00000000-0000-0000-0000-000000000002', 'weapon', 2.0, []),
+        stub_rule('00000000-0000-0000-0000-000000000003', 'character', 3.0, [0.5]),
+        stub_rule('00000000-0000-0000-0000-000000000004', 'character', 1.0, [1.0, 1.0], 'scale_by_count' => 'true'),
+        stub_rule('00000000-0000-0000-0000-000000000005', 'summon', 0.0, [1.0]),
+        stub_rule('00000000-0000-0000-0000-000000000006', 'job', 2.0, [1.0])
+      ]
+    end
+    let(:result) do
+      party = build_stubbed(:party, weapons_count: 9, characters_count: 4, summons_count: 3)
+      allow(party).to receive_messages(weapons: [], characters: [], summons: [], job_id: nil, accessory_id: '1')
+      described_class.new(party, rules: rules, components: capped_components, difficulties: difficulties, ruleset_version: 1).call
+    end
+
+    def stub_rule(id, component, weight, factors, params = {})
+      rule = DifficultyRule.new(id: id, name: "rule #{id}", component: component, rule_type: 'weapon_uncap_at_least',
+                                weight: weight, active: true, params: { 'min_uncap_level' => 0, 'min_count' => 1 }.merge(params))
+      impl = instance_double(PartyDifficulty::Rules::WeaponUncapAtLeast,
+                             matching_count: factors.size, min_count: 1, match_factors: factors)
+      allow(rule).to receive(:implementation).and_return(impl)
+      rule
+    end
+
+    it 'pins every component breakdown' do
+      expect(result.breakdown[:components]).to eq(JSON.parse(
+                                                    Rails.root.join('spec/fixtures/party_difficulty/calculator_breakdown.json').read,
+                                                    symbolize_names: true
+                                                  ))
+    end
+
+    it 'pins the composite score and tier' do
+      expect(result.score).to eq(68.3)
+      expect(result.difficulty.slug).to eq('endgame')
+    end
+  end
 end

@@ -86,4 +86,33 @@ RSpec.describe GachaSimulation::BannerImport do
     end
     expect(GachaBanner.count).to eq(0)
   end
+
+  it 'stores every rate row of both tabs' do
+    described_class.call(gacha_banner_payload)
+    rows = GachaBannerRate.order(:tab, :reward_id).map do |rate|
+      [rate.tab, rate.reward_id, rate.rarity, rate.category, rate.percent.to_s('F'), rate.rate_up, rate.name]
+    end
+    expect(Digest::SHA256.hexdigest(JSON.generate(rows))).to eq('1960cb69db9bdb9616246a395029733a06fbe38a437119f131fe5d0688f73929')
+  end
+
+  {
+    ->(p) { p['banner']['id'] = '../1' } => 'Invalid banner id',
+    ->(p) { p['banner'] = [] } => 'Expected a banner',
+    ->(p) { p['tabs'] = { '2' => {} } } => 'Expected rate tabs',
+    ->(p) { p['tabs']['1'] = { 'ratio' => [] } } => 'Invalid rate tab',
+    ->(p) { p['tabs']['1']['ratio'][0]['rare'] = 'URレア' } => 'Unknown rarity',
+    ->(p) { p['tabs']['1']['ratio'][0]['ratio'] = '4.00%' } => 'Rarity rates must total 100%',
+    ->(p) { p['tabs']['1']['ratio'][0]['ratio'] = '3.0000001%' } => 'Invalid percentage',
+    ->(p) { p['tabs']['1']['appear'] << p['tabs']['1']['appear'][0] } => 'Duplicate item in a rate tab',
+    ->(p) { p['tabs']['1']['appear'].reject! { |g| g['rarity'] == 4 } } => 'A stated rarity has no items',
+    ->(p) { p['tabs']['1']['appear'][0] = 'x' } => 'Invalid rate group',
+    ->(p) { p['tabs']['1']['appear'][0]['category'] = 9 } => 'Unknown rarity or category',
+    ->(p) { p['tabs']['1']['appear'][0]['item'][0]['reward_id'] = 'x' } => 'Invalid rate item',
+    ->(p) { p['banner']['service_start'] = 'soon' } => 'Invalid banner time'
+  }.each_with_index do |(change, message), index|
+    it "rejects malformed payload #{index + 1} with \"#{message}\"" do
+      payload = gacha_banner_payload.tap { |p| change.call(p) }
+      expect { described_class.call(payload) }.to raise_error(GachaSimulation::ValidationError, message)
+    end
+  end
 end

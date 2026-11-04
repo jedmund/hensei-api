@@ -76,6 +76,31 @@ RSpec.describe GridDamage::GridComposition do
       expect(described_class.count_for_basis('omega_skill', weapon: weapon, composition: composition)).to eq(6)
     end
 
+    it "counts the crew's races, including the MC" do
+      effect = double(condition: { 'races' => %w[1 3] })
+      crew = composition.merge(character_races: [1, 3, '3', 2, nil])
+
+      expect(described_class.count_for_basis('crew_races', weapon: weapon, composition: crew, effect: effect)).to eq(3)
+      expect(described_class.count_for_basis('crew_races', weapon: weapon, composition: composition, effect: effect)).to eq(0)
+      expect(described_class.count_for_basis('crew_races', weapon: weapon, composition: crew)).to eq(0)
+    end
+
+    it 'counts nothing for a missing weapon or series' do
+      expect(described_class.count_for_basis('same_weapon_type', weapon: nil, composition: composition)).to eq(0)
+      expect(described_class.count_for_basis('same_series', weapon: nil, composition: composition)).to eq(0)
+      expect(described_class.count_for_basis('same_element_series', weapon: nil, composition: composition)).to eq(0)
+      expect(described_class.count_for_basis('series:militis', weapon: weapon, composition: composition)).to eq(0)
+      expect(described_class.count_for_basis('max_same_weapon_type', weapon: weapon, composition: {})).to eq(0)
+    end
+
+    it 'falls back to the grid-wide omega count without a weapon element' do
+      by_element = composition.merge(omega_skill_counts_by_element: { 'fire' => 4 })
+      elementless = instance_double(Weapon, proficiency: 1, weapon_series: series, element: nil)
+
+      expect(described_class.count_for_basis('omega_skill', weapon: elementless, composition: by_element)).to eq(6)
+      expect(described_class.count_for_basis('omega_skill', weapon: nil, composition: {})).to eq(0)
+    end
+
     it 'rejects legacy and unsupported count bases' do
       %w[weapon_type group:arbitrary].each do |basis|
         expect do

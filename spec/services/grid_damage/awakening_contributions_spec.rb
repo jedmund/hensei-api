@@ -128,6 +128,42 @@ RSpec.describe GridDamage::AwakeningContributions do
     end
   end
 
+  it 'builds one contribution per bonus line, for each series rule' do
+    party = create(:party)
+    add_awakened_weapon(party: party, name: 'Grand Spear', series_slug: 'grand', awakening_slug: 'weapon-ca', level: 4, mainhand: true)
+    add_awakened_weapon(party: party, name: 'Revans Gauntlet', series_slug: 'revans', awakening_slug: 'weapon-atk', level: 9)
+    add_awakened_weapon(party: party, name: 'Celestial Sabre', series_slug: 'celestial', awakening_slug: 'weapon-skill', level: 5)
+    add_awakened_weapon(party: party, name: 'Proven Sabre', series_slug: 'proven', awakening_slug: 'weapon-multi', level: 1)
+    character_awakening = Awakening.find_or_create_by!(slug: 'character-balanced', object_type: 'Character') do |record|
+      record.name_en = 'Balanced'
+      record.name_jp = 'バランス'
+    end
+    create(:grid_weapon, party: party, weapon: create(:weapon), awakening: character_awakening, awakening_level: 5, position: 7)
+
+    rows = described_class.for_party(party, composition: { mc_specialties: %w[sabre] }).map do |c|
+      [c.boost_type, c.series, c.value, c.mainhand, c.amplifiable, c.main_hand_only, c.source_label[:en], c.source_label[:ja]]
+    end
+    expect(rows).to eq(
+      [
+        ['ca_dmg', nil, 20.0, true, false, false, 'C.A. Awakening Lv4', '奥義覚醒 Lv4'],
+        ['ca_dmg_cap', nil, 10.0, true, false, false, 'C.A. Awakening Lv4', '奥義覚醒 Lv4'],
+        ['ca_supp', nil, 100_000.0, true, false, false, 'C.A. Awakening Lv4', '奥義覚醒 Lv4'],
+        ['atk', 'normal', 18.0, false, false, false, 'Attack Awakening Lv9', '攻撃覚醒 Lv9'],
+        ['atk', 'normal', 10.0, false, false, false, 'Skill DMG Awakening Lv5', 'アビダメ覚醒 Lv5'],
+        ['atk', 'ex', 10.0, false, false, false, 'Skill DMG Awakening Lv5', 'アビダメ覚醒 Lv5'],
+        ['skill_dmg_cap', nil, 10.0, false, false, false, 'Skill DMG Awakening Lv5', 'アビダメ覚醒 Lv5'],
+        ['skill_dmg_supp', nil, 20_000.0, false, false, false, 'Skill DMG Awakening Lv5', 'アビダメ覚醒 Lv5']
+      ]
+    )
+  end
+
+  it "skips Celestial bonuses outside the MC's specialties" do
+    party = create(:party)
+    add_awakened_weapon(party: party, name: 'Celestial Sabre', series_slug: 'celestial', awakening_slug: 'weapon-skill', level: 5)
+
+    expect(values_for(party, composition: { mc_specialties: %w[staff] })).to be_empty
+  end
+
   it 'matches the celestial awakening tables shown in game at level 5' do
     shared = { 'atk' => 10.0, 'ex_atk' => 10.0 }
 

@@ -36,6 +36,18 @@ module GachaSimulation
       raise ValidationError, 'Invalid banner id' unless game_id.match?(/\A\d{1,12}\z/)
 
       tabs = @tabs.slice('1', '2').to_h { |tab, data| [tab.to_i, parse_tab(data)] }
+      banner, created = store(game_id, tabs)
+      # A new character release: refresh the wiki's status list once the wiki has caught up.
+      Sources::FetchWikiStatusListJob.after_release(banner.starts_at) if created
+      { 'game_id' => banner.game_id, 'items' => banner.rates.where(tab: 1).count,
+        'unmatched' => Banner.unmatched(banner) }
+    end
+
+    private
+
+    # Replaces the banner's details and every rate row in one transaction. Returns the
+    # banner and whether it is new.
+    def store(game_id, tabs)
       now = Time.current
       created = false
       banner = GachaBanner.transaction do
@@ -51,18 +63,23 @@ module GachaSimulation
         GachaBannerRate.insert_all!(rows)
         record
       end
-      # A new character release: refresh the wiki's status list once the wiki has caught up.
-      Sources::FetchWikiStatusListJob.after_release(banner.starts_at) if created
-      { 'game_id' => banner.game_id, 'items' => banner.rates.where(tab: 1).count,
-        'unmatched' => Banner.unmatched(banner) }
+      [banner, created]
     end
-
-    private
 
     def parse_tab(data)
       raise ValidationError, 'Invalid rate tab' unless data.is_a?(Hash) && data['ratio'].is_a?(Array) && data['appear'].is_a?(Array)
 
-      rarities = data['ratio'].to_h do |entry|
+      rarities = parse_rarities(data['ratio'])
+      items = data['appear'].flat_map { |group| parse_group(group) }
+      raise ValidationError, 'Duplicate item in a rate tab' unless items.pluck(:reward_id).uniq.size == items.size
+      raise ValidationError, 'A stated rarity has no items' unless rarities.keys.all? { |r| items.any? { |i| i[:rarity] == r.to_i } }
+
+      { rarities: rarities, items: items }
+    end
+
+    # Each rarity's stated rate as a fraction; together they must make 100%.
+    def parse_rarities(ratio)
+      rarities = ratio.to_h do |entry|
         rarity = RARITY_NAMES[entry.is_a?(Hash) && entry['rare']]
         raise ValidationError, 'Unknown rarity' unless rarity
 
@@ -70,11 +87,7 @@ module GachaSimulation
       end
       raise ValidationError, 'Rarity rates must total 100%' unless rarities.values.sum { |v| BigDecimal(v) } == 1
 
-      items = data['appear'].flat_map { |group| parse_group(group) }
-      raise ValidationError, 'Duplicate item in a rate tab' unless items.pluck(:reward_id).uniq.size == items.size
-      raise ValidationError, 'A stated rarity has no items' unless rarities.keys.all? { |r| items.any? { |i| i[:rarity] == r.to_i } }
-
-      { rarities: rarities, items: items }
+      rarities
     end
 
     def parse_group(group)

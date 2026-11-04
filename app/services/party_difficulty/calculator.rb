@@ -196,31 +196,11 @@ module PartyDifficulty
 
     def breakdown_for_component(name, comp, rules)
       present = data_for?(name)
-
-      if !present || rules.empty?
-        return {
-          name: name,
-          weight: comp.weight.to_f,
-          present: present,
-          raw_score: nil,
-          weighted_score: nil,
-          fired: []
-        }
-      end
+      return unscored_breakdown(name, comp, present) if !present || rules.empty?
 
       contributions = rules.map { |rule| rule_contribution(rule) }
       max_weight = component_max_weight(comp, contributions)
-
-      if max_weight.zero?
-        return {
-          name: name,
-          weight: comp.weight.to_f,
-          present: present,
-          raw_score: nil,
-          weighted_score: nil,
-          fired: []
-        }
-      end
+      return unscored_breakdown(name, comp, present) if max_weight.zero?
 
       fired = contributions.select { |c| c[:contribution].positive? }
       contribution_sum = fired.sum { |c| c[:contribution] }
@@ -238,6 +218,19 @@ module PartyDifficulty
         max_weight: max_weight.round(2),
         target_max: target_max_set ? comp.target_max.to_f : nil,
         fired: fired.flat_map { |c| fired_entries_for(c) }
+      }
+    end
+
+    # A component that adds nothing to the composite: it has no data or no rules, or
+    # its rules can't score anything.
+    def unscored_breakdown(name, comp, present)
+      {
+        name: name,
+        weight: comp.weight.to_f,
+        present: present,
+        raw_score: nil,
+        weighted_score: nil,
+        fired: []
       }
     end
 

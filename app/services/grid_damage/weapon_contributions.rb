@@ -34,29 +34,37 @@ module GridDamage
           # weapons (Dark Opus, Draconic) it comes from the weapon's identity. Never use the
           # data row's shared `normal_omega` designation as a frame.
           frame = FrameResolver.frame_for(w, v)
-          # The WsBox aura_boostable=no flag describes the optimus/omega auras only —
-          # taboo variants of "flat" families DO amplify (qBOvon: Crux x2 taboo supp
-          # reaches the 1M cap only when enhanced). Ex frames are already factor-1.
-          version_amplifiable = amplifiable &&
-                                !(unboostable_families.include?(v.resolved_modifier) &&
-                                  AURA_BOOSTED_FRAMES.include?(frame))
+          version_amplifiable = amplifiable && !aura_unboostable?(v, frame, unboostable_families)
           v.weapon_skill_data.each do |d|
             next unless ElementScope.applies?(version: v, boost_type: d.boost_type, grid_weapon: gw,
                                               panel_element: panel_element)
 
             value = Scaling.value(d, skill_level: row_skill_level(v, d, skill_level), hp_percent: hp, turn: turn)
-            out << Aggregator::Contribution.new(
-              boost_type: d.boost_type, series: frame,
-              value: value, main_hand_only: v.main_hand_only, mainhand: gw.mainhand,
-              amplifiable: version_amplifiable, source_ids: [gw.id],
-              source_label: { en: v.skill&.name_en, ja: v.skill&.name_jp },
-              source_icon: v.icon_stem,
-              panel_hidden: d.panel_hidden
-            )
+            out << data_contribution(d, version: v, grid_weapon: gw, frame: frame, value: value,
+                                        amplifiable: version_amplifiable)
           end
         end
       end
       out
+    end
+
+    # The WsBox aura_boostable=no flag describes the optimus/omega auras only —
+    # taboo variants of "flat" families DO amplify (qBOvon: Crux x2 taboo supp
+    # reaches the 1M cap only when enhanced). Ex frames are already factor-1.
+    def aura_unboostable?(version, frame, unboostable_families)
+      unboostable_families.include?(version.resolved_modifier) && AURA_BOOSTED_FRAMES.include?(frame)
+    end
+
+    # One data row's contribution from one grid weapon's copy of its skill.
+    def data_contribution(datum, version:, grid_weapon:, frame:, value:, amplifiable:)
+      Aggregator::Contribution.new(
+        boost_type: datum.boost_type, series: frame,
+        value: value, main_hand_only: version.main_hand_only, mainhand: grid_weapon.mainhand,
+        amplifiable: amplifiable, source_ids: [grid_weapon.id],
+        source_label: { en: version.skill&.name_en, ja: version.skill&.name_jp },
+        source_icon: version.icon_stem,
+        panel_hidden: datum.panel_hidden
+      )
     end
 
     # An upgraded skill imported as a SEPARATE slot replaces its base in-game — both

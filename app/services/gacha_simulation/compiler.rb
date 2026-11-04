@@ -62,22 +62,34 @@ module GachaSimulation
       end
     end
 
+    # Rate-ups keep their own rates; the rest of the SSR budget goes to the other SSRs.
     def ssr_entries(pool, budget)
       residual = pool.reject { |item| @featured.key?(item['identity']) }
+      result = pool.filter_map { |item| entry(item, @featured[item['identity']]) if @featured.key?(item['identity']) }
+      residual_amounts(pool, budget).each do |category, amount|
+        result.concat(weighted_entries(residual.select { |i| ssr_category(i) == category }, amount))
+      end
+      result
+    end
+
+    # The SSR budget left after rate-ups, shared between weapons and summons in
+    # proportion to their 11:4 shares, each reduced by its own rate-ups.
+    def residual_amounts(pool, budget)
       allocations = %w[weapon summon].to_h do |category|
         featured = pool.select { |i| ssr_category(i) == category }.sum { |i| @featured.fetch(i['identity'], 0) }
         [category, [(budget * (category == 'weapon' ? 11 : 4) / 15) - featured, 0].max]
       end
       remaining = budget - @featured.values.sum
-      result = pool.filter_map { |item| entry(item, @featured[item['identity']]) if @featured.key?(item['identity']) }
-      allocations.each do |category, allocation|
-        members = residual.select { |i| ssr_category(i) == category }
-        amount = allocations.values.sum.positive? ? remaining * allocation / allocations.values.sum : BigDecimal('0')
-        require_pool!(members, amount)
-        total_weight = members.sum { |i| weight(i) }
-        result.concat(members.map { |i| entry(i, amount * weight(i) / total_weight) })
+      allocations.transform_values do |allocation|
+        allocations.values.sum.positive? ? remaining * allocation / allocations.values.sum : BigDecimal('0')
       end
-      result
+    end
+
+    # A category's amount, split by each member's weight.
+    def weighted_entries(members, amount)
+      require_pool!(members, amount)
+      total_weight = members.sum { |i| weight(i) }
+      members.map { |i| entry(i, amount * weight(i) / total_weight) }
     end
 
     def ssr_category(item)
