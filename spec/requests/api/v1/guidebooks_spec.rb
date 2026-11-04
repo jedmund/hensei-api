@@ -4,8 +4,8 @@ require 'rails_helper'
 
 RSpec.describe 'Api::V1::Guidebooks', type: :request do
   describe 'GET /api/v1/guidebooks' do
-    let!(:guidebook1) { create(:guidebook) }
-    let!(:guidebook2) { create(:guidebook) }
+    let!(:first_guidebook) { create(:guidebook) }
+    let!(:second_guidebook) { create(:guidebook) }
 
     it 'returns all guidebooks with correct fields' do
       get '/api/v1/guidebooks'
@@ -14,15 +14,15 @@ RSpec.describe 'Api::V1::Guidebooks', type: :request do
       json = response.parsed_body
       expect(json.length).to be >= 2
 
-      ids = json.map { |g| g['id'] }
-      expect(ids).to include(guidebook1.id, guidebook2.id)
+      ids = json.pluck('id')
+      expect(ids).to include(first_guidebook.id, second_guidebook.id)
 
-      entry = json.find { |g| g['id'] == guidebook1.id }
-      expect(entry['granblue_id']).to eq(guidebook1.granblue_id)
-      expect(entry['name']['en']).to eq(guidebook1.name_en)
-      expect(entry['name']['ja']).to eq(guidebook1.name_jp)
-      expect(entry['description']['en']).to eq(guidebook1.description_en)
-      expect(entry['description']['ja']).to eq(guidebook1.description_jp)
+      entry = json.find { |g| g['id'] == first_guidebook.id }
+      expect(entry['granblue_id']).to eq(first_guidebook.granblue_id)
+      expect(entry['name']['en']).to eq(first_guidebook.name_en)
+      expect(entry['name']['ja']).to eq(first_guidebook.name_jp)
+      expect(entry['description']['en']).to eq(first_guidebook.description_en)
+      expect(entry['description']['ja']).to eq(first_guidebook.description_jp)
     end
   end
 end

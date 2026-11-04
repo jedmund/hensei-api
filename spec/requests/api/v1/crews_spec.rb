@@ -67,7 +67,8 @@ RSpec.describe 'Api::V1::Crews', type: :request do
   describe 'GET /api/v1/crew' do
     context 'when user has a crew' do
       let(:crew) { create(:crew, name: 'My Crew') }
-      let!(:membership) { create(:crew_membership, crew: crew, user: user, role: :captain) }
+
+      before { create(:crew_membership, crew: crew, user: user, role: :captain) }
 
       it 'returns the crew' do
         get '/api/v1/crew', headers: auth_headers
@@ -89,7 +90,7 @@ RSpec.describe 'Api::V1::Crews', type: :request do
     let(:crew) { create(:crew, name: 'Original Name') }
 
     context 'as captain' do
-      let!(:membership) { create(:crew_membership, crew: crew, user: user, role: :captain) }
+      before { create(:crew_membership, crew: crew, user: user, role: :captain) }
 
       it 'updates the crew' do
         put '/api/v1/crew', params: { crew: { name: 'New Name' } }, headers: auth_headers
@@ -100,7 +101,7 @@ RSpec.describe 'Api::V1::Crews', type: :request do
     end
 
     context 'as vice captain' do
-      let!(:membership) { create(:crew_membership, crew: crew, user: user, role: :vice_captain) }
+      before { create(:crew_membership, crew: crew, user: user, role: :vice_captain) }
 
       it 'updates the crew' do
         put '/api/v1/crew', params: { crew: { description: 'Updated' } }, headers: auth_headers
@@ -110,7 +111,7 @@ RSpec.describe 'Api::V1::Crews', type: :request do
     end
 
     context 'as regular member' do
-      let!(:membership) { create(:crew_membership, crew: crew, user: user, role: :member) }
+      before { create(:crew_membership, crew: crew, user: user, role: :member) }
 
       it 'returns unauthorized' do
         put '/api/v1/crew', params: { crew: { name: 'New Name' } }, headers: auth_headers
@@ -121,9 +122,13 @@ RSpec.describe 'Api::V1::Crews', type: :request do
 
   describe 'GET /api/v1/crew/members' do
     let(:crew) { create(:crew) }
-    let!(:captain_membership) { create(:crew_membership, crew: crew, user: user, role: :captain) }
-    let!(:member1) { create(:crew_membership, crew: crew, role: :member) }
-    let!(:member2) { create(:crew_membership, crew: crew, role: :vice_captain) }
+    let(:member1) { create(:crew_membership, crew: crew, role: :member) }
+
+    before do
+      create(:crew_membership, crew: crew, user: user, role: :captain)
+      member1
+      create(:crew_membership, crew: crew, role: :vice_captain)
+    end
 
     context 'with default filter (active)' do
       it 'returns all active crew members' do
@@ -156,7 +161,7 @@ RSpec.describe 'Api::V1::Crews', type: :request do
     end
 
     context 'with filter=phantom' do
-      let!(:phantom1) { create(:phantom_player, crew: crew, name: 'Phantom A') }
+      before { create(:phantom_player, crew: crew, name: 'Phantom A') }
 
       it 'returns only phantom players' do
         get '/api/v1/crew/members', params: { filter: 'phantom' }, headers: auth_headers
@@ -169,9 +174,10 @@ RSpec.describe 'Api::V1::Crews', type: :request do
     end
 
     context 'with filter=all' do
-      let!(:phantom1) { create(:phantom_player, crew: crew, name: 'Phantom A') }
-
-      before { member1.retire! }
+      before do
+        create(:phantom_player, crew: crew, name: 'Phantom A')
+        member1.retire!
+      end
 
       it 'returns all members and phantoms' do
         get '/api/v1/crew/members', params: { filter: 'all' }, headers: auth_headers
@@ -209,7 +215,7 @@ RSpec.describe 'Api::V1::Crews', type: :request do
     end
 
     context 'as captain' do
-      let!(:membership) { create(:crew_membership, crew: crew, user: user, role: :captain) }
+      before { create(:crew_membership, crew: crew, user: user, role: :captain) }
 
       it 'returns error' do
         post '/api/v1/crew/leave', headers: auth_headers

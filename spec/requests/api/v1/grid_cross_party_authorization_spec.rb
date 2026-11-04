@@ -10,13 +10,13 @@ RSpec.describe 'Grid item cross-party authorization', type: :request do
   let(:owner_party) { create(:party, user: owner) }
   let(:attacker_party) { create(:party, user: attacker) }
 
+  let(:attacker_headers) { headers_for(attacker) }
+  let(:owner_headers) { headers_for(owner) }
+
   def headers_for(user)
     token = Doorkeeper::AccessToken.create!(resource_owner_id: user.id, expires_in: 30.days, scopes: 'public')
     { 'Authorization' => "Bearer #{token.token}", 'Content-Type' => 'application/json' }
   end
-
-  let(:attacker_headers) { headers_for(attacker) }
-  let(:owner_headers) { headers_for(owner) }
 
   shared_examples 'a party-scoped grid resource' do |path:, param_key:|
     it 'rejects update when another party id is supplied' do
@@ -119,13 +119,13 @@ RSpec.describe 'Grid item cross-party authorization', type: :request do
   end
 
   describe 'grid characters' do
-    let!(:row) { create(:grid_character, party: owner_party, position: 0) }
+    let!(:row) { create(:grid_character, party: owner_party, position: 0) } # rubocop:disable RSpec/LetSetup -- the shared examples use row
 
     it_behaves_like 'a party-scoped grid resource', path: 'grid_characters', param_key: :character
   end
 
   describe 'grid summons' do
-    let!(:row) { create(:grid_summon, party: owner_party, position: 1) }
+    let!(:row) { create(:grid_summon, party: owner_party, position: 1) } # rubocop:disable RSpec/LetSetup -- the shared examples use row
 
     it_behaves_like 'a party-scoped grid resource', path: 'grid_summons', param_key: :summon
   end

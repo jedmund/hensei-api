@@ -15,11 +15,14 @@ RSpec.describe 'Collection Weapons API', type: :request do
   let(:weapon_key) { create(:weapon_key) }
 
   describe 'GET /api/v1/users/:user_id/collection/weapons' do
-    let(:weapon1) { create(:weapon) }
-    let(:weapon2) { create(:weapon) }
-    let!(:collection_weapon1) { create(:collection_weapon, user: user, weapon: weapon1, uncap_level: 5) }
-    let!(:collection_weapon2) { create(:collection_weapon, user: user, weapon: weapon2, uncap_level: 3) }
-    let!(:other_user_weapon) { create(:collection_weapon, user: other_user) }
+    let(:first_weapon) { create(:weapon) }
+    let(:second_weapon) { create(:weapon) }
+
+    before do
+      create(:collection_weapon, user: user, weapon: first_weapon, uncap_level: 5)
+      create(:collection_weapon, user: user, weapon: second_weapon, uncap_level: 3)
+      create(:collection_weapon, user: other_user)
+    end
 
     it 'returns the current user\'s collection weapons' do
       get "/api/v1/users/#{user.id}/collection/weapons", headers: headers
@@ -40,13 +43,13 @@ RSpec.describe 'Collection Weapons API', type: :request do
     end
 
     it 'supports filtering by weapon' do
-      get "/api/v1/users/#{user.id}/collection/weapons", params: { weapon_id: weapon1.id }, headers: headers
+      get "/api/v1/users/#{user.id}/collection/weapons", params: { weapon_id: first_weapon.id }, headers: headers
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
       weapons = json['weapons']
       expect(weapons.length).to eq(1)
-      expect(weapons.first['weapon']['id']).to eq(weapon1.id)
+      expect(weapons.first['weapon']['id']).to eq(first_weapon.id)
     end
 
     it 'supports filtering by both element and rarity' do
@@ -88,7 +91,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      returned_ids = json['weapons'].map { |w| w['id'] }
+      returned_ids = json['weapons'].pluck('id')
       expect(returned_ids).to include(unowned_wpn1.id, unowned_wpn2.id)
       expect(returned_ids).not_to include(owned_wpn.id)
     end
@@ -103,7 +106,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      returned_ids = json['weapons'].map { |w| w['id'] }
+      returned_ids = json['weapons'].pluck('id')
       expect(returned_ids).not_to include(owned_wpn.id)
       expect(json['meta']['count']).to eq(0)
     end
@@ -117,7 +120,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      returned_ids = json['weapons'].map { |w| w['id'] }
+      returned_ids = json['weapons'].pluck('id')
       expect(returned_ids).to include(unowned_wpn.id)
       expect(returned_ids).not_to include(owned_wpn.id)
     end
@@ -141,7 +144,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      returned_ids = json['weapons'].map { |w| w['id'] }
+      returned_ids = json['weapons'].pluck('id')
       expect(returned_ids).to include(fire_wpn.id)
       expect(returned_ids).not_to include(water_wpn.id)
       expect(returned_ids).not_to include(owned_fire_wpn.id)
@@ -157,7 +160,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      returned_ids = json['weapons'].map { |w| w['id'] }
+      returned_ids = json['weapons'].pluck('id')
       expect(returned_ids).to include(matching_wpn.id)
       expect(returned_ids).not_to include(other_wpn.id)
     end
@@ -171,7 +174,7 @@ RSpec.describe 'Collection Weapons API', type: :request do
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
-      returned_ids = json['weapons'].map { |w| w['id'] }
+      returned_ids = json['weapons'].pluck('id')
       expect(returned_ids).not_to include(owned_wpn.id)
       expect(json['meta']['count']).to eq(0)
     end

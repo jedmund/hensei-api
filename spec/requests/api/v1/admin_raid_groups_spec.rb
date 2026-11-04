@@ -6,6 +6,18 @@ RSpec.describe 'Admin raid groups collection', type: :request do
   let(:path) { '/api/v1/admin/raid_groups' }
   let(:editor_headers) { auth_headers(create(:user, role: 7)) }
 
+  let!(:omega) do
+    create(:raid_group, name_en: 'Omega', name_jp: 'マグナ', section: 1, order: 2, difficulty: 3, hl: false)
+  end
+  let!(:primarchs) do
+    create(:raid_group, name_en: 'Primarchs', name_jp: '四大天司', section: 1, order: 1, difficulty: 6, hl: true,
+                        guidebooks: true)
+  end
+  let!(:farming) do
+    create(:raid_group, name_en: 'Farming', name_jp: '素材', section: 0, order: 0, difficulty: nil, hl: false,
+                        support_summon: false)
+  end
+
   def auth_headers(account)
     token = Doorkeeper::AccessToken.create!(resource_owner_id: account.id, expires_in: 30.days, scopes: 'public')
     { 'Authorization' => "Bearer #{token.token}" }
@@ -18,18 +30,6 @@ RSpec.describe 'Admin raid groups collection', type: :request do
 
   def names(body = response.parsed_body)
     body['results'].map { |r| r['name_en'] }
-  end
-
-  let!(:omega) do
-    create(:raid_group, name_en: 'Omega', name_jp: 'マグナ', section: 1, order: 2, difficulty: 3, hl: false)
-  end
-  let!(:primarchs) do
-    create(:raid_group, name_en: 'Primarchs', name_jp: '四大天司', section: 1, order: 1, difficulty: 6, hl: true,
-                        guidebooks: true)
-  end
-  let!(:farming) do
-    create(:raid_group, name_en: 'Farming', name_jp: '素材', section: 0, order: 0, difficulty: nil, hl: false,
-                        support_summon: false)
   end
 
   before do

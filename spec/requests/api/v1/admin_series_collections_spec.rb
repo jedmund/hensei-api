@@ -28,9 +28,11 @@ RSpec.describe 'Admin series and awakenings collections', type: :request do
       create(:weapon_series, slug: 'zz-alpha', name_en: 'Zz Alpha', order: 9002, augment_type: :ax,
                              has_weapon_keys: true, num_weapon_keys: 2)
     end
-    let!(:bravo) { create(:weapon_series, slug: 'zz-bravo', name_en: 'Zz Bravo', order: 9001, extra: true) }
 
-    before { create_list(:weapon, 2, weapon_series: alpha) }
+    before do
+      create(:weapon_series, slug: 'zz-bravo', name_en: 'Zz Bravo', order: 9001, extra: true)
+      create_list(:weapon, 2, weapon_series: alpha)
+    end
 
     it 'lists by order with the default fields' do
       body = fetch(path, q: 'zz-')
@@ -71,7 +73,7 @@ RSpec.describe 'Admin series and awakenings collections', type: :request do
       body = fetch(path, q: 'zz-', fields: 'slug,character_count')
       expect(response).to have_http_status(:ok)
       expect(slugs(body)).to eq(%w[zz-bravo zz-alpha])
-      expect(body['results'].map { |r| r['character_count'] }).to eq([0, 1])
+      expect(body['results'].pluck('character_count')).to eq([0, 1])
     end
 
     it 'sorts by name' do

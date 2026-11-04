@@ -14,13 +14,16 @@ RSpec.describe 'Collection Job Accessories API', type: :request do
   let(:job_accessory) { create(:job_accessory, job: job) }
 
   describe 'GET /api/v1/collection/job_accessories' do
-    let(:job1) { create(:job) }
-    let(:job2) { create(:job) }
-    let(:job_accessory1) { create(:job_accessory, job: job1) }
-    let(:job_accessory2) { create(:job_accessory, job: job2) }
-    let!(:collection_accessory1) { create(:collection_job_accessory, user: user, job_accessory: job_accessory1) }
-    let!(:collection_accessory2) { create(:collection_job_accessory, user: user, job_accessory: job_accessory2) }
-    let!(:other_user_accessory) { create(:collection_job_accessory, user: other_user) }
+    let(:first_job) { create(:job) }
+    let(:second_job) { create(:job) }
+    let(:first_job_accessory) { create(:job_accessory, job: first_job) }
+    let(:second_job_accessory) { create(:job_accessory, job: second_job) }
+
+    before do
+      create(:collection_job_accessory, user: user, job_accessory: first_job_accessory)
+      create(:collection_job_accessory, user: user, job_accessory: second_job_accessory)
+      create(:collection_job_accessory, user: other_user)
+    end
 
     it 'returns the current user\'s collection job accessories' do
       get '/api/v1/collection/job_accessories', headers: headers
@@ -31,13 +34,13 @@ RSpec.describe 'Collection Job Accessories API', type: :request do
     end
 
     it 'supports filtering by job' do
-      get '/api/v1/collection/job_accessories', params: { job_id: job1.id }, headers: headers
+      get '/api/v1/collection/job_accessories', params: { job_id: first_job.id }, headers: headers
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
       accessories = json['collection_job_accessories']
       expect(accessories.length).to eq(1)
-      expect(accessories.first['job_accessory']['job']['id']).to eq(job1.id)
+      expect(accessories.first['job_accessory']['job']['id']).to eq(first_job.id)
     end
 
     it 'returns unauthorized without authentication' do

@@ -6,6 +6,18 @@ RSpec.describe 'Admin events collection', type: :request do
   let(:path) { '/api/v1/admin/events' }
   let(:editor_headers) { auth_headers(create(:user, role: 7)) }
 
+  let!(:gw) do
+    create(:event, :unite_and_fight, name_en: 'Unite and Fight #70', name_jp: '星の古戦場', event_number: 70,
+                                     element: 'Water', series: 'unite_and_fight',
+                                     starts_at: Time.zone.parse('2026-09-21 10:00'),
+                                     ends_at: Time.zone.parse('2026-09-28 15:00'))
+  end
+  let!(:barrage) do
+    create(:event, :dread_barrage, name_en: 'Dread Barrage', name_jp: 'ドレッドバラージュ', element: 'Fire',
+                                   starts_at: Time.zone.parse('2026-08-01 10:00'),
+                                   ends_at: Time.zone.parse('2026-08-08 10:00'))
+  end
+
   def auth_headers(account)
     token = Doorkeeper::AccessToken.create!(resource_owner_id: account.id, expires_in: 30.days, scopes: 'public')
     { 'Authorization' => "Bearer #{token.token}" }
@@ -20,23 +32,9 @@ RSpec.describe 'Admin events collection', type: :request do
     body['results'].map { |r| r['name_en'] }
   end
 
-  let!(:gw) do
-    create(:event, :unite_and_fight, name_en: 'Unite and Fight #70', name_jp: '星の古戦場', event_number: 70,
-                                     element: 'Water', series: 'unite_and_fight',
-                                     starts_at: Time.zone.parse('2026-09-21 10:00'),
-                                     ends_at: Time.zone.parse('2026-09-28 15:00'))
-  end
-  let!(:barrage) do
-    create(:event, :dread_barrage, name_en: 'Dread Barrage', name_jp: 'ドレッドバラージュ', element: 'Fire',
-                                   starts_at: Time.zone.parse('2026-08-01 10:00'),
-                                   ends_at: Time.zone.parse('2026-08-08 10:00'))
-  end
-  let!(:story) do
+  before do
     create(:event, :draft, name_en: 'A Story', name_jp: nil, element: nil,
                            starts_at: Time.zone.parse('2026-10-01 10:00'), ends_at: Time.zone.parse('2026-10-10 10:00'))
-  end
-
-  before do
     create(:event_raid, event: gw, raid: create(:raid), position: 0)
     create(:event_raid, event: gw, raid: create(:raid), position: 1)
   end

@@ -4,8 +4,10 @@ require 'rails_helper'
 
 RSpec.describe 'Artifacts API', type: :request do
   describe 'GET /api/v1/artifacts' do
-    let!(:standard_artifact) { create(:artifact, proficiency: :sabre) }
-    let!(:quirk_artifact) { create(:artifact, :quirk) }
+    before do
+      create(:artifact, proficiency: :sabre)
+      create(:artifact, :quirk)
+    end
 
     it 'returns all artifacts' do
       get '/api/v1/artifacts'

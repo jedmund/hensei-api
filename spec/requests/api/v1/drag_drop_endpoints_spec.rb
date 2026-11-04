@@ -30,13 +30,13 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
   end
 
   describe 'GridWeapon Position Updates' do
-    let!(:weapon1) { create(:grid_weapon, party: party, position: 0) }
-    let!(:weapon2) { create(:grid_weapon, party: party, position: 2) }
+    let!(:first_weapon) { create(:grid_weapon, party: party, position: 0) }
+    let!(:second_weapon) { create(:grid_weapon, party: party, position: 2) }
 
     describe 'PUT /api/v1/parties/:party_id/grid_weapons/:id/position' do
       context 'with valid parameters' do
         it 'updates weapon position to empty slot' do
-          put "/api/v1/parties/#{party.id}/grid_weapons/#{weapon1.id}/position",
+          put "/api/v1/parties/#{party.id}/grid_weapons/#{first_weapon.id}/position",
               params: { position: 4, container: 'main' }.to_json,
               headers: headers
 
@@ -44,11 +44,11 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
 
           json = response.parsed_body
           expect(json['grid_weapon']['position']).to eq(4)
-          expect(weapon1.reload.position).to eq(4)
+          expect(first_weapon.reload.position).to eq(4)
         end
 
         it 'returns error when position is occupied' do
-          put "/api/v1/parties/#{party.id}/grid_weapons/#{weapon1.id}/position",
+          put "/api/v1/parties/#{party.id}/grid_weapons/#{first_weapon.id}/position",
               params: { position: 2 }.to_json,
               headers: headers
 
@@ -57,7 +57,7 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
         end
 
         it 'returns error for invalid position' do
-          put "/api/v1/parties/#{party.id}/grid_weapons/#{weapon1.id}/position",
+          put "/api/v1/parties/#{party.id}/grid_weapons/#{first_weapon.id}/position",
               params: { position: 20 }.to_json,
               headers: headers
 
@@ -91,7 +91,7 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
     describe 'POST /api/v1/parties/:party_id/grid_weapons/swap' do
       it 'swaps two weapon positions' do
         post "/api/v1/parties/#{party.id}/grid_weapons/swap",
-             params: { source_id: weapon1.id, target_id: weapon2.id }.to_json,
+             params: { source_id: first_weapon.id, target_id: second_weapon.id }.to_json,
              headers: headers
 
         expect(response).to have_http_status(:ok)
@@ -100,13 +100,13 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
         expect(json['swapped']['source']['position']).to eq(2)
         expect(json['swapped']['target']['position']).to eq(0)
 
-        expect(weapon1.reload.position).to eq(2)
-        expect(weapon2.reload.position).to eq(0)
+        expect(first_weapon.reload.position).to eq(2)
+        expect(second_weapon.reload.position).to eq(0)
       end
 
       it 'returns error when weapons not found' do
         post "/api/v1/parties/#{party.id}/grid_weapons/swap",
-             params: { source_id: 'invalid', target_id: weapon2.id }.to_json,
+             params: { source_id: 'invalid', target_id: second_weapon.id }.to_json,
              headers: headers
 
         expect(response).to have_http_status(:not_found)
@@ -115,13 +115,13 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
   end
 
   describe 'GridCharacter Position Updates' do
-    let!(:char1) { create(:grid_character, party: party, position: 0) }
-    let!(:char2) { create(:grid_character, party: party, position: 1) }
-    let!(:char3) { create(:grid_character, party: party, position: 2) }
+    let!(:first_character) { create(:grid_character, party: party, position: 0) }
+    let!(:second_character) { create(:grid_character, party: party, position: 1) }
+    let!(:third_character) { create(:grid_character, party: party, position: 2) }
 
     describe 'PUT /api/v1/parties/:party_id/grid_characters/:id/position' do
       it 'updates character position and maintains sequential filling' do
-        put "/api/v1/parties/#{party.id}/grid_characters/#{char1.id}/position",
+        put "/api/v1/parties/#{party.id}/grid_characters/#{first_character.id}/position",
             params: { position: 5, container: 'extra' }.to_json,
             headers: headers
 
@@ -132,12 +132,12 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
         expect(json['reordered']).to be true
 
         # Check compaction happened
-        expect(char2.reload.position).to eq(0)
-        expect(char3.reload.position).to eq(1)
+        expect(second_character.reload.position).to eq(0)
+        expect(third_character.reload.position).to eq(1)
       end
 
       it 'returns error for invalid position' do
-        put "/api/v1/parties/#{party.id}/grid_characters/#{char1.id}/position",
+        put "/api/v1/parties/#{party.id}/grid_characters/#{first_character.id}/position",
             params: { position: 8 }.to_json,
             headers: headers
 
@@ -149,7 +149,7 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
     describe 'POST /api/v1/parties/:party_id/grid_characters/swap' do
       it 'swaps two character positions' do
         post "/api/v1/parties/#{party.id}/grid_characters/swap",
-             params: { source_id: char1.id, target_id: char3.id }.to_json,
+             params: { source_id: first_character.id, target_id: third_character.id }.to_json,
              headers: headers
 
         expect(response).to have_http_status(:ok)
@@ -158,19 +158,19 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
         expect(json['swapped']['source']['position']).to eq(2)
         expect(json['swapped']['target']['position']).to eq(0)
 
-        expect(char1.reload.position).to eq(2)
-        expect(char3.reload.position).to eq(0)
+        expect(first_character.reload.position).to eq(2)
+        expect(third_character.reload.position).to eq(0)
       end
     end
   end
 
   describe 'GridSummon Position Updates' do
-    let!(:summon1) { create(:grid_summon, party: party, position: 0) }
-    let!(:summon2) { create(:grid_summon, party: party, position: 2) }
+    let!(:first_summon) { create(:grid_summon, party: party, position: 0) }
+    let!(:second_summon) { create(:grid_summon, party: party, position: 2) }
 
     describe 'PUT /api/v1/parties/:party_id/grid_summons/:id/position' do
       it 'updates summon position to empty slot' do
-        put "/api/v1/parties/#{party.id}/grid_summons/#{summon1.id}/position",
+        put "/api/v1/parties/#{party.id}/grid_summons/#{first_summon.id}/position",
             params: { position: 3, container: 'sub' }.to_json,
             headers: headers
 
@@ -178,11 +178,11 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
 
         json = response.parsed_body
         expect(json['grid_summon']['position']).to eq(3)
-        expect(summon1.reload.position).to eq(3)
+        expect(first_summon.reload.position).to eq(3)
       end
 
       it 'returns error for restricted position' do
-        put "/api/v1/parties/#{party.id}/grid_summons/#{summon1.id}/position",
+        put "/api/v1/parties/#{party.id}/grid_summons/#{first_summon.id}/position",
             params: { position: -1 }.to_json, # Main summon position
             headers: headers
 
@@ -191,7 +191,7 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
       end
 
       it 'returns error for friend summon position' do
-        put "/api/v1/parties/#{party.id}/grid_summons/#{summon1.id}/position",
+        put "/api/v1/parties/#{party.id}/grid_summons/#{first_summon.id}/position",
             params: { position: 6 }.to_json, # Friend summon position
             headers: headers
 
@@ -203,7 +203,7 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
     describe 'POST /api/v1/parties/:party_id/grid_summons/swap' do
       it 'swaps two summon positions' do
         post "/api/v1/parties/#{party.id}/grid_summons/swap",
-             params: { source_id: summon1.id, target_id: summon2.id }.to_json,
+             params: { source_id: first_summon.id, target_id: second_summon.id }.to_json,
              headers: headers
 
         expect(response).to have_http_status(:ok)
@@ -212,15 +212,15 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
         expect(json['swapped']['source']['position']).to eq(2)
         expect(json['swapped']['target']['position']).to eq(0)
 
-        expect(summon1.reload.position).to eq(2)
-        expect(summon2.reload.position).to eq(0)
+        expect(first_summon.reload.position).to eq(2)
+        expect(second_summon.reload.position).to eq(0)
       end
 
       it 'returns error when trying to swap with restricted position' do
         restricted_summon = create(:grid_summon, party: party, position: -1) # Main summon
 
         post "/api/v1/parties/#{party.id}/grid_summons/swap",
-             params: { source_id: summon1.id, target_id: restricted_summon.id }.to_json,
+             params: { source_id: first_summon.id, target_id: restricted_summon.id }.to_json,
              headers: headers
 
         expect(response).to have_http_status(:unprocessable_content)
@@ -231,15 +231,15 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
 
   describe 'Batch Grid Update' do
     let!(:weapon) { create(:grid_weapon, party: party, position: 0) }
-    let!(:char1) { create(:grid_character, party: party, position: 0) }
-    let!(:char2) { create(:grid_character, party: party, position: 1) }
+    let!(:first_character) { create(:grid_character, party: party, position: 0) }
+    let!(:second_character) { create(:grid_character, party: party, position: 1) }
     let!(:summon) { create(:grid_summon, party: party, position: 1) }
 
     describe 'POST /api/v1/parties/:id/grid_update' do
       it 'performs multiple operations atomically' do
         operations = [
           { type: 'move', entity: 'weapon', id: weapon.id, position: 3 },
-          { type: 'swap', entity: 'character', source_id: char1.id, target_id: char2.id },
+          { type: 'swap', entity: 'character', source_id: first_character.id, target_id: second_character.id },
           { type: 'remove', entity: 'summon', id: summon.id }
         ]
 
@@ -255,15 +255,15 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
 
         # Verify operations
         expect(weapon.reload.position).to eq(3)
-        expect(char1.reload.position).to eq(1)
-        expect(char2.reload.position).to eq(0)
+        expect(first_character.reload.position).to eq(1)
+        expect(second_character.reload.position).to eq(0)
         expect { summon.reload }.to raise_error(ActiveRecord::RecordNotFound)
       end
 
       it 'validates all operations before executing' do
         operations = [
           { type: 'move', entity: 'weapon', id: weapon.id, position: 3 },
-          { type: 'invalid', entity: 'character', id: char1.id } # Invalid operation
+          { type: 'invalid', entity: 'character', id: first_character.id } # Invalid operation
         ]
 
         post "/api/v1/parties/#{party.id}/grid_update",
@@ -278,10 +278,10 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
       end
 
       it 'maintains character sequence when option is set' do
-        char3 = create(:grid_character, party: party, position: 2)
+        third_character = create(:grid_character, party: party, position: 2)
 
         operations = [
-          { type: 'move', entity: 'character', id: char2.id, position: 5 } # Move to extra
+          { type: 'move', entity: 'character', id: second_character.id, position: 5 } # Move to extra
         ]
 
         post "/api/v1/parties/#{party.id}/grid_update",
@@ -294,9 +294,9 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
         expect(response).to have_http_status(:ok)
 
         # Check compaction happened
-        expect(char1.reload.position).to eq(0)
-        expect(char3.reload.position).to eq(1)
-        expect(char2.reload.position).to eq(5)
+        expect(first_character.reload.position).to eq(0)
+        expect(third_character.reload.position).to eq(1)
+        expect(second_character.reload.position).to eq(5)
       end
 
       it 'rolls back all operations on error' do
@@ -330,10 +330,10 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
     end
 
     it 'denies swap on other users party' do
-      weapon2 = create(:grid_weapon, party: other_party, position: 1)
+      second_weapon = create(:grid_weapon, party: other_party, position: 1)
 
       post "/api/v1/parties/#{other_party.id}/grid_weapons/swap",
-           params: { source_id: weapon.id, target_id: weapon2.id }.to_json,
+           params: { source_id: weapon.id, target_id: second_weapon.id }.to_json,
            headers: headers
 
       expect(response).to have_http_status(:unauthorized)

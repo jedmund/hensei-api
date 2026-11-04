@@ -64,13 +64,13 @@ RSpec.describe 'Api::V1::Users', type: :request do
       it 'returns collection_accessible=false for a private collection viewed by a stranger' do
         get "/api/v1/users/info/#{private_user.username}", params: { check_collection: 'true' }
         expect(response).to have_http_status(:ok)
-        expect(response.parsed_body['collection_accessible']).to eq(false)
+        expect(response.parsed_body['collection_accessible']).to be(false)
       end
 
       it 'returns collection_accessible=false unauthenticated' do
         get "/api/v1/users/info/#{private_user.username}?check_collection=true"
         expect(response).to have_http_status(:ok)
-        expect(response.parsed_body['collection_accessible']).to eq(false)
+        expect(response.parsed_body['collection_accessible']).to be(false)
       end
 
       it 'returns collection_accessible=true for the owner' do
@@ -80,14 +80,14 @@ RSpec.describe 'Api::V1::Users', type: :request do
         get "/api/v1/users/info/#{private_user.username}?check_collection=true",
             headers: { 'Authorization' => "Bearer #{owner_token.token}" }
         expect(response).to have_http_status(:ok)
-        expect(response.parsed_body['collection_accessible']).to eq(true)
+        expect(response.parsed_body['collection_accessible']).to be(true)
       end
 
       it 'returns collection_accessible=true for a public collection unauthenticated' do
         public_user = create(:user, collection_privacy: :everyone)
         get "/api/v1/users/info/#{public_user.username}?check_collection=true"
         expect(response).to have_http_status(:ok)
-        expect(response.parsed_body['collection_accessible']).to eq(true)
+        expect(response.parsed_body['collection_accessible']).to be(true)
       end
     end
 
@@ -103,7 +103,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
         owner = create(:user, support_summons_public: false)
         get "/api/v1/users/info/#{owner.username}?check_support_summons=true"
         expect(response).to have_http_status(:ok)
-        expect(response.parsed_body['support_summons_accessible']).to eq(false)
+        expect(response.parsed_body['support_summons_accessible']).to be(false)
       end
 
       it 'returns support_summons_accessible=true for the owner' do
@@ -114,14 +114,14 @@ RSpec.describe 'Api::V1::Users', type: :request do
         get "/api/v1/users/info/#{owner.username}?check_support_summons=true",
             headers: { 'Authorization' => "Bearer #{token.token}" }
         expect(response).to have_http_status(:ok)
-        expect(response.parsed_body['support_summons_accessible']).to eq(true)
+        expect(response.parsed_body['support_summons_accessible']).to be(true)
       end
 
       it 'returns support_summons_accessible=true when public' do
         owner = create(:user, support_summons_public: true)
         get "/api/v1/users/info/#{owner.username}?check_support_summons=true"
         expect(response).to have_http_status(:ok)
-        expect(response.parsed_body['support_summons_accessible']).to eq(true)
+        expect(response.parsed_body['support_summons_accessible']).to be(true)
       end
     end
 
@@ -290,7 +290,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
       get '/api/v1/users/search', params: { query: 'jed' }, headers: auth_headers
 
       expect(response).to have_http_status(:ok)
-      usernames = response.parsed_body['users'].map { |u| u['username'] }
+      usernames = response.parsed_body['users'].pluck('username')
       expect(usernames).to include('jedmund')
     end
 
@@ -299,7 +299,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
       get '/api/v1/users/search', params: { query: 'kona' }, headers: auth_headers
 
       expect(response).to have_http_status(:ok)
-      usernames = response.parsed_body['users'].map { |u| u['username'] }
+      usernames = response.parsed_body['users'].pluck('username')
       expect(usernames).to include('someguy')
     end
 
@@ -308,7 +308,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
       get '/api/v1/users/search', params: { query: 'COC' }, headers: auth_headers
 
       expect(response).to have_http_status(:ok)
-      usernames = response.parsed_body['users'].map { |u| u['username'] }
+      usernames = response.parsed_body['users'].pluck('username')
       expect(usernames).to include('Sandalphon')
     end
 
@@ -317,7 +317,7 @@ RSpec.describe 'Api::V1::Users', type: :request do
       get '/api/v1/users/search', params: { query: 'jed' }, headers: auth_headers
 
       expect(response).to have_http_status(:ok)
-      usernames = response.parsed_body['users'].map { |u| u['username'] }
+      usernames = response.parsed_body['users'].pluck('username')
       expect(usernames).not_to include('jedmund')
     end
 

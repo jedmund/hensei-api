@@ -14,7 +14,7 @@ RSpec.describe 'Gacha API', type: :request do
   end
   let(:snapshot) { { 'items' => items, 'fingerprint' => 'snapshot', 'loaded_at' => Time.now.to_i } }
   let(:store) { {} }
-  let(:redis) { double('redis') }
+  let(:redis) { instance_double(Sidekiq::RedisClientAdapter::CompatClient) }
 
   before do
     Rails.application.config.x.rate_limit_store.clear
@@ -41,7 +41,7 @@ RSpec.describe 'Gacha API', type: :request do
     first = response.parsed_body
     expect(first['draws']).to eq('10')
     expect(first['ordered'].size).to eq(10)
-    expect(first['ssr_order']).to eq(first['ordered'].select { |item| item['rarity'] == 3 }.map { |item| item['identity'] })
+    expect(first['ssr_order']).to eq(first['ordered'].select { |item| item['rarity'] == 3 }.pluck('identity'))
     post '/api/v1/gacha/simulations', params: input, as: :json
     expect(response.parsed_body).to eq(first)
   end

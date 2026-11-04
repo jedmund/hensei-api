@@ -6,20 +6,6 @@ RSpec.describe 'Admin jobs collection', type: :request do
   let(:path) { '/api/v1/admin/jobs' }
   let(:editor_headers) { auth_headers(create(:user, role: 7)) }
 
-  def auth_headers(account)
-    token = Doorkeeper::AccessToken.create!(resource_owner_id: account.id, expires_in: 30.days, scopes: 'public')
-    { 'Authorization' => "Bearer #{token.token}" }
-  end
-
-  def fetch(params = {}, headers = editor_headers)
-    get path, params: params, headers: headers
-    response.parsed_body
-  end
-
-  def names(body = response.parsed_body)
-    body['results'].map { |r| r['name_en'] }
-  end
-
   let!(:fighter) do
     create(:job, name_en: 'Fighter', name_jp: 'ファイター', granblue_id: '900001', row: '1', order: 1,
                  proficiency1: 1, proficiency2: 4, accessory: false, accessory_type: 0,
@@ -34,6 +20,20 @@ RSpec.describe 'Admin jobs collection', type: :request do
     create(:job, name_en: 'Paladin', name_jp: 'パラディン', granblue_id: '900301', row: '4', order: 2,
                  proficiency1: 3, proficiency2: 1, accessory: true, accessory_type: 1,
                  master_level: true, ultimate_mastery: true, updated_at: Time.zone.parse('2026-03-01'))
+  end
+
+  def auth_headers(account)
+    token = Doorkeeper::AccessToken.create!(resource_owner_id: account.id, expires_in: 30.days, scopes: 'public')
+    { 'Authorization' => "Bearer #{token.token}" }
+  end
+
+  def fetch(params = {}, headers = editor_headers)
+    get path, params: params, headers: headers
+    response.parsed_body
+  end
+
+  def names(body = response.parsed_body)
+    body['results'].map { |r| r['name_en'] }
   end
 
   before do
@@ -123,7 +123,7 @@ RSpec.describe 'Admin jobs collection', type: :request do
 
     it 'returns skill counts on request' do
       body = fetch(fields: 'name_en,skill_count,aux_weapon')
-      expect(body['results'].map { |r| r['skill_count'] }).to eq([0, 0, 2])
+      expect(body['results'].pluck('skill_count')).to eq([0, 0, 2])
       expect(body['results'].first.keys).to match_array(%w[id name_en skill_count aux_weapon])
     end
   end

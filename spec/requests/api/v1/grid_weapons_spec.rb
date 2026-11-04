@@ -299,12 +299,6 @@ RSpec.describe 'GridWeapons API', type: :request do
              uncap_level: 3)
     end
 
-    before do
-      # Set up the incoming weapon with flags such that: default uncap is 3,
-      # but if flb is true then uncap should become 4.
-      incoming_weapon.update!(flb: true, ulb: false, transcendence: false)
-    end
-
     let(:resolve_params) do
       {
         resolve: {
@@ -316,11 +310,17 @@ RSpec.describe 'GridWeapons API', type: :request do
       }
     end
 
+    before do
+      # Set up the incoming weapon with flags such that: default uncap is 3,
+      # but if flb is true then uncap should become 4.
+      incoming_weapon.update!(flb: true, ulb: false, transcendence: false)
+    end
+
     it 'destroys the conflicting weapon and creates a new one with correct uncap' do
       expect(GridWeapon.exists?(conflicting_weapon.id)).to be true
 
       expect { post '/api/v1/grid_weapons/resolve', params: resolve_params.to_json, headers: headers }
-        .to change(GridWeapon, :count).by(0)
+        .not_to change(GridWeapon, :count)
       expect(response).to have_http_status(:created)
       expect(response.parsed_body['grid_weapon']).to include('uncap_level' => 4, 'position' => 5)
       expect { conflicting_weapon.reload }.to raise_error(ActiveRecord::RecordNotFound)

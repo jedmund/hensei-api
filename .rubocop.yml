@@ -181,3 +181,29 @@ RSpec/NestedGroups:
 # `type:` metadata this cop calls redundant is what sets the spec type
 RSpecRails/InferredSpecType:
   Enabled: false
+
+# "as an editor" names who makes a request and "for a style row" what a
+# spec covers, which read better than forcing a "when"
+RSpec/ContextWording:
+  Prefixes:
+    - when
+    - with
+    - without
+    - as
+    - for
+
+# Shared contexts define let! records that the including specs reference,
+# which this cop can't see from the support file
+RSpec/LetSetup:
+  Exclude:
+    - 'spec/support/**/*'
+
+# Cross-cutting specs (golden snapshots, data integrity, rake tasks, config
+# files) describe a behavior, not one class
+RSpec/DescribeClass:
+  Enabled: false
+
+# Data migration specs stub the migration's own `say` output (and check it)
+RSpec/SubjectStub:
+  Exclude:
+    - 'spec/data/**/*'

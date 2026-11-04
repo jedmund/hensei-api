@@ -58,21 +58,25 @@ RSpec.describe 'Api::V1::CrewGwParticipations', type: :request do
   end
 
   describe 'GET /api/v1/crew/gw_participations' do
-    let!(:participation1) { create(:crew_gw_participation, crew: crew) }
-    let!(:participation2) { create(:crew_gw_participation, crew: crew) }
-    let!(:other_participation) { create(:crew_gw_participation) }
+    context 'with participations in the crew and another crew' do
+      before do
+        create(:crew_gw_participation, crew: crew)
+        create(:crew_gw_participation, crew: crew)
+        create(:crew_gw_participation)
+      end
 
-    it 'returns crew participations' do
-      get '/api/v1/crew/gw_participations', headers: auth_headers
-      expect(response).to have_http_status(:ok)
-      json = response.parsed_body
-      expect(json['crew_gw_participations'].length).to eq(2)
+      it 'returns crew participations' do
+        get '/api/v1/crew/gw_participations', headers: auth_headers
+        expect(response).to have_http_status(:ok)
+        json = response.parsed_body
+        expect(json['crew_gw_participations'].length).to eq(2)
+      end
     end
 
     context 'without a crew' do
       let!(:membership) { nil }
-      let!(:participation1) { nil }
-      let!(:participation2) { nil }
+
+      before { create(:crew_gw_participation) }
 
       it 'returns unprocessable_content' do
         get '/api/v1/crew/gw_participations', headers: auth_headers
@@ -123,7 +127,7 @@ RSpec.describe 'Api::V1::CrewGwParticipations', type: :request do
       it 'includes members who were active during the event' do
         get "/api/v1/crew/gw_participations/by_event/#{gw_event.id}", headers: auth_headers
         json = response.parsed_body
-        member_ids = json['members_during_event'].map { |m| m['id'] }
+        member_ids = json['members_during_event'].pluck('id')
         expect(member_ids).to include(membership.id)
       end
     end

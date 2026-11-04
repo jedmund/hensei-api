@@ -13,7 +13,7 @@ RSpec.describe 'Party sticker fields', type: :request do
   let!(:accessible) { create(:sticker, slug: 'accessible', position: 2) }
 
   def json_response
-    JSON.parse(response.body)
+    response.parsed_body
   end
 
   # The explore list hides parties below the default grid counts.
@@ -96,7 +96,7 @@ RSpec.describe 'Party sticker fields', type: :request do
 
       get "/api/v1/parties/#{party.shortcode}", headers: bearer_headers(viewer)
       placed = json_response['party']['placed_stickers']
-      expect(placed.map { |p| p['sticker'] }).to eq(%w[fast cleared])
+      expect(placed.pluck('sticker')).to eq(%w[fast cleared])
       expect(placed.first).to eq('id' => first.id, 'sticker' => 'fast', 'mine' => false,
                                  'placement' => { 'x' => 0.5, 'y' => 20.0, 'rotation' => -4.0 })
       expect(placed.last).to include('mine' => true, 'placement' => nil)
@@ -150,7 +150,7 @@ RSpec.describe 'Party sticker fields', type: :request do
       give(1, cleared, to: high)
       give(2, fast, to: high)
       get '/api/v1/parties', params: { label: 'cleared' }
-      expect(json_response['results'].map { |p| p['id'] }).to eq([low.id])
+      expect(json_response['results'].pluck('id')).to eq([low.id])
     end
   end
 

@@ -25,7 +25,7 @@ RSpec.describe 'Api::V1::Playlists', type: :request do
       get "/api/v1/users/#{user.username}/playlists", headers: other_headers
       expect(response).to have_http_status(:ok)
 
-      ids = response.parsed_body['results'].map { |p| p['id'] }
+      ids = response.parsed_body['results'].pluck('id')
       expect(ids).to include(public_playlist.id, unlisted_playlist.id)
       expect(ids).not_to include(private_playlist.id)
     end
@@ -34,7 +34,7 @@ RSpec.describe 'Api::V1::Playlists', type: :request do
       get "/api/v1/users/#{user.username}/playlists", headers: auth_headers
       expect(response).to have_http_status(:ok)
 
-      ids = response.parsed_body['results'].map { |p| p['id'] }
+      ids = response.parsed_body['results'].pluck('id')
       expect(ids).to include(public_playlist.id, unlisted_playlist.id, private_playlist.id)
     end
 
@@ -55,7 +55,7 @@ RSpec.describe 'Api::V1::Playlists', type: :request do
       get "/api/v1/users/#{user.username.upcase}/playlists", headers: unauth_headers
       expect(response).to have_http_status(:ok)
 
-      ids = response.parsed_body['results'].map { |p| p['id'] }
+      ids = response.parsed_body['results'].pluck('id')
       expect(ids).to include(public_playlist.id)
     end
   end
@@ -78,7 +78,7 @@ RSpec.describe 'Api::V1::Playlists', type: :request do
       get "/api/v1/users/#{user.username}/playlists/#{playlist.slug}", headers: unauth_headers
       expect(response).to have_http_status(:ok)
 
-      party_ids = response.parsed_body.dig('playlist', 'parties').map { |p| p['id'] }
+      party_ids = response.parsed_body.dig('playlist', 'parties').pluck('id')
       expect(party_ids).to eq([new_party.id, old_party.id])
     end
 
@@ -151,7 +151,7 @@ RSpec.describe 'Api::V1::Playlists', type: :request do
       body = response.parsed_body['playlist']
       expect(body['party_ids']).to contain_exactly(shown_party.id, hidden_party.id)
       expect(body['party_count']).to eq(2)
-      expect(body['parties'].map { |p| p['id'] }).to contain_exactly(shown_party.id, hidden_party.id)
+      expect(body['parties'].pluck('id')).to contain_exactly(shown_party.id, hidden_party.id)
 
       get "/api/v1/users/#{user.username}/playlists", headers: headers_for(party_owner)
       result = response.parsed_body['results'].find { |p| p['id'] == playlist.id }

@@ -47,11 +47,11 @@ RSpec.describe 'ImportController', type: :request do
     end
 
     context 'with playlist_ids' do
-      let!(:playlist1) { create(:playlist, user: user) }
-      let!(:playlist2) { create(:playlist, user: user) }
+      let!(:first_playlist) { create(:playlist, user: user) }
+      let!(:second_playlist) { create(:playlist, user: user) }
 
       it 'adds the imported party to the specified playlists' do
-        body = { 'import' => raw_deck_data, 'playlist_ids' => [playlist1.id, playlist2.id] }.to_json
+        body = { 'import' => raw_deck_data, 'playlist_ids' => [first_playlist.id, second_playlist.id] }.to_json
 
         expect do
           post '/api/v1/import', params: body, headers: headers
@@ -59,31 +59,31 @@ RSpec.describe 'ImportController', type: :request do
 
         expect(response).to have_http_status(:created)
         party = Party.find_by(shortcode: response.parsed_body['shortcode'])
-        expect(party.playlists).to contain_exactly(playlist1, playlist2)
+        expect(party.playlists).to contain_exactly(first_playlist, second_playlist)
       end
 
       it 'ignores playlist IDs belonging to another user' do
         other_user = create(:user)
         other_playlist = create(:playlist, user: other_user)
-        body = { 'import' => raw_deck_data, 'playlist_ids' => [playlist1.id, other_playlist.id] }.to_json
+        body = { 'import' => raw_deck_data, 'playlist_ids' => [first_playlist.id, other_playlist.id] }.to_json
 
         expect do
           post '/api/v1/import', params: body, headers: headers
         end.to change(PlaylistParty, :count).by(1)
 
         party = Party.find_by(shortcode: response.parsed_body['shortcode'])
-        expect(party.playlists).to contain_exactly(playlist1)
+        expect(party.playlists).to contain_exactly(first_playlist)
       end
 
       it 'ignores non-existent playlist IDs' do
-        body = { 'import' => raw_deck_data, 'playlist_ids' => [playlist1.id, SecureRandom.uuid] }.to_json
+        body = { 'import' => raw_deck_data, 'playlist_ids' => [first_playlist.id, SecureRandom.uuid] }.to_json
 
         expect do
           post '/api/v1/import', params: body, headers: headers
         end.to change(PlaylistParty, :count).by(1)
 
         party = Party.find_by(shortcode: response.parsed_body['shortcode'])
-        expect(party.playlists).to contain_exactly(playlist1)
+        expect(party.playlists).to contain_exactly(first_playlist)
       end
 
       it 'works normally when playlist_ids is not provided' do

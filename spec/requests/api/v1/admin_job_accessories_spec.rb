@@ -6,20 +6,6 @@ RSpec.describe 'Admin job accessories collection', type: :request do
   let(:path) { '/api/v1/admin/job_accessories' }
   let(:editor_headers) { auth_headers(create(:user, role: 7)) }
 
-  def auth_headers(account)
-    token = Doorkeeper::AccessToken.create!(resource_owner_id: account.id, expires_in: 30.days, scopes: 'public')
-    { 'Authorization' => "Bearer #{token.token}" }
-  end
-
-  def fetch(params = {}, headers = editor_headers)
-    get path, params: params, headers: headers
-    response.parsed_body
-  end
-
-  def names(body = response.parsed_body)
-    body['results'].map { |r| r['name_en'] }
-  end
-
   let!(:paladin) { create(:job, name_en: 'Paladin', accessory: true, accessory_type: 1) }
   let!(:manadiver) { create(:job, name_en: 'Manadiver', accessory: true, accessory_type: 2) }
   let!(:buckler) do
@@ -33,6 +19,20 @@ RSpec.describe 'Admin job accessories collection', type: :request do
   let!(:burlona) do
     create(:job_accessory, job: manadiver, name_en: 'Burlona', name_jp: 'ブルロネ', granblue_id: '91',
                            accessory_type: 2, rarity: nil, release_date: Date.new(2022, 1, 25))
+  end
+
+  def auth_headers(account)
+    token = Doorkeeper::AccessToken.create!(resource_owner_id: account.id, expires_in: 30.days, scopes: 'public')
+    { 'Authorization' => "Bearer #{token.token}" }
+  end
+
+  def fetch(params = {}, headers = editor_headers)
+    get path, params: params, headers: headers
+    response.parsed_body
+  end
+
+  def names(body = response.parsed_body)
+    body['results'].map { |r| r['name_en'] }
   end
 
   before do

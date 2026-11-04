@@ -9,19 +9,23 @@ RSpec.describe 'Api::V1::Stickers', type: :request do
   let(:member_headers) { bearer_headers(member) }
 
   def json_response
-    JSON.parse(response.body)
+    response.parsed_body
   end
 
   describe 'GET /api/v1/stickers' do
-    let!(:second) { create(:sticker, slug: 'second', position: 2) }
-    let!(:first) { create(:sticker, slug: 'first', position: 1, meaning_en: 'Fast', meaning_jp: '速い') }
-    let!(:retired) { create(:sticker, :inactive, slug: 'retired', position: 0) }
+    let(:first) { create(:sticker, slug: 'first', position: 1, meaning_en: 'Fast', meaning_jp: '速い') }
+
+    before do
+      create(:sticker, slug: 'second', position: 2)
+      first
+      create(:sticker, :inactive, slug: 'retired', position: 0)
+    end
 
     it 'returns active stickers in position order, publicly' do
       get '/api/v1/stickers'
 
       expect(response).to have_http_status(:ok)
-      expect(json_response['stickers'].map { |s| s['slug'] }).to eq(%w[first second])
+      expect(json_response['stickers'].pluck('slug')).to eq(%w[first second])
       expect(json_response['stickers'].first).to include(
         'id' => first.id, 'meaning' => { 'en' => 'Fast', 'ja' => '速い' },
         'image_url' => nil, 'position' => 1, 'active' => true
@@ -30,7 +34,7 @@ RSpec.describe 'Api::V1::Stickers', type: :request do
 
     it 'lets editors include inactive stickers' do
       get '/api/v1/stickers', params: { include_inactive: true }, headers: editor_headers
-      expect(json_response['stickers'].map { |s| s['slug'] }).to eq(%w[retired first second])
+      expect(json_response['stickers'].pluck('slug')).to eq(%w[retired first second])
     end
 
     it 'tells editors which stickers can still be deleted' do
@@ -49,12 +53,13 @@ RSpec.describe 'Api::V1::Stickers', type: :request do
 
     it 'ignores include_inactive for non-editors' do
       get '/api/v1/stickers', params: { include_inactive: true }, headers: member_headers
-      expect(json_response['stickers'].map { |s| s['slug'] }).to eq(%w[first second])
+      expect(json_response['stickers'].pluck('slug')).to eq(%w[first second])
     end
 
     it 'busts the cached catalogue when a sticker changes' do
-      expect(Rails.cache).to receive(:delete).with(Sticker::CATALOGUE_CACHE_KEY).at_least(:once)
+      allow(Rails.cache).to receive(:delete).with(Sticker::CATALOGUE_CACHE_KEY)
       first.update!(meaning_en: 'Faster')
+      expect(Rails.cache).to have_received(:delete).with(Sticker::CATALOGUE_CACHE_KEY).at_least(:once)
     end
   end
 
@@ -255,8 +260,10 @@ RSpec.describe 'Api::V1::Stickers', type: :request do
   end
 
   describe 'the sticker library' do
-    let(:first) { StickerLibrary.all.first }
-    let(:last) { StickerLibrary.all.last }
+    # StickerLibrary is a plain module, so all returns an Array, not a relation
+    let(:library_stickers) { StickerLibrary.all }
+    let(:first) { library_stickers.first }
+    let(:last) { library_stickers.last }
 
     it 'lists the library for editors, marking stickers already made from it' do
       made = create(:sticker, image_key: first.image_key)
@@ -328,7 +335,7 @@ RSpec.describe 'Api::V1::Stickers', type: :request do
     it 'sets positions in the given order' do
       put '/api/v1/stickers/reorder', params: { ids: [b.id, a.id] }, headers: editor_headers
       expect(response).to have_http_status(:ok)
-      expect(json_response['stickers'].map { |s| s['id'] }).to eq([b.id, a.id])
+      expect(json_response['stickers'].pluck('id')).to eq([b.id, a.id])
       expect(b.reload.position).to eq(0)
     end
 
