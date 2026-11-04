@@ -54,6 +54,15 @@ module PartyDifficulty
       new(user)
     end
 
+    # The attributes an editor may stage for a target type, with string keys.
+    def self.sanitize_attributes(target_type, attrs)
+      allowed = EDITABLE_COLUMNS[target_type] || []
+      attrs = attrs.to_unsafe_h if attrs.respond_to?(:to_unsafe_h)
+      (attrs || {}).each_with_object({}) do |(key, value), out|
+        out[key.to_s] = value if allowed.include?(key.to_s)
+      end
+    end
+
     def initialize(user)
       @user = user
       @drafts = DifficultyDraft.for_user(user).to_a
@@ -120,7 +129,7 @@ module PartyDifficulty
     end
 
     def discard!
-      remove_temp_images(@drafts)
+      Images.delete_staged(@drafts)
       destroyed = DifficultyDraft.for_user(@user).destroy_all
       @drafts = []
       destroyed.size
@@ -130,7 +139,7 @@ module PartyDifficulty
     # Drops a single draft, cleaning up any temp S3 object that was staged
     # against it. Returns true if the draft was destroyed.
     def delete_draft!(draft)
-      remove_temp_images([draft])
+      Images.delete_staged([draft])
       destroyed = draft.destroy
       @drafts.reject! { |d| d.id == draft.id }
       @grouped_drafts = nil
@@ -144,17 +153,7 @@ module PartyDifficulty
     def attach_image!(draft, image_data:, filename: nil)
       raise ArgumentError, 'attach_image! only supports Difficulty drafts' unless draft.target_type == 'Difficulty'
 
-      decoded = decode_image(image_data)
-      result = IconUploadValidator.call(decoded)
-      raise ImageValidationError, result.error unless result.valid?
-
-      key = "#{IMAGE_DRAFT_PREFIX}/#{draft.id}.png"
-      IconStorage.put(key, decoded)
-
-      payload = (draft.attributes_payload || {}).merge('image_key' => key)
-      payload['image_filename'] = filename if filename.present?
-      draft.update!(attributes_payload: payload)
-      draft
+      Images.stage!(draft, image_data: image_data, filename: filename)
     end
 
     # Raised by attach_image! when the uploaded bytes fail validation. The
@@ -174,40 +173,10 @@ module PartyDifficulty
       payload = sanitize_attributes(target_type, attributes || {})
 
       @grouped_drafts = nil
-      DifficultyRule.new(payload).validate! if target_type == 'DifficultyRule' && operation == 'create'
-
       if operation == 'create'
-        DifficultyDraft.create!(
-          user: @user,
-          target_type: target_type,
-          target_id: nil,
-          operation: operation,
-          attributes_payload: payload
-        ).tap { |d| @drafts << d }
+        stage_create!(target_type, payload)
       else
-        # Snapshot the current target's updated_at so commit! can detect a
-        # concurrent edit by another editor.
-        target = target_type.constantize.find_by(id: target_id)
-        draft = DifficultyDraft.find_or_initialize_by(
-          user: @user,
-          target_type: target_type,
-          target_id: target_id
-        )
-        if target_type == 'DifficultyRule' && operation == 'update'
-          payload = draft.attributes_payload.merge(payload)
-          raise ActiveRecord::RecordNotFound unless target
-
-          candidate = target.dup
-          candidate.assign_attributes(payload)
-          candidate.validate!
-        end
-        draft.operation = operation
-        draft.attributes_payload = operation == 'destroy' ? {} : payload
-        draft.target_updated_at = target&.updated_at
-        draft.save!
-        @drafts.reject! { |d| d.id == draft.id }
-        @drafts << draft
-        draft
+        stage_change!(target_type, target_id, operation, payload)
       end
     end
 
@@ -229,6 +198,47 @@ module PartyDifficulty
     end
 
     private
+
+    # A created rule must be valid on its own.
+    def stage_create!(target_type, payload)
+      DifficultyRule.new(payload).validate! if target_type == 'DifficultyRule'
+
+      DifficultyDraft.create!(
+        user: @user,
+        target_type: target_type,
+        target_id: nil,
+        operation: 'create',
+        attributes_payload: payload
+      ).tap { |d| @drafts << d }
+    end
+
+    # Replaces the target's update or destroy draft. A rule update merges into the
+    # staged edits and must leave the rule valid.
+    def stage_change!(target_type, target_id, operation, payload)
+      # Snapshot the current target's updated_at so commit! can detect a
+      # concurrent edit by another editor.
+      target = target_type.constantize.find_by(id: target_id)
+      draft = DifficultyDraft.find_or_initialize_by(
+        user: @user,
+        target_type: target_type,
+        target_id: target_id
+      )
+      if target_type == 'DifficultyRule' && operation == 'update'
+        payload = draft.attributes_payload.merge(payload)
+        raise ActiveRecord::RecordNotFound unless target
+
+        candidate = target.dup
+        candidate.assign_attributes(payload)
+        candidate.validate!
+      end
+      draft.operation = operation
+      draft.attributes_payload = operation == 'destroy' ? {} : payload
+      draft.target_updated_at = target&.updated_at
+      draft.save!
+      @drafts.reject! { |d| d.id == draft.id }
+      @drafts << draft
+      draft
+    end
 
     def merge_collection(canonical, target_type, sort_by:)
       by_target = grouped_drafts[target_type] || []
@@ -288,11 +298,7 @@ module PartyDifficulty
     end
 
     def sanitize_attributes(target_type, attrs)
-      allowed = EDITABLE_COLUMNS[target_type] || []
-      attrs = attrs.to_unsafe_h if attrs.respond_to?(:to_unsafe_h)
-      (attrs || {}).each_with_object({}) do |(key, value), out|
-        out[key.to_s] = value if allowed.include?(key.to_s)
-      end
+      self.class.sanitize_attributes(target_type, attrs)
     end
 
     def apply_attrs(record, attrs)
@@ -300,99 +306,7 @@ module PartyDifficulty
     end
 
     def section_diff(target_type)
-      drafts = grouped_drafts[target_type] || []
-      creates = []
-      updates = []
-      destroys = []
-
-      target_ids = drafts.filter_map { |d| d.target_id unless d.operation == 'create' }.uniq
-      targets_by_id = target_ids.any? ? target_type.constantize.where(id: target_ids).index_by(&:id) : {}
-
-      drafts.each do |draft|
-        case draft.operation
-        when 'create'
-          creates << {
-            draft_id: draft.id,
-            attributes: sanitize_attributes(target_type, draft.attributes_payload)
-          }
-        when 'update'
-          target = targets_by_id[draft.target_id]
-          if target.nil?
-            updates << stale_entry(draft)
-            next
-          end
-
-          field_diff = compute_field_diff(target, draft.attributes_payload, target_type)
-          next if field_diff.empty?
-
-          updates << {
-            draft_id: draft.id,
-            target_id: target.id,
-            label: summary_label(target),
-            changes: field_diff,
-            stale: stale_against?(target, draft)
-          }
-        when 'destroy'
-          target = targets_by_id[draft.target_id]
-          if target.nil?
-            destroys << stale_entry(draft)
-            next
-          end
-
-          destroys << {
-            draft_id: draft.id,
-            target_id: target.id,
-            label: summary_label(target),
-            snapshot: target.attributes.slice(*SUMMARY_COLUMNS.fetch(target_type, [])),
-            stale: stale_against?(target, draft)
-          }
-        end
-      end
-
-      { creates: creates, updates: updates, destroys: destroys }
-    end
-
-    # Emitted for update/destroy drafts whose target has been deleted by
-    # another editor since the draft was staged. The frontend can prompt the
-    # editor to discard the stranded draft.
-    def stale_entry(draft)
-      {
-        draft_id: draft.id,
-        target_id: draft.target_id,
-        stale: true,
-        reason: 'target_missing'
-      }
-    end
-
-    def stale_against?(target, draft)
-      return false if draft.target_updated_at.nil?
-
-      target.updated_at != draft.target_updated_at
-    end
-
-    def compute_field_diff(record, proposed, target_type)
-      allowed = EDITABLE_COLUMNS[target_type] || []
-      proposed.each_with_object({}) do |(key, new_value), out|
-        key = key.to_s
-        next unless allowed.include?(key)
-
-        old_value = record[key]
-        out[key] = { old: old_value, new: new_value } if normalized(old_value) != normalized(new_value)
-      end
-    end
-
-    def normalized(value)
-      case value
-      when BigDecimal then value.to_f
-      when Hash then value.deep_stringify_keys
-      else value
-      end
-    end
-
-    def summary_label(record)
-      return record.name if record.respond_to?(:name) && record.name.present?
-
-      record.id
+      Diff.new(target_type, grouped_drafts[target_type] || []).to_h
     end
 
     def apply!(draft)
@@ -400,14 +314,14 @@ module PartyDifficulty
       when 'create'
         klass = draft.target_class
         record = klass.create!(sanitize_attributes(draft.target_type, draft.attributes_payload))
-        promote_image_if_present(draft, record)
+        Images.promote(draft, record)
       when 'update'
         target = lock_and_verify(draft)
         target&.update!(sanitize_attributes(draft.target_type, draft.attributes_payload))
-        promote_image_if_present(draft, target) if target
+        Images.promote(draft, target) if target
       when 'destroy'
         target = lock_and_verify(draft)
-        cleanup_canonical_image(target) if target.is_a?(Difficulty)
+        Images.delete_canonical(target) if target.is_a?(Difficulty)
         target&.destroy!
       end
     end
@@ -423,64 +337,6 @@ module PartyDifficulty
       return target if target.updated_at == draft.target_updated_at
 
       raise StaleDraftError, draft
-    end
-
-    # When a draft has a `_drafts/`-prefixed image_key in its attributes, copy
-    # the staged S3 object to the canonical key and write that key to the row.
-    #
-    # Ordering matters for retry safety: copy → update_column → best-effort
-    # delete. If the DB write fails, the canonical key exists but the row
-    # doesn't reference it (orphan, recoverable). If the delete fails, the
-    # staged copy lingers — that's intentionally non-fatal, the S3 lifecycle
-    # rule on the `_drafts/` prefix sweeps it.
-    def promote_image_if_present(draft, record)
-      return unless draft.target_type == 'Difficulty'
-
-      staged_key = draft.attributes_payload&.dig('image_key')
-      return unless staged_key.is_a?(String) && staged_key.start_with?("#{IMAGE_DRAFT_PREFIX}/")
-
-      final_key = "#{IMAGE_FINAL_PREFIX}/#{record.id}.png"
-      IconStorage.copy(staged_key, final_key)
-      record.update!(image_key: final_key)
-      begin
-        IconStorage.delete(staged_key)
-      rescue StandardError => e
-        Rails.logger.warn("[difficulty_drafts] orphaned staged image #{staged_key}: #{e.message}")
-      end
-    end
-
-    def cleanup_canonical_image(record)
-      return if record.image_key.blank?
-
-      IconStorage.delete(record.image_key)
-    rescue StandardError => e
-      # A missing canonical image shouldn't block destroying the row.
-      Rails.logger.warn("[difficulty_drafts] failed to delete canonical image #{record.image_key}: #{e.message}")
-    end
-
-    def remove_temp_images(drafts)
-      drafts.each do |draft|
-        next unless draft.target_type == 'Difficulty'
-
-        key = draft.attributes_payload&.dig('image_key')
-        next unless key.is_a?(String) && key.start_with?("#{IMAGE_DRAFT_PREFIX}/")
-
-        begin
-          IconStorage.delete(key)
-        rescue StandardError => e
-          Rails.logger.warn("[difficulty_drafts] failed to delete temp image #{key}: #{e.message}")
-        end
-      end
-    end
-
-    # Accepts a raw PNG byte string or a base64-encoded string. Base64 input
-    # always comes through JSON as UTF-8, so the byte-pattern fast-path below
-    # has to compare on the binary view to avoid Encoding::CompatibilityError.
-    def decode_image(image_data)
-      return '' if image_data.blank?
-      return image_data if image_data.is_a?(String) && image_data.b.start_with?(IconUploadValidator::PNG_SIGNATURE)
-
-      Base64.decode64(image_data.to_s)
     end
   end
 end
