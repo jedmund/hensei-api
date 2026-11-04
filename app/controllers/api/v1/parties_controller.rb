@@ -11,30 +11,6 @@ module Api
       include SubstituteGridPreloading
       include PartyFullLoading
 
-      # Constants used for filtering validations.
-
-      # Maximum number of characters allowed in a party
-      MAX_CHARACTERS = 5
-
-      # Maximum number of summons allowed in a party
-      MAX_SUMMONS = 8
-
-      # Maximum number of weapons allowed in a party
-      MAX_WEAPONS = 13
-
-      # Default minimum number of characters required for filtering.
-      # 0 so MC-only teams (no characters) appear in the Gallery by default.
-      DEFAULT_MIN_CHARACTERS = 0
-
-      # Default minimum number of summons required for filtering
-      DEFAULT_MIN_SUMMONS = 2
-
-      # Default minimum number of weapons required for filtering
-      DEFAULT_MIN_WEAPONS = 5
-
-      # Default maximum clear time in seconds
-      DEFAULT_MAX_CLEAR_TIME = 5400
-
       # Fields of `party[solomonis]` a client may write. ended_at, stats and
       # game_report_id are import-only; ownership comes from the party.
       SOLOMONIS_PARAMS = %i[route_evoker_id pledge_level outcome].freeze
@@ -46,16 +22,65 @@ module Api
         'solomonis_expedition.route_evoker' => 'solomonis.route_evoker_id'
       }.freeze
 
+      # Fields of `party` a client may write. Ownership (user, edit key) is
+      # never among them.
+      PARTY_FIELDS = %i[
+        local_id extra name description raid_id job_id visibility
+        accessory_id skill0_id skill1_id skill2_id skill3_id
+        collection_source_user_id full_auto auto_guard auto_summon charge_attack solo clear_time button_count
+        turn_count chain_count summon_count ultimate_mastery ultimate_mastery_level
+        video_url guidebook1_id guidebook2_id guidebook3_id
+      ].freeze
+
+      RING_FIELDS = %i[modifier strength].freeze
+
+      # Fields of the nested grid items in `party`.
+      CHARACTER_FIELDS = [
+        :id, :character_id, :position, :uncap_level, :transcendence_step, :perpetuity, :awakening_id, :awakening_level,
+        { ring1: RING_FIELDS, ring2: RING_FIELDS, ring3: RING_FIELDS, ring4: RING_FIELDS, earring: RING_FIELDS }
+      ].freeze
+      SUMMON_FIELDS = %i[id summon_id position main friend quick_summon uncap_level transcendence_step].freeze
+      WEAPON_FIELDS = %i[
+        id weapon_id position mainhand uncap_level transcendence_step element
+        weapon_key1_id weapon_key2_id weapon_key3_id ax_modifier1_id ax_modifier2_id ax_strength1 ax_strength2
+        befoulment_modifier_id befoulment_strength befoulment_permeation exorcism_level awakening_id awakening_level
+      ].freeze
+
       before_action :set_from_slug, except: %w[create destroy update index favorites grid_update unlink_collection sync_all]
       before_action :set, only: %w[update destroy grid_update sync_all]
       before_action :authorize_party!, only: %w[update destroy grid_update sync_all]
       before_action :ensure_party_viewable!, only: %w[show skill_boosts remix]
 
-      # Primary CRUD Actions
+      # Lists parties based on query parameters.
+      def index
+        query = build_filtered_query(build_preview_base_query)
+        @parties = query.paginate(page: params[:page], per_page: page_size)
 
-      # Creates a new party with optional user association
-      # @return [void]
-      # Creates a new party.
+        render json: Api::V1::PartyBlueprint.render(
+          @parties,
+          view: :list,
+          root: :results,
+          meta: pagination_meta(@parties),
+          current_user: current_user
+        )
+      end
+
+      # Shows a party, with the viewer's matching collection items and those of
+      # the party's collection source when the viewer may see them. Private
+      # parties 404 unless viewable (ensure_party_viewable!).
+      def show
+        options = { view: :full, root: :party, current_user: current_user, admin_mode: admin_mode }
+        options[:viewer_collection] = PartyCollectionMatches.for(@party, current_user) if current_user
+
+        source_user = @party.collection_source_user
+        if source_user && source_user != current_user && source_user.collection_viewable_by?(current_user)
+          options[:source_collection] = PartyCollectionMatches.for(@party, source_user)
+        end
+
+        render json: PartyBlueprint.render(@party, **options)
+      end
+
+      # Creates a party, owned by the current user when signed in.
       def create
         party = Party.new(party_params)
         party.user = current_user if current_user
@@ -64,7 +89,7 @@ module Api
         if party_params[:collection_source_user_id].present?
           source_user = User.find_by(id: party_params[:collection_source_user_id])
           return render_not_found_response('user') if source_user.nil?
-          return render_forbidden_response('Collection is not accessible') unless source_user == current_user || source_user.collection_viewable_by?(current_user)
+          return render_forbidden_response('Collection is not accessible') unless collection_visible?(source_user)
         end
 
         if party_params && party_params[:raid_id].present? && (raid = Raid.find_by(id: party_params[:raid_id]))
@@ -81,36 +106,6 @@ module Api
                  status: :created
         else
           render_party_errors(party)
-        end
-      end
-
-      # Shows a specific party.
-      # Uses viewable_by? to check visibility including crew sharing.
-      # Also allows access via edit_key for anonymous parties.
-      # The in-game "Weapon Skill Boosts" panel for this party's grid, computed by
-      # GridDamage::Calculator and shaped for display. Battle-state params (the game's
-      # "Calculator Conditions"): hp_percent (0–100), turn (1+), foe_element, and
-      # ally_max_hp for max-HP-scaled effects, plus arcarum for venue-gated effects;
-      # the foe defaults to the grid element's advantaged target, like the in-game estimate.
-      def skill_boosts
-        state = skill_boost_state
-        render json: GridDamage::PanelPresenter.present(@party, state: state).merge(state: state)
-      end
-
-      def show
-        if @party
-          options = { view: :full, root: :party, current_user: current_user, admin_mode: admin_mode }
-
-          options[:viewer_collection] = fetch_collection_for(@party, current_user) if current_user
-
-          if @party.collection_source_user_id.present?
-            source_user = @party.collection_source_user
-            options[:source_collection] = fetch_collection_for(@party, source_user) if source_user && source_user != current_user && source_user.collection_viewable_by?(current_user)
-          end
-
-          render json: PartyBlueprint.render(@party, **options)
-        else
-          render_not_found_response('party')
         end
       end
 
@@ -145,7 +140,32 @@ module Api
         end
       end
 
-      # Extended Party Actions
+      # GET /api/v1/parties/favorites
+      def favorites
+        raise Api::V1::UnauthorizedError unless current_user
+
+        # A subquery rather than a join + DISTINCT, which Postgres can't order
+        # by an expression such as the Rising rank
+        base_query = build_preview_base_query
+                     .where(id: Favorite.where(user_id: current_user.id).select(:party_id))
+        query = build_filtered_query(base_query)
+        @parties = query.paginate(page: params[:page], per_page: page_size)
+
+        render json: Api::V1::PartyBlueprint.render(
+          @parties,
+          view: :list,
+          root: :results,
+          meta: pagination_meta(@parties),
+          current_user: current_user
+        )
+      end
+
+      # The in-game "Weapon Skill Boosts" panel for this party's grid, computed by
+      # GridDamage::Calculator for the battle state in the params (GridDamage::PanelState).
+      def skill_boosts
+        state = GridDamage::PanelState.from_params(params, @party)
+        render json: GridDamage::PanelPresenter.present(@party, state: state).merge(state: state)
+      end
 
       # Creates a remixed copy of an existing party.
       def remix
@@ -225,40 +245,6 @@ module Api
         }, status: :ok
       end
 
-      # Lists parties based on query parameters.
-      def index
-        query = build_filtered_query(build_preview_base_query)
-        @parties = query.paginate(page: params[:page], per_page: page_size)
-
-        render json: Api::V1::PartyBlueprint.render(
-          @parties,
-          view: :list,
-          root: :results,
-          meta: pagination_meta(@parties),
-          current_user: current_user
-        )
-      end
-
-      # GET /api/v1/parties/favorites
-      def favorites
-        raise Api::V1::UnauthorizedError unless current_user
-
-        # A subquery rather than a join + DISTINCT, which Postgres can't order
-        # by an expression such as the Rising rank
-        base_query = build_preview_base_query
-                     .where(id: Favorite.where(user_id: current_user.id).select(:party_id))
-        query = build_filtered_query(base_query)
-        @parties = query.paginate(page: params[:page], per_page: page_size)
-
-        render json: Api::V1::PartyBlueprint.render(
-          @parties,
-          view: :list,
-          root: :results,
-          meta: pagination_meta(@parties),
-          current_user: current_user
-        )
-      end
-
       private
 
       # Private parties 404 for anyone who can't view them, so their existence
@@ -277,21 +263,6 @@ module Api
         @party.edit_key_matches?(edit_key)
       end
 
-      # Sanitized battle state for skill_boosts: clamp HP/turn/max HP, cast Arcarum,
-      # whitelist the foe element, and default the foe to what the grid element is strong against.
-
-      def skill_boost_state
-        hp = params[:hp_percent].presence&.to_f&.clamp(0, 100) || 100.0
-        ally_max_hp = params[:ally_max_hp].presence&.to_f&.clamp(0, 999_999)
-        turn = params[:turn].presence&.to_i&.clamp(1, 999) || 1
-        arcarum = ActiveModel::Type::Boolean.new.cast(params[:arcarum]) || false
-        foe = params[:foe_element].presence&.downcase
-        # "null" is a real foe element (element-less foes) — advantaged effects turn off.
-        foe = nil unless foe == 'null' || GridDamage::Calculator::ELEMENT_WORD.value?(foe)
-        foe ||= GridDamage::Calculator::ADVANTAGED_FOE[GridDamage::ElementScope.panel_element(@party)]
-        { hp_percent: hp, ally_max_hp: ally_max_hp, turn: turn, foe_element: foe, arcarum: arcarum }.compact
-      end
-
       # Loads the party by its shortcode.
       def set_from_slug
         @party = Party.includes(full_party_preloads).find_by(shortcode: params[:id])
@@ -308,24 +279,20 @@ module Api
         @party = Party.find_by(id: params[:id].to_s[UUID_FORMAT])
       end
 
-      # Sanitizes and permits party parameters.
+      # Sanitizes and permits party parameters. Not `params.expect`: a `party`
+      # holding only `solomonis` permits to nothing, which expect would refuse.
       def party_params
-        return unless params[:party].present?
+        return if params[:party].blank?
 
-        params.require(:party).permit(
-          :local_id, :extra, :name, :description, :raid_id, :job_id, :visibility,
-          :accessory_id, :skill0_id, :skill1_id, :skill2_id, :skill3_id,
-          :collection_source_user_id, :full_auto, :auto_guard, :auto_summon, :charge_attack, :solo, :clear_time, :button_count,
-          :turn_count, :chain_count, :summon_count, :ultimate_mastery, :ultimate_mastery_level,
-          :video_url, :guidebook1_id, :guidebook2_id, :guidebook3_id,
-          full_auto_skills: %w[0 1 2 3],
-          characters_attributes: [:id, :character_id, :position, :uncap_level,
-                                  :transcendence_step, :perpetuity, :awakening_id, :awakening_level,
-                                  { ring1: %i[modifier strength], ring2: %i[modifier strength], ring3: %i[modifier strength], ring4: %i[modifier strength],
-                                    earring: %i[modifier strength] }],
-          summons_attributes: %i[id summon_id position main friend quick_summon uncap_level transcendence_step],
-          weapons_attributes: %i[id weapon_id position mainhand uncap_level transcendence_step element weapon_key1_id weapon_key2_id weapon_key3_id ax_modifier1_id ax_modifier2_id ax_strength1 ax_strength2 befoulment_modifier_id befoulment_strength befoulment_permeation exorcism_level awakening_id awakening_level]
-        )
+        params.fetch(:party).permit(*PARTY_FIELDS, full_auto_skills: %w[0 1 2 3],
+                                                   characters_attributes: CHARACTER_FIELDS,
+                                                   summons_attributes: SUMMON_FIELDS,
+                                                   weapons_attributes: WEAPON_FIELDS)
+      end
+
+      # Whether the current user may see a user's collection.
+      def collection_visible?(user)
+        user == current_user || user.collection_viewable_by?(current_user)
       end
 
       def solomonis_params
@@ -372,40 +339,6 @@ module Api
           operations: %i[type entity id source_id target_id position container],
           options: %i[maintain_character_sequence validate_before_execute]
         )
-      end
-
-      # Fetches collection items for a user that match the party's grid items.
-      # Uses the already-eager-loaded grid associations to extract granblue_ids,
-      # then batch-queries the user's collection with WHERE IN.
-      def fetch_collection_for(party, user)
-        char_gids = party.characters.filter_map { |gc| gc.character&.granblue_id }.uniq
-        weap_gids = party.weapons.filter_map { |gw| gw.weapon&.granblue_id }.uniq
-        summ_gids = party.summons.filter_map { |gs| gs.summon&.granblue_id }.uniq
-
-        {
-          characters: if char_gids.any?
-                        user.collection_characters.joins(:character)
-                            .includes({ character: :character_series_records }, :awakening)
-                            .where(characters: { granblue_id: char_gids })
-                      else
-                        []
-                      end,
-          weapons: if weap_gids.any?
-                     user.collection_weapons.joins(:weapon)
-                         .includes({ weapon: %i[weapon_series weapon_series_variant] }, :awakening, :weapon_key1, :weapon_key2, :weapon_key3, :weapon_key4,
-                                   :ax_modifier1, :ax_modifier2, :befoulment_modifier, { collection_weapon_bullets: :bullet })
-                         .where(weapons: { granblue_id: weap_gids })
-                   else
-                     []
-                   end,
-          summons: if summ_gids.any?
-                     user.collection_summons.joins(:summon)
-                         .includes(summon: :summon_series)
-                         .where(summons: { granblue_id: summ_gids })
-                   else
-                     []
-                   end
-        }
       end
     end
   end

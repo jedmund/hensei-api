@@ -141,7 +141,6 @@ Layout/LineLength:
     - 'app/blueprints/api/v1/user_blueprint.rb'
     - 'app/controllers/api/v1/crew_gw_participations_controller.rb'
     - 'app/controllers/api/v1/gw_individual_scores_controller.rb'
-    - 'app/controllers/api/v1/parties_controller.rb'
     - 'app/services/processors/weapon_processor.rb'
     - 'lib/tasks/deploy.rake'
     - 'spec/lib/granblue/extractors/character_grid_effect_extractor_spec.rb'
@@ -179,7 +178,6 @@ Metrics/AbcSize:
     - 'app/controllers/api/v1/home_controller.rb'
     - 'app/controllers/api/v1/import_controller.rb'
     - 'app/controllers/api/v1/jobs_controller.rb'
-    - 'app/controllers/api/v1/parties_controller.rb'
     - 'app/controllers/api/v1/playlists_controller.rb'
     - 'app/controllers/api/v1/search_controller.rb'
     - 'app/controllers/api/v1/substitutions_controller.rb'
@@ -251,7 +249,6 @@ Metrics/AbcSize:
 Metrics/ClassLength:
   Exclude:
     - 'app/controllers/api/v1/import_controller.rb'
-    - 'app/controllers/api/v1/parties_controller.rb'
     - 'app/controllers/api/v1/search_controller.rb'
     - 'app/controllers/concerns/admin_collection/query.rb'
     - 'app/models/grid_character.rb'
@@ -278,7 +275,6 @@ Metrics/CyclomaticComplexity:
     - 'app/controllers/api/v1/home_controller.rb'
     - 'app/controllers/api/v1/import_controller.rb'
     - 'app/controllers/api/v1/jobs_controller.rb'
-    - 'app/controllers/api/v1/parties_controller.rb'
     - 'app/controllers/api/v1/party_solomonis_controller.rb'
     - 'app/controllers/api/v1/playlists_controller.rb'
     - 'app/controllers/api/v1/search_controller.rb'
@@ -342,7 +338,6 @@ Metrics/CyclomaticComplexity:
 Metrics/MethodLength:
   Exclude:
     - 'app/controllers/api/v1/import_controller.rb'
-    - 'app/controllers/api/v1/parties_controller.rb'
     - 'app/controllers/api/v1/search_controller.rb'
     - 'app/controllers/api/v1/substitutions_controller.rb'
     - 'app/controllers/concerns/batch_previewable.rb'
@@ -384,7 +379,6 @@ Metrics/PerceivedComplexity:
     - 'app/controllers/api/v1/home_controller.rb'
     - 'app/controllers/api/v1/import_controller.rb'
     - 'app/controllers/api/v1/jobs_controller.rb'
-    - 'app/controllers/api/v1/parties_controller.rb'
     - 'app/controllers/api/v1/party_solomonis_controller.rb'
     - 'app/controllers/api/v1/playlists_controller.rb'
     - 'app/controllers/api/v1/search_controller.rb'
@@ -480,12 +474,6 @@ Naming/VariableNumber:
     - 'spec/requests/api/v1/gw_individual_scores_spec.rb'
     - 'spec/services/artifact_import_service_spec.rb'
     - 'spec/services/weapon_import_service_conflict_spec.rb'
-
-# Offense count: 1
-# Configuration parameters: MinSize.
-Performance/CollectionLiteralInLoop:
-  Exclude:
-    - 'app/controllers/api/v1/parties_controller.rb'
 
 # Offense count: 1
 # This cop supports unsafe autocorrection (--autocorrect-all).
@@ -1108,7 +1096,6 @@ RSpecRails/TravelAround:
 Rails/ActionOrder:
   Exclude:
     - 'app/controllers/api/v1/character_skill_refreshes_controller.rb'
-    - 'app/controllers/api/v1/parties_controller.rb'
     - 'app/controllers/api/v1/users_controller.rb'
 
 # Offense count: 8
@@ -1155,7 +1142,6 @@ Rails/Blank:
     - 'app/controllers/api/v1/collection_artifacts_controller.rb'
     - 'app/controllers/api/v1/grid_artifacts_controller.rb'
     - 'app/controllers/api/v1/job_skills_controller.rb'
-    - 'app/controllers/api/v1/parties_controller.rb'
     - 'app/controllers/api/v1/search_controller.rb'
     - 'app/controllers/api/v1/summons_controller.rb'
     - 'app/controllers/api/v1/weapons_controller.rb'
@@ -1396,7 +1382,6 @@ Rails/Pluck:
     - 'app/controllers/api/v1/crew_rosters_controller.rb'
     - 'app/controllers/api/v1/grid_character_roles_controller.rb'
     - 'app/controllers/api/v1/home_controller.rb'
-    - 'app/controllers/api/v1/parties_controller.rb'
     - 'app/services/character_skills/refresh_batch.rb'
     - 'app/services/gacha_simulation/banner.rb'
     - 'app/services/gacha_simulation/banner_import.rb'
@@ -1567,7 +1552,6 @@ Rails/SkipsModelValidations:
   Exclude:
     - 'app/controllers/api/v1/api_controller.rb'
     - 'app/controllers/api/v1/awakenings_controller.rb'
-    - 'app/controllers/api/v1/parties_controller.rb'
     - 'app/controllers/api/v1/social_auth_controller.rb'
     - 'app/controllers/api/v1/substitutions_controller.rb'
     - 'app/controllers/concerns/editor_image_upload.rb'
@@ -1653,7 +1637,6 @@ Rails/StrongParametersExpect:
     - 'app/controllers/api/v1/import_controller.rb'
     - 'app/controllers/api/v1/job_skills_controller.rb'
     - 'app/controllers/api/v1/jobs_controller.rb'
-    - 'app/controllers/api/v1/parties_controller.rb'
     - 'app/controllers/api/v1/party_shares_controller.rb'
     - 'app/controllers/api/v1/party_stickers_controller.rb'
     - 'app/controllers/api/v1/phantom_players_controller.rb'
@@ -1791,12 +1774,6 @@ Style/HashLikeCase:
     - 'lib/granblue/downloaders/character_downloader.rb'
     - 'lib/granblue/downloaders/summon_downloader.rb'
     - 'lib/granblue/downloaders/weapon_downloader.rb'
-
-# Offense count: 2
-# This cop supports safe autocorrection (--autocorrect).
-Style/IfUnlessModifier:
-  Exclude:
-    - 'app/controllers/api/v1/parties_controller.rb'
 
 # Offense count: 2
 # This cop supports unsafe autocorrection (--autocorrect-all).
