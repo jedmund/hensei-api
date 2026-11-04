@@ -7,11 +7,6 @@ RSpec.describe 'Party remix collection links', type: :request do
   let(:owner) { create(:user) }
   let(:remixer) { create(:user) }
 
-  def headers_for(user)
-    token = Doorkeeper::AccessToken.create!(resource_owner_id: user.id, expires_in: 30.days, scopes: 'public')
-    { 'Authorization' => "Bearer #{token.token}", 'Content-Type' => 'application/json' }
-  end
-
   let(:collection_weapon) { create(:collection_weapon, user: owner) }
   let(:collection_character) { create(:collection_character, user: owner) }
   let(:collection_summon) { create(:collection_summon, user: owner) }
@@ -26,6 +21,11 @@ RSpec.describe 'Party remix collection links', type: :request do
       create(:grid_artifact, grid_character: gc, artifact: collection_artifact.artifact, element: 'fire',
                              collection_artifact: collection_artifact)
     end
+  end
+
+  def headers_for(user)
+    token = Doorkeeper::AccessToken.create!(resource_owner_id: user.id, expires_in: 30.days, scopes: 'public')
+    { 'Authorization' => "Bearer #{token.token}", 'Content-Type' => 'application/json' }
   end
 
   def remix_as(user)

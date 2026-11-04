@@ -299,12 +299,6 @@ RSpec.describe 'GridWeapons API', type: :request do
              uncap_level: 3)
     end
 
-    before do
-      # Set up the incoming weapon with flags such that: default uncap is 3,
-      # but if flb is true then uncap should become 4.
-      incoming_weapon.update!(flb: true, ulb: false, transcendence: false)
-    end
-
     let(:resolve_params) do
       {
         resolve: {
@@ -314,6 +308,12 @@ RSpec.describe 'GridWeapons API', type: :request do
           conflicting: [conflicting_weapon.id]
         }
       }
+    end
+
+    before do
+      # Set up the incoming weapon with flags such that: default uncap is 3,
+      # but if flb is true then uncap should become 4.
+      incoming_weapon.update!(flb: true, ulb: false, transcendence: false)
     end
 
     it 'destroys the conflicting weapon and creates a new one with correct uncap' do

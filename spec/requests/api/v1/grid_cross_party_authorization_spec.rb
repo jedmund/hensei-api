@@ -10,13 +10,13 @@ RSpec.describe 'Grid item cross-party authorization', type: :request do
   let(:owner_party) { create(:party, user: owner) }
   let(:attacker_party) { create(:party, user: attacker) }
 
+  let(:attacker_headers) { headers_for(attacker) }
+  let(:owner_headers) { headers_for(owner) }
+
   def headers_for(user)
     token = Doorkeeper::AccessToken.create!(resource_owner_id: user.id, expires_in: 30.days, scopes: 'public')
     { 'Authorization' => "Bearer #{token.token}", 'Content-Type' => 'application/json' }
   end
-
-  let(:attacker_headers) { headers_for(attacker) }
-  let(:owner_headers) { headers_for(owner) }
 
   shared_examples 'a party-scoped grid resource' do |path:, param_key:|
     it 'rejects update when another party id is supplied' do

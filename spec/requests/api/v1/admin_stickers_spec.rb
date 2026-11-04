@@ -7,6 +7,14 @@ RSpec.describe 'Admin stickers', type: :request do
     let(:path) { '/api/v1/admin/stickers' }
     let(:editor_headers) { auth_headers(create(:user, role: 7)) }
 
+    # Same position: the older one comes first (the prod copy has every row at 0)
+    let!(:cleared) do
+      create(:sticker, slug: 'cleared', meaning_en: 'Cleared', meaning_jp: '一番', position: 0,
+                       image_key: 'icons/stickers/stamp1.png', image_key_jp: 'icons/stickers/stamp1.ja.png',
+                       created_at: 2.days.ago)
+    end
+    let!(:fast) { create(:sticker, slug: 'fast', meaning_en: 'Fast', position: 0, created_at: 1.day.ago) }
+
     def auth_headers(account)
       token = Doorkeeper::AccessToken.create!(resource_owner_id: account.id, expires_in: 30.days, scopes: 'public')
       { 'Authorization' => "Bearer #{token.token}" }
@@ -20,14 +28,6 @@ RSpec.describe 'Admin stickers', type: :request do
     def slugs(body = response.parsed_body)
       body['results'].pluck('slug')
     end
-
-    # Same position: the older one comes first (the prod copy has every row at 0)
-    let!(:cleared) do
-      create(:sticker, slug: 'cleared', meaning_en: 'Cleared', meaning_jp: '一番', position: 0,
-                       image_key: 'icons/stickers/stamp1.png', image_key_jp: 'icons/stickers/stamp1.ja.png',
-                       created_at: 2.days.ago)
-    end
-    let!(:fast) { create(:sticker, slug: 'fast', meaning_en: 'Fast', position: 0, created_at: 1.day.ago) }
 
     before do
       create(:sticker, :inactive, slug: 'retired', meaning_en: 'Old', position: 1)

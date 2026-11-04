@@ -22,14 +22,14 @@ RSpec.describe 'Collection Summons - check_conflicts', type: :request do
       create(:summon, granblue_id: '2040445000', name_en: 'Typhon')
   end
 
+  let(:endpoint) { '/api/v1/collection/summons/check_conflicts' }
+
   def game_item(game_id, granblue_id)
     {
       'param' => { 'id' => game_id, 'image_id' => granblue_id, 'evolution' => '3', 'phase' => '0' },
       'master' => { 'id' => granblue_id.to_i }
     }
   end
-
-  let(:endpoint) { '/api/v1/collection/summons/check_conflicts' }
 
   describe 'POST /api/v1/collection/summons/check_conflicts' do
     it 'requires authentication' do

@@ -182,9 +182,13 @@ RSpec.describe 'ImportController Evoking Solomonis runs', type: :request do
     context 'when someone else imported the same report' do
       let(:other_user) { create(:user) }
 
-      before { import(body, as: auth_headers_for(other_user)) }
+      let(:their_party) { imported_party }
 
-      let!(:their_party) { imported_party }
+      # The other user imports first; their_party is the party that import made
+      before do
+        import(body, as: auth_headers_for(other_user))
+        their_party
+      end
 
       it 'creates a separate run and leaves theirs alone, even with update_existing' do
         expect { import(body.merge('update_existing' => true)) }.to change(Party, :count).by(1)

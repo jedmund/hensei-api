@@ -6,6 +6,11 @@ RSpec.describe 'Admin bullets collection', type: :request do
   let(:path) { '/api/v1/admin/bullets' }
   let(:editor_headers) { auth_headers(create(:user, role: 7)) }
 
+  let(:iron) do
+    create(:bullet, name_en: 'Iron Bullet', name_jp: 'アイアンバレット', granblue_id: '91101', slug: 'iron-bullet',
+                    bullet_type: 1, atk: 90, hits_all: false, order: 2)
+  end
+
   def auth_headers(account)
     token = Doorkeeper::AccessToken.create!(resource_owner_id: account.id, expires_in: 30.days, scopes: 'public')
     { 'Authorization' => "Bearer #{token.token}" }
@@ -18,11 +23,6 @@ RSpec.describe 'Admin bullets collection', type: :request do
 
   def names(body = response.parsed_body)
     body['results'].map { |r| r['name_en'] }
-  end
-
-  let(:iron) do
-    create(:bullet, name_en: 'Iron Bullet', name_jp: 'アイアンバレット', granblue_id: '91101', slug: 'iron-bullet',
-                    bullet_type: 1, atk: 90, hits_all: false, order: 2)
   end
 
   before do

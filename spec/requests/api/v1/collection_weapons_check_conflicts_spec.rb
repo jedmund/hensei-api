@@ -22,14 +22,14 @@ RSpec.describe 'Collection Weapons - check_conflicts', type: :request do
       create(:weapon, granblue_id: '1040310600', name_en: 'Yggdrasil Crystal Blade Omega')
   end
 
+  let(:endpoint) { '/api/v1/collection/weapons/check_conflicts' }
+
   def game_item(game_id, granblue_id)
     {
       'param' => { 'id' => game_id, 'image_id' => granblue_id, 'evolution' => 3, 'phase' => 0 },
       'master' => { 'id' => granblue_id }
     }
   end
-
-  let(:endpoint) { '/api/v1/collection/weapons/check_conflicts' }
 
   describe 'POST /api/v1/collection/weapons/check_conflicts' do
     it 'requires authentication' do

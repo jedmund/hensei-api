@@ -6,6 +6,10 @@ RSpec.describe 'PATCH /api/v1/weapon_skill_versions/:id', type: :request do
   let(:editor) { create(:user, role: 7) }
   let(:user) { create(:user) }
 
+  let(:version) do
+    create(:weapon_skill_version, skill_modifier: 'Might', skill_series: 'normal', skill_size: 'medium')
+  end
+
   def auth_headers(account)
     token = Doorkeeper::AccessToken.create!(resource_owner_id: account.id, expires_in: 30.days, scopes: 'public')
     { 'Authorization' => "Bearer #{token.token}", 'Content-Type' => 'application/json' }
@@ -14,10 +18,6 @@ RSpec.describe 'PATCH /api/v1/weapon_skill_versions/:id', type: :request do
   def patch_version(version, attrs, account: editor)
     patch "/api/v1/weapon_skill_versions/#{version.id}", headers: auth_headers(account),
                                                          params: { weapon_skill_version: attrs }.to_json
-  end
-
-  let(:version) do
-    create(:weapon_skill_version, skill_modifier: 'Might', skill_series: 'normal', skill_size: 'medium')
   end
 
   it 'writes the override fields and stamps overrides_edited_at' do

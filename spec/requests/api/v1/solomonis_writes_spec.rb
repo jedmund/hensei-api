@@ -8,11 +8,6 @@ RSpec.describe 'Evoking Solomonis writes', type: :request do
   let(:user) { create(:user) }
   let(:other_user) { create(:user) }
 
-  def auth_headers(for_user)
-    token = Doorkeeper::AccessToken.create!(resource_owner_id: for_user.id, expires_in: 30.days, scopes: 'public')
-    { 'Authorization' => "Bearer #{token.token}", 'Content-Type' => 'application/json' }
-  end
-
   let(:headers) { auth_headers(user) }
   let(:other_headers) { auth_headers(other_user) }
 
@@ -33,6 +28,11 @@ RSpec.describe 'Evoking Solomonis writes', type: :request do
     party
   end
   let(:anon_headers) { { 'Content-Type' => 'application/json', 'X-Edit-Key' => 'anonsecret' } }
+
+  def auth_headers(for_user)
+    token = Doorkeeper::AccessToken.create!(resource_owner_id: for_user.id, expires_in: 30.days, scopes: 'public')
+    { 'Authorization' => "Bearer #{token.token}", 'Content-Type' => 'application/json' }
+  end
 
   def body
     response.parsed_body

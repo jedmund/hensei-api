@@ -7,25 +7,6 @@ RSpec.describe 'Admin characters collection', type: :request do
   let(:editor) { create(:user, role: 7) }
   let(:editor_headers) { auth_headers(editor) }
 
-  def auth_headers(account)
-    token = Doorkeeper::AccessToken.create!(resource_owner_id: account.id, expires_in: 30.days, scopes: 'public')
-    { 'Authorization' => "Bearer #{token.token}" }
-  end
-
-  def fetch(params = {}, headers = editor_headers)
-    get path, params: params, headers: headers
-    response.parsed_body
-  end
-
-  def names(body = response.parsed_body)
-    body['results'].map { |r| r['name_en'] }
-  end
-
-  # Explicit dates throughout: latest_date is GREATEST of all four.
-  def character(**attrs)
-    create(:character, flb_date: nil, ulb_date: nil, transcendence_date: nil, **attrs)
-  end
-
   let(:grand) { CharacterSeries.find_by(slug: 'grand') || create(:character_series, :grand) }
   let(:zodiac) { CharacterSeries.find_by(slug: 'zodiac') || create(:character_series, :zodiac) }
 
@@ -49,6 +30,25 @@ RSpec.describe 'Admin characters collection', type: :request do
     character(name_en: 'Delta Archer', name_jp: 'デルタ', granblue_id: '3040000004', element: 3, rarity: 3,
               proficiency1: 5, proficiency2: 5, season: 1, gender: 2, release_date: Date.new(2025, 1, 1),
               updated_at: Time.zone.parse('2026-02-01 00:00'))
+  end
+
+  def auth_headers(account)
+    token = Doorkeeper::AccessToken.create!(resource_owner_id: account.id, expires_in: 30.days, scopes: 'public')
+    { 'Authorization' => "Bearer #{token.token}" }
+  end
+
+  def fetch(params = {}, headers = editor_headers)
+    get path, params: params, headers: headers
+    response.parsed_body
+  end
+
+  def names(body = response.parsed_body)
+    body['results'].map { |r| r['name_en'] }
+  end
+
+  # Explicit dates throughout: latest_date is GREATEST of all four.
+  def character(**attrs)
+    create(:character, flb_date: nil, ulb_date: nil, transcendence_date: nil, **attrs)
   end
 
   before do

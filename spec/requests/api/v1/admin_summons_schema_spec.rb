@@ -16,12 +16,12 @@ RSpec.describe 'Admin summons schema', type: :request do
   let(:path) { '/api/v1/admin/summons/schema' }
   let(:fixture) { Rails.root.join('spec/fixtures/admin_schema/summons.json') }
 
+  let(:editor_headers) { auth_headers(create(:user, role: 7)) }
+
   def auth_headers(account)
     token = Doorkeeper::AccessToken.create!(resource_owner_id: account.id, expires_in: 30.days, scopes: 'public')
     { 'Authorization' => "Bearer #{token.token}" }
   end
-
-  let(:editor_headers) { auth_headers(create(:user, role: 7)) }
 
   describe 'access' do
     it 'serves the schema to editors' do

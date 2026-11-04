@@ -10,6 +10,12 @@ RSpec.describe 'Character skill refreshes', type: :request do
   let(:other_editor) { create(:user, role: 7) }
   let(:user) { create(:user, role: 1) }
 
+  let!(:first) { make('3040900001', name_en: 'First', name_jp: '一') }
+  let!(:style) do
+    make('3040900001', name_en: 'First', style_swap: true, style_name_en: 'Super First', style_name_jp: nil)
+  end
+  let!(:second) { make('3040900002', name_en: 'Second') }
+
   def wiki(cooldown)
     <<~WIKI
       {{Character
@@ -27,12 +33,6 @@ RSpec.describe 'Character skill refreshes', type: :request do
       create(:character, granblue_id: granblue_id, element: 1, wiki_en: "Page #{granblue_id}", wiki_raw: wiki(7), **attrs)
     end
   end
-
-  let!(:first) { make('3040900001', name_en: 'First', name_jp: '一') }
-  let!(:style) do
-    make('3040900001', name_en: 'First', style_swap: true, style_name_en: 'Super First', style_name_jp: nil)
-  end
-  let!(:second) { make('3040900002', name_en: 'Second') }
 
   def auth_headers(account)
     token = Doorkeeper::AccessToken.create!(resource_owner_id: account.id, expires_in: 30.days, scopes: 'public')
