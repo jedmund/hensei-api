@@ -74,7 +74,8 @@ module Api
 
         IconStorage.put("#{Awakening::IMAGE_PREFIX}/#{@awakening.slug}.#{result.extension}", bytes,
                         content_type: result.content_type)
-        @awakening.touch
+        # Only updated_at changes; it versions image_url so caches fetch the new image
+        @awakening.touch # rubocop:disable Rails/SkipsModelValidations
 
         render json: AwakeningBlueprint.render(@awakening)
       end

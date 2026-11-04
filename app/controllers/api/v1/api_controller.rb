@@ -111,7 +111,8 @@ module Api
         return if current_user.last_extension_version == version &&
                   last_at && last_at > 1.hour.ago
 
-        current_user.update_columns(
+        # Request bookkeeping: skip the User callbacks and leave updated_at alone
+        current_user.update_columns( # rubocop:disable Rails/SkipsModelValidations
           last_extension_version: version,
           last_extension_version_at: Time.current
         )
