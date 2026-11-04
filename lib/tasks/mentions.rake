@@ -17,7 +17,7 @@ namespace :mentions do
       changed = backfill_mention_node(json)
 
       if changed
-        party.update_column(:description, JSON.generate(json)) # rubocop:disable Rails/SkipsModelValidations -- backfill; don't bump last_updated
+        party.update_column(:description, JSON.generate(json))
         updated += 1
       else
         skipped += 1

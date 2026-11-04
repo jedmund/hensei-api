@@ -116,7 +116,8 @@ Rails:
 # callbacks there is always deliberate. The cop still flags single-record skips
 # (update_column(s), update_attribute, touch, toggle!, counters), where
 # bypassing a validation or callback by accident is the real risk.
-# Specs set up state with update_column and friends on purpose.
+# Specs set up state with update_column and friends on purpose, and rake
+# tasks are one-off backfills that skip callbacks on purpose.
 Rails/SkipsModelValidations:
   ForbiddenMethods:
     - decrement!
@@ -134,6 +135,7 @@ Rails/SkipsModelValidations:
     - upsert
   Exclude:
     - 'spec/**/*'
+    - 'lib/tasks/**/*'
 
 # The API returns English messages by design and the clients localize them;
 # the account mailers are English-only too. Moving these strings into
