@@ -3,8 +3,8 @@
 FactoryBot.define do
   factory :grid_weapon do
     # Associations: assumes that factories for :party and :weapon are defined.
-    association :party
-    association :weapon
+    party
+    weapon
 
     # Default attributes
     position { 0 }

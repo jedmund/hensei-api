@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :weapon_skill do
-    association :weapon
+    weapon
     sequence(:position) { |n| n }
 
     after(:build) do |ws|

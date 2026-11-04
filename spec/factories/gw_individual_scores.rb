@@ -5,6 +5,6 @@ FactoryBot.define do
     round { :preliminaries }
     score { 100_000 }
     is_cumulative { false }
-    association :recorded_by, factory: :user
+    recorded_by factory: %i[user]
   end
 end

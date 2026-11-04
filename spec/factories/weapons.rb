@@ -93,7 +93,7 @@ FactoryBot.define do
     end
 
     trait :with_ax do
-      association :weapon_series, factory: %i[weapon_series with_ax_skills]
+      weapon_series factory: %i[weapon_series with_ax_skills]
     end
   end
 end

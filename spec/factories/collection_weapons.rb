@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :collection_weapon do
-    association :user
-    association :weapon
+    user
+    weapon
     uncap_level { 3 }
     transcendence_step { 0 }
     awakening { nil }

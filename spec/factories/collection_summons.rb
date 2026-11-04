@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :collection_summon do
-    association :user
-    association :summon
+    user
+    summon
     uncap_level { 3 }
     transcendence_step { 0 }
 

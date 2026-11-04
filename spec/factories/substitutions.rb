@@ -2,8 +2,8 @@
 
 FactoryBot.define do
   factory :substitution do
-    association :grid, factory: :grid_weapon
-    association :substitute_grid, factory: :grid_weapon
+    grid factory: %i[grid_weapon]
+    substitute_grid factory: %i[grid_weapon]
     position { 0 }
   end
 end

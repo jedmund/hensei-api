@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :character_skill_version do
-    association :character_skill
+    character_skill
     sequence(:name_en) { |n| "Skill #{n}" }
     name_jp { nil }
     description_en { nil }

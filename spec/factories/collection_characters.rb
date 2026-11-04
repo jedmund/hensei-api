@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :collection_character do
-    association :user
+    user
     # Use the first character from canonical data or create one
     character { Character.first || association(:character) }
     uncap_level { 3 }

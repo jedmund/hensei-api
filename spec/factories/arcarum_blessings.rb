@@ -29,7 +29,7 @@ FactoryBot.define do
   end
 
   factory :arcarum_blessing_level do
-    association :arcarum_blessing
+    arcarum_blessing
     sequence(:level) { |n| n }
     description_en { 'Effect' }
     description_jp { nil }
@@ -38,7 +38,7 @@ FactoryBot.define do
   end
 
   factory :party_blessing do
-    association :party, :solomonis
-    association :arcarum_blessing_level
+    party factory: %i[party solomonis]
+    arcarum_blessing_level
   end
 end

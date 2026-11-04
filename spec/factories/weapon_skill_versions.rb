@@ -2,8 +2,8 @@
 
 FactoryBot.define do
   factory :weapon_skill_version do
-    association :weapon_skill
-    association :skill, skill_type: :weapon
+    weapon_skill
+    skill factory: :skill, skill_type: :weapon
     sequence(:ordinal) { |n| n }
     min_uncap { 3 }
     transcendence_stage { 0 }

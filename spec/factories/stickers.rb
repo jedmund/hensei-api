@@ -14,8 +14,8 @@ FactoryBot.define do
   end
 
   factory :party_sticker do
-    association :user
-    association :party
-    association :sticker
+    user
+    party
+    sticker
   end
 end

@@ -51,13 +51,13 @@ FactoryBot.define do
   end
 
   factory :event_raid do
-    association :event
-    association :raid
+    event
+    raid
     position { 0 }
   end
 
   factory :featured_party do
-    association :party
+    party
     event { nil }
     sequence(:position) { |n| n }
     note_en { 'A great team' }

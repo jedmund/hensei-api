@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :grid_character do
-    association :party
+    party
     # Use the canonical (seeded) Character record.
     # Make sure your CSV canonical data (loaded via canonical.rb) includes a Character with the specified granblue_id.
     character { Character.find_by!(granblue_id: '3040087000') }

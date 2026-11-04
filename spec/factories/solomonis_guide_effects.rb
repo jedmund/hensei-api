@@ -26,8 +26,8 @@ FactoryBot.define do
   end
 
   factory :expedition_guide_effect do
-    association :party, :solomonis
-    association :solomonis_guide_effect
+    party factory: %i[party solomonis]
+    solomonis_guide_effect
     count { 1 }
     inherited { false }
   end

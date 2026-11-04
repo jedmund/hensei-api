@@ -2,8 +2,8 @@
 
 FactoryBot.define do
   factory :character_skill_version_link do
-    association :from_version, factory: :character_skill_version
-    association :to_version, factory: :character_skill_version
+    from_version factory: %i[character_skill_version]
+    to_version factory: %i[character_skill_version]
     relation { :transforms_to }
 
     trait :option_of do

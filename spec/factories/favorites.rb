@@ -6,7 +6,7 @@
 #
 FactoryBot.define do
   factory :favorite do
-    association :user
-    association :party
+    user
+    party
   end
 end

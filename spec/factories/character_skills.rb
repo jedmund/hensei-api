@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :character_skill do
-    association :character
+    character
     kind { :ability }
     sequence(:position) { |n| n }
     game_action_id { nil }
