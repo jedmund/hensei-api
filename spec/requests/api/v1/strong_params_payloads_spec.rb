@@ -72,6 +72,37 @@ RSpec.describe 'Strong params payload shapes', type: :request do
       expect(response).to have_http_status(:ok)
       expect(key.reload.name_en).to eq('Before')
     end
+
+    it 'leaves the user unchanged and answers 200' do
+      put '/api/v1/users/me', params: { user: { unknown: 'x' } }, headers: headers, as: :json
+
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
+  describe 'PUT /api/v1/difficulty_rules/:id with only params' do
+    let(:rule_id) do
+      post '/api/v1/difficulty_rules', params: {
+        difficulty_rule: { name: 'Spec rule', component: 'weapon', rule_type: 'weapon_uncap_at_least', weight: 1,
+                           active: true, params: { min_uncap_level: 5 } }
+      }, headers: headers, as: :json
+      response.parsed_body.dig('draft', 'id')
+    end
+
+    it 'stages a non-object params as an error' do
+      put "/api/v1/difficulty_rules/#{rule_id}", params: { difficulty_rule: { params: 'x' } },
+                                                 headers: headers, as: :json
+
+      expect(response).to have_http_status(:internal_server_error)
+    end
+
+    it 'stages nested params' do
+      put "/api/v1/difficulty_rules/#{rule_id}", params: { difficulty_rule: { params: { min_uncap_level: 4 } } },
+                                                 headers: headers, as: :json
+
+      expect(response).to have_http_status(:ok)
+      expect(DifficultyDraft.find(rule_id).attributes_payload['params']).to eq('min_uncap_level' => 4)
+    end
   end
 
   # condition is NOT NULL, so a null condition can't be saved
