@@ -27,7 +27,7 @@ namespace :granblue do
     ids = ENV['ids'].presence&.split(',')&.map(&:strip)
     stale_days = ENV['stale_days'].presence&.to_f
     kind = ENV['kind'].presence
-    abort "unknown kind=#{kind} (#{store::KINDS.join(', ')})" if kind && !store::KINDS.include?(kind)
+    abort "unknown kind=#{kind} (#{store::KINDS.join(', ')})" if kind && store::KINDS.exclude?(kind)
 
     cutoff = stale_days&.days&.ago
     fetcher = store::Fetcher.new(delay: Granblue::WikiThrottle.clamp(ENV['delay'].presence, warn: method(:puts)), log: ->(line) { puts line })

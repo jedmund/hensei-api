@@ -110,7 +110,7 @@ module WeaponSkills
 
         # Whether a curve canonical_curve returned for this series came from the last resort.
         def last_resort?(curve, series)
-          !SERIES_FALLBACK.fetch(series, [series]).include?(curve.series)
+          SERIES_FALLBACK.fetch(series, [series]).exclude?(curve.series)
         end
 
         # A family with any canonical data or base effect (the extractor's canonical_family?).
@@ -157,7 +157,7 @@ module WeaponSkills
           return matched if matched.any?
 
           lone = group.map(&:series).uniq
-          lone.size == 1 && !WeaponSkillDatum::EXPLICIT_SERIES.include?(lone.first) ? group : []
+          lone.size == 1 && WeaponSkillDatum::EXPLICIT_SERIES.exclude?(lone.first) ? group : []
         end
       end
     end

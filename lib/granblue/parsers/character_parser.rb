@@ -255,27 +255,27 @@ module Granblue
 
         # Additional series indicators from |obtain= field
         obtain = hash['obtain'].to_s.downcase
-        series << 1 if obtain.include?('grand') && !series.include?(1)  # Grand
-        series << 2 if obtain.include?('zodiac') && !series.include?(2) # Zodiac
+        series << 1 if obtain.include?('grand') && series.exclude?(1)  # Grand
+        series << 2 if obtain.include?('zodiac') && series.exclude?(2) # Zodiac
 
         # Seasonal series based on page name or obtain field
         page_name = @character.wiki_en.to_s.downcase
-        if (page_name.include?('summer') || page_name.include?('(swimsuit)')) && !series.include?(9)
+        if (page_name.include?('summer') || page_name.include?('(swimsuit)')) && series.exclude?(9)
           series << 9# Summer
         end
-        if page_name.include?('yukata') && !series.include?(10)
+        if page_name.include?('yukata') && series.exclude?(10)
           series << 10# Yukata
         end
-        if page_name.include?('valentine') && !series.include?(11)
+        if page_name.include?('valentine') && series.exclude?(11)
           series << 11# Valentine
         end
-        if page_name.include?('halloween') && !series.include?(12)
+        if page_name.include?('halloween') && series.exclude?(12)
           series << 12# Halloween
         end
-        if (page_name.include?('(formal)') || page_name.include?('formal ')) && !series.include?(13)
+        if (page_name.include?('(formal)') || page_name.include?('formal ')) && series.exclude?(13)
           series << 13# Formal
         end
-        if (page_name.include?('holiday') || page_name.include?('(holiday)')) && !series.include?(14)
+        if (page_name.include?('holiday') || page_name.include?('(holiday)')) && series.exclude?(14)
           series << 14# Holiday
         end
 

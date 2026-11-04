@@ -61,7 +61,7 @@ module WeaponSkills
         # then the description's (first answer wins on a clash).
         rows = []
         GameplayNotes.effects(version, notes, curation: curation).each do |attrs|
-          next if described && !GameplayNotes::KEPT_KINDS.include?(attrs[:scaling_kind])
+          next if described && GameplayNotes::KEPT_KINDS.exclude?(attrs[:scaling_kind])
 
           rows = add(rows, effect_row(version, attrs), warnings, source: 'gameplay notes')
         end

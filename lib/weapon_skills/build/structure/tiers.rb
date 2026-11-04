@@ -102,7 +102,7 @@ module WeaponSkills
         # Dark Opus `{{#ifeq:…|Majesty III|Majesty}}` names: both branches share the
         # modifier, so the ELSE (last) branch.
         def resolve_ifeq_name(name)
-          return name if name.blank? || !name.include?('#ifeq')
+          return name if name.blank? || name.exclude?('#ifeq')
 
           name.gsub(/\{\{\s*#ifeq:.*\|\s*([^|{}]+?)\s*\}\}/m, '\1').strip
         end

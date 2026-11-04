@@ -28,7 +28,7 @@ class DifficultyRule < ApplicationRecord
   private
 
   def params_valid_for_rule_type
-    return if rule_type.blank? || !PartyDifficulty::Rules.registered_types.include?(rule_type)
+    return if rule_type.blank? || PartyDifficulty::Rules.registered_types.exclude?(rule_type)
 
     errors.add(:params, "invalid for rule_type #{rule_type}: #{implementation_errors.join(', ')}") unless implementation_errors.empty?
   end

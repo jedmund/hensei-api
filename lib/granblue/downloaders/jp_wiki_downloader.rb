@@ -113,7 +113,7 @@ module Granblue
                   "#{name_jp} #{suffix}".strip
                 end
 
-        record.is_a?(Weapon) && !title.include?('/') ? "武器/#{title}" : title
+        record.is_a?(Weapon) && title.exclude?('/') ? "武器/#{title}" : title
       end
 
       def self.print_progress(current, total, name, status, start_time, io: $stdout)

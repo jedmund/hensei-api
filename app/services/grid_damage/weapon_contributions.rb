@@ -94,7 +94,7 @@ module GridDamage
       return true if series.nil?
       return series.summon_boosted unless series.summon_boosted.nil?
 
-      !NON_SUMMON_BOOSTED_SERIES.include?(series.slug)
+      NON_SUMMON_BOOSTED_SERIES.exclude?(series.slug)
     end
 
     def skill_name(version)
