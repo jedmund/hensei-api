@@ -61,6 +61,18 @@ RSpec.describe Dataminer do
       expect(WebMock).to have_requested(:post, archive).with(headers: { 'Cookie' => /midship=midship-2\z/ }).once
     end
 
+    it 'keeps cookie values out of the debug log' do
+      debug_miner = described_class.new(page: 'archive', access_token: 'token-value', wing: 'wing-value',
+                                        midship: 'midship-1', debug: true)
+      debug_miner.instance_variable_set(:@logger, Logger.new(log))
+      stub_request(:post, archive).to_return(answer(payload, headers: { 'Set-Cookie' => 'midship=midship-2; path=/' }))
+
+      debug_miner.fetch_weapon('1040001000')
+
+      expect(log.string).to include('=== Request Details ===', 'access_gbtk=[FILTERED]', 'Response code: 200')
+      expect(log.string).not_to include('token-value', 'wing-value', 'midship-1', 'midship-2')
+    end
+
     it 'raises on an authentication failure' do
       stub_request(:post, archive).to_return(answer({ 'auth_status' => 'require_auth' }))
 
@@ -119,13 +131,13 @@ RSpec.describe Dataminer do
 
     it 'records an unknown language as an error' do
       create(:weapon, granblue_id: '1040001000')
-      miner.send(:update_game_data, 'Weapon', '1040001000', payload, lang: 'fr')
+      miner.send(:payload_store).store('Weapon', '1040001000', payload, lang: 'fr')
 
       expect(miner.summary.errors.map(&:message)).to eq(['unknown lang "fr"'])
     end
 
     it 'ignores a response that is not a hash' do
-      miner.send(:update_game_data, 'Weapon', '1040001000', ['list'])
+      miner.send(:payload_store).store('Weapon', '1040001000', ['list'])
 
       expect([miner.summary.fetched, miner.summary.skipped, miner.summary.errors]).to eq([0, 0, []])
     end

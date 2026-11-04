@@ -1,30 +1,18 @@
 # frozen_string_literal: true
 
+##
+# Fetches raw game data (the archive detail pages) for characters, weapons and
+# summons and stores it as each row's game_raw_* source. Requests go through a
+# Dataminer::Session; payloads are stored by a Dataminer::PayloadStore, which
+# records the run's summary.
 class Dataminer
-  include HTTParty
-
   BOT_UID = '39094985'
   GAME_VERSION = '1741068713'
   # Seconds between two requests to the game, at least (the same pace as the wikis).
   MIN_DELAY = 2.0
   LANG_COLUMNS = { 'en' => :game_raw_en, 'jp' => :game_raw_jp, 'ja' => :game_raw_jp }.freeze
 
-  base_uri 'https://game.granbluefantasy.jp'
-  format :json
-
-  HEADERS = {
-    'Accept' => 'application/json, text/javascript, */*; q=0.01',
-    'Accept-Language' => 'en-US,en;q=0.9',
-    'Accept-Encoding' => 'gzip, deflate, br, zstd',
-    'Content-Type' => 'application/json',
-    'DNT' => '1',
-    'Origin' => 'https://game.granbluefantasy.jp',
-    'Referer' => 'https://game.granbluefantasy.jp/',
-    'User-Agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36',
-    'X-Requested-With' => 'XMLHttpRequest'
-  }.freeze
-
-  attr_reader :page, :cookies, :logger, :debug, :user_id, :game_version, :summary, :delay,
+  attr_reader :page, :logger, :debug, :user_id, :game_version, :summary, :delay,
               :remaining_ids
 
   # The delay to use for a requested value (nil → MIN_DELAY); a shorter one is raised
@@ -45,12 +33,7 @@ class Dataminer
   def initialize(page:, access_token:, wing:, midship:, t_cookie: 'dummy',
                  user_id: BOT_UID, game_version: GAME_VERSION, debug: false, delay: MIN_DELAY)
     @page = page
-    @cookies = {
-      access_gbtk: access_token,
-      wing: wing,
-      t: t_cookie,
-      midship: midship
-    }
+    @cookies = { access_gbtk: access_token, wing: wing, t: t_cookie, midship: midship }
     @user_id = user_id
     @game_version = game_version
     @debug = debug
@@ -63,18 +46,7 @@ class Dataminer
   end
 
   def fetch
-    timestamp = Time.now.to_i * 1000
-    response = self.class.post(
-      "/#{page}?_=#{timestamp}&t=#{timestamp}&uid=#{user_id}",
-      headers: HEADERS.merge(
-        'Cookie' => format_cookies,
-        'X-VERSION' => game_version
-      )
-    )
-
-    raise AuthenticationError if auth_failed?(response)
-
-    response
+    session.post_page(page)
   end
 
   # Fetches one style of a character and stores it on that style's row. A style shift
@@ -84,23 +56,10 @@ class Dataminer
   # lang only picks the column (game_raw_en / game_raw_jp): the game's language is an
   # account setting, so the session must already be in that language.
   def fetch_character(granblue_id, style: 1, lang: 'en', other_styles: true)
-    timestamp = Time.now.to_i * 1000
-    url = "/archive/npc_detail?_=#{timestamp}&t=#{timestamp}&uid=#{user_id}"
-    body = {
-      special_token: nil,
-      user_id: user_id,
-      kind_name: '0',
-      attribute: '0',
-      event_id: nil,
-      story_id: nil,
-      style: style,
-      character_id: granblue_id
-    }
-
-    response = fetch_detail(url, body)
+    response = session.detail('npc', style: style, character_id: granblue_id)
     return response unless response
 
-    update_game_data('Character', granblue_id, response, style: style, lang: lang)
+    payload_store.store('Character', granblue_id, response, style: style, lang: lang)
     if other_styles && style == 1
       other_open_styles(response).each do |other|
         pause
@@ -131,38 +90,14 @@ class Dataminer
   end
 
   def fetch_weapon(granblue_id)
-    timestamp = Time.now.to_i * 1000
-    url = "/archive/weapon_detail?_=#{timestamp}&t=#{timestamp}&uid=#{user_id}"
-    body = {
-      special_token: nil,
-      user_id: user_id,
-      kind_name: '0',
-      attribute: '0',
-      event_id: nil,
-      story_id: nil,
-      weapon_id: granblue_id
-    }
-
-    response = fetch_detail(url, body)
-    update_game_data('Weapon', granblue_id, response) if response
+    response = session.detail('weapon', weapon_id: granblue_id)
+    payload_store.store('Weapon', granblue_id, response) if response
     response
   end
 
   def fetch_summon(granblue_id)
-    timestamp = Time.now.to_i * 1000
-    url = "/archive/summon_detail?_=#{timestamp}&t=#{timestamp}&uid=#{user_id}"
-    body = {
-      special_token: nil,
-      user_id: user_id,
-      kind_name: '0',
-      attribute: '0',
-      event_id: nil,
-      story_id: nil,
-      summon_id: granblue_id
-    }
-
-    response = fetch_detail(url, body)
-    update_game_data('Summon', granblue_id, response) if response
+    response = session.detail('summon', summon_id: granblue_id)
+    payload_store.store('Summon', granblue_id, response) if response
     response
   end
 
@@ -181,29 +116,12 @@ class Dataminer
 
   private
 
-  def format_cookies
-    cookies.map { |k, v| "#{k}=#{v}" }.join('; ')
+  def session
+    @session ||= Session.new(cookies: @cookies, user_id: user_id, game_version: game_version, logger: logger)
   end
 
-  # Follow the server's rotating `midship` token by reading it back out of the
-  # response Set-Cookie header and storing it for the next request.
-  def rotate_midship!(response)
-    set_cookie = response.headers['set-cookie']
-    return if set_cookie.blank?
-
-    midship = Array(set_cookie).join('; ')[/midship=([^;,\s]+)/, 1]
-    @cookies[:midship] = midship if midship.present?
-  end
-
-  def auth_failed?(response)
-    return true if response.code != 200
-
-    begin
-      parsed = JSON.parse(response.body)
-      parsed.is_a?(Hash) && parsed['auth_status'] == 'require_auth'
-    rescue JSON::ParserError
-      true
-    end
+  def payload_store
+    @payload_store ||= PayloadStore.new(summary: summary, logger: logger)
   end
 
   def setup_logger
@@ -224,108 +142,6 @@ class Dataminer
     ActiveRecord::Base.logger&.level = ::Logger::INFO if defined?(ActiveRecord::Base)
   end
 
-  def fetch_detail(url, body)
-    logger.debug "\n=== Request Details ==="
-    logger.debug "URL: #{url}"
-    logger.debug 'Headers:'
-    logger.debug HEADERS.merge(
-      'Cookie' => format_cookies,
-      'X-VERSION' => game_version
-    ).inspect
-    logger.debug 'Body:'
-    logger.debug body.to_json
-    logger.debug '===================='
-
-    response = self.class.post(
-      url,
-      headers: HEADERS.merge(
-        'Cookie' => format_cookies,
-        'X-VERSION' => game_version
-      ),
-      body: body.to_json
-    )
-
-    # The server rotates the `midship` token on every response; follow it so a
-    # batch keeps a live session instead of dying after the first request.
-    rotate_midship!(response)
-
-    logger.debug "\n=== Response Details ==="
-    logger.debug "Response code: #{response.code}"
-    logger.debug 'Response headers:'
-    logger.debug response.headers.inspect
-    logger.debug 'Raw response body:'
-    logger.debug response.body.inspect
-    begin
-      logger.debug 'Parsed response body (if JSON):'
-      logger.debug JSON.parse(response.body).inspect
-    rescue JSON::ParserError => e
-      logger.debug "Could not parse as JSON: #{e.message}"
-    end
-    logger.debug '======================'
-
-    raise AuthenticationError if auth_failed?(response)
-
-    JSON.parse(response.body)
-  end
-
-  # Characters: style 2 is the style_swap row, anything else the base row. The response's
-  # own style wins over the requested one when they disagree, so a payload never lands on
-  # the other style's row.
-  def update_game_data(model_name, granblue_id, response_data, style: 1, lang: 'en')
-    return unless response_data.is_a?(Hash)
-
-    column = LANG_COLUMNS.fetch(lang.to_s) { raise ArgumentError, "unknown lang #{lang.inspect}" }
-    # The game answers in the session's language: a character payload is stored by its own.
-    if model_name == 'Character' && (detected = Granblue::GamePayload.language(response_data)) &&
-       LANG_COLUMNS[detected] != column
-      logger.info "Character #{granblue_id}: asked for #{column}, payload reads as #{detected}; stored as #{detected}"
-      column = LANG_COLUMNS[detected]
-    end
-    model = Object.const_get(model_name)
-    record = if model_name == 'Character'
-               # Error and popup responses are hashes too; only a character payload is stored.
-               unless Granblue::GamePayload.granblue_id(response_data).present? && response_data['ability'].present?
-                 summary.skipped!('no character payload')
-                 logger.warn "Character #{granblue_id}: response has no id or ability; not stored"
-                 return
-               end
-               response_style = Granblue::GamePayload.style(response_data).presence&.to_i
-               if response_style && response_style != style.to_i
-                 summary.skipped!('style mismatch')
-                 logger.warn "Character #{granblue_id}: asked for style #{style}, got #{response_style}; not stored"
-                 return
-               end
-               unless [1, 2].include?(style.to_i)
-                 summary.skipped!('no row for style')
-                 logger.warn "Character #{granblue_id}: no row for style #{style}; not stored"
-                 return
-               end
-               model.find_by(granblue_id: granblue_id, style_swap: style.to_i == 2)
-             else
-               model.find_by(granblue_id: granblue_id)
-             end
-
-    if record
-      # The payload is the record's game_raw_* source (D35), compared by sha256 without
-      # loading it.
-      stored = ->(row) { row.source_sha256(column) }
-      before = stored.call(record)
-      attrs = { column => response_data, "#{column}_fetched_at": Time.current }
-      unless record.update(attrs)
-        summary.error!(granblue_id, record.errors.full_messages.to_sentence)
-        return
-      end
-      summary.fetched!(granblue_id, before: before, after: stored.call(record))
-      logger.debug "Updated #{model_name} #{granblue_id} #{column}#{" (style #{style})" if model_name == 'Character'}"
-    else
-      summary.skipped!('not in database')
-      logger.warn "#{model_name} with granblue_id #{granblue_id}#{" (style #{style})" if model_name == 'Character'} not found in database"
-    end
-  rescue StandardError => e
-    summary.error!(granblue_id, e.message)
-    logger.error "Error updating #{model_name} #{granblue_id}: #{e.message}"
-  end
-
   # Rows with no payload for column; a character's is a source.
   def missing_scope(scope, column)
     scope.respond_to?(:without_source) ? scope.without_source(column) : scope.where(column => nil)
@@ -342,44 +158,51 @@ class Dataminer
   end
 
   def process_all_records(model_name, only_missing: false, lang: 'en')
-    model = Object.const_get(model_name)
-    scope = model
+    granblue_ids = ids_to_fetch(model_name, only_missing, lang)
+    logger.info "Starting to fetch #{granblue_ids.size} #{model_name.downcase}s#{' (missing data only)' if only_missing}..."
+
+    success_count, error_count = fetch_each(model_name, granblue_ids, lang)
+
+    logger.info "\nProcessing complete!"
+    logger.info "Total: #{granblue_ids.size}"
+    logger.info "Successful: #{success_count}"
+    logger.info "Failed: #{error_count}"
+  end
+
+  def ids_to_fetch(model_name, only_missing, lang)
+    scope = Object.const_get(model_name).all
     # Style rows are filled from their base row's style_list, never fetched as style 1.
     scope = scope.where(style_swap: false) if model_name == 'Character'
     scope = missing_scope(scope, LANG_COLUMNS.fetch(lang.to_s)) if only_missing
+    scope.order(:granblue_id).pluck(:granblue_id)
+  end
 
-    granblue_ids = scope.order(:granblue_id).pluck(:granblue_id)
-    total = granblue_ids.size
-    success_count = 0
-    error_count = 0
-
-    logger.info "Starting to fetch #{total} #{model_name.downcase}s#{' (missing data only)' if only_missing}..."
-
+  # @return [Array(Integer, Integer)] the successful and failed counts
+  def fetch_each(model_name, granblue_ids, lang)
+    counts = [0, 0]
     granblue_ids.each_with_index do |granblue_id, index|
       pause if index.positive?
-      logger.info "\nProcessing #{model_name} #{granblue_id} (#{index + 1}/#{total})"
-
-      case model_name
-      when 'Character' then fetch_character(granblue_id, lang: lang)
-      when 'Weapon' then fetch_weapon(granblue_id)
-      when 'Summon' then fetch_summon(granblue_id)
-      end
-
-      success_count += 1
+      logger.info "\nProcessing #{model_name} #{granblue_id} (#{index + 1}/#{granblue_ids.size})"
+      fetch_one(model_name, granblue_id, lang)
+      counts[0] += 1
       logger.debug "Successfully processed #{model_name} #{granblue_id}"
     rescue AuthenticationError => e
       stop_run!(model_name, granblue_ids, index, e)
       break
     rescue StandardError => e
-      error_count += 1
+      counts[1] += 1
       summary.error!(granblue_id, e.message)
       logger.error "Error processing #{model_name} #{granblue_id}: #{e.message}"
     end
+    counts
+  end
 
-    logger.info "\nProcessing complete!"
-    logger.info "Total: #{total}"
-    logger.info "Successful: #{success_count}"
-    logger.info "Failed: #{error_count}"
+  def fetch_one(model_name, granblue_id, lang)
+    case model_name
+    when 'Character' then fetch_character(granblue_id, lang: lang)
+    when 'Weapon' then fetch_weapon(granblue_id)
+    when 'Summon' then fetch_summon(granblue_id)
+    end
   end
 
   def pause
