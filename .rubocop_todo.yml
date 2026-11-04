@@ -443,24 +443,6 @@ Performance/RegexpMatch:
     - 'lib/granblue/parsers/weapon_parser.rb'
     - 'lib/granblue/parsers/wiki_data_parser.rb'
 
-# Offense count: 13
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: have_received, receive
-RSpec/MessageSpies:
-  Exclude:
-    - 'spec/services/gacha_simulation/cache_and_cost_spec.rb'
-
-# Offense count: 3
-RSpec/StubbedMock:
-  Exclude:
-    - 'spec/services/gacha_simulation/cache_and_cost_spec.rb'
-
-# Offense count: 39
-# Configuration parameters: IgnoreNameless, IgnoreSymbolicNames.
-RSpec/VerifiedDoubles:
-  Exclude:
-    - 'spec/services/gacha_simulation/cache_and_cost_spec.rb'
-
 # Offense count: 3
 Rails/UniqueValidationWithoutIndex:
   Exclude:

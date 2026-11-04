@@ -51,7 +51,7 @@ RSpec.describe 'Gacha cache and purchase estimates' do
   end
 
   it 'uses JPY divided by JPY-per-USD and retains a dated stale quote for seven days' do
-    redis = double('redis')
+    redis = instance_double(Sidekiq::RedisClientAdapter::CompatClient)
     allow(Sidekiq).to receive(:redis).and_yield(redis)
     quote = { 'provider' => 'Frankfurter / ECB', 'date' => (Time.zone.today - 7).iso8601, 'jpy_per_usd' => '150' }
     allow(redis).to receive(:get).and_return(JSON.generate(quote))
@@ -67,16 +67,22 @@ RSpec.describe 'Gacha cache and purchase estimates' do
 
   it 'keeps the last quote on provider failure and filters ECB' do
     uri = URI('https://api.frankfurter.dev/v2/rate/USD/JPY?providers=ecb')
-    http = double('http')
+    http = instance_double(Net::HTTP)
     allow(Net::HTTP).to receive(:start).and_yield(http)
-    expect(http).to receive(:get).with(uri.request_uri).and_return(Net::HTTPServiceUnavailable.new('1.1', '503', 'Unavailable'))
-    expect { GachaSimulation::ExchangeRate.refresh }.to raise_error(GachaSimulation::Unavailable)
+    redis = instance_double(Sidekiq::RedisClientAdapter::CompatClient)
+    allow(Sidekiq).to receive(:redis).and_yield(redis)
+    allow(redis).to receive(:set)
     response = Net::HTTPOK.new('1.1', '200', 'OK')
     allow(response).to receive(:body).and_return({ date: Time.zone.today.iso8601, rate: 150 }.to_json)
-    expect(http).to receive(:get).with(uri.request_uri).and_return(response)
-    redis = double('redis')
-    allow(Sidekiq).to receive(:redis).and_yield(redis)
-    expect(redis).to receive(:set).with(GachaSimulation::ExchangeRate::KEY, anything, ex: 8 * 86400)
+    # The first request fails and the second succeeds.
+    allow(http).to receive(:get).with(uri.request_uri)
+                                .and_return(Net::HTTPServiceUnavailable.new('1.1', '503', 'Unavailable'), response)
+
+    expect { GachaSimulation::ExchangeRate.refresh }.to raise_error(GachaSimulation::Unavailable)
+    expect(redis).not_to have_received(:set)
+
     expect(GachaSimulation::ExchangeRate.refresh['jpy_per_usd']).to eq('150.0')
+    expect(http).to have_received(:get).with(uri.request_uri).twice
+    expect(redis).to have_received(:set).with(GachaSimulation::ExchangeRate::KEY, anything, ex: 8 * 86400).once
   end
 end
