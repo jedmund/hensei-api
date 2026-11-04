@@ -62,8 +62,8 @@ class Source < ApplicationRecord
   # Set by an owner that writes its own sources and handles the change itself.
   attr_accessor :skip_owner_hook
 
-  after_save :capture_owner_hook, if: :saved_change_to_sha256?
   after_destroy :capture_owner_hook
+  after_save :capture_owner_hook, if: :saved_change_to_sha256?
   after_commit :notify_owner
 
   # Everything but the body, for code that only needs sha256 / fetched_at.

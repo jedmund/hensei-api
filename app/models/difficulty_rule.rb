@@ -7,8 +7,8 @@ class DifficultyRule < ApplicationRecord
   validates :weight, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validate :params_valid_for_rule_type
 
-  after_save :bump_ruleset_version
   after_destroy :bump_ruleset_version
+  after_save :bump_ruleset_version
 
   scope :active, -> { where(active: true) }
   scope :for_component, ->(component) { where(component: component.to_s) }

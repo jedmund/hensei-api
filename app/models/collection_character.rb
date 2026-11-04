@@ -3,13 +3,13 @@ class CollectionCharacter < ApplicationRecord
   belongs_to :character
   belongs_to :awakening, optional: true
 
-  # prepend: the orphan callback must run before dependent: :nullify clears the
-  # foreign key, or it finds no grid characters to mark.
-  before_destroy :orphan_grid_items, prepend: true
   has_many :grid_characters, dependent: :nullify
 
   before_validation :clamp_transcendence_step
   before_save :add_default_awakening
+  # prepend: the orphan callback must run before dependent: :nullify clears the
+  # foreign key, or it finds no grid characters to mark.
+  before_destroy :orphan_grid_items, prepend: true
 
   validates :character_id, uniqueness: { scope: :user_id,
                                          message: 'already exists in your collection' }

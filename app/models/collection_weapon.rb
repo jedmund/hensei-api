@@ -22,11 +22,11 @@ class CollectionWeapon < ApplicationRecord
 
   has_many :grid_weapons, dependent: :nullify
 
+  before_validation :set_default_exorcism_level, on: :create
+  before_validation :default_awakening_level
   # prepend: must run before dependent: :nullify clears the foreign key, or it
   # finds no grid items to mark orphaned.
   before_destroy :orphan_grid_items, prepend: true
-  before_validation :set_default_exorcism_level, on: :create
-  before_validation :default_awakening_level
 
   # Set defaults before validation so database defaults don't cause validation failures
   attribute :awakening_level, :integer, default: 1

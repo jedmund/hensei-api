@@ -195,6 +195,7 @@ class Weapon < ApplicationRecord
   scope :in_forge_chain, ->(chain_id) { where(forge_chain_id: chain_id).order(:forge_order) }
 
   # Forge chain callbacks
+  # rubocop:disable-next Rails/ActiveRecordCallbacksOrder -- moving it up would run it before the belongs_to autosaves
   before_save :compute_forge_chain_fields, if: :forged_from_changed?
 
   # Forge chain methods

@@ -86,10 +86,10 @@ class GridWeapon < ApplicationRecord
   validate :no_duplicate_weapon_keys
   validate :no_duplicate_weapon_key_slots
 
-  before_save :assign_mainhand
   before_validation :set_default_uncap_level, on: :create
   before_validation :set_default_exorcism_level, on: :create
   before_validation :default_awakening_level
+  before_save :assign_mainhand
 
   after_create :increment_party_counter, unless: :is_substitute?
   after_destroy :decrement_party_counter, unless: :is_substitute?

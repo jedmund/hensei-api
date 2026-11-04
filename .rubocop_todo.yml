@@ -1077,19 +1077,6 @@ Rails/ActionOrder:
     - 'app/controllers/api/v1/character_skill_refreshes_controller.rb'
     - 'app/controllers/api/v1/users_controller.rb'
 
-# Offense count: 8
-# This cop supports safe autocorrection (--autocorrect).
-Rails/ActiveRecordCallbacksOrder:
-  Exclude:
-    - 'app/models/collection_character.rb'
-    - 'app/models/collection_weapon.rb'
-    - 'app/models/difficulty.rb'
-    - 'app/models/difficulty_component.rb'
-    - 'app/models/difficulty_rule.rb'
-    - 'app/models/grid_weapon.rb'
-    - 'app/models/source.rb'
-    - 'app/models/weapon.rb'
-
 # Offense count: 1
 # This cop supports unsafe autocorrection (--autocorrect-all).
 Rails/ApplicationController:
