@@ -62,7 +62,7 @@ module Api
       end
 
       def guidebooks
-        render_page GuidebookSearchQuery.call(search_params, locale: I18n.locale.to_s), GuidebookBlueprint
+        render_page GuidebookSearchQuery.call(search_params, locale: search_locale), GuidebookBlueprint
       end
 
       private

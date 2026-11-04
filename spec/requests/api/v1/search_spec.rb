@@ -759,6 +759,12 @@ RSpec.describe 'Api::V1::Search', type: :request do
       expect(result_ids).to eq([book.id])
     end
 
+    it 'searches Japanese names in the ja locale' do
+      book = create(:guidebook, name_en: 'Zyxbook', name_jp: 'ズィクス攻略本')
+      search('guidebooks', query: 'ズィクス攻略本', locale: 'ja')
+      expect(result_ids).to eq([book.id])
+    end
+
     it 'lists every guidebook without a query' do
       search('guidebooks', { query: 'Z' }, 50)
       expect(response.parsed_body['meta']['count']).to eq(Guidebook.count)
