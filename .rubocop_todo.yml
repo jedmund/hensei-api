@@ -1295,25 +1295,6 @@ Rails/OrderArguments:
   Exclude:
     - 'app/models/crew_gw_participation.rb'
 
-# Offense count: 67
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Rails/Output:
-  Exclude:
-    - 'lib/granblue/downloaders/elemental_weapon_downloader.rb'
-    - 'lib/granblue/downloaders/jp_wiki_downloader.rb'
-    - 'lib/granblue/parsers/base_parser.rb'
-    - 'lib/granblue/parsers/character_parser.rb'
-    - 'lib/granblue/parsers/status_catalog_builder.rb'
-    - 'lib/granblue/parsers/summon_parser.rb'
-    - 'lib/granblue/parsers/weapon_parser.rb'
-    - 'lib/granblue/parsers/wiki.rb'
-    - 'lib/logging_helper.rb'
-    - 'lib/post_deployment/data_importer.rb'
-    - 'lib/post_deployment/database_migrator.rb'
-    - 'lib/post_deployment/image_downloader.rb'
-    - 'lib/post_deployment/manager.rb'
-    - 'lib/post_deployment/search_indexer.rb'
-
 # Offense count: 204
 # This cop supports unsafe autocorrection (--autocorrect-all).
 Rails/Pluck:

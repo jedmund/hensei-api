@@ -145,6 +145,14 @@ Rails/DynamicFindBy:
     - find_by_game_skill_id
     - find_by_route_id
 
+# The post-deployment tools are the console UI of `rake deploy:post_deployment`
+# and `rake granblue:import_data`; they print progress to the terminal on
+# purpose. (Rake files themselves aren't checked: the cop only reads *.rb.)
+Rails/Output:
+  Exclude:
+    - 'lib/logging_helper.rb'
+    - 'lib/post_deployment/**/*'
+
 # --- RSpec ---
 # A request spec checks the status, the body and the database, so several
 # expectations and helpers per example are normal here

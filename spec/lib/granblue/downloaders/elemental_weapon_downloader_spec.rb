@@ -21,10 +21,8 @@ RSpec.describe Granblue::Downloaders::ElementalWeaponDownloader do
 
   describe '#download' do
     it 'steps the weapon id by 100 for each element' do
-      downloader = described_class.new('1040001000')
+      downloader = described_class.new('1040001000', logger: Logger.new(IO::NULL))
       allow(downloader).to receive(:download_elemental_image)
-      allow(downloader).to receive(:print)
-      allow(downloader).to receive(:puts)
 
       downloader.download
 

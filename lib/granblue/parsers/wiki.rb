@@ -165,7 +165,7 @@ module Granblue
         page = Granblue::WikiTitle.normalize(page)
         return stored_page(page, kind) if store
 
-        ap "--> Fetching #{page}" if @debug
+        Rails.logger.info "--> Fetching #{page}" if @debug
 
         # The title goes in as a query parameter, encoded by HTTParty.
         response = WikiHttp.with_timeouts(page) do

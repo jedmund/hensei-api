@@ -45,7 +45,7 @@ module Granblue
         def merge_and_persist(characters, overwrite:, debug:)
           StatusList.refresh!
           # The full build first merges rows the current list ties together ("Charm" → Charmed).
-          repair(debug) if overwrite
+          repair if overwrite
           tallies = {}
           skills = []
 
@@ -57,28 +57,25 @@ module Granblue
             end
           rescue StandardError => e
             Rails.logger.error "[STATUS_CATALOG] #{character.granblue_id}: #{e.message}"
-            puts "[STATUS_CATALOG] #{character.granblue_id}: #{e.message}" if debug
           end
 
-          Persister.new(tallies, skills, overwrite: overwrite, debug: debug).call.merge(display: display_names(debug))
+          Persister.new(tallies, skills, overwrite: overwrite, debug: debug).call.merge(display: display_names)
         end
 
         # The shown names and qualifiers (D59), after any new statuses are in.
-        def display_names(debug)
+        def display_names
           ::CharacterSkills::StatusDisplayNames.call
         rescue StandardError => e
           Rails.logger.error "[STATUS_CATALOG] display names failed: #{e.class}: #{e.message}"
-          puts "[STATUS_CATALOG] display names failed: #{e.class}: #{e.message}" if debug
           nil
         end
 
         # In a savepoint: a failure rolls the repair back whole and is logged, so it can neither
         # half-merge the catalogue nor fail a deploy's build (the build goes on with the rows as they are).
-        def repair(debug)
+        def repair
           Status.transaction(requires_new: true) { ::CharacterSkills::StatusCatalogueRepair.call }
         rescue StandardError => e
           Rails.logger.error "[STATUS_CATALOG] repair failed: #{e.class}: #{e.message}"
-          puts "[STATUS_CATALOG] repair failed: #{e.class}: #{e.message}" if debug
         end
 
         def each_character(characters, &)
@@ -135,11 +132,10 @@ module Granblue
         def save(status, was_new, counts)
           Status.transaction(requires_new: true) { status.save! }
           counts[was_new ? :created : :updated] += 1
-          puts "[STATUS_CATALOG] #{was_new ? 'created' : 'updated'} #{status.name_en}" if @debug
+          Rails.logger.info "[STATUS_CATALOG] #{was_new ? 'created' : 'updated'} #{status.name_en}" if @debug
         rescue ActiveRecord::RecordNotUnique, ActiveRecord::RecordInvalid => e
           counts[:failed] += 1
           Rails.logger.error "[STATUS_CATALOG] couldn't save #{status.name_en.inspect}: #{e.class}"
-          puts "[STATUS_CATALOG] couldn't save #{status.name_en.inspect}: #{e.class}" if @debug
         end
 
         # Statuses no text mentions any more (a list alias now names them differently) still
@@ -162,7 +158,6 @@ module Granblue
           return if unused.empty?
 
           Rails.logger.warn "[STATUS_CATALOG] curated names no text mentions: #{unused.sort.join(', ')}"
-          puts "[STATUS_CATALOG] curated names no text mentions: #{unused.sort.join(', ')}" if @debug
         end
 
         def assign(status, key, tally, overwrite)

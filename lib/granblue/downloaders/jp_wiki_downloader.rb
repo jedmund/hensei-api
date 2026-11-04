@@ -25,17 +25,18 @@ module Granblue
       #            a blank row is always fetched)
       #   force:   refetch rows that already have wiki_raw_jp; without ids/missing,
       #            only those rows
+      #   io:      where the progress lines and the summary go
       #
       # Returns { downloaded:, skipped:, errors:, summary: } (a Granblue::SourceFetchSummary).
       def self.backfill(model:, limit: nil, throttle: DEFAULT_THROTTLE, force: false, debug: false,
-                        ids: nil, missing: false)
-        throttle = Granblue::WikiThrottle.clamp(throttle, warn: method(:puts))
+                        ids: nil, missing: false, io: $stdout)
+        throttle = Granblue::WikiThrottle.clamp(throttle, warn: io.method(:puts))
         scope = backfill_scope(model, ids: ids, missing: missing, force: force)
         scope = scope.limit(limit) if limit
 
         total = scope.count
-        puts "Downloading JP wiki pages for #{total} #{model.name.downcase}s" \
-             "#{' (missing only)' if missing || !force}...\n\n"
+        io.puts "Downloading JP wiki pages for #{total} #{model.name.downcase}s" \
+                "#{' (missing only)' if missing || !force}...\n\n"
 
         client = Granblue::Parsers::JpWiki.new(debug: debug)
         summary = Granblue::SourceFetchSummary.new('download_jp_wiki')
@@ -54,15 +55,15 @@ module Granblue
           before = record.wiki_raw_jp
           html = downloader.download(force: force)
           summary.fetched!(record.granblue_id, before: before, after: html)
-          print_progress(progress, total, label(record), before == html ? 'unchanged' : 'changed', start_time)
+          print_progress(progress, total, label(record), before == html ? 'unchanged' : 'changed', start_time, io: io)
         rescue StandardError => e
           summary.error!(record.granblue_id, "#{e.message} (#{title})", label: label(record))
-          print_progress(progress, total, label(record), "ERR: #{e.message}", start_time)
+          print_progress(progress, total, label(record), "ERR: #{e.message}", start_time, io: io)
         ensure
           Granblue::WikiThrottle.wait(throttle) if requested # only after a real request to gbf-wiki.com
         end
 
-        print_summary(summary, start_time)
+        print_summary(summary, start_time, io: io)
         { downloaded: summary.fetched, skipped: summary.skipped, errors: summary.errors, summary: summary }
       end
 
@@ -115,7 +116,7 @@ module Granblue
         record.is_a?(Weapon) && !title.include?('/') ? "武器/#{title}" : title
       end
 
-      def self.print_progress(current, total, name, status, start_time)
+      def self.print_progress(current, total, name, status, start_time, io: $stdout)
         pct = format('%5.1f%%', current.to_f / total * 100)
         elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - start_time
         eta = current > 1 ? format_eta((elapsed / current) * (total - current)) : '?'
@@ -124,15 +125,15 @@ module Granblue
         suffix = error ? " (#{status})" : " #{status}"
         line = "[#{current}/#{total}] #{pct}  [#{marker}] #{name}#{suffix}"
         line += "  elapsed: #{format_eta(elapsed)}  eta: #{eta}"
-        puts line
+        io.puts line
       end
 
-      def self.print_summary(summary, start_time)
+      def self.print_summary(summary, start_time, io: $stdout)
         elapsed = format_eta(Process.clock_gettime(Process::CLOCK_MONOTONIC) - start_time)
 
-        puts "\n#{'=' * 60}"
-        puts "Done in #{elapsed}"
-        summary.print($stdout)
+        io.puts "\n#{'=' * 60}"
+        io.puts "Done in #{elapsed}"
+        summary.print(io)
       end
 
       def self.format_eta(seconds)
