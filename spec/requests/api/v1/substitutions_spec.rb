@@ -685,5 +685,76 @@ RSpec.describe 'Substitutions API', type: :request do
 
       expect(response).to have_http_status(:unprocessable_content)
     end
+
+    describe 'error bodies' do
+      def reorder(entries, as: headers)
+        post '/api/v1/substitutions/reorder', params: { party_id: party.id, substitutions: entries }.to_json,
+                                              headers: as
+      end
+
+      def full_batch(positions)
+        [s_a, s_b, s_c].zip(positions).map { |s, position| { id: s.id, position: position } }
+      end
+
+      {
+        'substitutions array required' => -> { [] },
+        'duplicate ids in batch' => -> { [{ id: s_a.id, position: 0 }, { id: s_a.id, position: 1 }] },
+        'duplicate positions in batch' => -> { full_batch([0, 0, 1]) },
+        'position must be in [0, 10)' => -> { full_batch([-1, 0, 1]) },
+        'unknown substitution id(s)' => -> { full_batch([0, 1, 2]) + [{ id: SecureRandom.uuid, position: 3 }] },
+        'reorder batch must cover all substitutions in the slot' => -> { full_batch([1, 0, 2]).first(2) }
+      }.each do |message, entries|
+        it "says #{message}" do
+          reorder(instance_exec(&entries))
+
+          expect(response).to have_http_status(:unprocessable_content)
+          expect(response.parsed_body).to eq('error' => message)
+        end
+      end
+
+      it 'says when entries belong to two slots' do
+        other_grid = create(:grid_weapon, party: party, weapon: Weapon.all[5])
+        other_sub_grid = create(:grid_weapon, party: party, weapon: Weapon.all[6], is_substitute: true)
+        foreign = create(:substitution, grid: other_grid, substitute_grid: other_sub_grid, position: 0)
+
+        reorder([{ id: s_a.id, position: 0 }, { id: foreign.id, position: 1 }])
+
+        expect(response.parsed_body).to eq('error' => 'all entries must belong to the same slot')
+      end
+
+      it 'treats string positions as integers' do
+        reorder(full_batch(%w[2 0 1]))
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body.pluck('position')).to eq([0, 1, 2])
+        expect(s_a.reload.position).to eq(2)
+      end
+
+      it 'reports a position collision' do
+        allow(NotesSync).to receive(:propagate_substitutions!).and_raise(ActiveRecord::RecordNotUnique)
+
+        reorder(full_batch([2, 0, 1]))
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(response.parsed_body).to eq('error' => 'position collision')
+        expect(s_a.reload.position).to eq(0)
+      end
+
+      it "refuses someone else's party" do
+        stranger = create(:user)
+        token = Doorkeeper::AccessToken.create!(resource_owner_id: stranger.id, expires_in: 30.days, scopes: 'public')
+
+        reorder(full_batch([2, 0, 1]), as: headers.merge('Authorization' => "Bearer #{token.token}"))
+
+        expect(response).to have_http_status(:unauthorized)
+        expect(s_a.reload.position).to eq(0)
+      end
+
+      it 'refuses an anonymous request' do
+        reorder(full_batch([2, 0, 1]), as: { 'Content-Type' => 'application/json' })
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
   end
 end
