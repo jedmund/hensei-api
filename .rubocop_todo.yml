@@ -10,19 +10,6 @@
 # Configuration parameters: AllowedMethods, AllowedPatterns, CountRepeatedAttributes, Max.
 Metrics/AbcSize:
   Exclude:
-    - 'app/controllers/api/v1/characters_controller.rb'
-    - 'app/controllers/api/v1/collection_artifacts_controller.rb'
-    - 'app/controllers/api/v1/crew_gw_participations_controller.rb'
-    - 'app/controllers/api/v1/crew_rosters_controller.rb'
-    - 'app/controllers/api/v1/gacha_controller.rb'
-    - 'app/controllers/api/v1/gw_score_imports_controller.rb'
-    - 'app/controllers/api/v1/home_controller.rb'
-    - 'app/controllers/api/v1/jobs_controller.rb'
-    - 'app/controllers/api/v1/playlists_controller.rb'
-    - 'app/controllers/api/v1/substitutions_controller.rb'
-    - 'app/controllers/api/v1/users_controller.rb'
-    - 'app/controllers/api/v1/weapon_keys_controller.rb'
-    - 'app/controllers/api/v1/weapon_skill_families_controller.rb'
     - 'app/models/difficulty.rb'
     - 'app/models/grid_character.rb'
     - 'app/models/grid_weapon.rb'
@@ -74,7 +61,6 @@ Metrics/AbcSize:
 # Configuration parameters: CountComments, Max, CountAsOne.
 Metrics/ClassLength:
   Exclude:
-    - 'app/controllers/concerns/admin_collection/query.rb'
     - 'app/models/grid_character.rb'
     - 'app/models/grid_weapon.rb'
     - 'app/models/weapon.rb'
@@ -90,15 +76,6 @@ Metrics/ClassLength:
 # Configuration parameters: AllowedMethods, AllowedPatterns, Max.
 Metrics/CyclomaticComplexity:
   Exclude:
-    - 'app/controllers/api/v1/characters_controller.rb'
-    - 'app/controllers/api/v1/crew_rosters_controller.rb'
-    - 'app/controllers/api/v1/home_controller.rb'
-    - 'app/controllers/api/v1/jobs_controller.rb'
-    - 'app/controllers/api/v1/party_solomonis_controller.rb'
-    - 'app/controllers/api/v1/playlists_controller.rb'
-    - 'app/controllers/api/v1/substitutions_controller.rb'
-    - 'app/controllers/api/v1/users_controller.rb'
-    - 'app/controllers/api/v1/weapon_skill_families_controller.rb'
     - 'app/models/difficulty.rb'
     - 'app/models/grid_weapon.rb'
     - 'app/models/job_skill.rb'
@@ -148,8 +125,6 @@ Metrics/CyclomaticComplexity:
 # Configuration parameters: CountComments, Max, CountAsOne, AllowedMethods, AllowedPatterns.
 Metrics/MethodLength:
   Exclude:
-    - 'app/controllers/api/v1/substitutions_controller.rb'
-    - 'app/controllers/concerns/batch_previewable.rb'
     - 'app/services/grid_damage/awakening_contributions.rb'
     - 'app/services/grid_damage/conditions.rb'
     - 'lib/granblue/extractors/weapon_skill_data_extractor.rb'
@@ -178,15 +153,6 @@ Metrics/ParameterLists:
 # Configuration parameters: AllowedMethods, AllowedPatterns, Max.
 Metrics/PerceivedComplexity:
   Exclude:
-    - 'app/controllers/api/v1/characters_controller.rb'
-    - 'app/controllers/api/v1/crew_rosters_controller.rb'
-    - 'app/controllers/api/v1/home_controller.rb'
-    - 'app/controllers/api/v1/jobs_controller.rb'
-    - 'app/controllers/api/v1/party_solomonis_controller.rb'
-    - 'app/controllers/api/v1/playlists_controller.rb'
-    - 'app/controllers/api/v1/substitutions_controller.rb'
-    - 'app/controllers/api/v1/users_controller.rb'
-    - 'app/controllers/api/v1/weapon_skill_families_controller.rb'
     - 'app/models/difficulty.rb'
     - 'app/models/grid_weapon.rb'
     - 'app/models/job_skill.rb'

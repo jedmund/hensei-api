@@ -46,8 +46,8 @@ module AdminCollection
         entry = {
           type: config[:type].to_s,
           facet: @definition.facets.key?(name),
-          list: config[:type] != :boolean && (config[:resolve].present? || Query::LIST_TYPES.include?(config[:type])),
-          range: Query::RANGE_TYPES.include?(config[:type])
+          list: config[:type] != :boolean && (config[:resolve].present? || Filters::LIST_TYPES.include?(config[:type])),
+          range: Filters::RANGE_TYPES.include?(config[:type])
         }
         entry[:reference] = config[:reference] if config[:reference]
         [name, entry]

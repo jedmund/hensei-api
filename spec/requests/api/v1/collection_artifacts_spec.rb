@@ -95,6 +95,83 @@ RSpec.describe 'Collection Artifacts API', type: :request do
 
       expect(response).to have_http_status(:forbidden)
     end
+
+    it "returns forbidden for another user's private collection" do
+      other_user.update!(collection_privacy: :private_collection)
+      get "/api/v1/users/#{other_user.id}/collection/artifacts", headers: headers
+
+      expect(response).to have_http_status(:forbidden)
+    end
+  end
+
+  describe 'GET /api/v1/users/:user_id/collection/artifacts filters and sorts' do
+    let(:url) { "/api/v1/users/#{user.id}/collection/artifacts" }
+    let!(:zeta) do
+      create(:collection_artifact, :with_skills, user: user, element: :water,
+                                                 artifact: create(:artifact, :dagger, name_en: 'Zeta Relic'))
+    end
+    let!(:alpha) do
+      create(:collection_artifact, user: user, element: :fire, artifact: create(:artifact, name_en: 'Alpha Relic'))
+    end
+    let!(:quirk) do
+      create(:collection_artifact, :quirk, user: user, element: :earth, proficiency: :dagger)
+    end
+
+    def ids(**params)
+      get url, params: params, headers: headers
+      expect(response).to have_http_status(:ok)
+      response.parsed_body['artifacts'].pluck('id')
+    end
+
+    it 'filters by comma-separated elements' do
+      expect(ids(element: 'water,earth')).to contain_exactly(zeta.id, quirk.id)
+    end
+
+    it 'filters by proficiency, from the artifact or the quirk instance' do
+      expect(ids(proficiency: CollectionArtifact.proficiencies['dagger'].to_s)).to contain_exactly(zeta.id, quirk.id)
+      expect(ids(proficiency: '')).to contain_exactly(zeta.id, alpha.id, quirk.id)
+    end
+
+    it 'filters by several integer proficiencies' do
+      sabre, dagger = CollectionArtifact.proficiencies.values_at('sabre', 'dagger')
+      expect(ids(proficiency: "#{sabre},#{dagger}")).to contain_exactly(zeta.id, alpha.id, quirk.id)
+      expect(ids(proficiency: sabre.to_s)).to eq([alpha.id])
+    end
+
+    it 'filters by proficiency names, alone or mixed with integers' do
+      sabre = CollectionArtifact.proficiencies['sabre']
+      expect(ids(proficiency: 'dagger')).to contain_exactly(zeta.id, quirk.id)
+      expect(ids(proficiency: 'Sabre')).to eq([alpha.id])
+      expect(ids(proficiency: "dagger,#{sabre}")).to contain_exactly(zeta.id, alpha.id, quirk.id)
+    end
+
+    it 'matches nothing for unknown proficiencies, like the other filters' do
+      expect(ids(proficiency: 'bogus')).to eq([])
+      expect(ids(proficiency: '2.5')).to eq([])
+      expect(ids(proficiency: 'bogus,dagger')).to contain_exactly(zeta.id, quirk.id)
+    end
+
+    it 'filters by rarity' do
+      expect(ids(rarity: 'quirk')).to eq([quirk.id])
+      expect(ids(rarity: 'standard,quirk')).to contain_exactly(zeta.id, alpha.id, quirk.id)
+    end
+
+    it 'filters each skill slot by any of its modifiers, and slots together' do
+      expect(ids(skill2: '2')).to eq([zeta.id])
+      expect(ids(skill1: %w[1 5], skill2: '2')).to eq([zeta.id])
+      expect(ids(skill1: '1', skill2: '1')).to eq([])
+      expect(ids(skill3: '1', skill4: '1')).to eq([zeta.id])
+    end
+
+    it 'searches artifact names' do
+      expect(ids(search: 'zeta')).to eq([zeta.id])
+    end
+
+    it 'sorts by name and defaults to newest first' do
+      expect(ids(sort: 'name_asc', rarity: 'standard')).to eq([alpha.id, zeta.id])
+      expect(ids(sort: 'name_desc', rarity: 'standard')).to eq([zeta.id, alpha.id])
+      expect(ids).to eq([quirk.id, alpha.id, zeta.id])
+    end
   end
 
   describe 'GET /api/v1/users/:user_id/collection/artifacts/:id' do

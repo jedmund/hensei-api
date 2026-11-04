@@ -109,15 +109,18 @@ module Api
         playlists.each_with_object({}) do |pl, result|
           pl_party_ids = pl.playlist_parties.to_set(&:party_id)
           relevant = party_raid_pairs.select { |pid, _, _| pl_party_ids.include?(pid) }
-
-          # Group by raid_id, pick most recent updated_at per raid, sort desc, limit 4
-          by_raid = relevant.group_by { |_, rid, _| rid }
-          sorted = by_raid.map { |rid, entries| [rid, entries.map { |_, _, ts| ts }.max] }
-                          .sort_by { |_, ts| -ts.to_i }
-                          .first(4)
-
-          result[pl.id] = sorted.filter_map { |rid, _| raid_slug_map[rid] }
+          result[pl.id] = recent_raid_ids(relevant).filter_map { |rid| raid_slug_map[rid] }
         end
+      end
+
+      # The four raids with the most recently updated parties, newest first,
+      # from [party_id, raid_id, updated_at] rows.
+      def recent_raid_ids(party_raid_pairs)
+        party_raid_pairs.group_by { |_, rid, _| rid }
+                        .map { |rid, entries| [rid, entries.map { |_, _, ts| ts }.max] }
+                        .sort_by { |_, ts| -ts.to_i }
+                        .first(4)
+                        .map(&:first)
       end
     end
   end

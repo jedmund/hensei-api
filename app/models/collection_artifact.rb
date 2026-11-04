@@ -33,11 +33,13 @@ class CollectionArtifact < ApplicationRecord
   # Scopes
   scope :by_element, ->(el) { where(element: el) }
   scope :by_artifact, ->(artifact_id) { where(artifact_id: artifact_id) }
-  # Filter by proficiency - handles both quirk (instance) and standard (artifact) proficiencies
+  # Filter by proficiency - handles both quirk (instance) and standard (artifact) proficiencies.
+  # Takes the stored integers or the enum names ('dagger'); other values match nothing.
   scope :by_proficiency, lambda { |prof|
+    values = Array(prof).filter_map { |value| proficiency_value(value) }
     joins(:artifact).where(
       'collection_artifacts.proficiency IN (?) OR (collection_artifacts.proficiency IS NULL AND artifacts.proficiency IN (?))',
-      Array(prof), Array(prof)
+      values, values
     )
   }
   scope :by_rarity, ->(rar) { joins(:artifact).where(artifacts: { rarity: rar }) }
@@ -81,6 +83,15 @@ class CollectionArtifact < ApplicationRecord
   }
 
   # Returns the effective proficiency - from instance for quirk, from artifact for standard
+  # A proficiency filter value as its stored integer: digits as they are,
+  # an enum name ('dagger', any case) mapped; nil for anything else.
+  def self.proficiency_value(value)
+    key = value.to_s.strip.downcase
+    return proficiencies[key] if proficiencies.key?(key)
+
+    key.to_i if key.match?(/\A\d+\z/)
+  end
+
   def effective_proficiency
     quirk_artifact? ? proficiency : artifact&.proficiency
   end

@@ -365,6 +365,36 @@ RSpec.describe 'Evoking Solomonis writes', type: :request do
       expect(party.expedition_guide_effects.reload).to be_empty
     end
 
+    it 'says what is wrong with a malformed list' do
+      {
+        { guide_effects: 'x' } => 'must be a list',
+        { guide_effects: Array.new(301) { { guide_effect_id: stackable.id } } } => 'can hold at most 300 effects',
+        { guide_effects: [{ guide_effect_id: stackable.id }, 'x'] } => 'must be objects',
+        { guide_effects: [{ guide_effect_id: stackable.id, note: ['x'] }] } =>
+          'fields must be numbers, text or true/false',
+        { guide_effects: [{ guide_effect_id: [stackable.id] }] } => 'fields must be numbers, text or true/false',
+        { guide_effects: [{ guide_effect_id: stackable.id }, { guide_effect_id: SecureRandom.uuid }] } =>
+          'include an unknown effect'
+      }.each do |params, message|
+        put "/api/v1/parties/#{party.id}/guide_effects", params: params.to_json, headers: headers
+
+        expect(response).to have_http_status(:unprocessable_content), params.inspect.first(80)
+        expect(body).to eq('errors' => { 'guide_effects' => [message] })
+      end
+      expect(party.expedition_guide_effects.reload).to be_empty
+    end
+
+    it 'defaults count to 1 and blanks to nil' do
+      put "/api/v1/parties/#{party.id}/guide_effects",
+          params: { guide_effects: [{ guide_effect_id: stackable.id, display_value: '', note: '',
+                                      acquired_order: '', inherited: 'false' }] }.to_json,
+          headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(body.dig('party', 'solomonis', 'guidebook').sole)
+        .to include('count' => 1, 'display_value' => nil, 'note' => nil, 'acquired_order' => nil, 'inherited' => false)
+    end
+
     it 'answers a unique index clash with 422' do
       allow(Party).to receive(:find_by).and_return(party)
       allow(party).to receive(:replace_solomonis_guide_effects!).and_raise(ActiveRecord::RecordNotUnique)
