@@ -177,7 +177,6 @@ Metrics/AbcSize:
     - 'app/controllers/api/v1/gacha_controller.rb'
     - 'app/controllers/api/v1/gw_score_imports_controller.rb'
     - 'app/controllers/api/v1/home_controller.rb'
-    - 'app/controllers/api/v1/import_controller.rb'
     - 'app/controllers/api/v1/jobs_controller.rb'
     - 'app/controllers/api/v1/parties_controller.rb'
     - 'app/controllers/api/v1/playlists_controller.rb'
@@ -249,7 +248,6 @@ Metrics/AbcSize:
 # Configuration parameters: CountComments, Max, CountAsOne.
 Metrics/ClassLength:
   Exclude:
-    - 'app/controllers/api/v1/import_controller.rb'
     - 'app/controllers/api/v1/parties_controller.rb'
     - 'app/controllers/api/v1/search_controller.rb'
     - 'app/controllers/concerns/admin_collection/query.rb'
@@ -274,7 +272,6 @@ Metrics/CyclomaticComplexity:
     - 'app/controllers/api/v1/characters_controller.rb'
     - 'app/controllers/api/v1/crew_rosters_controller.rb'
     - 'app/controllers/api/v1/home_controller.rb'
-    - 'app/controllers/api/v1/import_controller.rb'
     - 'app/controllers/api/v1/jobs_controller.rb'
     - 'app/controllers/api/v1/parties_controller.rb'
     - 'app/controllers/api/v1/party_solomonis_controller.rb'
@@ -337,7 +334,6 @@ Metrics/CyclomaticComplexity:
 # Configuration parameters: CountComments, Max, CountAsOne, AllowedMethods, AllowedPatterns.
 Metrics/MethodLength:
   Exclude:
-    - 'app/controllers/api/v1/import_controller.rb'
     - 'app/controllers/api/v1/parties_controller.rb'
     - 'app/controllers/api/v1/search_controller.rb'
     - 'app/controllers/api/v1/substitutions_controller.rb'
@@ -376,7 +372,6 @@ Metrics/PerceivedComplexity:
     - 'app/controllers/api/v1/characters_controller.rb'
     - 'app/controllers/api/v1/crew_rosters_controller.rb'
     - 'app/controllers/api/v1/home_controller.rb'
-    - 'app/controllers/api/v1/import_controller.rb'
     - 'app/controllers/api/v1/jobs_controller.rb'
     - 'app/controllers/api/v1/parties_controller.rb'
     - 'app/controllers/api/v1/party_solomonis_controller.rb'
@@ -1324,7 +1319,6 @@ Rails/InverseOf:
 Rails/NegateInclude:
   Exclude:
     - 'app/controllers/api/v1/characters_controller.rb'
-    - 'app/controllers/api/v1/import_controller.rb'
     - 'app/controllers/api/v1/summons_controller.rb'
     - 'app/controllers/api/v1/weapon_skill_versions_controller.rb'
     - 'app/controllers/api/v1/weapons_controller.rb'
@@ -1634,7 +1628,6 @@ Rails/StrongParametersExpect:
     - 'app/controllers/api/v1/gw_events_controller.rb'
     - 'app/controllers/api/v1/gw_individual_scores_controller.rb'
     - 'app/controllers/api/v1/gw_score_imports_controller.rb'
-    - 'app/controllers/api/v1/import_controller.rb'
     - 'app/controllers/api/v1/job_skills_controller.rb'
     - 'app/controllers/api/v1/jobs_controller.rb'
     - 'app/controllers/api/v1/parties_controller.rb'
