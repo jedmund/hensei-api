@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :summon_aura do
-    summon_granblue_id { Faker::Number.number(digits: 10).to_s }
+    sequence(:summon_granblue_id) { |n| (2_040_000_000 + n).to_s }
     slot { 'main' }
     target { 'other' }
     value { 50 }

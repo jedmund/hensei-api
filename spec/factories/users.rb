@@ -1,18 +1,24 @@
 FactoryBot.define do
+  # Defaults are fixed (they match the column defaults) so specs don't depend
+  # on the seed. Use a trait or an explicit attribute for anything else.
   factory :user do
-    email { Faker::Internet.email }
+    sequence(:email) { |n| "user#{n}@example.com" }
     password { 'password' }
     password_confirmation { 'password' }
     sequence(:username) { |n| "user#{n}" }
-    granblue_id { Faker::Number.number(digits: 4) }
+    sequence(:granblue_id) { |n| 20_000_000 + n }
     wiki_profile { nil }
     youtube { nil }
     picture { 'gran' }
-    language { %w[en ja].sample }
-    private { Faker::Boolean.boolean }
-    element { %w[water fire wind earth light dark].sample }
-    gender { Faker::Number.between(from: 0, to: 1) }
-    theme { %w[system dark light].sample }
-    role { Faker::Number.between(from: 1, to: 3) }
+    language { 'en' }
+    private { false }
+    element { 'water' }
+    gender { 0 }
+    theme { 'system' }
+    role { 1 }
+
+    trait :japanese do
+      language { 'ja' }
+    end
   end
 end

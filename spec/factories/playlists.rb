@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :playlist do
     association :user
     sequence(:title) { |n| "Playlist #{n}" }
-    description { Faker::Lorem.sentence }
+    description { 'A test playlist.' }
     visibility { 1 }
   end
 

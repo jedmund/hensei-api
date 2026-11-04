@@ -104,7 +104,7 @@ FactoryBot.define do
 
     # Trait for element-changed weapon (Revans weapons)
     trait :element_changed do
-      element { rand(0..5) } # Random element 0-5
+      element { 2 }
     end
 
     # Trait for fully upgraded weapon

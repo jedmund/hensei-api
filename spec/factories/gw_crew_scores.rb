@@ -2,16 +2,16 @@ FactoryBot.define do
   factory :gw_crew_score do
     crew_gw_participation
     round { :preliminaries }
-    crew_score { Faker::Number.between(from: 100_000, to: 10_000_000) }
+    crew_score { 1_000_000 }
     opponent_score { nil }
     opponent_name { nil }
     opponent_granblue_id { nil }
     victory { nil }
 
     trait :with_opponent do
-      opponent_score { Faker::Number.between(from: 100_000, to: 10_000_000) }
-      opponent_name { Faker::Team.name }
-      opponent_granblue_id { Faker::Number.number(digits: 8).to_s }
+      opponent_score { 900_000 }
+      opponent_name { 'Opponent Crew' }
+      sequence(:opponent_granblue_id) { |n| (30_000_000 + n).to_s }
     end
 
     trait :victory do
