@@ -7,8 +7,8 @@ module Api
 
       # PATCH /weapon_keys/:id
       def update
-        key = WeaponKey.find(params[:id])
-        key.update!(params.require(:weapon_key).permit(:name_en, :name_jp))
+        key = WeaponKey.find(params.expect(:id))
+        key.update!(params.expect(weapon_key: %i[name_en name_jp]))
         render json: WeaponKeyBlueprint.render(key)
       end
 

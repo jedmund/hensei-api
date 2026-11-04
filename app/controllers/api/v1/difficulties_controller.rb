@@ -59,7 +59,7 @@ module Api
       end
 
       def difficulty_params
-        params.require(:difficulty).permit(:name, :slug, :description, :min_score, :max_score, :sort_order)
+        params.expect(difficulty: %i[name slug description min_score max_score sort_order])
       end
 
       def with_drafts?

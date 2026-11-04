@@ -396,7 +396,7 @@ RSpec.describe 'Api::V1::Stickers', type: :request do
 
     it 'ignores image keys sent as params' do
       put "/api/v1/stickers/#{sticker.id}", params: { sticker: { image_key: 'weapons/x.png' } }, headers: editor_headers
-      expect(response).to have_http_status(:ok)
+      expect(response).to have_http_status(:unprocessable_content)
       expect(sticker.reload.image_key).to be_nil
     end
   end

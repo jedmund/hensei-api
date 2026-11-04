@@ -25,7 +25,7 @@ module EditorImageUpload
     record.update!(column => key)
     # Same key as before (a replaced image): bump updated_at anyway, since the
     # image_url version comes from it and caches would keep the old image
-    record.touch unless record.saved_change_to_attribute?(column)
+    record.touch unless record.saved_change_to_attribute?(column) # rubocop:disable Rails/SkipsModelValidations
     remove_replaced_image(previous_key) if owned_image?(previous_key, prefix, name) && previous_key != key
     record
   end

@@ -92,13 +92,13 @@ module Api
         return unless size
 
         transformation = params[:transformation]
-        element = params[:element].present? ? params[:element].to_i : nil
+        element = params[:element].presence&.to_i
         gender = params[:gender].present? ? params[:gender].to_i : 0
         force = params[:force] == true
 
         # Validate transformation for characters (01, 02, 03, 04, or style for style swaps)
         valid_transformations = %w[01 02 03 04 style]
-        if transformation.present? && !valid_transformations.include?(transformation)
+        if transformation.present? && valid_transformations.exclude?(transformation)
           return render json: { error: "Invalid transformation. Must be one of: #{valid_transformations.join(', ')}" }, status: :unprocessable_content
         end
 
@@ -120,7 +120,7 @@ module Api
             # Style swap: fetch from _st2 URL and store as _style
             downloader.send(:download_style_variant, size)
           else
-            pose = transformation.present? ? transformation : '01'
+            pose = transformation.presence || '01'
             variant_id = "#{@character.granblue_id}_#{pose}"
             variant_id = "#{variant_id}_0#{element}" if element.present?
             variant_id = "#{variant_id}_#{gender}" if params[:gender].present?
@@ -212,7 +212,7 @@ module Api
       # POST /characters/:id/fetch_wiki
       # Fetches and stores wiki data for this character
       def fetch_wiki
-        return render json: { error: 'No wiki page configured for this character' }, status: :unprocessable_content unless @character.wiki_en.present?
+        return render json: { error: 'No wiki page configured for this character' }, status: :unprocessable_content if @character.wiki_en.blank?
 
         begin
           Granblue::WikiFetcher.new.fetch_and_store(@character)
@@ -295,7 +295,7 @@ module Api
       end
 
       def character_params
-        params.require(:character).permit(*PERMITTED)
+        params.expect(character: [*PERMITTED])
       end
     end
   end

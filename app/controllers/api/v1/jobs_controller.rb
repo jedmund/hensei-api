@@ -229,15 +229,7 @@ module Api
       end
 
       def job_params
-        params.require(:party).permit(
-          :job_id,
-          :accessory_id,
-          :skill0_id,
-          :skill1_id,
-          :skill2_id,
-          :skill3_id,
-          :skill_position
-        )
+        params.expect(party: %i[job_id accessory_id skill0_id skill1_id skill2_id skill3_id skill_position])
       end
     end
   end

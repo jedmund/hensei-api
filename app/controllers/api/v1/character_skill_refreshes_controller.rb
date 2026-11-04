@@ -14,6 +14,11 @@ module Api
                                                 by: -> { "user:#{current_user&.id || client_ip}" }
       before_action :set_refresh, only: %i[show apply]
 
+      # GET /character_skill_refreshes/:id
+      def show
+        render json: @refresh.as_json
+      end
+
       # POST /character_skill_refreshes { character_ids: [...], refetch_jp: false } → 202 { id }
       def create
         ids = Array(params[:character_ids]).map(&:to_s).uniq
@@ -30,11 +35,6 @@ module Api
                                                      refetch_jp: boolean_param(:refetch_jp))
         CharacterSkills::RefreshJob.perform_later(batch.id, 'preview')
         render json: { id: batch.id }, status: :accepted
-      end
-
-      # GET /character_skill_refreshes/:id
-      def show
-        render json: @refresh.as_json
       end
 
       # POST /character_skill_refreshes/:id/apply { character_ids: [...] } → 202

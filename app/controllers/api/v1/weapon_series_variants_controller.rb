@@ -37,17 +37,17 @@ module Api
 
       def set_weapon_series
         @weapon_series = WeaponSeries.find_by(slug: params[:weapon_series_id]) ||
-                         WeaponSeries.find(params[:weapon_series_id])
+                         WeaponSeries.find(params.expect(:weapon_series_id))
       end
 
       def set_variant
-        @variant = @weapon_series.weapon_series_variants.find(params[:id])
+        @variant = @weapon_series.weapon_series_variants.find(params.expect(:id))
       end
 
       def variant_params
-        params.require(:weapon_series_variant).permit(
-          :name, :has_weapon_keys, :has_awakening, :num_weapon_keys,
-          :augment_type, :element_changeable, :extra
+        params.expect(
+          weapon_series_variant: %i[name has_weapon_keys has_awakening num_weapon_keys
+                                    augment_type element_changeable extra]
         )
       end
     end

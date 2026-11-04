@@ -85,13 +85,13 @@ module Api
       end
 
       def set_support_summon_for_write
-        @support_summon = current_user.support_summons.find(params[:id])
+        @support_summon = current_user.support_summons.find(params.expect(:id))
       rescue ActiveRecord::RecordNotFound
         render json: { error: 'Support summon not found' }, status: :not_found
       end
 
       def support_summon_params
-        params.require(:support_summon).permit(:collection_summon_id, :section, :position, :required)
+        params.expect(support_summon: %i[collection_summon_id section position required])
       end
 
       def import_params

@@ -20,7 +20,7 @@ module Api
 
       # GET /weapon_skill_data/:id
       def show
-        @datum = WeaponSkillDatum.find(params[:id])
+        @datum = WeaponSkillDatum.find(params.expect(:id))
         render json: WeaponSkillDatumBlueprint.render(@datum)
       end
 
@@ -48,14 +48,13 @@ module Api
       private
 
       def set
-        @datum = WeaponSkillDatum.find(params[:id])
+        @datum = WeaponSkillDatum.find(params.expect(:id))
       end
 
       def datum_params
-        params.require(:weapon_skill_datum)
-              .permit(:modifier, :boost_type, :series, :size, :formula_type,
-                      :sl1, :sl10, :sl15, :sl20, :sl25, :coefficient, :max_value,
-                      :aura_boostable, :weapon_skill_version_id)
+        params.expect(weapon_skill_datum: %i[modifier boost_type series size formula_type
+                                             sl1 sl10 sl15 sl20 sl25 coefficient max_value
+                                             aura_boostable weapon_skill_version_id])
       end
     end
   end

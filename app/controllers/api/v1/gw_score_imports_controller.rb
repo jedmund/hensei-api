@@ -12,7 +12,7 @@ module Api
       # POST /crew/import_gw_scores
       # Params: { event_number:, round:, is_cumulative:, members: [{ granblue_id:, name:, score: }] }
       def create
-        event = Event.unite_and_fight.find_by!(event_number: params[:event_number])
+        event = Event.unite_and_fight.find_by!(event_number: params.expect(:event_number))
         participation = @crew.crew_gw_participations.find_or_create_by!(event: event)
 
         membership_map = build_membership_map

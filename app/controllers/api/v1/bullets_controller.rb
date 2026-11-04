@@ -110,7 +110,7 @@ module Api
       end
 
       def set_bullet
-        @bullet = Bullet.find(params[:id])
+        @bullet = Bullet.find(params.expect(:id))
       rescue ActiveRecord::RecordNotFound
         render_not_found_response('bullet')
       end

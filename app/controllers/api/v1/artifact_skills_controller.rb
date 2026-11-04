@@ -56,7 +56,7 @@ module Api
       private
 
       def set_artifact_skill
-        @skill = ArtifactSkill.find(params[:id])
+        @skill = ArtifactSkill.find(params.expect(:id))
       end
 
       def artifact_skill_params

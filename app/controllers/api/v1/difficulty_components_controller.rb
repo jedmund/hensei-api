@@ -48,7 +48,7 @@ module Api
       end
 
       def component_params
-        params.require(:difficulty_component).permit(:weight, :enabled, :min_count_to_score, :target_max)
+        params.expect(difficulty_component: %i[weight enabled min_count_to_score target_max])
       end
 
       def with_drafts?

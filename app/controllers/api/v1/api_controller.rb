@@ -111,7 +111,8 @@ module Api
         return if current_user.last_extension_version == version &&
                   last_at && last_at > 1.hour.ago
 
-        current_user.update_columns(
+        # Request bookkeeping: skip the User callbacks and leave updated_at alone
+        current_user.update_columns( # rubocop:disable Rails/SkipsModelValidations
           last_extension_version: version,
           last_extension_version_at: Time.current
         )
@@ -258,7 +259,7 @@ module Api
       # Reads from X-Per-Page header
       def page_size(default = COLLECTION_PER_PAGE)
         per_page_header = request.headers['X-Per-Page']
-        return default unless per_page_header.present?
+        return default if per_page_header.blank?
 
         requested_size = per_page_header.to_i
         return default if requested_size <= 0
@@ -274,7 +275,7 @@ module Api
       # Returns a clamped page size from the `limit` query parameter
       def collection_page_size(default = 50)
         raw = params[:limit]
-        return default unless raw.present?
+        return default if raw.blank?
 
         requested = raw.to_i
         return default if requested <= 0
