@@ -165,3 +165,8 @@ RSpec/ContextWording:
 RSpec/LetSetup:
   Exclude:
     - 'spec/support/**/*'
+
+# Cross-cutting specs (golden snapshots, data integrity, rake tasks, config
+# files) describe a behavior, not one class
+RSpec/DescribeClass:
+  Enabled: false
