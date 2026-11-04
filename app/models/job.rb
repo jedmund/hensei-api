@@ -4,7 +4,8 @@ class Job < ApplicationRecord
   include PgSearch::Model
 
   belongs_to :party, optional: true
-  has_many :skills, class_name: 'JobSkill', dependent: nil
+  # The job's own skills block deleting it (a validation error).
+  has_many :skills, class_name: 'JobSkill', dependent: :restrict_with_error
 
   multisearchable against: %i[name_en name_jp],
                   additional_attributes: lambda { |job|

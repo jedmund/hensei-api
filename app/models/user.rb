@@ -17,6 +17,9 @@ class User < ApplicationRecord
 
   # Crew associations
   has_many :crew_memberships, dependent: :destroy
+  # The scoped views below are rows of crew_memberships and crew_invitations,
+  # whose dependent: :destroy already removes them; a second dependent here
+  # would run the rows' own destroy callbacks twice.
   has_one :active_crew_membership, -> { where(retired: false) }, class_name: 'CrewMembership',
                                                                  inverse_of: :user, dependent: nil
   has_one :crew, through: :active_crew_membership
@@ -40,8 +43,10 @@ class User < ApplicationRecord
                                 dependent: :nullify
   has_many :collection_source_parties, class_name: 'Party', foreign_key: :collection_source_user_id,
                                        inverse_of: :collection_source_user, dependent: :nullify
+  # AccountDeletion::Purge releases claims first (and clears claim_confirmed),
+  # so a destroy that finds one left over raises instead of hitting the FK.
   has_many :claimed_phantom_players, class_name: 'PhantomPlayer', foreign_key: :claimed_by_id,
-                                     inverse_of: :claimed_by, dependent: nil
+                                     inverse_of: :claimed_by, dependent: :restrict_with_exception
 
   ##### ActiveRecord Validations
   USERNAME_FORMAT = /\A[a-zA-Z0-9_-]+\z/

@@ -68,10 +68,12 @@ class Weapon < ApplicationRecord
                     }
                   }
 
-  has_many :weapon_awakenings, dependent: nil
+  # Pure join rows (which awakenings the weapon can take): they go with it.
+  has_many :weapon_awakenings, dependent: :destroy
   has_many :awakenings, through: :weapon_awakenings
+  # Built and curated skill data: remove it on purpose before deleting the weapon.
   has_many :weapon_skills, -> { order(:position) }, primary_key: :granblue_id, foreign_key: :weapon_granblue_id, inverse_of: :weapon,
-                                                    dependent: nil
+                                                    dependent: :restrict_with_error
   has_many :weapon_skill_versions, through: :weapon_skills
   has_many :skills, through: :weapon_skill_versions
   belongs_to :weapon_series, optional: true
@@ -80,6 +82,8 @@ class Weapon < ApplicationRecord
                                    inverse_of: false
   belongs_to :base_weapon, class_name: 'Weapon', primary_key: :granblue_id, foreign_key: :forged_from, optional: true,
                            inverse_of: false
+  # Every weapon sharing the chain id, this one included, so a restrict would
+  # block deleting any chain member; the others are left as they are.
   has_many :forge_chain_weapons, class_name: 'Weapon', primary_key: :forge_chain_id, foreign_key: :forge_chain_id,
                                  inverse_of: false, dependent: nil
 

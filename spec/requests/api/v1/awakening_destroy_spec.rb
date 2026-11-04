@@ -15,12 +15,12 @@ RSpec.describe 'DELETE /api/v1/awakenings/:id', type: :request do
     expect(Awakening.exists?(awakening.id)).to be(false)
   end
 
-  it 'keeps an awakening a weapon lists' do
+  it 'refuses to delete an awakening a weapon lists' do
     create(:weapon_awakening, awakening: awakening)
 
     delete "/api/v1/awakenings/#{awakening.id}", headers: editor_headers
 
-    expect(response).to have_http_status(:internal_server_error)
+    expect(response).to have_http_status(:unprocessable_content)
     expect(Awakening.exists?(awakening.id)).to be(true)
   end
 end

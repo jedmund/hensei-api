@@ -10,21 +10,26 @@ RSpec.describe 'Association dependents' do # rubocop:disable RSpec/DescribeClass
       awakening = create(:awakening, :for_weapon)
       create(:weapon_awakening, awakening: awakening)
 
-      expect { awakening.destroy }.to raise_error(ActiveRecord::InvalidForeignKey)
+      expect(awakening.destroy).to be(false)
+      expect(awakening.errors[:base].join).to include('weapon awakenings exist')
+      expect(described_class.exists?(awakening.id)).to be(true)
     end
   end
 
   describe Weapon do
-    it 'cannot be destroyed while it lists an awakening' do
+    it 'takes the awakenings it lists (the join rows) with it' do
       join = create(:weapon_awakening)
 
-      expect { join.weapon.destroy }.to raise_error(ActiveRecord::InvalidForeignKey)
+      expect(join.weapon.destroy).to be_truthy
+      expect(WeaponAwakening.exists?(join.id)).to be(false)
+      expect(Awakening.exists?(join.awakening_id)).to be(true)
     end
 
-    it 'leaves its skills behind when destroyed' do
+    it 'cannot be destroyed while it has skills' do
       skill = create(:weapon_skill)
 
-      expect(skill.weapon.destroy).to be_truthy
+      expect(skill.weapon.destroy).to be(false)
+      expect(described_class.exists?(skill.weapon.id)).to be(true)
       expect(WeaponSkill.exists?(skill.id)).to be(true)
     end
 
@@ -39,10 +44,11 @@ RSpec.describe 'Association dependents' do # rubocop:disable RSpec/DescribeClass
   end
 
   describe Job do
-    it 'leaves its skills behind when destroyed' do
+    it 'cannot be destroyed while it has skills' do
       skill = create(:job_skill)
 
-      expect(skill.job.destroy).to be_truthy
+      expect(skill.job.destroy).to be(false)
+      expect(described_class.exists?(skill.job.id)).to be(true)
       expect(JobSkill.exists?(skill.id)).to be(true)
     end
   end
@@ -92,7 +98,7 @@ RSpec.describe 'Association dependents' do # rubocop:disable RSpec/DescribeClass
     it 'cannot be destroyed while it holds a phantom claim' do
       phantom = create(:phantom_player, :claimed)
 
-      expect { phantom.claimed_by.destroy }.to raise_error(ActiveRecord::InvalidForeignKey)
+      expect { phantom.claimed_by.destroy }.to raise_error(ActiveRecord::DeleteRestrictionError)
     end
 
     it 'is destroyed once account deletion has released its phantom claims' do
