@@ -52,11 +52,9 @@ class PartyCollectionSync
     ActiveRecord::Base.transaction do
       # Only the link columns change: the rows skip validation and their save
       # callbacks (mainhand and awakening defaults, the summon boost recompute).
-      # rubocop:disable Rails/SkipsModelValidations -- clearing link columns only; the rows must not be revalidated or re-saved
       @party.characters.where.not(collection_character_id: nil).update_all(collection_character_id: nil)
       @party.weapons.where.not(collection_weapon_id: nil).update_all(collection_weapon_id: nil, orphaned: false)
       @party.summons.where.not(collection_summon_id: nil).update_all(collection_summon_id: nil, orphaned: false)
-      # rubocop:enable Rails/SkipsModelValidations
       @party.update!(collection_source_user_id: nil)
     end
   end
