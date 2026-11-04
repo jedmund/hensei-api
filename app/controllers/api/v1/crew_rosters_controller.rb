@@ -14,19 +14,13 @@ class Api::V1::CrewRostersController < Api::V1::ApiController
   end
 
   def show
+    result = { roster: Api::V1::CrewRosterBlueprint.render_as_hash(@roster, view: :full), items: [], members: [] }
+
     # If the roster has items, also fetch ownership data
-    result = { roster: Api::V1::CrewRosterBlueprint.render_as_hash(@roster, view: :full) }
-
     if @roster.items.present?
-      character_ids = @roster.items.select { |i| i['type'] == 'Character' }.pluck('id')
-      weapon_ids = @roster.items.select { |i| i['type'] == 'Weapon' }.pluck('id')
-      summon_ids = @roster.items.select { |i| i['type'] == 'Summon' }.pluck('id')
-
-      result[:items] = enrich_items(character_ids, weapon_ids, summon_ids)
-      result[:members] = fetch_roster_members(character_ids, weapon_ids, summon_ids)
-    else
-      result[:items] = []
-      result[:members] = []
+      ownership = CrewRosterOwnership.new(@roster, crew: @crew, viewer: current_user)
+      result[:items] = ownership.items
+      result[:members] = ownership.members
     end
 
     render json: result
@@ -55,124 +49,5 @@ class Api::V1::CrewRostersController < Api::V1::ApiController
 
   def roster_params
     params.permit(:name, items: %i[id type])
-  end
-
-  def enrich_items(character_ids, weapon_ids, summon_ids)
-    items = []
-
-    if character_ids.present?
-      Character.where(id: character_ids).find_each do |c|
-        items << {
-          id: c.id, type: 'Character', granblue_id: c.granblue_id, name: c.name_en,
-          element: c.element, season: c.season,
-          uncap: { flb: c.flb, ulb: c.ulb, transcendence: c.transcendence },
-          special: c.special
-        }
-      end
-    end
-
-    if weapon_ids.present?
-      Weapon.where(id: weapon_ids).find_each do |w|
-        items << {
-          id: w.id, type: 'Weapon', granblue_id: w.granblue_id, name: w.name_en,
-          element: w.element,
-          uncap: { flb: w.flb, ulb: w.ulb, transcendence: w.transcendence }
-        }
-      end
-    end
-
-    if summon_ids.present?
-      Summon.where(id: summon_ids).find_each do |s|
-        items << {
-          id: s.id, type: 'Summon', granblue_id: s.granblue_id, name: s.name_en,
-          element: s.element,
-          uncap: { flb: s.flb, ulb: s.ulb, transcendence: s.transcendence }
-        }
-      end
-    end
-
-    # Preserve the original ordering from the roster
-    item_order = @roster.items.pluck('id')
-    items.sort_by { |i| item_order.index(i[:id]) || items.length }
-  end
-
-  def fetch_roster_members(character_ids, weapon_ids, summon_ids)
-    memberships = @crew.active_memberships.includes(:user)
-    # Respect each member's collection privacy; private collections stay empty.
-    user_ids = memberships.select { |m| m.user.collection_viewable_by?(current_user) }.map(&:user_id)
-
-    # Batch-load all collection data in 3 queries (instead of 3 × N members)
-    chars_by_user = if character_ids.present?
-                      CollectionCharacter.where(user_id: user_ids)
-                                         .joins(:character)
-                                         .where(characters: { id: character_ids })
-                                         .includes(:character)
-                                         .group_by(&:user_id)
-                    else
-                      {}
-                    end
-
-    weapons_by_user = if weapon_ids.present?
-                        CollectionWeapon.where(user_id: user_ids)
-                                        .joins(:weapon)
-                                        .where(weapons: { id: weapon_ids })
-                                        .includes(:weapon)
-                                        .group_by(&:user_id)
-                      else
-                        {}
-                      end
-
-    summons_by_user = if summon_ids.present?
-                        CollectionSummon.where(user_id: user_ids)
-                                        .joins(:summon)
-                                        .where(summons: { id: summon_ids })
-                                        .includes(:summon)
-                                        .group_by(&:user_id)
-                      else
-                        {}
-                      end
-
-    memberships.map do |membership|
-      user = membership.user
-      {
-        user_id: user.id,
-        username: user.username,
-        role: membership.role,
-        characters: (chars_by_user[user.id] || []).map do |cc|
-          c = cc.character
-          {
-            id: c.id,
-            uncap_level: cc.uncap_level,
-            transcendence_step: cc.transcendence_step,
-            flb: c.flb,
-            ulb: c.ulb,
-            transcendence: c.transcendence,
-            special: c.special
-          }
-        end,
-        weapons: (weapons_by_user[user.id] || []).map do |cw|
-          w = cw.weapon
-          {
-            id: w.id,
-            uncap_level: cw.uncap_level,
-            transcendence_step: cw.transcendence_step,
-            flb: w.flb,
-            ulb: w.ulb,
-            transcendence: w.transcendence
-          }
-        end,
-        summons: (summons_by_user[user.id] || []).map do |cs|
-          s = cs.summon
-          {
-            id: s.id,
-            uncap_level: cs.uncap_level,
-            transcendence_step: cs.transcendence_step,
-            flb: s.flb,
-            ulb: s.ulb,
-            transcendence: s.transcendence
-          }
-        end
-      }
-    end
   end
 end
