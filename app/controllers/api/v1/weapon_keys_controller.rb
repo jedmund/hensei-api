@@ -13,16 +13,7 @@ module Api
       end
 
       def all
-        weapon_keys = WeaponKey.all
-
-        # Filter by series - support both new slug-based and legacy integer-based filtering
-        if request.params['series_slug'].present?
-          series = WeaponSeries.find_by(slug: request.params['series_slug'])
-          weapon_keys = weapon_keys.joins(:weapon_series).where(weapon_series: { id: series.id }) if series
-        elsif request.params['series'].present?
-          # Legacy integer support (will be deprecated)
-          weapon_keys = weapon_keys.where('? = ANY(series)', request.params['series'].to_i)
-        end
+        weapon_keys = filter_by_series(WeaponKey.all, request.params)
 
         # Filter by slot and group
         weapon_keys = weapon_keys.where(slot: request.params['slot'].to_i) if request.params['slot'].present?
@@ -48,6 +39,21 @@ module Api
         end
 
         render json: result
+      end
+
+      private
+
+      # By series slug, else by the legacy integer series (will be
+      # deprecated). An unknown slug filters nothing.
+      def filter_by_series(weapon_keys, query)
+        if query['series_slug'].present?
+          series = WeaponSeries.find_by(slug: query['series_slug'])
+          series ? weapon_keys.joins(:weapon_series).where(weapon_series: { id: series.id }) : weapon_keys
+        elsif query['series'].present?
+          weapon_keys.where('? = ANY(series)', query['series'].to_i)
+        else
+          weapon_keys
+        end
       end
     end
   end

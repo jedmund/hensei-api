@@ -25,18 +25,9 @@ module Api
                 else
                   snapshot['items'].select { |item| GachaSimulation::Configuration.eligible?(item, config) }
                 end
-        query = params[:q].to_s.downcase.first(100)
-        if query.present?
-          items = items.select do |item|
-            [item['identity'], item['granblue_id'], *item['name'].values, *item['recruits']&.values].compact.any? do |v|
-              v.downcase.include?(query)
-            end
-          end
-        end
-        modes = GachaSimulation::Configuration::MODES.keys
-        modes = [GachaSimulation::Configuration::CURRENT, *modes] if GachaBanner.exists?
-        render json: { modes: modes, seasons: GachaSimulation::Configuration::SEASONS.keys,
-                       items: items, catalogue_fingerprint: snapshot['fingerprint'], loaded_at: snapshot['loaded_at'],
+        render json: { modes: catalogue_modes, seasons: GachaSimulation::Configuration::SEASONS.keys,
+                       items: search_catalogue(items, params[:q].to_s.downcase.first(100)),
+                       catalogue_fingerprint: snapshot['fingerprint'], loaded_at: snapshot['loaded_at'],
                        banner: banner&.fetch(:info),
                        label: banner ? "The game's published banner rates" : 'Hypothetical catalogue simulations' }
       end
@@ -76,6 +67,24 @@ module Api
       end
 
       private
+
+      # The current banner is a mode once one has been stored
+      def catalogue_modes
+        modes = GachaSimulation::Configuration::MODES.keys
+        GachaBanner.exists? ? [GachaSimulation::Configuration::CURRENT, *modes] : modes
+      end
+
+      # Items whose identity, granblue id, names or recruits contain the
+      # (downcased) query; every item when it's blank.
+      def search_catalogue(items, query)
+        return items if query.blank?
+
+        items.select do |item|
+          [item['identity'], item['granblue_id'], *item['name'].values, *item['recruits']&.values].compact.any? do |v|
+            v.downcase.include?(query)
+          end
+        end
+      end
 
       # The banner's details and its rate-ups as catalogue identities
       def current_banner(config, items)

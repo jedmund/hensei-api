@@ -28,7 +28,6 @@ module Api
         parties = build_preview_base_query.where(id: party_ids).to_a
         options = { current_user: nil, party_labels: PartyStickerSummary.labels_for(party_ids), my_stickers: {} }
         rendered = PartyBlueprint.render_as_hash(parties, view: :list, **options).index_by { |hash| hash[:id] }
-        by_id = parties.index_by(&:id)
 
         payload = {
           current: feed[:current].map { |section| render_section(section, rendered) },
@@ -38,31 +37,35 @@ module Api
             )
           end,
           rising: feed[:rising].filter_map { |id| rendered[id] },
-          staff_picks: feed[:staff_picks].filter_map do |featured|
-            party = by_id[featured.party_id]
-            next unless party
-
-            featured.association(:party).target = party
-            FeaturedPartyBlueprint.render_as_hash(featured, **options)
-          end,
+          staff_picks: render_staff_picks(feed[:staff_picks], parties.index_by(&:id), options),
           new_items: feed[:new_items].map do |entry|
-            {
-              item: render_item(entry),
-              recent: entry.recent_ids.filter_map { |id| rendered[id] },
-              trending: entry.trending_ids.filter_map { |id| rendered[id] },
-              has_more: entry.has_more
-            }
+            { item: render_item(entry), **render_teams(entry, rendered) }
           end,
           new_battles: feed[:new_battles].map do |battle|
-            {
-              raid: RaidBlueprint.render_as_hash(battle.raid, view: :nested),
-              recent: battle.recent_ids.filter_map { |id| rendered[id] },
-              trending: battle.trending_ids.filter_map { |id| rendered[id] },
-              has_more: battle.has_more
-            }
+            { raid: RaidBlueprint.render_as_hash(battle.raid, view: :nested), **render_teams(battle, rendered) }
           end
         }
         JSON.parse(payload.to_json)
+      end
+
+      # Picks whose party loaded, rendered with it
+      def render_staff_picks(picks, parties_by_id, options)
+        picks.filter_map do |featured|
+          party = parties_by_id[featured.party_id]
+          next unless party
+
+          featured.association(:party).target = party
+          FeaturedPartyBlueprint.render_as_hash(featured, **options)
+        end
+      end
+
+      # A new item's or battle's recent and trending teams
+      def render_teams(entry, rendered)
+        {
+          recent: entry.recent_ids.filter_map { |id| rendered[id] },
+          trending: entry.trending_ids.filter_map { |id| rendered[id] },
+          has_more: entry.has_more
+        }
       end
 
       def render_section(section, rendered)

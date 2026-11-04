@@ -38,40 +38,48 @@ module Granblue
           # Skip entries missing required master/param data
           next unless char_data['master'] && char_data['param']
 
-          master = char_data['master']
-          param = char_data['param']
-
-          Rails.logger.debug { "[TRANSFORM] Processing character: #{master['name']}" }
-
-          # Build base character hash with required attributes
-          character = {
-            name: master['name'], # Character's display name
-            id: master['id'], # Unique identifier
-            uncap: param['evolution'].to_i # Current uncap level
-          }
-
-          Rails.logger.debug { "[TRANSFORM] Base character data: #{character}" }
-
-          # Add perpetuity ring status if present
-          if param['has_npcaugment_constant']
-            character[:ringed] = true
-            Rails.logger.debug '[TRANSFORM] Character is ringed'
-          end
-
-          # Add transcendence level if present (stored as 'phase' in raw data)
-          phase = param['phase'].to_i
-          if phase&.positive?
-            character[:transcend] = phase
-            Rails.logger.debug { "[TRANSFORM] Character has transcendence: #{phase}" }
-          end
+          character = transform_character(char_data['master'], char_data['param'])
 
           # Only add characters with valid IDs to result set
-          characters << character unless master['id'].nil?
+          characters << character unless char_data['master']['id'].nil?
           Rails.logger.info "[TRANSFORM] Successfully processed character #{character[:name]}"
         end
 
         Rails.logger.info "[TRANSFORM] Completed processing #{characters.length} characters"
         characters
+      end
+
+      private
+
+      # @param master [Hash] the character's master data
+      # @param param [Hash] the character's param data
+      # @return [Hash] the transformed character
+      def transform_character(master, param)
+        Rails.logger.debug { "[TRANSFORM] Processing character: #{master['name']}" }
+
+        # Build base character hash with required attributes
+        character = {
+          name: master['name'], # Character's display name
+          id: master['id'], # Unique identifier
+          uncap: param['evolution'].to_i # Current uncap level
+        }
+
+        Rails.logger.debug { "[TRANSFORM] Base character data: #{character}" }
+
+        # Add perpetuity ring status if present
+        if param['has_npcaugment_constant']
+          character[:ringed] = true
+          Rails.logger.debug '[TRANSFORM] Character is ringed'
+        end
+
+        # Add transcendence level if present (stored as 'phase' in raw data)
+        phase = param['phase'].to_i
+        if phase.positive?
+          character[:transcend] = phase
+          Rails.logger.debug { "[TRANSFORM] Character has transcendence: #{phase}" }
+        end
+
+        character
       end
     end
   end

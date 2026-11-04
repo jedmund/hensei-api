@@ -58,12 +58,9 @@ module Api
       def guide_effects
         entries = list_param(:guide_effects)
         return if performed?
-        return render_list_error(:guide_effects, "can hold at most #{MAX_GUIDE_EFFECTS} effects") if entries.size > MAX_GUIDE_EFFECTS
 
-        return render_list_error(:guide_effects, 'must be objects') unless entries.all?(ActionController::Parameters)
-        if entries.any? { |entry| GUIDE_EFFECT_FIELDS.any? { |key| nested?(entry[key]) } }
-          return render_list_error(:guide_effects, 'fields must be numbers, text or true/false')
-        end
+        error = guide_effects_shape_error(entries)
+        return render_list_error(:guide_effects, error) if error
 
         entries = entries.map { |entry| guide_effect_entry(entry) }
 
@@ -115,6 +112,17 @@ module Api
 
         render_list_error(key, 'must be a list')
         []
+      end
+
+      # What's wrong with the guide_effects list's shape, or nil
+      def guide_effects_shape_error(entries)
+        if entries.size > MAX_GUIDE_EFFECTS
+          "can hold at most #{MAX_GUIDE_EFFECTS} effects"
+        elsif !entries.all?(ActionController::Parameters)
+          'must be objects'
+        elsif entries.any? { |entry| GUIDE_EFFECT_FIELDS.any? { |key| nested?(entry[key]) } }
+          'fields must be numbers, text or true/false'
+        end
       end
 
       def nested?(value)

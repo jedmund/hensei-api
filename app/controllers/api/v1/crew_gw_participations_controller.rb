@@ -26,45 +26,18 @@ module Api
 
       # GET /crew/gw_participations/by_event/:event_id
       def by_event
-        # Support lookup by event_id (UUID) or event_number (integer)
-        event = if params.expect(:event_id).match?(/\A\d+\z/)
-                  Event.unite_and_fight.find_by(event_number: params[:event_id])
-                else
-                  Event.unite_and_fight.find_by(id: params[:event_id])
-                end
-
+        event = find_gw_event(params.expect(:event_id))
         return render json: { gw_event: nil, crew_gw_participation: nil, members_during_event: [] } unless event
 
-        participation = @crew.crew_gw_participations
-                             .includes(:event,
-                                       gw_individual_scores: [{ crew_membership: { user: { active_crew_membership: :crew } } }, :phantom_player])
-                             .find_by(event: event)
-
-        # IDs of members/phantoms who were truly active during the event
-        active_during_ids = @crew.crew_memberships.active_during(event.start_date, event.end_date).pluck(:id).to_set
-        active_phantom_ids = @crew.phantom_players.not_deleted.active_during(event.start_date, event.end_date).pluck(:id).to_set
-
-        # Return active_during + currently active members (for historical score entry)
-        members_during_event = @crew.crew_memberships
-                                    .includes(user: { active_crew_membership: :crew })
-                                    .active_during(event.start_date, event.end_date)
-                                    .or(@crew.crew_memberships.where(retired: false))
-
-        phantom_players = @crew.phantom_players.not_deleted
-                               .active_during(event.start_date, event.end_date)
-                               .or(@crew.phantom_players.not_deleted.where(retired: false))
+        participation = event_participation(event)
 
         render json: {
           gw_event: GwEventBlueprint.render_as_hash(event),
           crew_gw_participation: participation && CrewGwParticipationBlueprint.render_as_hash(
             participation, view: :with_individual_scores, current_user: current_user
           ),
-          members_during_event: members_during_event.map do |m|
-            CrewMembershipBlueprint.render_as_hash(m, view: :with_user).merge(active_during_event: active_during_ids.include?(m.id))
-          end,
-          phantom_players: phantom_players.map do |p|
-            PhantomPlayerBlueprint.render_as_hash(p).merge(active_during_event: active_phantom_ids.include?(p.id))
-          end
+          members_during_event: event_members(event),
+          phantom_players: event_phantoms(event)
         }
       end
 
@@ -99,6 +72,47 @@ module Api
 
       def set_participation
         @participation = @crew.crew_gw_participations.find(params.expect(:id))
+      end
+
+      # Looked up by event_number (digits) or id (UUID)
+      def find_gw_event(event_id)
+        if event_id.match?(/\A\d+\z/)
+          Event.unite_and_fight.find_by(event_number: event_id)
+        else
+          Event.unite_and_fight.find_by(id: event_id)
+        end
+      end
+
+      def event_participation(event)
+        @crew.crew_gw_participations
+             .includes(:event,
+                       gw_individual_scores: [{ crew_membership: { user: { active_crew_membership: :crew } } }, :phantom_player])
+             .find_by(event: event)
+      end
+
+      # Members active during the event plus current ones (for historical
+      # score entry), flagged by whether they were active during it.
+      def event_members(event)
+        during = @crew.crew_memberships.active_during(event.start_date, event.end_date)
+        active_ids = during.pluck(:id).to_set
+        members = @crew.crew_memberships
+                       .includes(user: { active_crew_membership: :crew })
+                       .active_during(event.start_date, event.end_date)
+                       .or(@crew.crew_memberships.where(retired: false))
+
+        members.map do |m|
+          CrewMembershipBlueprint.render_as_hash(m, view: :with_user).merge(active_during_event: active_ids.include?(m.id))
+        end
+      end
+
+      # The same for phantom players, leaving out deleted ones
+      def event_phantoms(event)
+        phantoms = @crew.phantom_players.not_deleted
+        active_ids = phantoms.active_during(event.start_date, event.end_date).pluck(:id).to_set
+
+        phantoms.active_during(event.start_date, event.end_date).or(phantoms.where(retired: false)).map do |p|
+          PhantomPlayerBlueprint.render_as_hash(p).merge(active_during_event: active_ids.include?(p.id))
+        end
       end
 
       def participation_params

@@ -43,25 +43,41 @@ module Granblue
           log_info "Downloading style swap variant: #{@id}_01_st2 -> #{@id}_01_style" if @verbose
           download_style_variant(selected_size)
         else
-          # All characters have 01 and 02 variants
-          poses = %w[01 02]
-          poses << '03' if character.flb
-          poses << '04' if character.ulb || character.transcendence
-
-          variants = poses.map { |pose| "#{@id}_#{pose}" }
-
-          log_info "Downloading character variants: #{variants.join(', ')}" if @verbose
-
-          variants.each do |variant_id|
-            download_variant(variant_id, selected_size)
-          end
-
-          # Gender variants (Gran=_0, Djeeta=_1) only for characters that have them
-          download_gender_variants(poses, selected_size) if character.gender_variants?
-
-          # Null-element characters (element == 0) have element-suffixed variants
-          download_element_variants(character, poses, selected_size) if character.element&.zero?
+          download_pose_variants(character, selected_size)
         end
+      end
+
+      # Downloads a character's poses, then its gender and element copies of them.
+      #
+      # @param character [Character] Character model instance to download images for
+      # @param selected_size [String] The size to download. If nil, downloads all sizes.
+      # @return [void]
+      def download_pose_variants(character, selected_size)
+        poses = poses_for(character)
+        variants = poses.map { |pose| "#{@id}_#{pose}" }
+
+        log_info "Downloading character variants: #{variants.join(', ')}" if @verbose
+
+        variants.each do |variant_id|
+          download_variant(variant_id, selected_size)
+        end
+
+        # Gender variants (Gran=_0, Djeeta=_1) only for characters that have them
+        download_gender_variants(poses, selected_size) if character.gender_variants?
+
+        # Null-element characters (element == 0) have element-suffixed variants
+        download_element_variants(character, poses, selected_size) if character.element&.zero?
+      end
+
+      # All characters have 01 and 02; 03 comes with FLB and 04 with ULB or transcendence.
+      #
+      # @param character [Character]
+      # @return [Array<String>]
+      def poses_for(character)
+        poses = %w[01 02]
+        poses << '03' if character.flb
+        poses << '04' if character.ulb || character.transcendence
+        poses
       end
 
       # Downloads gender variants (Gran=_0, Djeeta=_1) for any character.
