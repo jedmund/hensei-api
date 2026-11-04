@@ -3,8 +3,8 @@
 # Editor-only collection endpoints over catalogue tables (weapons, characters,
 # summons, ...). A controller declares what may be filtered, sorted, returned
 # and faceted (AdminCollection::Definition); AdminCollection::Query parses the
-# query string against that allowlist; this concern renders one page of flat
-# rows with an ETag.
+# query string against that allowlist, with AdminCollection::Filters parsing
+# filter[]; this concern renders one page of flat rows with an ETag.
 #
 #   GET /admin/weapons?q=sword&filter[element]=1,2&filter[release_date][gte]=2024-01-01
 #       &filter[no_skills]=true&sort=-updated_at,name_en&page=1&per=50
@@ -35,6 +35,11 @@ module AdminCollection
   UUID_FORMAT = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/i
 
   class InvalidQuery < StandardError; end
+
+  # A comma-separated param as its non-blank values
+  def self.csv(value)
+    value.to_s.split(',').map(&:strip).compact_blank
+  end
 
   included do
     class_attribute :admin_collection_definition, instance_writer: false
