@@ -13,12 +13,12 @@ RSpec.describe 'Collection Summons API', type: :request do
   let(:summon) { create(:summon) }
 
   describe 'GET /api/v1/users/:user_id/collection/summons' do
-    let(:summon1) { create(:summon) }
-    let(:summon2) { create(:summon) }
+    let(:first_summon) { create(:summon) }
+    let(:second_summon) { create(:summon) }
 
     before do
-      create(:collection_summon, user: user, summon: summon1, uncap_level: 5)
-      create(:collection_summon, user: user, summon: summon2, uncap_level: 3)
+      create(:collection_summon, user: user, summon: first_summon, uncap_level: 5)
+      create(:collection_summon, user: user, summon: second_summon, uncap_level: 3)
       create(:collection_summon, user: other_user)
     end
 
@@ -41,13 +41,13 @@ RSpec.describe 'Collection Summons API', type: :request do
     end
 
     it 'supports filtering by summon' do
-      get "/api/v1/users/#{user.id}/collection/summons", params: { summon_id: summon1.id }, headers: headers
+      get "/api/v1/users/#{user.id}/collection/summons", params: { summon_id: first_summon.id }, headers: headers
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
       summons = json['summons']
       expect(summons.length).to eq(1)
-      expect(summons.first['summon']['id']).to eq(summon1.id)
+      expect(summons.first['summon']['id']).to eq(first_summon.id)
     end
 
     it 'supports filtering by both element and rarity' do

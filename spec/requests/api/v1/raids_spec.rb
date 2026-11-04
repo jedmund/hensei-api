@@ -20,8 +20,8 @@ RSpec.describe 'Api::V1::Raids', type: :request do
 
   describe 'GET /api/v1/raids' do
     let!(:group) { create(:raid_group) }
-    let!(:raid1) { create(:raid, group: group, element: 4) }
-    let!(:raid2) { create(:raid, group: group, element: 1) }
+    let!(:first_raid) { create(:raid, group: group, element: 4) }
+    let!(:second_raid) { create(:raid, group: group, element: 1) }
 
     it 'returns all raids with correct fields' do
       get '/api/v1/raids'
@@ -30,11 +30,11 @@ RSpec.describe 'Api::V1::Raids', type: :request do
       json = response.parsed_body
       expect(json.length).to be >= 2
 
-      entry = json.find { |r| r['id'] == raid1.id }
-      expect(entry['name']['en']).to eq(raid1.name_en)
-      expect(entry['slug']).to eq(raid1.slug)
-      expect(entry['level']).to eq(raid1.level)
-      expect(entry['element']).to eq(raid1.element)
+      entry = json.find { |r| r['id'] == first_raid.id }
+      expect(entry['name']['en']).to eq(first_raid.name_en)
+      expect(entry['slug']).to eq(first_raid.slug)
+      expect(entry['level']).to eq(first_raid.level)
+      expect(entry['element']).to eq(first_raid.element)
     end
 
     it 'filters by element and excludes non-matching' do
@@ -46,8 +46,8 @@ RSpec.describe 'Api::V1::Raids', type: :request do
         expect(r['element']).to eq(4)
       end
       ids = json.map { |r| r['id'] }
-      expect(ids).to include(raid1.id)
-      expect(ids).not_to include(raid2.id)
+      expect(ids).to include(first_raid.id)
+      expect(ids).not_to include(second_raid.id)
     end
 
     it 'filters by group_id and excludes other groups' do
@@ -58,7 +58,7 @@ RSpec.describe 'Api::V1::Raids', type: :request do
       expect(response).to have_http_status(:ok)
 
       ids = response.parsed_body.map { |r| r['id'] }
-      expect(ids).to include(raid1.id, raid2.id)
+      expect(ids).to include(first_raid.id, second_raid.id)
       expect(ids).not_to include(other_raid.id)
     end
   end

@@ -15,12 +15,12 @@ RSpec.describe 'Collection Weapons API', type: :request do
   let(:weapon_key) { create(:weapon_key) }
 
   describe 'GET /api/v1/users/:user_id/collection/weapons' do
-    let(:weapon1) { create(:weapon) }
-    let(:weapon2) { create(:weapon) }
+    let(:first_weapon) { create(:weapon) }
+    let(:second_weapon) { create(:weapon) }
 
     before do
-      create(:collection_weapon, user: user, weapon: weapon1, uncap_level: 5)
-      create(:collection_weapon, user: user, weapon: weapon2, uncap_level: 3)
+      create(:collection_weapon, user: user, weapon: first_weapon, uncap_level: 5)
+      create(:collection_weapon, user: user, weapon: second_weapon, uncap_level: 3)
       create(:collection_weapon, user: other_user)
     end
 
@@ -43,13 +43,13 @@ RSpec.describe 'Collection Weapons API', type: :request do
     end
 
     it 'supports filtering by weapon' do
-      get "/api/v1/users/#{user.id}/collection/weapons", params: { weapon_id: weapon1.id }, headers: headers
+      get "/api/v1/users/#{user.id}/collection/weapons", params: { weapon_id: first_weapon.id }, headers: headers
 
       expect(response).to have_http_status(:ok)
       json = response.parsed_body
       weapons = json['weapons']
       expect(weapons.length).to eq(1)
-      expect(weapons.first['weapon']['id']).to eq(weapon1.id)
+      expect(weapons.first['weapon']['id']).to eq(first_weapon.id)
     end
 
     it 'supports filtering by both element and rarity' do

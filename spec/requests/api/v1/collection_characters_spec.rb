@@ -14,12 +14,12 @@ RSpec.describe 'Collection Characters API', type: :request do
   let(:awakening) { create(:awakening, object_type: 'Character') }
 
   describe 'GET /api/v1/users/:user_id/collection/characters' do
-    let(:character1) { create(:character) }
-    let(:character2) { create(:character) }
+    let(:first_character) { create(:character) }
+    let(:second_character) { create(:character) }
 
     before do
-      create(:collection_character, user: user, character: character1, uncap_level: 5)
-      create(:collection_character, user: user, character: character2, uncap_level: 3)
+      create(:collection_character, user: user, character: first_character, uncap_level: 5)
+      create(:collection_character, user: user, character: second_character, uncap_level: 3)
       create(:collection_character, user: other_user)
     end
 

@@ -159,17 +159,17 @@ RSpec.describe 'GridCharacterRoles API', type: :request do
   end
 
   describe 'POST /api/v1/grid_character_roles/reorder' do
-    let!(:role1) { create(:grid_character_role, name_en: 'A', sort_order: 1) }
-    let!(:role2) { create(:grid_character_role, name_en: 'B', sort_order: 2) }
+    let!(:role_a) { create(:grid_character_role, name_en: 'A', sort_order: 1) }
+    let!(:role_b) { create(:grid_character_role, name_en: 'B', sort_order: 2) }
 
     it 'reorders as editor' do
       post '/api/v1/grid_character_roles/reorder',
-           params: { roles: [{ id: role1.id, sort_order: 2 }, { id: role2.id, sort_order: 1 }] },
+           params: { roles: [{ id: role_a.id, sort_order: 2 }, { id: role_b.id, sort_order: 1 }] },
            headers: editor_headers, as: :json
 
       expect(response).to have_http_status(:ok)
-      expect(role1.reload.sort_order).to eq(2)
-      expect(role2.reload.sort_order).to eq(1)
+      expect(role_a.reload.sort_order).to eq(2)
+      expect(role_b.reload.sort_order).to eq(1)
     end
 
     it 'returns 422 when roles array missing' do
@@ -179,10 +179,10 @@ RSpec.describe 'GridCharacterRoles API', type: :request do
 
     it 'returns 422 with the missing ids and rolls back when a role id is unknown' do
       bogus = SecureRandom.uuid
-      original_sort_orders = [role1.sort_order, role2.sort_order]
+      original_sort_orders = [role_a.sort_order, role_b.sort_order]
 
       post '/api/v1/grid_character_roles/reorder',
-           params: { roles: [{ id: role1.id, sort_order: 9 }, { id: bogus, sort_order: 1 }] },
+           params: { roles: [{ id: role_a.id, sort_order: 9 }, { id: bogus, sort_order: 1 }] },
            headers: editor_headers, as: :json
 
       expect(response).to have_http_status(:unprocessable_content)
@@ -190,31 +190,31 @@ RSpec.describe 'GridCharacterRoles API', type: :request do
       expect(body['ids']).to include(bogus)
 
       # The valid update is rejected up front, not partially applied.
-      expect([role1.reload.sort_order, role2.reload.sort_order]).to eq(original_sort_orders)
+      expect([role_a.reload.sort_order, role_b.reload.sort_order]).to eq(original_sort_orders)
     end
 
     it 'returns unauthorized for regular user' do
       post '/api/v1/grid_character_roles/reorder',
-           params: { roles: [{ id: role1.id, sort_order: 9 }] },
+           params: { roles: [{ id: role_a.id, sort_order: 9 }] },
            headers: user_headers, as: :json
       expect(response).to have_http_status(:unauthorized)
-      expect(role1.reload.sort_order).to eq(1)
+      expect(role_a.reload.sort_order).to eq(1)
     end
 
     it 'returns unauthorized when signed out' do
       post '/api/v1/grid_character_roles/reorder',
-           params: { roles: [{ id: role1.id, sort_order: 9 }] }, as: :json
+           params: { roles: [{ id: role_a.id, sort_order: 9 }] }, as: :json
       expect(response).to have_http_status(:unauthorized)
-      expect(role1.reload.sort_order).to eq(1)
+      expect(role_a.reload.sort_order).to eq(1)
     end
 
     it 'rejects a negative sort_order and rolls back the batch' do
       post '/api/v1/grid_character_roles/reorder',
-           params: { roles: [{ id: role1.id, sort_order: 5 }, { id: role2.id, sort_order: -1 }] },
+           params: { roles: [{ id: role_a.id, sort_order: 5 }, { id: role_b.id, sort_order: -1 }] },
            headers: editor_headers, as: :json
 
       expect(response).to have_http_status(:unprocessable_content)
-      expect([role1.reload.sort_order, role2.reload.sort_order]).to eq([1, 2])
+      expect([role_a.reload.sort_order, role_b.reload.sort_order]).to eq([1, 2])
     end
   end
 
