@@ -6,318 +6,42 @@ module Api
       rate_limit to: 30, within: 1.minute, by: -> { client_ip }, only: :suggestions,
                  with: -> { render json: { error: 'Rate limit exceeded. Try again later.' }, status: :too_many_requests }
 
-      TRIGRAM = {
-        trigram: {
-          threshold: 0.3
-        }
-      }.freeze
-
-      TSEARCH_WITH_PREFIX = {
-        tsearch: {
-          prefix: true,
-          dictionary: 'simple'
-        }
-      }.freeze
-
       def all
-        locale = search_locale
-
-        case locale
-        when 'en'
-          results = search_all_en
-        when 'ja'
-          results = search_all_ja
-        end
-
-        render json: SearchBlueprint.render(results, root: :results)
-      end
-
-      def search_all_en
-        query = search_params[:query]
-        exclude = search_params[:exclude]
-
-        PgSearch.multisearch_options = { using: TRIGRAM }
-        results = PgSearch.multisearch(query).where.not(granblue_id: exclude).includes(:searchable).limit(10)
-
-        if (results.length < 5) && (query.length >= 2)
-          PgSearch.multisearch_options = { using: TSEARCH_WITH_PREFIX }
-          results = PgSearch.multisearch(query).where.not(granblue_id: exclude).includes(:searchable).limit(10)
-        end
-
-        results
-      end
-
-      def search_all_ja
-        query = search_params[:query]
-        exclude = search_params[:exclude]
-
-        PgSearch.multisearch_options = { using: TSEARCH_WITH_PREFIX }
-        PgSearch.multisearch(query).where.not(granblue_id: exclude).includes(:searchable).limit(10)
+        render json: SearchBlueprint.render(UnifiedSearchQuery.call(search_params, locale: search_locale),
+                                            root: :results)
       end
 
       def characters
-        filters = search_params[:filters]
-        locale = search_locale
-        exclude = search_params[:exclude]
-        conditions = {}
-
-        if filters
-          conditions[:rarity] = filters['rarity'] unless filters['rarity'].blank? || filters['rarity'].empty?
-          conditions[:element] = filters['element'] unless filters['element'].blank? || filters['element'].empty?
-          conditions[:season] = filters['season'] unless filters['season'].blank? || filters['season'].empty?
-          conditions[:gender] = filters['gender'] unless filters['gender'].blank? || filters['gender'].empty?
-        end
-
-        characters = if search_params[:query].present? && search_params[:query].length >= 2
-                       if locale == 'ja'
-                         Character.ja_search(search_params[:query]).where(conditions)
-                       else
-                         Character.en_search(search_params[:query]).where(conditions)
-                       end
-                     else
-                       Character.where(conditions)
-                     end
-
-        # Apply sorting if specified, otherwise use default
-        if search_params[:sort].present?
-          characters = apply_sort(characters, search_params[:sort], search_params[:order], locale)
-        elsif search_params[:query].blank?
-          characters = characters.order(latest_date: :desc, id: :asc)
-        end
-
-        # Filter by proficiency (matches proficiency1 or proficiency2)
-        if filters && filters['proficiency1'].present? && !filters['proficiency1'].empty?
-          prof_values = Array(filters['proficiency1']).map(&:to_i)
-          characters = characters.where(proficiency1: prof_values).or(characters.where(proficiency2: prof_values))
-        end
-
-        # Filter by race (matches race1 or race2)
-        if filters && filters['race'].present? && !filters['race'].empty?
-          race_values = Array(filters['race']).map(&:to_i)
-          characters = characters.where(race1: race_values).or(characters.where(race2: race_values))
-        end
-
-        # Filter by character series (UUID-based)
-        characters = characters.by_series(Array(filters['series'])) if filters && filters['series'].present? && !filters['series'].empty?
-
-        # Exclude already-owned characters (for collection modal)
-        characters = characters.where.not(id: exclude) if exclude.present? && exclude.any?
-
-        count = characters.length
-        paginated = characters.includes(:character_series_records)
-                              .paginate(page: search_params[:page], per_page: search_page_size)
-
-        render json: CharacterBlueprint.render(paginated,
-                                               view: :dates,
-                                               root: :results,
-                                               meta: pagination_meta(paginated).merge(count: count))
+        render_page CharacterSearchQuery.call(search_params, locale: search_locale),
+                    CharacterBlueprint, view: :dates, includes: :character_series_records
       end
 
       def weapons
-        filters = search_params[:filters]
-        locale = search_locale
-        conditions = {}
-
-        if filters
-          conditions[:rarity] = filters['rarity'] unless filters['rarity'].blank? || filters['rarity'].empty?
-          conditions[:element] = filters['element'] unless filters['element'].blank? || filters['element'].empty?
-          unless filters['proficiency1'].blank? || filters['proficiency1'].empty?
-            conditions[:proficiency] =
-              filters['proficiency1']
-          end
-          conditions[:weapon_series_id] = filters['series'] unless filters['series'].blank? || filters['series'].empty?
-          conditions[:extra] = filters['extra'] if filters['extra'].present?
-        end
-
-        weapons = if search_params[:query].present? && search_params[:query].length >= 2
-                    if locale == 'ja'
-                      Weapon.ja_search(search_params[:query]).where(conditions)
-                    else
-                      Weapon.en_search(search_params[:query]).where(conditions)
-                    end
-                  else
-                    Weapon.where(conditions)
-                  end
-
-        # Apply sorting if specified, otherwise use default
-        if search_params[:sort].present?
-          weapons = apply_sort(weapons, search_params[:sort], search_params[:order], locale)
-        elsif search_params[:query].blank?
-          weapons = weapons.order(latest_date: :desc, id: :asc)
-        end
-
-        # Filter by promotions (array overlap)
-        if filters && filters['promotions'].present? && !filters['promotions'].empty?
-          promotions_values = Array(filters['promotions']).map(&:to_i)
-          weapons = weapons.where('promotions && ARRAY[?]::integer[]', promotions_values)
-        end
-
-        count = weapons.length
-        paginated = weapons.includes(
-          :weapon_series,
-          :weapon_series_variant,
-          :base_weapon,
-          recruited_character: :character_series_records
-        ).paginate(page: search_params[:page], per_page: search_page_size)
-
-        render json: WeaponBlueprint.render(paginated,
-                                            view: :grid,
-                                            root: :results,
-                                            meta: pagination_meta(paginated).merge(count: count))
+        render_page WeaponSearchQuery.call(search_params, locale: search_locale),
+                    WeaponBlueprint, view: :grid, includes: [
+                      :weapon_series, :weapon_series_variant, :base_weapon,
+                      { recruited_character: :character_series_records }
+                    ]
       end
 
       def summons
-        filters = search_params[:filters]
-        locale = search_locale
-        conditions = {}
-
-        if filters
-          conditions[:rarity] = filters['rarity'] unless filters['rarity'].blank? || filters['rarity'].empty?
-          conditions[:element] = filters['element'] unless filters['element'].blank? || filters['element'].empty?
-          conditions[:subaura] = filters['subaura'] if filters['subaura'].present?
-          conditions[:summon_series_id] = filters['series'] unless filters['series'].blank? || filters['series'].empty?
-        end
-
-        summons = if search_params[:query].present? && search_params[:query].length >= 2
-                    if locale == 'ja'
-                      Summon.ja_search(search_params[:query]).where(conditions)
-                    else
-                      Summon.en_search(search_params[:query]).where(conditions)
-                    end
-                  else
-                    Summon.where(conditions)
-                  end
-
-        # Apply sorting if specified, otherwise use default
-        if search_params[:sort].present?
-          summons = apply_sort(summons, search_params[:sort], search_params[:order], locale)
-        elsif search_params[:query].blank?
-          summons = summons.order(latest_date: :desc, id: :asc)
-        end
-
-        # Filter by promotions (array overlap)
-        if filters && filters['promotions'].present? && !filters['promotions'].empty?
-          promotions_values = Array(filters['promotions']).map(&:to_i)
-          summons = summons.where('promotions && ARRAY[?]::integer[]', promotions_values)
-        end
-
-        count = summons.length
-        paginated = summons.includes(:summon_series).paginate(page: search_params[:page], per_page: search_page_size)
-
-        render json: SummonBlueprint.render(paginated,
-                                            view: :dates,
-                                            root: :results,
-                                            meta: pagination_meta(paginated).merge(count: count))
+        render_page SummonSearchQuery.call(search_params, locale: search_locale),
+                    SummonBlueprint, view: :dates, includes: :summon_series
       end
 
       def job_skills
-        raise Api::V1::NoJobProvidedError unless search_params[:job].present?
+        raise Api::V1::NoJobProvidedError if search_params[:job].blank?
 
-        # Set up basic parameters we'll use
         job = Job.find(search_params[:job])
-        locale = search_locale
-
-        # Set the conditions based on the group requested
-        conditions = {}
-        if search_params[:filters].present? && search_params[:filters]['group'].present?
-          group = search_params[:filters]['group'].to_i
-
-          if group >= 0 && group < 4
-            conditions[:color] = group
-            conditions[:emp] = false
-            conditions[:base] = false
-          elsif group == 4
-            conditions[:emp] = true
-          elsif group == 5
-            conditions[:base] = true
-          end
-        end
-
-        # Perform the query. The base_job clauses only apply when the job has a
-        # base job; base jobs themselves have none (job.base_job is nil), so they
-        # drop out via compact instead of dereferencing job.base_job.id (was a 500).
-        relations =
-          if search_params[:query].present? && search_params[:query].length >= 2
-            base = JobSkill.joins(:job).method("#{locale}_search").call(search_params[:query]).where(conditions)
-            [
-              base.where(job: job.id, main: false),
-              base.where(sub: true).where.not(job: job.id),
-              job.base_job && base.where(job: { base_job: job.base_job.id }, emp: true).where.not(job: job.id),
-              job.base_job && base.where(job: { base_job: job.base_job.id }, base: true).where.not(job: job.id)
-            ]
-          else
-            [
-              JobSkill.all.joins(:job).where(conditions).where(job: job.id, main: false),
-              JobSkill.all.where(conditions).where(sub: true).where.not(job: job.id),
-              job.base_job && JobSkill.all.where(conditions).where(job: job.base_job.id, base: true).where.not(job: job.id),
-              job.base_job && JobSkill.all.where(conditions).joins(:job).where(job: { base_job: job.base_job.id }, emp: true).where.not(job: job.id)
-            ]
-          end
-
-        skills = relations.compact.reduce(:or)
-
-        count = skills.length
-        paginated = skills.paginate(page: search_params[:page], per_page: search_page_size)
-
-        render json: JobSkillBlueprint.render(paginated,
-                                              root: :results,
-                                              meta: pagination_meta(paginated).merge(count: count))
+        render_page JobSkillSearchQuery.call(search_params, locale: search_locale, job: job), JobSkillBlueprint
       end
 
       def jobs
-        filters = search_params[:filters]
-        locale = search_locale
-        conditions = {}
-
-        if filters
-          conditions[:row] = filters['row'] unless filters['row'].blank? || filters['row'].empty?
-          unless filters['proficiency'].blank? || filters['proficiency'].empty?
-            # Filter by either proficiency1 or proficiency2 matching
-            proficiency_values = Array(filters['proficiency']).map(&:to_i)
-            conditions[:proficiency1] = proficiency_values
-          end
-        end
-
-        jobs = if search_params[:query].present? && search_params[:query].length >= 2
-                 if locale == 'ja'
-                   Job.ja_search(search_params[:query]).where(conditions)
-                 else
-                   Job.en_search(search_params[:query]).where(conditions)
-                 end
-               else
-                 Job.where(conditions)
-               end
-
-        # Filter by proficiency2 as well (OR condition)
-        if filters && filters['proficiency'].present? && !filters['proficiency'].empty?
-          proficiency_values = Array(filters['proficiency']).map(&:to_i)
-          jobs = jobs.or(Job.where(proficiency2: proficiency_values))
-        end
-
-        # Apply feature filters
-        if filters
-          jobs = jobs.where(master_level: true) if [true, 'true'].include?(filters['masterLevel'])
-          jobs = jobs.where(ultimate_mastery: true) if [true, 'true'].include?(filters['ultimateMastery'])
-          jobs = jobs.where(accessory: true) if [true, 'true'].include?(filters['accessory'])
-        end
-
-        # Apply sorting if specified, otherwise use default (row, then order)
-        jobs = if search_params[:sort].present?
-          apply_job_sort(jobs, search_params[:sort], search_params[:order], locale)
-        else
-          jobs.order(:row, :order)
-               end
-
-        count = jobs.length
-        paginated = jobs.paginate(page: search_params[:page], per_page: search_page_size)
-
-        render json: JobBlueprint.render(paginated,
-                                         root: :results,
-                                         meta: pagination_meta(paginated).merge(count: count))
+        render_page JobSearchQuery.call(search_params, locale: search_locale), JobBlueprint
       end
 
       def suggestions
-        count = [[params[:count].to_i, 1].max, 30].min
+        count = params[:count].to_i.clamp(1, 30)
         per_type = (count / 3.0).ceil
 
         characters = Character.order(Arel.sql('RANDOM()')).limit(per_type)
@@ -338,26 +62,14 @@ module Api
       end
 
       def guidebooks
-        # Perform the query
-        books = if search_params[:query].present? && search_params[:query].length >= 2
-                  Guidebook.method("#{locale}_search").call(search_params[:query])
-                else
-                  Guidebook.all
-                end
-
-        count = books.length
-        paginated = books.paginate(page: search_params[:page], per_page: search_page_size)
-
-        render json: GuidebookBlueprint.render(paginated,
-                                               root: :results,
-                                               meta: pagination_meta(paginated).merge(count: count))
+        render_page GuidebookSearchQuery.call(search_params, locale: I18n.locale.to_s), GuidebookBlueprint
       end
 
       private
 
       # Specify whitelisted properties that can be modified.
       def search_params
-        return {} unless params[:search].present?
+        return {} if params[:search].blank?
 
         params.require(:search).permit!
       end
@@ -369,40 +81,13 @@ module Api
         %w[ja jp].include?(search_params[:locale].to_s) ? 'ja' : 'en'
       end
 
-      # Apply sorting based on column name and order
-      def apply_sort(scope, column, order, locale)
-        sort_dir = order == 'desc' ? :desc : :asc
+      # Renders a page of results, with the count of every match in the meta
+      def render_page(results, blueprint, includes: [], **)
+        count = results.length
+        paginated = results.includes(includes).paginate(page: search_params[:page], per_page: search_page_size)
 
-        case column
-        when 'name'
-          name_col = locale == 'ja' ? :name_jp : :name_en
-          scope.order(name_col => sort_dir, id: :asc)
-        when 'element'
-          scope.order(element: sort_dir, id: :asc)
-        when 'rarity'
-          scope.order(rarity: sort_dir, id: :asc)
-        when 'last_updated'
-          scope.order(latest_date: sort_dir, id: :asc)
-        else
-          scope
-        end
-      end
-
-      # Apply sorting for jobs
-      def apply_job_sort(scope, column, order, locale)
-        sort_dir = order == 'desc' ? :desc : :asc
-
-        case column
-        when 'name'
-          name_col = locale == 'ja' ? :name_jp : :name_en
-          scope.order(name_col => sort_dir, id: :asc)
-        when 'row'
-          scope.order(row: sort_dir, order: :asc, id: :asc)
-        when 'proficiency'
-          scope.order(proficiency1: sort_dir, id: :asc)
-        else
-          scope.order(:row, :order, :id)
-        end
+        render json: blueprint.render(paginated, root: :results,
+                                                 meta: pagination_meta(paginated).merge(count: count), **)
       end
     end
   end
