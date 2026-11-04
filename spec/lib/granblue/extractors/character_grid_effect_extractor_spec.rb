@@ -45,7 +45,8 @@ RSpec.describe Granblue::Extractors::CharacterGridEffectExtractor do
 
     cases.each do |description, (element, amount, frames)|
       effects = ex.extract(description, element: element)
-      expect(effects.map { |effect| effect.values_at(:frame, :element, :amount) }).to match_array(frames.map { |frame| [frame, element, amount] }), description
+      expected = frames.map { |frame| [frame, element, amount] }
+      expect(effects.map { |effect| effect.values_at(:frame, :element, :amount) }).to match_array(expected), description
     end
   end
 

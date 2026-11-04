@@ -15,7 +15,7 @@ module PostDeployment
       @total_changes = { new: {}, updated: {} }
     end
 
-    def process_all_files(&block)
+    def process_all_files(&)
       files = Rails.root.glob('db/seed/updates/*.csv')
 
       files.each do |file|

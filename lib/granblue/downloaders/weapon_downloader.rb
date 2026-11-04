@@ -244,19 +244,16 @@ module Granblue
         'https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/weapon'
       end
 
+      DIRECTORY_FOR_SIZE = { main: 'ls', grid: 'm', square: 's', base: 'b', gacha: 'g' }.freeze
+      private_constant :DIRECTORY_FOR_SIZE
+
       # Gets directory name for a size variant
       #
       # @param size [String] Image size variant
       # @return [String] Directory name in game asset URL structure
       # @note Maps "main" -> "ls", "grid" -> "m", "square" -> "s", "base" -> "b", "gacha" -> "g"
       def directory_for_size(size)
-        case size.to_s
-        when 'main' then 'ls'
-        when 'grid' then 'm'
-        when 'square' then 's'
-        when 'base' then 'b'
-        when 'gacha' then 'g'
-        end
+        DIRECTORY_FOR_SIZE[size.to_s.to_sym]
       end
     end
   end

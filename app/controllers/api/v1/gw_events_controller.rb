@@ -39,7 +39,8 @@ module Api
 
       # GET /gw_events/:id
       def show
-        participation = current_user&.crew&.crew_gw_participations&.find_by(event: @event)
+        crew = current_user&.crew
+        participation = crew&.crew_gw_participations&.find_by(event: @event)
         render json: GwEventBlueprint.render(@event, view: :with_participation, participation: participation, root: :gw_event)
       end
 

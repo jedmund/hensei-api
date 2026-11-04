@@ -62,7 +62,7 @@ module PostDeployment
     end
 
     def log_error(message)
-      puts message.to_s
+      puts message
     end
   end
 end

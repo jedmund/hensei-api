@@ -153,13 +153,13 @@ module Granblue
 
         return unless would_update
 
-          # Create a test record with existing data
+        # Create a test record with existing data
         test_record = existing_record.dup
 
-          # Validate only the columns being updated
+        # Validate only the columns being updated
         validate_update_attributes(update_attributes)
 
-          # Apply the updates and validate the resulting record
+        # Apply the updates and validate the resulting record
         test_record.assign_attributes(update_attributes)
         validate_record(test_record)
 
@@ -176,7 +176,7 @@ module Granblue
       # @param attributes [Hash] Attributes to validate
       # @raise [ImportError] If required attributes are missing
       def validate_required_attributes(attributes)
-        required_columns = model_class.columns.reject { |c| c.null }.map(&:name)
+        required_columns = model_class.columns.reject(&:null).map(&:name)
 
         missing_columns = required_columns.select do |column|
           attributes[column.to_sym].nil? &&
@@ -204,7 +204,7 @@ module Granblue
       # @raise [ImportError] If required attributes are missing
       def validate_update_attributes(update_attributes)
         # Get the list of columns that cannot be null in the database
-        required_columns = model_class.columns.reject { |c| c.null }.map(&:name)
+        required_columns = model_class.columns.reject(&:null).map(&:name)
 
         # For updates, we only need to validate the attributes that are being updated
         update_columns = update_attributes.keys.map(&:to_s)

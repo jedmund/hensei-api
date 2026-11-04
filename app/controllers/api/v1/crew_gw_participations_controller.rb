@@ -19,7 +19,9 @@ module Api
 
       # GET /crew/gw_participations/:id
       def show
-        render json: CrewGwParticipationBlueprint.render(@participation, view: :with_individual_scores, root: :crew_gw_participation, current_user: current_user)
+        render json: CrewGwParticipationBlueprint.render(@participation, view: :with_individual_scores,
+                                                                         root: :crew_gw_participation,
+                                                                         current_user: current_user)
       end
 
       # GET /crew/gw_participations/by_event/:event_id
@@ -34,7 +36,8 @@ module Api
         return render json: { gw_event: nil, crew_gw_participation: nil, members_during_event: [] } unless event
 
         participation = @crew.crew_gw_participations
-                             .includes(:event, gw_individual_scores: [{ crew_membership: { user: { active_crew_membership: :crew } } }, :phantom_player])
+                             .includes(:event,
+                                       gw_individual_scores: [{ crew_membership: { user: { active_crew_membership: :crew } } }, :phantom_player])
                              .find_by(event: event)
 
         # IDs of members/phantoms who were truly active during the event
@@ -53,7 +56,9 @@ module Api
 
         render json: {
           gw_event: GwEventBlueprint.render_as_hash(event),
-          crew_gw_participation: participation ? CrewGwParticipationBlueprint.render_as_hash(participation, view: :with_individual_scores, current_user: current_user) : nil,
+          crew_gw_participation: participation && CrewGwParticipationBlueprint.render_as_hash(
+            participation, view: :with_individual_scores, current_user: current_user
+          ),
           members_during_event: members_during_event.map do |m|
             CrewMembershipBlueprint.render_as_hash(m, view: :with_user).merge(active_during_event: active_during_ids.include?(m.id))
           end,

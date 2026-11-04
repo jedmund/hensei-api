@@ -26,9 +26,9 @@ namespace :granblue do
       # Write to file
       File.open(filename, 'w') do |f|
         JobAccessory.find_each do |w|
-          if w.accessory_type === 1
+          if w.accessory_type == 1
             f.write("#{build_url(w.granblue_id.to_s, 'shield', size)} \n")
-          elsif w.accessory_type === 2
+          elsif w.accessory_type == 2
             f.write("#{build_url(w.granblue_id.to_s, 'familiar', size)} \n")
           end
         end

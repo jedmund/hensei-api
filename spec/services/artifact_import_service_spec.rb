@@ -10,7 +10,7 @@ RSpec.describe ArtifactImportService, type: :service do
     Artifact.find_by(granblue_id: '301070101') ||
       create(:artifact, granblue_id: '301070101', name_en: 'Ominous Bangle', proficiency: :melee)
   end
-  let(:standard_artifact_2) do
+  let(:standard_artifact2) do
     Artifact.find_by(granblue_id: '301090101') ||
       create(:artifact, granblue_id: '301090101', name_en: 'Ominous Whistle', proficiency: :gun)
   end
@@ -23,7 +23,7 @@ RSpec.describe ArtifactImportService, type: :service do
   before do
     # Create artifacts
     standard_artifact
-    standard_artifact_2
+    standard_artifact2
     quirk_artifact
 
     # Group I skills
@@ -38,7 +38,8 @@ RSpec.describe ArtifactImportService, type: :service do
     ArtifactSkill.find_by(skill_group: 2, modifier: 2) ||
       create(:artifact_skill, :group_ii, modifier: 2, name_en: 'Skill DMG Cap', name_jp: 'アビダメ上限', base_values: [8.8, 9.6, 10.4, 11.2, 12.0])
     ArtifactSkill.find_by(skill_group: 2, modifier: 8) ||
-      create(:artifact_skill, :group_ii, modifier: 8, name_en: 'C.A. DMG cap boost tradeoff', name_jp: '奥義ダメ上限UP', base_values: [13.2, 14.4, 15.6, 16.8, 18.0])
+      create(:artifact_skill, :group_ii, modifier: 8, name_en: 'C.A. DMG cap boost tradeoff', name_jp: '奥義ダメ上限UP',
+                                         base_values: [13.2, 14.4, 15.6, 16.8, 18.0])
 
     # Group III skills
     ArtifactSkill.find_by(skill_group: 3, modifier: 5) ||

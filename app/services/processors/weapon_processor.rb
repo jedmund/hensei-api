@@ -477,7 +477,8 @@ module Processors
                      .where(name_en: weapon_name)
                      .first
       if weapon
-        Rails.logger.info "[WEAPON] Resolved element-changeable weapon '#{weapon_name}' (game id #{weapon_id}) via name fallback to #{weapon.granblue_id}"
+        Rails.logger.info "[WEAPON] Resolved element-changeable weapon '#{weapon_name}' (game id #{weapon_id}) " \
+                          "via name fallback to #{weapon.granblue_id}"
       end
       weapon
     end

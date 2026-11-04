@@ -78,7 +78,7 @@ namespace :granblue do
       access_token: required['ACCESS_TOKEN'],
       wing: required['WING'],
       midship: required['MIDSHIP'],
-      t: ENV['T'].presence || 'dummy',
+      t_cookie: ENV['T'].presence || 'dummy',
       user_id: ENV['GAME_UID'].presence || Dataminer::BOT_UID,
       game_version: ENV['GAME_VERSION'].presence || Dataminer::GAME_VERSION,
       debug: ENV['debug'] == 'true',

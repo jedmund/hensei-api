@@ -92,13 +92,7 @@ module Processors
         character_id = raw_character.dig('master', 'id')
         style = raw_character.dig('param', 'style')
 
-        character = if style == '2'
-                      Character.find_by(granblue_id: character_id, style_swap: true) ||
-                        Character.find_by(granblue_id: character_id)
-                    else
-                      Character.find_by(granblue_id: character_id, style_swap: false) ||
-                        Character.find_by(granblue_id: character_id)
-                    end
+        character = find_imported_character(character_id, style)
 
         unless character
           Rails.logger.error "[CHARACTER] Character not found with id #{character_id}"
@@ -123,27 +117,39 @@ module Processors
           awakening: awakening
         )
 
-        # Link to collection character if available, or create one
-        collection_character = @party.user.collection_characters.find_by(character_id: character.id)
-
-        if collection_character.nil? && @party.user.import_weapons
-          begin
-            collection_character = @party.user.collection_characters.create!(
-              character_id: character.id,
-              uncap_level: grid_character.uncap_level,
-              transcendence_step: grid_character.transcendence_step,
-              perpetuity: grid_character.perpetuity
-            )
-          rescue StandardError => e
-            Rails.logger.error "[CHARACTER] Failed to create collection character during import: #{e.message}"
-            collection_character = nil
-          end
-        end
-
-        grid_character.collection_character = collection_character if collection_character
+        link_collection_character(grid_character, character)
 
         grid_character
       end
+    end
+
+    # The Character for a game id, preferring the style the game reports (style 2 is
+    # the Style Shift), then any row with that id.
+    def find_imported_character(character_id, style)
+      styled = Character.find_by(granblue_id: character_id, style_swap: style == '2')
+      styled || Character.find_by(granblue_id: character_id)
+    end
+
+    # Links the grid character to the user's collection character, creating one when
+    # the user imports to their collection.
+    def link_collection_character(grid_character, character)
+      collection_character = @party.user.collection_characters.find_by(character_id: character.id)
+
+      if collection_character.nil? && @party.user.import_weapons
+        begin
+          collection_character = @party.user.collection_characters.create!(
+            character_id: character.id,
+            uncap_level: grid_character.uncap_level,
+            transcendence_step: grid_character.transcendence_step,
+            perpetuity: grid_character.perpetuity
+          )
+        rescue StandardError => e
+          Rails.logger.error "[CHARACTER] Failed to create collection character during import: #{e.message}"
+          collection_character = nil
+        end
+      end
+
+      grid_character.collection_character = collection_character if collection_character
     end
 
     # Converts a value to a boolean.
