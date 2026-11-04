@@ -29,7 +29,6 @@ Metrics/AbcSize:
     - 'app/services/dataminer.rb'
     - 'app/services/granblue/panel_validator.rb'
     - 'app/services/granblue/weapon_wiki_backfill.rb'
-    - 'app/services/party_difficulty/calculator.rb'
     - 'app/services/party_difficulty/calibration/report.rb'
     - 'app/services/party_difficulty/draft_workspace.rb'
     - 'app/services/processors/character_processor.rb'
