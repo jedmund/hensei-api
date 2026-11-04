@@ -7,25 +7,15 @@ module Api
     #
     # This controller provides endpoints for creating, updating, duplicating and quick-summoning
     # grid summons. Moving, swapping, uncapping, removing and collection sync come from
-    # GridItemActions; the main and friend summon slots can't be moved into or swapped.
+    # GridItemsController; GridPlacement keeps rows out of the main and friend summon slots.
     #
-    # @see Api::V1::ApiController for shared API behavior.
-    class GridSummonsController < Api::V1::ApiController
-      include IdResolvable
-      include CollectionSourceConcern
-      include PartyAuthorizationConcern
-      include SubstituteGridPreloading
-      include PartyFullLoading
-      include GridItemActions
-
+    # @see Api::V1::GridItemsController for the shared grid actions.
+    class GridSummonsController < GridItemsController
       attr_reader :party, :incoming_summon
 
-      grid_item GridSummon, blueprint: GridSummonBlueprint, view: :nested
-
-      before_action :find_grid_item, only: GridItemActions::ROW_ACTIONS + %i[update_quick_summon duplicate]
-      before_action :find_party, only: GridItemActions::EDIT_ACTIONS + %i[update_quick_summon duplicate]
-      before_action :find_incoming_summon, only: :create
-      before_action :authorize_party_edit!, only: GridItemActions::EDIT_ACTIONS + %i[update_quick_summon duplicate]
+      grid_item GridSummon, blueprint: GridSummonBlueprint, view: :nested,
+                            row_actions: %i[update_quick_summon duplicate],
+                            edit_actions: %i[update_quick_summon duplicate]
 
       ##
       # Creates a new grid summon.
@@ -230,7 +220,7 @@ module Api
       # Sets the @incoming_summon instance variable.
       #
       # @return [void]
-      def find_incoming_summon
+      def find_incoming_item
         @incoming_summon = find_by_any_id(Summon, summon_params[:summon_id])
       end
 

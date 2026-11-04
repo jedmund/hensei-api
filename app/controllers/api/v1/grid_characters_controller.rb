@@ -7,24 +7,13 @@ module Api
     #
     # This controller provides endpoints for creating, updating and resolving conflicts
     # between grid characters, and for switching a character's style. Moving, swapping,
-    # uncapping, removing and collection sync come from GridItemActions.
+    # uncapping, removing and collection sync come from GridItemsController.
     #
-    # @see Api::V1::ApiController for shared API behavior.
-    class GridCharactersController < Api::V1::ApiController
-      include IdResolvable
-      include CollectionSourceConcern
-      include PartyAuthorizationConcern
-      include SubstituteGridPreloading
-      include PartyFullLoading
-      include GridItemActions
-
+    # @see Api::V1::GridItemsController for the shared grid actions.
+    class GridCharactersController < GridItemsController
       grid_item GridCharacter, blueprint: GridCharacterBlueprint, view: :nested,
-                               party_param_keys: %i[character resolve], reports_reordered: true
-
-      before_action :find_grid_item, only: GridItemActions::ROW_ACTIONS + %i[switch_style]
-      before_action :find_party, only: GridItemActions::EDIT_ACTIONS + %i[resolve switch_style]
-      before_action :find_incoming_character, only: :create
-      before_action :authorize_party_edit!, only: GridItemActions::EDIT_ACTIONS + %i[resolve switch_style]
+                               party_param_keys: %i[character resolve], reports_reordered: true,
+                               row_actions: %i[switch_style], edit_actions: %i[resolve switch_style]
 
       ##
       # Creates a new grid character.
@@ -302,7 +291,7 @@ module Api
       # Searches for a character using the :character_id parameter and renders a not found response if it is absent.
       #
       # @return [void]
-      def find_incoming_character
+      def find_incoming_item
         character_id = character_params[:character_id]
         @incoming_character = find_by_any_id(Character, character_id)
 

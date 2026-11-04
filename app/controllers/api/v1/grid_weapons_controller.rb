@@ -5,25 +5,16 @@ module Api
     ##
     # Controller handling API requests related to grid weapons within a party.
     #
-    # This controller provides endpoints for creating, updating, resolving conflicts, and deleting grid weapons.
-    # It ensures that the correct party and weapon are found and that the current user (or edit key) is authorized.
+    # This controller provides endpoints for creating, updating, resolving conflicts between and
+    # duplicating grid weapons, with their AX skills and bullets. Moving, swapping, uncapping,
+    # removing and collection sync come from GridItemsController.
     #
-    # @see Api::V1::ApiController for shared API behavior.
-    class GridWeaponsController < Api::V1::ApiController
-      include IdResolvable
-      include CollectionSourceConcern
-      include PartyAuthorizationConcern
-      include SubstituteGridPreloading
-      include PartyFullLoading
-      include GridItemActions
-
+    # @see Api::V1::GridItemsController for the shared grid actions.
+    class GridWeaponsController < GridItemsController
       grid_item GridWeapon, blueprint: GridWeaponBlueprint, view: :full,
-                            party_param_keys: %i[weapon resolve], reloads_moved: false
-
-      before_action :find_grid_item, only: GridItemActions::ROW_ACTIONS + %i[duplicate]
-      before_action :find_party, only: GridItemActions::EDIT_ACTIONS + %i[resolve duplicate]
-      before_action :find_incoming_weapon, only: %i[create resolve]
-      before_action :authorize_party_edit!, only: GridItemActions::EDIT_ACTIONS + %i[resolve duplicate]
+                            party_param_keys: %i[weapon resolve], reloads_moved: false,
+                            row_actions: %i[duplicate], edit_actions: %i[resolve duplicate],
+                            incoming_actions: %i[create resolve]
 
       ##
       # Creates a new GridWeapon.
@@ -261,7 +252,7 @@ module Api
       # Finds and sets the incoming weapon.
       #
       # @return [void]
-      def find_incoming_weapon
+      def find_incoming_item
         if params.dig(:weapon, :weapon_id).present?
           @incoming_weapon = find_by_any_id(Weapon, params.dig(:weapon, :weapon_id))
           render_not_found_response('weapon') unless @incoming_weapon
