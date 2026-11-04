@@ -212,43 +212,60 @@ module GridDamage
         next [] unless awakening.object_type == 'Weapon'
         next [] unless ElementScope.awakening_applies?(grid_weapon: gw, panel_element: panel_element)
 
-        slug = awakening.slug
-        bonus = case gw.weapon&.weapon_series&.slug
-                when 'celestial'
-                  # Celestial bonuses follow the weapon's specialty, like the weapon's own
-                  # per-specialty skills (9JtcHY: Altruism weapon-atk lv5 shows with a
-                  # staff MC; K4UydX: hidden for harp/melee Rising Force).
-                  specialty = GridComposition::PROFICIENCY_NAME[gw.weapon.proficiency]
-                  next [] unless Array(composition[:mc_specialties]).include?(specialty)
+        bonus = bonus_for(gw, awakening.slug, composition)
+        bonus ? contributions_for(bonus, grid_weapon: gw, awakening: awakening) : []
+      end
+    end
 
-                  celestial_bonus(slug, gw.awakening_level.to_i)
-                when 'world'
-                  pair = WORLD_SPECIALTIES[gw.weapon.name_en]
-                  next [] if pair && !pair.intersect?(Array(composition[:mc_specialties]))
+    # The awakening's bonus lines at the copy's level, from its series' table (nil when
+    # none apply).
+    def bonus_for(grid_weapon, slug, composition)
+      level = grid_weapon.awakening_level.to_i
+      case grid_weapon.weapon&.weapon_series&.slug
+      when 'celestial' then celestial_specialty_bonus(grid_weapon, slug, composition)
+      when 'world' then world_bonus(grid_weapon, composition)
+      when 'revans' then accumulate(REVANS_BY_TYPE[slug], level)
+      when 'proven' then accumulate(PROVEN_BY_TYPE[slug], level)
+      when 'exo' then exo_bonus(grid_weapon, slug)
+      else BONUS.dig(slug, level)
+      end
+    end
 
-                  accumulate(WORLD_BY_WEAPON[gw.weapon.name_en], gw.awakening_level.to_i)
-                when 'revans'
-                  accumulate(REVANS_BY_TYPE[slug], gw.awakening_level.to_i)
-                when 'proven'
-                  accumulate(PROVEN_BY_TYPE[slug], gw.awakening_level.to_i)
-                when 'exo'
-                  table = EXO_BY_TYPE[slug]
-                  table = exo_main_table(gw.weapon.name_en, slug) if table.nil? && gw.mainhand
-                  accumulate(table, gw.awakening_level.to_i)
-                else BONUS.dig(slug, gw.awakening_level.to_i)
-                end
-        next [] unless bonus
+    # Celestial bonuses follow the weapon's specialty, like the weapon's own
+    # per-specialty skills (9JtcHY: Altruism weapon-atk lv5 shows with a
+    # staff MC; K4UydX: hidden for harp/melee Rising Force).
+    def celestial_specialty_bonus(grid_weapon, slug, composition)
+      specialty = GridComposition::PROFICIENCY_NAME[grid_weapon.weapon.proficiency]
+      return nil unless Array(composition[:mc_specialties]).include?(specialty)
 
-        bonus.map do |boost_type, value|
-          bt, frame = boost_type == 'ex_atk' ? %w[atk ex] : [boost_type, FRAME[boost_type]]
-          Aggregator::Contribution.new(
-            boost_type: bt, series: frame, value: value,
-            main_hand_only: false, mainhand: gw.mainhand, amplifiable: false,
-            source_ids: [gw.id],
-            source_label: { en: "#{awakening.name_en} Awakening Lv#{gw.awakening_level}",
-                            ja: "#{awakening.name_jp}覚醒 Lv#{gw.awakening_level}" }
-          )
-        end
+      celestial_bonus(slug, grid_weapon.awakening_level.to_i)
+    end
+
+    # World weapons apply only for their own specialty pair.
+    def world_bonus(grid_weapon, composition)
+      pair = WORLD_SPECIALTIES[grid_weapon.weapon.name_en]
+      return nil if pair && !pair.intersect?(Array(composition[:mc_specialties]))
+
+      accumulate(WORLD_BY_WEAPON[grid_weapon.weapon.name_en], grid_weapon.awakening_level.to_i)
+    end
+
+    # Exo's attack column applies only on the main weapon.
+    def exo_bonus(grid_weapon, slug)
+      table = EXO_BY_TYPE[slug]
+      table = exo_main_table(grid_weapon.weapon.name_en, slug) if table.nil? && grid_weapon.mainhand
+      accumulate(table, grid_weapon.awakening_level.to_i)
+    end
+
+    def contributions_for(bonus, grid_weapon:, awakening:)
+      bonus.map do |boost_type, value|
+        bt, frame = boost_type == 'ex_atk' ? %w[atk ex] : [boost_type, FRAME[boost_type]]
+        Aggregator::Contribution.new(
+          boost_type: bt, series: frame, value: value,
+          main_hand_only: false, mainhand: grid_weapon.mainhand, amplifiable: false,
+          source_ids: [grid_weapon.id],
+          source_label: { en: "#{awakening.name_en} Awakening Lv#{grid_weapon.awakening_level}",
+                          ja: "#{awakening.name_jp}覚醒 Lv#{grid_weapon.awakening_level}" }
+        )
       end
     end
 
