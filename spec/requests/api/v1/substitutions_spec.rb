@@ -712,11 +712,12 @@ RSpec.describe 'Substitutions API', type: :request do
         end
       end
 
-      it 'fails on a substitutions value that is not an array (current behavior)' do
+      it 'refuses a substitutions value that is not an array like a missing one' do
         ['x', { id: s_a.id, position: 0 }, 5].each do |value|
           reorder(value)
 
-          expect(response).to have_http_status(:internal_server_error), value.inspect
+          expect(response).to have_http_status(:unprocessable_content), value.inspect
+          expect(response.parsed_body).to eq('error' => 'substitutions array required')
         end
         expect(s_a.reload.position).to eq(0)
       end

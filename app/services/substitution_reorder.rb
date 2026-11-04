@@ -33,7 +33,8 @@ class SubstitutionReorder
   # @raise [Invalid, NotFound]
   # @raise [ActiveRecord::RecordNotUnique] when positions collide
   def call
-    raise Invalid, 'substitutions array required' if @raw_entries.blank?
+    # A missing, empty or non-array value is refused the same way
+    raise Invalid, 'substitutions array required' unless @raw_entries.is_a?(Array) && @raw_entries.present?
 
     entries = normalize(@raw_entries)
     ids = entries.map(&:first)
