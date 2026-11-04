@@ -8,6 +8,8 @@ module GridDamage
   # series so the frame math folds them into Normal/Omega/EX.
   module Effects
     REDUCTION_ELEMENTS = %w[fire water earth wind light dark].freeze
+    HP_SCALED_KINDS = %w[persistence_supp hp_linear_cutoff hp_current_linear hp_missing_linear
+                         supplemental_cap ally_max_hp_scaled].freeze
     InlineCurve = Data.define(:formula_type, :size, :sl1, :sl10, :sl15, :sl20, :sl25,
                               :coefficient, :max_value)
 
@@ -41,26 +43,31 @@ module GridDamage
             next unless ElementScope.applies?(version: v, boost_type: e.boost_type, grid_weapon: gw,
                                               panel_element: panel_element)
 
-            frame = v.try(:multiplier_frame).presence || e.series.presence || v.resolved_series.presence
             value = value_for(e, weapon: w, state: state, composition: composition, grid_weapon: gw,
                                  levels: WeaponContributions.levels?(v))
             next if value.nil? || value.zero?
 
-            out << Aggregator::Contribution.new(
-              boost_type: contribution_boost_type(e), series: frame || e.series, value: value,
-              main_hand_only: v.main_hand_only, mainhand: gw.mainhand,
-              shared_cap_group: cap_group(e), cap: e.total_cap&.to_f,
-              amplifiable: amplifiable && e.aura_boostable != false,
-              source_ids: [gw.id],
-              source_label: { en: v.skill&.name_en, ja: v.skill&.name_jp },
-              source_icon: v.icon_stem,
-              stacking_group: stacking_group(e, v),
-              crit_gated: Conditions.crit_gated?(e.condition)
-            )
+            out << contribution(e, version: v, grid_weapon: gw, value: value, amplifiable: amplifiable)
           end
         end
       end
       out
+    end
+
+    # One effect's contribution from one grid weapon's copy of its skill.
+    def contribution(effect, version:, grid_weapon:, value:, amplifiable:)
+      frame = version.try(:multiplier_frame).presence || effect.series.presence || version.resolved_series.presence
+      Aggregator::Contribution.new(
+        boost_type: contribution_boost_type(effect), series: frame || effect.series, value: value,
+        main_hand_only: version.main_hand_only, mainhand: grid_weapon.mainhand,
+        shared_cap_group: cap_group(effect), cap: effect.total_cap&.to_f,
+        amplifiable: amplifiable && effect.aura_boostable != false,
+        source_ids: [grid_weapon.id],
+        source_label: { en: version.skill&.name_en, ja: version.skill&.name_jp },
+        source_icon: version.icon_stem,
+        stacking_group: stacking_group(effect, version),
+        crit_gated: Conditions.crit_gated?(effect.condition)
+      )
     end
 
     # Effect-level highest_only is narrower than the boost registry's global
@@ -87,16 +94,38 @@ module GridDamage
     # levels: whether the bearing skill has a skill level in game. Key-granted skills
     # (no version) level with the weapon, so the default is true.
     def value_for(effect, weapon:, state:, composition:, grid_weapon: nil, levels: true)
-      case effect.scaling_kind
+      kind = effect.scaling_kind
+      return hp_scaled_value(effect, state: state) if HP_SCALED_KINDS.include?(kind)
+
+      case kind
       when 'static', 'flat', 'ally_hp_scaled', 'current_hp_scaled'
         # ally_hp_scaled/current_hp_scaled are legacy placeholders; avoid new rows.
         effect.value&.to_f
       when 'conditional_flat', 'bonus_dmg'
-        met = Conditions.met?(effect.condition, state: state, composition: composition,
-                                                weapon: weapon, grid_weapon: grid_weapon)
-        met ? effect.value&.to_f : nil
+        conditional_value(effect, weapon: weapon, state: state, composition: composition, grid_weapon: grid_weapon)
       when 'per_grid_count'
         per_grid_count(effect, weapon: weapon, composition: composition)
+      when 'weapon_skill_curve'
+        weapon_skill_curve(effect, weapon: weapon, grid_weapon: grid_weapon, state: state,
+                                   composition: composition, levels: levels)
+      when 'specialty_scaled'
+        specialty_value(effect, composition: composition, state: state)
+      when 'per_buff_count'
+        per_buff_count(effect, state: state)
+      when 'documentation'
+        nil
+      end
+    end
+
+    def conditional_value(effect, weapon:, state:, composition:, grid_weapon:)
+      met = Conditions.met?(effect.condition, state: state, composition: composition,
+                                              weapon: weapon, grid_weapon: grid_weapon)
+      met ? effect.value&.to_f : nil
+    end
+
+    # The kinds that scale with HP: the bearer's current or missing HP, or an ally's max HP.
+    def hp_scaled_value(effect, state:)
+      case effect.scaling_kind
       # Persistence supplements scale with current HP: value x (1 + 2*hp/100)/3
       # (QJ9736: 30000 -> 25000/20000/15000/10200, exact at all five anchors)
       when 'persistence_supp'
@@ -110,19 +139,10 @@ module GridDamage
         hp_linear_value(effect, state: state, missing: false)
       when 'hp_missing_linear'
         hp_linear_value(effect, state: state, missing: true)
-      when 'weapon_skill_curve'
-        weapon_skill_curve(effect, weapon: weapon, grid_weapon: grid_weapon, state: state,
-                                   composition: composition, levels: levels)
       when 'supplemental_cap'
         supplemental_cap(effect, state: state)
       when 'ally_max_hp_scaled'
         ally_max_hp_scaled(effect, state: state)
-      when 'specialty_scaled'
-        specialty_value(effect, composition: composition, state: state)
-      when 'per_buff_count'
-        per_buff_count(effect, state: state)
-      when 'documentation'
-        nil
       end
     end
 
