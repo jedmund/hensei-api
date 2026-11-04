@@ -71,7 +71,7 @@ module GachaSimulation
       raise ValidationError, 'Rarity rates must total 100%' unless rarities.values.sum { |v| BigDecimal(v) } == 1
 
       items = data['appear'].flat_map { |group| parse_group(group) }
-      raise ValidationError, 'Duplicate item in a rate tab' unless items.map { |i| i[:reward_id] }.uniq.size == items.size
+      raise ValidationError, 'Duplicate item in a rate tab' unless items.pluck(:reward_id).uniq.size == items.size
       raise ValidationError, 'A stated rarity has no items' unless rarities.keys.all? { |r| items.any? { |i| i[:rarity] == r.to_i } }
 
       { rarities: rarities, items: items }

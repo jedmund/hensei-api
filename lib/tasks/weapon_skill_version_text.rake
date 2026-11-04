@@ -14,7 +14,7 @@ namespace :granblue do
          "#{result.en_sources.values.sum} (#{result.written} written)"
     puts "en sources: #{result.en_sources.sort.to_h}"
     puts "jp sources: #{result.jp_sources.sort.to_h}"
-    puts "fallbacks by page kind: #{result.fallbacks.map { |f| f[:page_kind] }.tally.sort.to_h}"
+    puts "fallbacks by page kind: #{result.fallbacks.pluck(:page_kind).tally.sort.to_h}"
     puts "weapons whose page could not be parsed offline: #{result.weapon_errors.size}"
     result.weapon_errors.first(10).each { |e| puts "  #{e[:weapon_granblue_id]}: #{e[:error]}" }
 

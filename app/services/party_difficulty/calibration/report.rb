@@ -159,7 +159,7 @@ module PartyDifficulty
       def movement_section
         baseline_by_id = @baseline.index_by(&:party_id)
         pairs = @results.filter_map { |r| (b = baseline_by_id[r.party_id]) && [b, r] }
-        names = @ruleset.tiers.sort_by { |t| t['min_score'].to_f }.map { |t| t['name'] }
+        names = @ruleset.tiers.sort_by { |t| t['min_score'].to_f }.pluck('name')
         baseline_names = pairs.map { |b, _| b.tier }.uniq
         from_names = baseline_names.compact.sort_by { |n| names.index(n) || 99 } + (baseline_names.include?(nil) ? [nil] : [])
 

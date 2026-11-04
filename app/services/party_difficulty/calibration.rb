@@ -115,7 +115,7 @@ module PartyDifficulty
       # components.
       def min_counts
         enabled = components.select { |c| c['enabled'] }.index_by { |c| c['name'] }
-        %w[weapon character summon].to_h { |name| [name, enabled.dig(name, 'min_count_to_score').to_i] }
+        %w[weapon character summon].index_with { |name| enabled.dig(name, 'min_count_to_score').to_i }
       end
     end
 

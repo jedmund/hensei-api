@@ -416,7 +416,7 @@ module Granblue
       end
 
       def single_category(details)
-        categories = details.map { |detail| detail[:category] }.uniq
+        categories = details.pluck(:category).uniq
         categories.first if categories.one?
       end
 

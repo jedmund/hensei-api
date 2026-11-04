@@ -36,8 +36,8 @@ module CharacterSkills
       # One instance per run: the statuses and icons digests are computed once, after the
       # status catalogue has been refreshed.
       def for(character)
-        digests = SOURCES.to_h { |kind| [kind, character.source_sha256(kind) || NONE] }
-        combine(digests, ATTRIBUTES.to_h { |column| [column, character[column]] })
+        digests = SOURCES.index_with { |kind| character.source_sha256(kind) || NONE }
+        combine(digests, ATTRIBUTES.index_with { |column| character[column] })
       end
 
       # → { character id => fingerprint } for every character in relation, without loading
@@ -48,7 +48,7 @@ module CharacterSkills
                      .pluck(:owner_id, :kind, :sha256)
                      .each_with_object(Hash.new { |h, k| h[k] = {} }) { |(id, kind, sha), by_id| by_id[id][kind] = sha }
         rows.to_h do |id, *values|
-          digests = SOURCES.to_h { |kind| [kind, shas.dig(id, kind) || NONE] }
+          digests = SOURCES.index_with { |kind| shas.dig(id, kind) || NONE }
           [id, combine(digests, ATTRIBUTES.zip(values).to_h)]
         end
       end

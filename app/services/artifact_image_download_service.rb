@@ -55,8 +55,8 @@ class ArtifactImageDownloadService
   def build_image_manifest
     sizes = Granblue::Downloaders::ArtifactDownloader::SIZES
 
-    sizes.to_h do |size|
-      [size, ["#{@artifact.granblue_id}.jpg"]]
+    sizes.index_with do |_size|
+      ["#{@artifact.granblue_id}.jpg"]
     end
   end
 

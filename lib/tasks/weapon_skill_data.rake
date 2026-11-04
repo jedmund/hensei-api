@@ -34,7 +34,7 @@ namespace :granblue do
       gen.concat(ex.extract(text, name: name))
     end
     gen.reject! { |row| effect_owned.include?(row[:modifier]) }
-    gen_modifiers = gen.map { |r| r[:modifier] }.uniq | effect_owned
+    gen_modifiers = gen.pluck(:modifier).uniq | effect_owned
 
     file = Rails.root.join("data/weapon_skill_data.json")
     existing = JSON.parse(File.read(file))

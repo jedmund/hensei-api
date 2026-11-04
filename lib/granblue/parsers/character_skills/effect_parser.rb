@@ -59,7 +59,7 @@ module Granblue
         # sits in is the effect's category (D36: the same status can be a buff in one skill and a
         # self-inflicted debuff in another).
         def parse(effdesc, game_details: [])
-          game_status_ids = game_details.map { |detail| detail[:id] }.uniq
+          game_status_ids = game_details.pluck(:id).uniq
           description = effdesc.to_s
           clauses = clause_targets(description)
           effects = []
