@@ -208,7 +208,7 @@ module GridDamage
       non_amplified = non_amplified_boosts
       contributions.map do |c|
         next c if c.amplifiable == false # flat sources (weapon awakenings, AX) aren't enhanced
-        next c unless c.value && !non_amplified.include?(c.boost_type)
+        next c unless c.value && non_amplified.exclude?(c.boost_type)
         next c if c.value.negative? # demerits ride flat (XJZZmv: Tyranny's HP cut -10, not -12)
 
         f = factor[c.series] || 1.0

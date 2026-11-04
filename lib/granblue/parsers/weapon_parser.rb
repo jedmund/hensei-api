@@ -34,7 +34,7 @@ module Granblue
       def self.fetch_all(save: false, overwrite: false, debug: false, start: nil)
         errors = []
 
-        weapons = Weapon.all.order(:granblue_id)
+        weapons = Weapon.order(:granblue_id)
 
         start_index = start.nil? ? 0 : weapons.index { |w| w.granblue_id == start }
         count = weapons.drop(start_index).count
@@ -43,7 +43,7 @@ module Granblue
 
         weapons.drop(start_index).each_with_index do |w, i|
           percentage = ((i + 1) / count.to_f * 100).round(2)
-          ap "#{percentage}%: Fetching #{w.wiki_en}... (#{i + 1}/#{count})" if debug
+          Rails.logger.info "#{percentage}%: Fetching #{w.wiki_en}... (#{i + 1}/#{count})" if debug
           next if w.wiki_en.to_s.include?('Element Changed') || w.wiki_en.to_s.include?('Awakened')
           next unless w.release_date.nil? || overwrite
 
@@ -56,8 +56,7 @@ module Granblue
           sleep(Granblue::WikiThrottle::MIN_DELAY) # gbf.wiki: one request per 2s
         end
 
-        ap 'The following pages were unable to be fetched:'
-        ap errors
+        Rails.logger.warn "The following pages were unable to be fetched: #{errors.inspect}"
       end
 
       def self.fetch_list(list: [], save: false, overwrite: false, debug: false, start: nil)
@@ -71,7 +70,7 @@ module Granblue
         list.drop(start_index).each_with_index do |id, i|
           weapon = Weapon.find_by(granblue_id: id)
           percentage = ((i + 1) / count.to_f * 100).round(2)
-          ap "#{percentage}%: Fetching #{weapon.wiki_en}... (#{i + 1}/#{count})" if debug
+          Rails.logger.info "#{percentage}%: Fetching #{weapon.wiki_en}... (#{i + 1}/#{count})" if debug
           next unless weapon.release_date.nil? || overwrite
 
           begin
@@ -83,8 +82,7 @@ module Granblue
           sleep(Granblue::WikiThrottle::MIN_DELAY) # gbf.wiki: one request per 2s
         end
 
-        ap 'The following pages were unable to be fetched:'
-        ap errors
+        Rails.logger.warn "The following pages were unable to be fetched: #{errors.inspect}"
       end
 
       private
@@ -92,7 +90,7 @@ module Granblue
       # Handle the response from the wiki if the response is successful
       # If the save flag is set, it will persist the data to the database
       def handle_fetch_success(response, save)
-        ap "#{@weapon.granblue_id}: Successfully fetched info for #{@weapon.wiki_en}" if @debug
+        Rails.logger.info "#{@weapon.granblue_id}: Successfully fetched info for #{@weapon.wiki_en}" if @debug
         extracted = parse_string(response)
 
         unless extracted[:template].nil?
@@ -114,7 +112,7 @@ module Granblue
       def fetch_wiki_info
         @wiki.fetch(@weapon.wiki_en)
       rescue WikiError => e
-        ap e
+        Rails.logger.warn "#{e.class}: #{e.message}"
         # ap "There was an error fetching #{e.page}: #{e.message}" if @debug
         {
           error: {
@@ -146,7 +144,7 @@ module Granblue
             next if substr.start_with?(*disallowed)
 
             if substr.start_with?('Weapon')
-              ap "--> Found template: #{substr}" if @debug
+              Rails.logger.info "--> Found template: #{substr}" if @debug
 
               substr = substr.split('|').first
               data[:template] = substr if substr != 'Weapon'
@@ -263,8 +261,7 @@ module Granblue
         @weapon.promotions = hash[:promotions] if hash[:promotions].present?
 
         if @weapon.save
-          ap "#{@weapon.granblue_id}: Successfully saved info for #{@weapon.wiki_en}" if @debug
-          puts
+          Rails.logger.info "#{@weapon.granblue_id}: Successfully saved info for #{@weapon.wiki_en}" if @debug
           true
         end
 

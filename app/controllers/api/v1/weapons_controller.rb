@@ -90,7 +90,7 @@ module Api
 
         # Validate transformation for weapons (none, 02, 03)
         valid_transformations = [nil, '', '02', '03']
-        if transformation.present? && !valid_transformations.include?(transformation)
+        if transformation.present? && valid_transformations.exclude?(transformation)
           return render json: { error: 'Invalid transformation. Must be one of: 02, 03 (or empty for base)' }, status: :unprocessable_content
         end
 
@@ -220,7 +220,7 @@ module Api
       # Fetches the weapon's wiki sources into the stored sources, then rebuilds its skills from
       # them (the weapon-skill build).
       def fetch_wiki
-        return render json: { error: 'No wiki page configured for this weapon' }, status: :unprocessable_content unless @weapon.wiki_en.present?
+        return render json: { error: 'No wiki page configured for this weapon' }, status: :unprocessable_content if @weapon.wiki_en.blank?
 
         begin
           # The reparse below builds the weapon; the save mustn't queue a second build.
@@ -275,7 +275,7 @@ module Api
       end
 
       def weapon_params
-        params.require(:weapon).permit(*PERMITTED)
+        params.expect(weapon: [*PERMITTED])
       end
     end
   end

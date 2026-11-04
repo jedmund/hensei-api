@@ -94,7 +94,7 @@ module Granblue
         body ||= 'return {}'
         @sha256 = sha256 || (@missing ? nil : Digest::SHA256.hexdigest(body))
         data = LuaTable.parse(body)
-        @tables = TABLES.keys.to_h { |table| [table, data.fetch(table, {})] }
+        @tables = TABLES.keys.index_with { |table| data.fetch(table, {}) }
         @aliases = data.fetch('aliases', {})
         build_indexes
       end

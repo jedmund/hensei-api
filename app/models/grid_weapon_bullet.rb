@@ -13,7 +13,7 @@ class GridWeaponBullet < ApplicationRecord
   private
 
   def position_within_bounds
-    return unless grid_weapon&.weapon&.bullet_slots.present?
+    return if grid_weapon&.weapon&.bullet_slots.blank?
 
     max_position = grid_weapon.weapon.bullet_slots.length - 1
     return if position.present? && position >= 0 && position <= max_position

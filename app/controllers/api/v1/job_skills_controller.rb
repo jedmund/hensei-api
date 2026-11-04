@@ -25,7 +25,7 @@ module Api
       end
 
       def show
-        skill = JobSkill.includes(:job).find(params[:id])
+        skill = JobSkill.includes(:job).find(params.expect(:id))
         render json: JobSkillBlueprint.render(skill)
       rescue ActiveRecord::RecordNotFound
         render_not_found_response('job_skill')
@@ -62,7 +62,7 @@ module Api
 
       # PUT /job_skills/:id
       def update
-        skill = JobSkill.find(params[:id])
+        skill = JobSkill.find(params.expect(:id))
         if skill.update(job_skill_params)
           render json: JobSkillBlueprint.render(skill)
         else
@@ -72,16 +72,16 @@ module Api
 
       # DELETE /job_skills/:id
       def destroy
-        skill = JobSkill.find(params[:id])
+        skill = JobSkill.find(params.expect(:id))
         skill.destroy
         head :no_content
       end
 
       # POST /job_skills/:id/download_image
       def download_image
-        skill = JobSkill.find(params[:id])
-        return render json: { error: 'No image_id' }, status: :unprocessable_content unless skill.image_id.present?
-        return render json: { error: 'No slug' }, status: :unprocessable_content unless skill.slug.present?
+        skill = JobSkill.find(params.expect(:id))
+        return render json: { error: 'No image_id' }, status: :unprocessable_content if skill.image_id.blank?
+        return render json: { error: 'No slug' }, status: :unprocessable_content if skill.slug.blank?
 
         downloader = Granblue::Downloaders::JobSkillDownloader.new(skill.image_id, slug: skill.slug, storage: :s3)
         result = downloader.download

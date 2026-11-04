@@ -85,24 +85,24 @@ module Api
       end
 
       def set_participation
-        @participation = @crew.crew_gw_participations.find(params[:gw_participation_id])
+        @participation = @crew.crew_gw_participations.find(params.expect(:gw_participation_id))
       end
 
       def set_or_create_participation_by_event
-        event = Event.unite_and_fight.find(params[:gw_event_id])
+        event = Event.unite_and_fight.find(params.expect(:gw_event_id))
         @participation = @crew.crew_gw_participations.find_or_create_by!(event: event)
       end
 
       def set_score
-        @score = @participation.gw_individual_scores.find(params[:id])
+        @score = @participation.gw_individual_scores.find(params.expect(:id))
       end
 
       def score_params
-        params.require(:individual_score).permit(:crew_membership_id, :round, :score, :is_cumulative, :excused, :excuse_reason)
+        params.expect(individual_score: %i[crew_membership_id round score is_cumulative excused excuse_reason])
       end
 
       def score_params_with_player
-        params.require(:individual_score).permit(:crew_membership_id, :phantom_player_id, :round, :score, :is_cumulative, :excused, :excuse_reason)
+        params.expect(individual_score: %i[crew_membership_id phantom_player_id round score is_cumulative excused excuse_reason])
       end
 
       def can_record_score_for?(membership_id)

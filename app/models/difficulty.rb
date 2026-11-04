@@ -11,8 +11,8 @@ class Difficulty < ApplicationRecord
   validate :max_score_greater_than_min_score
   validate :tier_coverage_complete
 
-  after_save :bump_ruleset_version
   after_destroy :bump_ruleset_version
+  after_save :bump_ruleset_version
 
   scope :ordered, -> { order(:sort_order, :min_score) }
 

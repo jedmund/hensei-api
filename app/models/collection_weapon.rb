@@ -22,11 +22,11 @@ class CollectionWeapon < ApplicationRecord
 
   has_many :grid_weapons, dependent: :nullify
 
+  before_validation :set_default_exorcism_level, on: :create
+  before_validation :default_awakening_level
   # prepend: must run before dependent: :nullify clears the foreign key, or it
   # finds no grid items to mark orphaned.
   before_destroy :orphan_grid_items, prepend: true
-  before_validation :set_default_exorcism_level, on: :create
-  before_validation :default_awakening_level
 
   # Set defaults before validation so database defaults don't cause validation failures
   attribute :awakening_level, :integer, default: 1
@@ -98,7 +98,7 @@ class CollectionWeapon < ApplicationRecord
   private
 
   def validate_weapon_keys
-    return unless weapon.present?
+    return if weapon.blank?
 
     # Validate weapon_key4 is only on Opus/Draconic weapons
     errors.add(:weapon_key4, 'can only be set on Opus or Draconic weapons') if weapon_key4.present? && !weapon.opus_or_draconic?
@@ -144,7 +144,7 @@ class CollectionWeapon < ApplicationRecord
   end
 
   def validate_awakening_compatibility
-    return unless awakening.present?
+    return if awakening.blank?
 
     return if awakening.object_type == 'Weapon'
 
@@ -181,7 +181,7 @@ class CollectionWeapon < ApplicationRecord
   #
   # @return [void]
   def set_default_exorcism_level
-    return unless weapon.present?
+    return if weapon.blank?
     return unless exorcism_level.nil? || exorcism_level.zero?
     return unless weapon_augment_type == 'befoulment'
 

@@ -70,7 +70,7 @@ module Granblue
 
         # An aura can carry several clauses ("…HP.<br />…Elemental ATK / …"); classify
         # each and keep the most grid-relevant (frame > elemental > … > other).
-        clauses = clean.split(%r{<br\s*/?>|\s/\s|\.\s+(?=[A-Z])}).map(&:strip).reject(&:blank?)
+        clauses = clean.split(%r{<br\s*/?>|\s/\s|\.\s+(?=[A-Z])}).map(&:strip).compact_blank
         clauses = [clean] if clauses.empty?
         best = clauses.map { |c| parse_clause(c, series: series, summon_element: summon_element) }
                       .min_by { |pc| TARGET_PRIORITY.index(pc[:target]) }
@@ -127,7 +127,7 @@ module Granblue
         # category. Guard against "charge attack" (CA) and "attack critical" (crit).
         # Element-less generic "ATK" is an ATK-up buff (target "atk"; flagged for panel
         # validation).
-        attack_ish = (p =~ /\b(atk|attack)\b/) && !p.include?('charge attack') && !p.include?('critical')
+        attack_ish = (p =~ /\b(atk|attack)\b/) && p.exclude?('charge attack') && p.exclude?('critical')
         if attack_ish || p.include?('elemental atk')
           el = elements_in(p)
           return ['elemental_atk', el || summon_element] if el || p.include?('elemental')

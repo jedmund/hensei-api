@@ -22,7 +22,7 @@ module PartyDifficulty
         awakening_id = params[:awakening_id].presence&.to_s
 
         party.weapons.count do |gw|
-          next false unless gw.awakening_id.present?
+          next false if gw.awakening_id.blank?
           next false if awakening_id && gw.awakening_id.to_s != awakening_id
 
           gw.awakening_level.to_i >= min_level

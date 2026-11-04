@@ -106,14 +106,14 @@ module Api
         sections = payload['current'] + payload['upcoming']
         sections.flat_map { |section| section['raids'].flat_map { |raid| raid['parties'] } } +
           payload['rising'] +
-          payload['staff_picks'].map { |featured| featured['party'] } +
+          payload['staff_picks'].pluck('party') +
           payload['new_items'].flat_map { |entry| entry['recent'] + entry['trending'] } +
           payload['new_battles'].flat_map { |battle| battle['recent'] + battle['trending'] }
       end
 
       def with_my_stickers(payload)
         hashes = party_hashes(payload)
-        mine = PartyStickerSummary.my_stickers_for(current_user, hashes.map { |hash| hash['id'] })
+        mine = PartyStickerSummary.my_stickers_for(current_user, hashes.pluck('id'))
         hashes.each { |hash| hash['my_sticker'] = mine[hash['id']] }
         payload
       end

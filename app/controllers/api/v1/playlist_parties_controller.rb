@@ -27,7 +27,7 @@ module Api
 
       # DELETE /playlists/:playlist_id/parties/:id
       def destroy
-        playlist_party = @playlist.playlist_parties.find_by!(party_id: params[:id])
+        playlist_party = @playlist.playlist_parties.find_by!(party_id: params.expect(:id))
         playlist_party.destroy!
         head :no_content
       end
@@ -35,7 +35,7 @@ module Api
       private
 
       def set_playlist
-        @playlist = Playlist.find(params[:playlist_id])
+        @playlist = Playlist.find(params.expect(:playlist_id))
       end
 
       def authorize_owner!

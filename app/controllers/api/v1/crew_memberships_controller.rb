@@ -118,7 +118,7 @@ module Api
       private
 
       def set_crew
-        @crew = Crew.find(params[:crew_id])
+        @crew = Crew.find(params.expect(:crew_id))
       end
 
       def set_crew_from_user
@@ -127,17 +127,17 @@ module Api
       end
 
       def set_membership
-        @membership = @crew.crew_memberships.find(params[:id])
+        @membership = @crew.crew_memberships.find(params.expect(:id))
       end
 
       def set_membership_for_scores
         # Try to find by username first, then fall back to ID
         @membership = @crew.crew_memberships.joins(:user).merge(User.with_username(params[:id])).first ||
-                      @crew.crew_memberships.find(params[:id])
+                      @crew.crew_memberships.find(params.expect(:id))
       end
 
       def membership_params
-        params.require(:membership).permit(:role, :joined_at, :retired, :retired_at)
+        params.expect(membership: %i[role joined_at retired retired_at])
       end
     end
   end

@@ -12,7 +12,7 @@ module GachaSimulation
       quote = JSON.parse(response.body)
       rate = BigDecimal(quote.fetch('rate').to_s)
       date = Date.iso8601(quote.fetch('date'))
-      raise Unavailable, 'Invalid currency quote' unless rate.finite? && rate.positive? && date <= Date.today && date >= Date.today - 7
+      raise Unavailable, 'Invalid currency quote' unless rate.finite? && rate.positive? && date <= Time.zone.today && date >= Time.zone.today - 7
 
       value = { 'provider' => 'Frankfurter / ECB', 'date' => date.iso8601, 'jpy_per_usd' => rate.to_s('F') }
       Sidekiq.redis { |redis| redis.set(KEY, JSON.generate(value), ex: 8 * 86400) }
@@ -24,7 +24,7 @@ module GachaSimulation
       return nil unless raw
 
       quote = JSON.parse(raw)
-      age = (Date.today - Date.iso8601(quote.fetch('date'))).to_i
+      age = (Time.zone.today - Date.iso8601(quote.fetch('date'))).to_i
       return nil unless (0..7).cover?(age)
 
       Rails.logger.info("gacha exchange_rate_age_days=#{age}")

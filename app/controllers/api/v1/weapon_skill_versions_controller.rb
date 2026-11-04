@@ -13,7 +13,7 @@ module Api
       # PATCH /weapon_skill_versions/:id — classification only; labels live on
       # the shared Skill row (skills#update).
       def update
-        version = WeaponSkillVersion.find(params[:id])
+        version = WeaponSkillVersion.find(params.expect(:id))
         version.assign_attributes(version_params)
         return render_validation_error_response(version) unless valid_overrides?(version)
 
@@ -26,10 +26,11 @@ module Api
       private
 
       def version_params
-        permitted = params.require(:weapon_skill_version)
-                          .permit(:modifier_override, :series_override, :size_override,
-                                  :main_hand_only, :mc_only, :scales_with_skill_level, :multiplier_frame,
-                                  :min_uncap, :transcendence_stage, :skill_id, suppressed_boosts: [])
+        permitted = params.expect(weapon_skill_version: [
+                                    :modifier_override, :series_override, :size_override,
+                                    :main_hand_only, :mc_only, :scales_with_skill_level, :multiplier_frame,
+                                    :min_uncap, :transcendence_stage, :skill_id, { suppressed_boosts: [] }
+                                  ])
         # Blank selects clear an override (back to the derived value).
         %w[modifier_override series_override size_override].each do |field|
           permitted[field] = permitted[field].presence if permitted.key?(field)
@@ -49,7 +50,7 @@ module Api
           next unless version.attribute_changed?(field)
 
           value = version[field]
-          version.errors.add(field, :inclusion, value: value) if value && !values.include?(value)
+          version.errors.add(field, :inclusion, value: value) if value && values.exclude?(value)
         end
         version.errors.empty?
       end

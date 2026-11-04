@@ -7,8 +7,8 @@ class DifficultyComponent < ApplicationRecord
   validates :weight, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :min_count_to_score, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
-  after_save :bump_ruleset_version
   after_destroy :bump_ruleset_version
+  after_save :bump_ruleset_version
 
   scope :enabled, -> { where(enabled: true) }
 

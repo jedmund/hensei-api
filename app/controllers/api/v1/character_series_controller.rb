@@ -57,11 +57,11 @@ module Api
 
       def set_character_series
         # Support lookup by slug or UUID
-        @character_series = CharacterSeries.find_by(slug: params[:id]) || CharacterSeries.find(params[:id])
+        @character_series = CharacterSeries.find_by(slug: params[:id]) || CharacterSeries.find(params.expect(:id))
       end
 
       def character_series_params
-        params.require(:character_series).permit(*PERMITTED)
+        params.expect(character_series: [*PERMITTED])
       end
     end
   end

@@ -28,7 +28,7 @@ class PhantomPlayer < ApplicationRecord
   # Uses joined_at (editable) instead of created_at for historical accuracy
   scope :active_during, lambda { |start_date, end_date|
     where('retired = false OR retired_at >= ?', start_date)
-      .where('joined_at <= ?', end_date)
+      .where(joined_at: ..end_date)
   }
 
   # Assign this phantom to a user (officer action)
@@ -75,7 +75,7 @@ class PhantomPlayer < ApplicationRecord
   end
 
   def claimed_by_must_be_crew_member
-    return unless claimed_by.present?
+    return if claimed_by.blank?
     return if claimed_by.crew == crew
 
     errors.add(:claimed_by, 'must be a member of this crew')
@@ -88,7 +88,7 @@ class PhantomPlayer < ApplicationRecord
   end
 
   def transfer_to_membership!
-    return unless claimed_by.present?
+    return if claimed_by.blank?
 
     membership = claimed_by.active_crew_membership
     return unless membership
@@ -100,6 +100,7 @@ class PhantomPlayer < ApplicationRecord
 
     return unless joined_at.present? && (membership.joined_at.nil? || joined_at < membership.joined_at)
 
-      membership.update_columns(joined_at: joined_at)
+    # rubocop:disable-next Rails/SkipsModelValidations -- a claim mustn't fail on the membership's role limits
+    membership.update_columns(joined_at: joined_at)
   end
 end

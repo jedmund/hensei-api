@@ -61,7 +61,7 @@ module WeaponSkills
         # then the description's (first answer wins on a clash).
         rows = []
         GameplayNotes.effects(version, notes, curation: curation).each do |attrs|
-          next if described && !GameplayNotes::KEPT_KINDS.include?(attrs[:scaling_kind])
+          next if described && GameplayNotes::KEPT_KINDS.exclude?(attrs[:scaling_kind])
 
           rows = add(rows, effect_row(version, attrs), warnings, source: 'gameplay notes')
         end
@@ -111,7 +111,7 @@ module WeaponSkills
       # data and base effects, curated version-linked rows, and suppressed_boosts.
       def covered_boost_types(version, registry, curation)
         suppressed = curation.suppressed(version)
-        return Set['*'] if suppressed.include?('*')
+        return Set['*'] if suppressed.include?('*') # rubocop:disable Rails/ArelStar -- the suppress-all marker, not SQL
 
         modifier = version.skill_modifier
         covered = Set.new

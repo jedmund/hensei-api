@@ -44,7 +44,7 @@ module SummonAuras
           before = existing[key]
           if before.nil?
             report.created += 1
-            report.changes << [:created, key, COLUMNS.to_h { |c| [c, [nil, normalize(record[c])]] }]
+            report.changes << [:created, key, COLUMNS.index_with { |c| [nil, normalize(record[c])] }]
           else
             diff = COLUMNS.filter_map { |c| [c, [normalize(before[c]), normalize(record[c])]] unless same?(before[c], record[c]) }.to_h
             next if diff.empty?
@@ -59,7 +59,7 @@ module SummonAuras
         removed = existing.except(*built.keys)
         removed.each do |key, aura|
           report.deleted += 1
-          report.changes << [:deleted, key, COLUMNS.to_h { |c| [c, [normalize(aura[c]), nil]] }]
+          report.changes << [:deleted, key, COLUMNS.index_with { |c| [normalize(aura[c]), nil] }]
         end
         SummonAura.where(id: removed.values.map(&:id)).delete_all if removed.any?
 

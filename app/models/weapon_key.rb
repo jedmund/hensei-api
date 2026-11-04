@@ -9,7 +9,7 @@ class WeaponKey < ApplicationRecord
   end
 
   def compatible_with_weapon?(weapon)
-    return false unless weapon.weapon_series.present?
+    return false if weapon.weapon_series.blank?
 
     weapon_series.include?(weapon.weapon_series)
   end

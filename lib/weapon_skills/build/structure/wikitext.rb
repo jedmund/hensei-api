@@ -115,7 +115,7 @@ module WeaponSkills
             merged[key] = m[2].strip if !page.key?(key) && m[2].strip.present?
           elsif key.end_with?('_lvl') && value.match?(/#if(?:eq)?:/)
             evaluated = evaluate(value, vars, page)
-            merged[key] = evaluated if evaluated.present? && !evaluated.include?('{{')
+            merged[key] = evaluated if evaluated.present? && evaluated.exclude?('{{')
           end
         end
 

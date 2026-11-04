@@ -133,8 +133,8 @@ module Processors
                                        quick_summon: !quick_summon_id.nil? && summon_params['id'].to_i == quick_summon_id,
                                        uncap_level: summon_params['evolution'].to_i,
                                        transcendence_step: level_to_transcendence(summon_params['level'].to_i),
-                                       created_at: Time.now,
-                                       updated_at: Time.now
+                                       created_at: Time.current,
+                                       updated_at: Time.current
                                      })
 
         # Link to collection summon if available, or create one
@@ -185,8 +185,8 @@ module Processors
                        quick_summon: false,
                        uncap_level: summon.max_uncap_level,
                        transcendence_step: summon.max_transcendence_step,
-                       created_at: Time.now,
-                       updated_at: Time.now
+                       created_at: Time.current,
+                       updated_at: Time.current
                      })
     end
 

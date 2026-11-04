@@ -22,7 +22,7 @@ class DifficultyConfig < ApplicationRecord
   def self.bump_version!
     record = instance
     record.with_lock do
-      record.update_column(:ruleset_version, record.ruleset_version + 1)
+      record.update!(ruleset_version: record.ruleset_version + 1)
     end
     record.ruleset_version
   end

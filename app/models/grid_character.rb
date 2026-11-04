@@ -43,7 +43,7 @@ class GridCharacter < ApplicationRecord
   ].freeze
 
   # Validations
-  validates_presence_of :party
+  validates :party, presence: true # rubocop:disable Rails/RedundantPresenceValidationOnBelongsTo -- keeps the "can't be blank" message
 
   # Validate that uncap_level is present and numeric, transcendence_step is optional but must be numeric if present.
   validates :uncap_level, presence: true, numericality: { only_integer: true }
@@ -291,7 +291,7 @@ class GridCharacter < ApplicationRecord
   # @param fields [Array<String>, nil] optional list of camelCase keys to sync
   # @return [Boolean] true if sync was performed, false if no collection link
   def sync_from_collection!(fields: nil)
-    return false unless collection_character.present?
+    return false if collection_character.blank?
 
     columns = sync_columns_for(fields)
     return true if columns.empty?
@@ -308,7 +308,7 @@ class GridCharacter < ApplicationRecord
   # @param fields [Array<String>, nil] optional list of camelCase keys to sync
   # @return [Boolean] true if sync was performed, false if no collection link
   def sync_to_collection!(fields: nil)
-    return false unless collection_character.present?
+    return false if collection_character.blank?
 
     columns = sync_columns_for(fields)
     return true if columns.empty?
@@ -331,7 +331,7 @@ class GridCharacter < ApplicationRecord
   # mark exactly the sections/rows that drifted. Ring drift uses dotted keys
   # (overMastery.0..3) so the corresponding ring rows can highlight individually.
   def out_of_sync_fields
-    return [] unless collection_character.present?
+    return [] if collection_character.blank?
 
     fields = []
     fields << 'uncapLevel' if uncap_level != collection_character.uncap_level
@@ -355,6 +355,8 @@ class GridCharacter < ApplicationRecord
     fields.flat_map { |key| SYNC_FIELD_MAP[key] || [] }.uniq
   end
 
+  # Hand-rolled counter cache: one SQL increment, no Party callbacks.
+  # rubocop:disable Rails/SkipsModelValidations
   def increment_party_counter
     Party.increment_counter(:characters_count, party_id)
   end
@@ -362,6 +364,7 @@ class GridCharacter < ApplicationRecord
   def decrement_party_counter
     Party.decrement_counter(:characters_count, party_id)
   end
+  # rubocop:enable Rails/SkipsModelValidations
 
   # Evoking Solomonis parties hold the route Evoker and up to 4 allies. Whether
   # the route Evoker is actually in the grid is a completeness check, not

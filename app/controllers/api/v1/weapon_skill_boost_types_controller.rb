@@ -13,7 +13,7 @@ module Api
 
       # GET /weapon_skill_boost_types/:id
       def show
-        @boost_type = WeaponSkillBoostType.find(params[:id])
+        @boost_type = WeaponSkillBoostType.find(params.expect(:id))
         render json: WeaponSkillBoostTypeBlueprint.render(@boost_type)
       end
     end

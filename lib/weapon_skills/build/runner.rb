@@ -148,6 +148,7 @@ module WeaponSkills
           # the surrounding (shadow) transaction usable.
           ActiveRecord::Base.transaction(requires_new: true) do
             @summary.counts.merge!(Writer.call(result, context: @context))
+            # rubocop:disable-next Rails/SkipsModelValidations -- build bookkeeping; no weapon callbacks
             weapon.update_columns(weapon_skill_build_fingerprint: fingerprint, weapon_skill_built_at: Time.current) if store_fingerprints
           end
           @summary.warnings += result.warnings.size

@@ -23,10 +23,11 @@ module Granblue
       # Initialize downloader with base weapon ID. Images are only written to
       # local disk, so storage is :local (which also creates the directories).
       # @param id_base [Integer] Base ID for the elemental weapon series
+      # @param logger [Logger, nil] where progress goes (the base class defaults to stdout)
       # @return [void]
-      def initialize(id_base)
+      def initialize(id_base, logger: nil)
         @id_base = id_base.to_i
-        super(@id_base, storage: :local)
+        super(@id_base, storage: :local, logger: logger)
       end
 
       # Downloads all elemental variants of the weapon
@@ -38,7 +39,7 @@ module Granblue
           id = @id_base + ((i - 1) * 100)
           suffix = SUFFIXES[i - 1]
 
-          puts "Elemental Weapon #{id}_#{suffix}"
+          @logger.info "Elemental Weapon #{id}_#{suffix}"
           SIZES.each do |size|
             path = download_path(size)
             url = build_url_for_id(id, size)
@@ -62,7 +63,7 @@ module Granblue
         status = result
         percents = (100.0 * count / total).round(1)
         bar = ('=' * filled_len) + ('-' * (bar_len - filled_len))
-        print("\n[#{bar}] #{percents}% ...#{' ' * 14}#{status}\n")
+        @logger.info("[#{bar}] #{percents}% ... #{status}")
       end
     end
   end

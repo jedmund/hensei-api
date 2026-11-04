@@ -56,11 +56,11 @@ class SummonImageDownloadService
     png_sizes = Granblue::Downloaders::SummonDownloader::PNG_SIZES
     variants = build_variants
 
-    sizes.to_h do |size|
-      [size, variants.map do |variant|
+    sizes.index_with do |size|
+      variants.map do |variant|
         extension = png_sizes.include?(size) ? 'png' : 'jpg'
         "#{variant}.#{extension}"
-      end]
+      end
     end
   end
 

@@ -10,7 +10,7 @@ module Processors
       return unless set_bullets.is_a?(Hash)
 
       weapon_granblue_id = set_bullets['weapon_id']&.to_s
-      return unless weapon_granblue_id.present?
+      return if weapon_granblue_id.blank?
 
       grid_weapon = find_grid_weapon(weapon_granblue_id)
       unless grid_weapon
@@ -49,7 +49,7 @@ module Processors
 
     def create_grid_weapon_bullet(grid_weapon, bullet_data, position)
       granblue_id = bullet_data['bullet_id']&.to_s
-      return unless granblue_id.present?
+      return if granblue_id.blank?
 
       bullet = Bullet.find_by(granblue_id: granblue_id)
       unless bullet

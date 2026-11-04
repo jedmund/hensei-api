@@ -88,7 +88,7 @@ module PartyStickerSummary
                   )
     labels = PartySticker.unscoped
                          .from(recent, :party_stickers)
-                         .where('party_stickers.recency <= ?', PartySticker::RECENT_FOR_LABEL)
+                         .where(party_stickers: { recency: ..PartySticker::RECENT_FOR_LABEL })
                          .group(:party_id, :slug)
                          .select('DISTINCT ON (party_stickers.party_id) party_stickers.party_id, party_stickers.slug')
                          .order(Arel.sql(

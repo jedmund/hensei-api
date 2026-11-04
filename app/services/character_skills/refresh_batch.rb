@@ -60,7 +60,7 @@ module CharacterSkills
     def items = state[:items]
 
     def item(character_id) = items.find { |item| item[:character_id] == character_id }
-    def previewed_ids = items.select { |item| item[:status] == 'previewed' }.map { |item| item[:character_id] }
+    def previewed_ids = items.select { |item| item[:status] == 'previewed' }.pluck(:character_id)
 
     # The rendered body: everything but the owner.
     def as_json(*) = state.except(:user_id, :apply_ids)
