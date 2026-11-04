@@ -7,9 +7,10 @@ module WikiImport
   #
   # Resolution runs first and only reads: it matches wiki titles to catalogue
   # rows and re-checks every identifier the client sent (key ids, bullet slugs,
-  # class, subskill and accessory names). Both modes then build the party and
-  # its grid in one transaction; #preview rolls it back, so it reports exactly
-  # what #create! would.
+  # class, subskill and accessory names; the class goes through JobResolver and
+  # uncaps through UncapResolver). Both modes then build the party and its grid
+  # with PartyBuilder in one transaction; #preview rolls it back, so it reports
+  # exactly what #create! would. Everything found goes into one Report.
   #
   # Nothing in a paste is fatal. Unknown values, unmatched titles and grid
   # items the models reject are skipped and reported, and the rest imports.
@@ -50,12 +51,16 @@ module WikiImport
 
     MODELS = { character: Character, weapon: Weapon, summon: Summon }.freeze
 
-    # Rows 4, 5 and ex2 take at most two subskills of each kind.
-    LIMITED_SKILL_ROWS = %w[4 5 ex2].freeze
-    MAX_SKILLS_OF_TYPE = 2
-
     MAX_CANDIDATES = 10
     FULL_AUTO_SLOTS = (0..3)
+
+    # The full auto settings for the slots turned off; other slots are ignored.
+    #
+    # @param slots [Array<Integer>]
+    # @return [Hash{String => false}]
+    def self.full_auto_skills(slots)
+      slots.select { |slot| FULL_AUTO_SLOTS.cover?(slot) }.to_h { |slot| [slot.to_s, false] }
+    end
 
     ##
     # @param payload [WikiImport::Payload]
@@ -63,7 +68,8 @@ module WikiImport
     def initialize(payload, user: nil)
       @payload = payload
       @user = user
-      @report = { matched: [], unmatched: [], ambiguous: [], warnings: [] }
+      @report = Report.new
+      @uncaps = UncapResolver.new(@report)
     end
 
     ##
@@ -80,7 +86,7 @@ module WikiImport
         build_party
         raise ActiveRecord::Rollback
       end
-      @report
+      @report.to_h
     end
 
     ##
@@ -91,15 +97,18 @@ module WikiImport
       resolve
       party = nil
       ActiveRecord::Base.transaction(requires_new: true) { party = build_party }
-      [party, @report]
+      [party, @report.to_h]
     end
 
     private
 
-    # ---------------------------------------------------------------- resolve
+    def build_party
+      plan = { job: @job, characters: @characters, summons: @summons, weapons: @weapons, bullets: @bullets }
+      PartyBuilder.new(plan, payload: @payload, user: @user, report: @report).build
+    end
 
     def resolve
-      resolve_job
+      @job = JobResolver.new(@payload.job, @report).resolve
       @characters = resolve_items(:character, @payload.characters)
       @weapons = resolve_items(:weapon, @payload.weapons)
       @summons = resolve_items(:summon, @payload.summons)
@@ -111,11 +120,11 @@ module WikiImport
       taken = Set.new
       entries.filter_map do |entry|
         unless POSITIONS[kind].cover?(entry.position)
-          add_warning('invalid_position', "#{kind} #{entry.position}", **at(kind, entry))
+          @report.warn('invalid_position', "#{kind} #{entry.position}", **Report.at(kind, entry))
           next
         end
         unless taken.add?(entry.position)
-          add_warning('slot_conflict', "#{kind} #{entry.position}", **at(kind, entry))
+          @report.warn('slot_conflict', "#{kind} #{entry.position}", **Report.at(kind, entry))
           next
         end
 
@@ -123,8 +132,7 @@ module WikiImport
         next unless record
 
         plan = send(:"plan_#{kind}", entry, record, element)
-        @report[:matched] << { kind: kind.to_s, position: entry.position, title: entry.title,
-                               item: item_json(record, plan[:element]) }
+        @report.matched(kind, entry.position, entry.title, Report.item_json(record, plan[:element]))
         plan
       end
     end
@@ -142,13 +150,12 @@ module WikiImport
 
       case rows.size
       when 0
-        @report[:unmatched] << { kind: kind.to_s, position: entry.position, title: entry.title }
+        @report.unmatched(kind, entry)
         nil
       when 1
         [rows.first, element]
       else
-        @report[:ambiguous] << { kind: kind.to_s, position: entry.position, title: entry.title,
-                                 candidates: rows.first(MAX_CANDIDATES).map { |row| item_json(row, row.element) } }
+        @report.ambiguous(kind, entry, rows.first(MAX_CANDIDATES).map { |row| Report.item_json(row, row.element) })
         nil
       end
     end
@@ -164,22 +171,22 @@ module WikiImport
     end
 
     def plan_character(entry, record, _element)
-      uncap, step = resolve_uncap(:character, entry, record)
+      uncap, step = @uncaps.resolve(:character, entry, record)
       {
         entry: entry, record: record, element: record.element,
         uncap: uncap, step: step,
         awakening: character_awakening(entry),
         ring: entry.ring,
-        full_auto_skills: full_auto_skills(entry.full_auto_off)
+        full_auto_skills: self.class.full_auto_skills(entry.full_auto_off)
       }
     end
 
     def plan_weapon(entry, record, element)
       if element && !record.effective_element_changeable
-        add_warning('element_not_changeable', "weapon #{entry.position}", **at(:weapon, entry))
+        @report.warn('element_not_changeable', "weapon #{entry.position}", **Report.at(:weapon, entry))
         element = nil
       end
-      uncap, step = resolve_uncap(:weapon, entry, record)
+      uncap, step = @uncaps.resolve(:weapon, entry, record)
       {
         entry: entry, record: record, element: element,
         uncap: uncap, step: step,
@@ -189,59 +196,8 @@ module WikiImport
     end
 
     def plan_summon(entry, record, _element)
-      uncap, step = resolve_uncap(:summon, entry, record)
+      uncap, step = @uncaps.resolve(:summon, entry, record)
       { entry: entry, record: record, element: record.element, uncap: uncap, step: step }
-    end
-
-    # "0"-"5" stars, "t1"-"t5" (uncap 6 at that transcendence step; "6" is t5),
-    # or nil for what the wiki shows without one (#default_uncap). Values past
-    # the item's max are lowered to it.
-    def resolve_uncap(kind, entry, record)
-      return default_uncap(kind, record) if entry.uncap.nil?
-
-      uncap, step = parse_uncap(entry.uncap)
-      if uncap.nil?
-        add_warning('invalid_uncap', "#{kind} #{entry.position}", **at(kind, entry))
-        return default_uncap(kind, record)
-      end
-
-      max_uncap, max_step = max_uncap(kind, record)
-      if uncap > max_uncap || step > max_step
-        add_warning('uncap_clamped', "#{kind} #{entry.position}", **at(kind, entry))
-        uncap = [uncap, max_uncap].min
-        step = uncap == 6 ? [step, max_step].min : 0
-      end
-      [uncap, step]
-    end
-
-    def parse_uncap(value)
-      case value
-      when /\A[0-5]\z/ then [value.to_i, 0]
-      when '6' then [6, 5]
-      when /\At([1-5])\z/ then [6, Regexp.last_match(1).to_i]
-      end
-    end
-
-    # [uncap_level, transcendence_step] for an item the template gives no
-    # uncap, matching what the wiki renders and when our exporter omits it:
-    # - characters: base art (the exporter omits uchar below 5★), so at most 4★;
-    # - weapons: level 200, the max without transcendence (the exporter always
-    #   writes u for transcendable weapons; Dark Opus at 5★ is the exception);
-    # - summons: the full max, transcendence included (omitted at t5).
-    def default_uncap(kind, record)
-      case kind
-      when :character then [[4, record.max_uncap_level].min, 0]
-      when :weapon then [[record.max_uncap_level, 5].min, 0]
-      else max_uncap(kind, record)
-      end
-    end
-
-    # [uncap_level, transcendence_step] at the item's max.
-    def max_uncap(kind, record)
-      uncap = record.max_uncap_level
-      return [uncap, uncap == 6 ? record.max_transcendence_stage : 0] if kind == :character
-
-      [uncap, record.max_transcendence_step]
     end
 
     def character_awakening(entry)
@@ -249,7 +205,7 @@ module WikiImport
 
       slug = CHARACTER_AWAKENINGS[entry.awakening]
       awakening = slug && Awakening.find_by(slug: slug, object_type: 'Character')
-      add_warning('unknown_awakening', entry.awakening, **at(:character, entry)) unless awakening
+      @report.warn('unknown_awakening', entry.awakening, **Report.at(:character, entry)) unless awakening
       awakening
     end
 
@@ -257,15 +213,11 @@ module WikiImport
       return nil if entry.awakening.nil?
 
       slug = WEAPON_AWAKENINGS[entry.awakening]
-      return add_warning('unknown_awakening', entry.awakening, **at(:weapon, entry)) unless slug
+      return @report.warn('unknown_awakening', entry.awakening, **Report.at(:weapon, entry)) unless slug
 
       awakening = record.awakenings.find { |a| a.slug == slug } if record.effective_has_awakening
-      add_warning('awakening_not_allowed', entry.awakening, **at(:weapon, entry)) unless awakening
+      @report.warn('awakening_not_allowed', entry.awakening, **Report.at(:weapon, entry)) unless awakening
       awakening
-    end
-
-    def full_auto_skills(slots)
-      slots.select { |slot| FULL_AUTO_SLOTS.cover?(slot) }.to_h { |slot| [slot.to_s, false] }
     end
 
     # Keys are looked up within the group's series, so an id from another
@@ -274,7 +226,7 @@ module WikiImport
       @payload.key_sets.each do |group, ids|
         slugs = KEY_SERIES[group]
         unless slugs
-          add_warning('unknown_key', group, kind: 'key', title: group)
+          @report.warn('unknown_key', group, kind: 'key', title: group)
           next
         end
 
@@ -283,10 +235,10 @@ module WikiImport
 
           key = find_key(slugs, id)
           if key.nil? || key.slot != slot
-            add_warning('unknown_key', "#{group} slot #{slot}", kind: 'key', position: slot, title: id.to_s)
+            @report.warn('unknown_key', "#{group} slot #{slot}", kind: 'key', position: slot, title: id.to_s)
             next
           end
-          @report[:matched] << { kind: 'key', position: slot, title: id.to_s, item: named_json(key) }
+          @report.matched('key', slot, id.to_s, Report.named_json(key))
           key
         end
         apply_keys(slugs, keys)
@@ -321,10 +273,10 @@ module WikiImport
       bullets = @payload.bullets.each_with_index.filter_map do |slug, index|
         bullet = known[slug]
         unless bullet
-          add_warning('unknown_bullet', slug, kind: 'bullet', position: index, title: slug)
+          @report.warn('unknown_bullet', slug, kind: 'bullet', position: index, title: slug)
           next
         end
-        @report[:matched] << { kind: 'bullet', position: index, title: slug, item: named_json(bullet) }
+        @report.matched('bullet', index, slug, Report.named_json(bullet))
         [bullet, index]
       end
       place_bullets(bullets)
@@ -336,7 +288,7 @@ module WikiImport
       mainhand = @weapons.find { |plan| plan[:entry].position == -1 }
       slots = mainhand ? Array(mainhand[:record].bullet_slots) : []
       if slots.empty?
-        add_warning('invalid_item', 'bullets: the mainhand takes no bullets', kind: 'bullet')
+        @report.warn('invalid_item', 'bullets: the mainhand takes no bullets', kind: 'bullet')
         return
       end
 
@@ -347,206 +299,10 @@ module WikiImport
           free.delete(slot)
           @bullets << [bullet, slot, index]
         else
-          add_warning('invalid_item', "bullet #{bullet.slug}: no free slot",
-                      kind: 'bullet', position: index, title: bullet.slug)
+          @report.warn('invalid_item', "bullet #{bullet.slug}: no free slot",
+                       kind: 'bullet', position: index, title: bullet.slug)
         end
       end
-    end
-
-    def resolve_job
-      @job = @skill0 = @accessory = nil
-      @skills = [nil, nil, nil]
-      @mc_full_auto = {}
-      spec = @payload.job
-      return unless spec
-
-      if spec.name.present?
-        @job = Job.includes(:base_job).where('LOWER(name_en) = ?', spec.name.strip.downcase).order(:order).first
-        if @job
-          @report[:matched] << { kind: 'job', position: 0, title: spec.name, item: named_json(@job) }
-          @skill0 = JobSkill.find_by(job_id: @job.id, main: true)
-        else
-          add_warning('unknown_job', spec.name, kind: 'job', position: 0, title: spec.name)
-        end
-      end
-
-      spec.skills.each_with_index { |name, index| resolve_skill(name, index + 1) }
-      resolve_accessory(spec.accessory)
-      @mc_full_auto = full_auto_skills(spec.full_auto_off) if @job
-    end
-
-    # Subskills match by English name among the skills this class may equip.
-    # A name no skill has is unknown; one the class can't equip here (another
-    # class's skill, already equipped, or over the row's limit) isn't allowed.
-    def resolve_skill(name, slot)
-      return if name.blank?
-
-      candidates = JobSkill.includes(job: :base_job).where('LOWER(name_en) = ?', name.strip.downcase).to_a
-      about = { kind: 'skill', position: slot, title: name }
-      return add_warning('unknown_skill', name, **about) if candidates.empty?
-
-      skill = @job && skill_for(candidates)
-      return add_warning('skill_not_allowed', @job&.name_en || 'no class', **about) unless skill
-
-      @skills[slot - 1] = skill
-      @report[:matched] << { kind: 'skill', position: slot, title: name, item: named_json(skill) }
-    end
-
-    def skill_for(candidates)
-      taken = [@skill0, *@skills].compact
-      candidates = candidates.reject { |skill| taken.include?(skill) || skill.incompatible_with?(@job) }
-      skill = candidates.find { |s| s.job_id == @job.id } || candidates.first
-      skill if skill && room_for_skill?(skill)
-    end
-
-    def room_for_skill?(skill)
-      return true unless LIMITED_SKILL_ROWS.include?(@job.row)
-
-      type = skill.sub ? :sub : :emp
-      @skills.compact.count { |s| s.public_send(type) } < MAX_SKILLS_OF_TYPE
-    end
-
-    def resolve_accessory(name)
-      return if name.blank?
-
-      rows = JobAccessory.where('LOWER(TRIM(name_en)) = ?', name.strip.downcase).to_a
-      about = { kind: 'accessory', position: 0, title: name }
-      return add_warning('unknown_accessory', name, **about) if rows.empty?
-
-      @accessory = rows.find { |row| row.accessory_type == @job.accessory_type } if @job&.accessory && @job.accessory_type.to_i.positive?
-      return add_warning('accessory_not_allowed', @job&.name_en || 'no class', **about) unless @accessory
-
-      @report[:matched] << { kind: 'accessory', position: 0, title: name, item: named_json(@accessory) }
-    end
-
-    # ----------------------------------------------------------------- create
-
-    # Creates the party and its grid. Callers own the transaction.
-    def build_party
-      party = create_party
-      @characters.each { |plan| create_character(party, plan) }
-      @summons.each { |plan| create_summon(party, plan) }
-      @weapons.each { |plan| create_weapon(party, plan) }
-      # Party's after_commit callbacks read these; drop anything cached mid-import.
-      party.characters.reset
-      party.weapons.reset
-      party.summons.reset
-      party
-    end
-
-    def create_party
-      Party.create!(
-        user: @user,
-        # Lets an anonymous creator keep edit rights after a reload.
-        local_id: @user ? nil : @payload.local_id,
-        last_updated: Time.current,
-        job: @job,
-        skill0: @skill0,
-        skill1: @skills[0],
-        skill2: @skills[1],
-        skill3: @skills[2],
-        accessory: @accessory,
-        full_auto_skills: @mc_full_auto
-      )
-    end
-
-    def create_character(party, plan)
-      party.characters.reset
-      if party.characters.any? { |gc| gc.character_id == plan[:record].id }
-        return add_warning('invalid_item', "character #{plan[:entry].position}: already in the party",
-                           **at(:character, plan[:entry]))
-      end
-
-      grid_character = GridCharacter.new(
-        party: party,
-        character: plan[:record],
-        position: plan[:entry].position,
-        uncap_level: plan[:uncap],
-        transcendence_step: plan[:step],
-        awakening: plan[:awakening],
-        perpetuity: plan[:ring],
-        full_auto_skills: plan[:full_auto_skills]
-      )
-      saved_item?(:character, plan, grid_character)
-      nil
-    end
-
-    def create_summon(party, plan)
-      position = plan[:entry].position
-      party.summons.reset
-      grid_summon = GridSummon.new(
-        party: party,
-        summon: plan[:record],
-        position: position,
-        main: position == -1,
-        friend: position == GridSummon::FRIEND_POSITION,
-        quick_summon: position == @payload.quick,
-        uncap_level: plan[:uncap],
-        transcendence_step: plan[:step]
-      )
-      saved_item?(:summon, plan, grid_summon)
-      nil
-    end
-
-    def create_weapon(party, plan)
-      party.weapons.reset
-      grid_weapon = GridWeapon.new(
-        party: party,
-        weapon: plan[:record],
-        position: plan[:entry].position,
-        uncap_level: plan[:uncap],
-        transcendence_step: plan[:step],
-        element: plan[:element],
-        awakening: plan[:awakening]
-      )
-      plan[:keys].each { |slot, key| grid_weapon.public_send(:"weapon_key#{slot + 1}_id=", key.id) }
-      return unless saved_item?(:weapon, plan, grid_weapon)
-
-      create_bullets(grid_weapon) if grid_weapon.position == -1
-    end
-
-    def create_bullets(grid_weapon)
-      @bullets.each do |bullet, slot, index|
-        record = GridWeaponBullet.new(grid_weapon: grid_weapon, bullet: bullet, position: slot)
-        next if record.save
-
-        add_warning('invalid_item', "bullet #{bullet.slug}: #{record.errors.full_messages.to_sentence}",
-                    kind: 'bullet', position: index, title: bullet.slug)
-      end
-    end
-
-    # A grid item the models reject is skipped with a warning; the rest of the
-    # party still imports.
-    def saved_item?(kind, plan, record)
-      return true if record.save
-
-      add_warning('invalid_item', "#{kind} #{plan[:entry].position}: #{record.errors.full_messages.to_sentence}",
-                  **at(kind, plan[:entry]))
-      false
-    end
-
-    # ----------------------------------------------------------------- report
-
-    # Every warning has a code and a detail; kind, position and title (as
-    # pasted) say what it's about, with the same conventions as matched.
-    def add_warning(code, detail, kind: nil, position: nil, title: nil)
-      about = { kind: kind&.to_s, position: position, title: title }.compact
-      @report[:warnings] << { code: code, detail: detail.to_s, **about }
-      nil
-    end
-
-    def at(kind, entry)
-      { kind: kind, position: entry.position, title: entry.title }
-    end
-
-    def item_json(record, element)
-      named_json(record).merge(element: element)
-    end
-
-    def named_json(record)
-      json = { id: record.id }
-      json[:granblueId] = record.granblue_id if record.respond_to?(:granblue_id)
-      json.merge(name: { en: record.name_en, ja: record.name_jp })
     end
   end
 end

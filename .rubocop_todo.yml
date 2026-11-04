@@ -88,7 +88,6 @@ Metrics/ClassLength:
     - 'app/models/weapon.rb'
     - 'app/services/party_difficulty/draft_workspace.rb'
     - 'app/services/party_query_builder.rb'
-    - 'app/services/wiki_import/importer.rb'
     - 'lib/character_skills/build/runner.rb'
     - 'lib/granblue/extractors/weapon_skill_data_extractor.rb'
     - 'lib/granblue/importers/base_importer.rb'
