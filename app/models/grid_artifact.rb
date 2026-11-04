@@ -52,7 +52,7 @@ class GridArtifact < ApplicationRecord
   #
   # @return [Boolean] true if sync was performed, false if no collection link
   def sync_from_collection!
-    return false unless collection_artifact.present?
+    return false if collection_artifact.blank?
 
     attrs = {
       element: collection_artifact.element,
@@ -76,7 +76,7 @@ class GridArtifact < ApplicationRecord
   #
   # @return [Boolean] true if any customization differs from collection
   def out_of_sync?
-    return false unless collection_artifact.present?
+    return false if collection_artifact.blank?
 
     element != collection_artifact.element ||
       level != collection_artifact.level ||

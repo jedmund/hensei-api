@@ -42,16 +42,17 @@ module Api
       private
 
       def set
-        @effect = WeaponSkillEffect.find(params[:id])
+        @effect = WeaponSkillEffect.find(params.expect(:id))
       end
 
       def effect_params
-        permitted = params.require(:weapon_skill_effect)
-                          .permit(:modifier, :boost_type, :series, :scaling_kind, :value, :value_unit,
-                                  :per_copy_cap, :total_cap, :shared_cap_group, :cap_formula,
-                                  :count_basis, :count_cap, :target_instance, :aura_boostable,
-                                  :stacking, :applies_to, :notes, :key_slug, :frame_rule,
-                                  :weapon_skill_version_id, condition: {})
+        permitted = params.expect(weapon_skill_effect: [
+                                    :modifier, :boost_type, :series, :scaling_kind, :value, :value_unit,
+                                    :per_copy_cap, :total_cap, :shared_cap_group, :cap_formula,
+                                    :count_basis, :count_cap, :target_instance, :aura_boostable,
+                                    :stacking, :applies_to, :notes, :key_slug, :frame_rule,
+                                    :weapon_skill_version_id, { condition: {} }
+                                  ])
         permitted[:condition] = nil if params[:weapon_skill_effect].key?(:condition) && params[:weapon_skill_effect][:condition].nil?
         permitted
       end

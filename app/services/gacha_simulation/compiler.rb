@@ -87,7 +87,7 @@ module GachaSimulation
     def weight(item)
       return 1 unless item['drawable_type'] == 'Weapon' && %w[flash legend].include?(@config['mode'])
 
-      item['promotions'].include?(Configuration::MODES.fetch(@config['mode'])) && !item['promotions'].include?(1) ? 2 : 1
+      item['promotions'].include?(Configuration::MODES.fetch(@config['mode'])) && item['promotions'].exclude?(1) ? 2 : 1
     end
 
     def require_pool!(members, budget)

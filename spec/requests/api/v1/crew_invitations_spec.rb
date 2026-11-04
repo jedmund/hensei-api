@@ -8,12 +8,16 @@ RSpec.describe 'Api::V1::CrewInvitations', type: :request do
   let(:auth_headers) { { 'Authorization' => "Bearer #{access_token.token}" } }
 
   let(:crew) { create(:crew) }
-  let!(:captain_membership) { create(:crew_membership, crew: crew, user: user, role: :captain) }
+  let(:membership_user) { user }
+  let(:user_role) { :captain }
+
+  before { create(:crew_membership, crew: crew, user: membership_user, role: user_role) }
 
   describe 'GET /api/v1/crews/:crew_id/invitations' do
     context 'as officer' do
       let!(:pending_invitation) { create(:crew_invitation, crew: crew, invited_by: user, status: :pending) }
-      let!(:accepted_invitation) { create(:crew_invitation, crew: crew, invited_by: user, status: :accepted) }
+
+      before { create(:crew_invitation, crew: crew, invited_by: user, status: :accepted) }
 
       it 'returns pending invitations' do
         get "/api/v1/crews/#{crew.id}/invitations", headers: auth_headers
@@ -26,9 +30,10 @@ RSpec.describe 'Api::V1::CrewInvitations', type: :request do
     end
 
     context 'as regular member' do
-      let(:actual_captain) { create(:user) }
-      let!(:captain_membership) { create(:crew_membership, crew: crew, user: actual_captain, role: :captain) }
-      let!(:member_membership) { create(:crew_membership, crew: crew, user: user, role: :member) }
+      # The captain's membership comes from the top-level hook; then the user joins as a member
+      let(:membership_user) { create(:user) }
+
+      before { create(:crew_membership, crew: crew, user: user, role: :member) }
 
       it 'returns unauthorized' do
         get "/api/v1/crews/#{crew.id}/invitations", headers: auth_headers
@@ -164,7 +169,7 @@ RSpec.describe 'Api::V1::CrewInvitations', type: :request do
     end
 
     context 'as vice captain' do
-      let!(:captain_membership) { create(:crew_membership, crew: crew, user: user, role: :vice_captain) }
+      let(:user_role) { :vice_captain }
 
       it 'can create invitations' do
         expect do
@@ -180,7 +185,7 @@ RSpec.describe 'Api::V1::CrewInvitations', type: :request do
     end
 
     context 'as regular member' do
-      let!(:captain_membership) { create(:crew_membership, crew: crew, user: user, role: :member) }
+      let(:user_role) { :member }
 
       it 'returns unauthorized' do
         expect do
@@ -202,8 +207,11 @@ RSpec.describe 'Api::V1::CrewInvitations', type: :request do
     let(:invitee_headers) { { 'Authorization' => "Bearer #{invitee_token.token}" } }
 
     let!(:pending1) { create(:crew_invitation, user: invitee, status: :pending) }
-    let!(:pending2) { create(:crew_invitation, user: invitee, status: :pending) }
-    let!(:expired) { create(:crew_invitation, user: invitee, status: :expired) }
+
+    before do
+      create(:crew_invitation, user: invitee, status: :pending)
+      create(:crew_invitation, user: invitee, status: :expired)
+    end
 
     it 'returns pending invitations for current user' do
       get '/api/v1/invitations/pending', headers: invitee_headers

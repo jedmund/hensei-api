@@ -46,7 +46,7 @@ module Granblue
       end
 
       def csv(value)
-        value.to_s.split(',').map(&:strip).reject(&:blank?)
+        value.to_s.split(',').map(&:strip).compact_blank
       end
 
       private

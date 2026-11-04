@@ -17,14 +17,14 @@ namespace :granblue do
     require 'parallel'
     require 'logger'
 
-    timestamp = Time.now.strftime('%Y%m%d_%H%M%S')
+    timestamp = Time.now.getlocal.strftime('%Y%m%d_%H%M%S')
     log_path = Rails.root.join('log', "download_#{args[:object]}_#{timestamp}.log")
     logger = Logger.new(log_path)
     logger.level = Logger::INFO
 
     # Load downloader classes
     require_relative '../granblue/downloaders/base_downloader'
-    Dir[Rails.root.join("lib/granblue/downloaders/*.rb")].each { |file| require file }
+    Rails.root.glob("lib/granblue/downloaders/*.rb").each { |file| require file }
 
     object = args[:object]
     specified_size = args[:size]

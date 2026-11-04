@@ -16,7 +16,7 @@ namespace :db do
 
     backup_dir = File.expand_path('backups')
     FileUtils.mkdir_p(backup_dir)
-    backup_file = File.join(backup_dir, "#{Time.now.strftime('%Y%m%d_%H%M%S')}-prod-backup.tar")
+    backup_file = File.join(backup_dir, "#{Time.now.getlocal.strftime('%Y%m%d_%H%M%S')}-prod-backup.tar")
 
     cmd = %W[
       pg_dump -h #{remote_host} -p #{remote_port} -U #{remote_user} -d #{remote_db} -F t
@@ -44,7 +44,7 @@ namespace :db do
 
     if ENV['CLEAN']
       puts 'Dropping and recreating database...'
-      ActiveRecord::Base.connection.execute(<<~SQL)
+      ActiveRecord::Base.connection.execute(<<~SQL.squish)
         SELECT pg_terminate_backend(pid)
         FROM pg_stat_activity
         WHERE datname = '#{local_db}' AND pid <> pg_backend_pid()

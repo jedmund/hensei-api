@@ -17,12 +17,18 @@ class User < ApplicationRecord
 
   # Crew associations
   has_many :crew_memberships, dependent: :destroy
-  has_one :active_crew_membership, -> { where(retired: false) }, class_name: 'CrewMembership'
+  # The scoped views below are rows of crew_memberships and crew_invitations,
+  # whose dependent: :destroy already removes them; a second dependent here
+  # would run the rows' own destroy callbacks twice.
+  has_one :active_crew_membership, -> { where(retired: false) }, class_name: 'CrewMembership',
+                                                                 inverse_of: :user, dependent: nil
   has_one :crew, through: :active_crew_membership
   has_many :crew_invitations, dependent: :destroy
-  has_many :pending_crew_invitations, -> { where(status: :pending) }, class_name: 'CrewInvitation'
-  has_many :sent_crew_invitations, class_name: 'CrewInvitation', foreign_key: :invited_by_id, dependent: :nullify
-  has_many :party_shares, foreign_key: :shared_by_id, dependent: :destroy
+  has_many :pending_crew_invitations, -> { where(status: :pending) }, class_name: 'CrewInvitation',
+                                                                      inverse_of: :user, dependent: nil
+  has_many :sent_crew_invitations, class_name: 'CrewInvitation', foreign_key: :invited_by_id, inverse_of: :invited_by,
+                                   dependent: :nullify
+  has_many :party_shares, foreign_key: :shared_by_id, inverse_of: :shared_by, dependent: :destroy
   has_many :user_edit_keys, dependent: :destroy
   has_many :user_identities, dependent: :destroy
   has_many :extension_auth_codes, dependent: :delete_all
@@ -31,11 +37,16 @@ class User < ApplicationRecord
   # Records that belong to a crew, another user's party, or the audit trail
   # outlive the account; deleting it only removes the attribution.
   has_many :difficulty_change_logs, dependent: :nullify
-  has_many :created_crew_rosters, class_name: 'CrewRoster', foreign_key: :created_by_id, dependent: :nullify
-  has_many :recorded_gw_scores, class_name: 'GwIndividualScore', foreign_key: :recorded_by_id, dependent: :nullify
+  has_many :created_crew_rosters, class_name: 'CrewRoster', foreign_key: :created_by_id, inverse_of: :created_by,
+                                  dependent: :nullify
+  has_many :recorded_gw_scores, class_name: 'GwIndividualScore', foreign_key: :recorded_by_id, inverse_of: :recorded_by,
+                                dependent: :nullify
   has_many :collection_source_parties, class_name: 'Party', foreign_key: :collection_source_user_id,
-                                       dependent: :nullify
-  has_many :claimed_phantom_players, class_name: 'PhantomPlayer', foreign_key: :claimed_by_id
+                                       inverse_of: :collection_source_user, dependent: :nullify
+  # AccountDeletion::Purge releases claims first (and clears claim_confirmed),
+  # so a destroy that finds one left over raises instead of hitting the FK.
+  has_many :claimed_phantom_players, class_name: 'PhantomPlayer', foreign_key: :claimed_by_id,
+                                     inverse_of: :claimed_by, dependent: :restrict_with_exception
 
   ##### ActiveRecord Validations
   USERNAME_FORMAT = /\A[a-zA-Z0-9_-]+\z/
@@ -53,13 +64,11 @@ class User < ApplicationRecord
   validates :display_name,
             length: { minimum: 3, maximum: 26 },
             profanity: { languages: %i[en ja], tier: :strict, message: 'contains inappropriate language' },
-            allow_nil: true,
             allow_blank: true
 
   validates :description,
             length: { maximum: 140 },
             profanity: { languages: %i[en ja], tier: :strict, message: 'contains inappropriate language' },
-            allow_nil: true,
             allow_blank: true
 
   validates :email,
@@ -198,7 +207,7 @@ class User < ApplicationRecord
 
   # Check if user is in same crew as another user
   def in_same_crew_as?(other_user)
-    return false unless other_user.present?
+    return false if other_user.blank?
     return false unless crew.present? && other_user.crew.present?
 
     crew.id == other_user.crew.id
@@ -219,6 +228,10 @@ class User < ApplicationRecord
     crew_role == 'captain'
   end
 
+  # Token and verification columns are written directly: a reset or a
+  # verification mustn't fail on an unrelated validation (say, an old
+  # username that predates the format rules).
+  # rubocop:disable Rails/SkipsModelValidations
   def generate_reset_token!
     raw_token = SecureRandom.urlsafe_base64(32)
     update_columns(
@@ -269,6 +282,7 @@ class User < ApplicationRecord
       email_verification_sent_at: nil
     )
   end
+  # rubocop:enable Rails/SkipsModelValidations
 
   def verification_token_cooldown?
     email_verification_sent_at.present? && email_verification_sent_at > VERIFICATION_TOKEN_COOLDOWN.ago

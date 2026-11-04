@@ -210,14 +210,6 @@ RSpec.describe GridWeapon, type: :model do
     end
   end
 
-  describe '#blueprint' do
-    it 'returns the GridWeaponBlueprint constant' do
-      # #blueprint names a top-level constant the app doesn't define
-      stub_const('GridWeaponBlueprint', Class.new)
-      expect(grid_weapon.blueprint).to eq(GridWeaponBlueprint)
-    end
-  end
-
   describe 'EXTRA_POSITIONS' do
     it 'contains positions 9, 10, and 11' do
       expect(GridWeapon::EXTRA_POSITIONS).to eq([9, 10, 11])

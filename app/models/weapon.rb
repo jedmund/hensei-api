@@ -68,16 +68,24 @@ class Weapon < ApplicationRecord
                     }
                   }
 
-  has_many :weapon_awakenings
+  # Pure join rows (which awakenings the weapon can take): they go with it.
+  has_many :weapon_awakenings, dependent: :destroy
   has_many :awakenings, through: :weapon_awakenings
-  has_many :weapon_skills, -> { order(:position) }, primary_key: :granblue_id, foreign_key: :weapon_granblue_id, inverse_of: :weapon
+  # Built and curated skill data: remove it on purpose before deleting the weapon.
+  has_many :weapon_skills, -> { order(:position) }, primary_key: :granblue_id, foreign_key: :weapon_granblue_id, inverse_of: :weapon,
+                                                    dependent: :restrict_with_error
   has_many :weapon_skill_versions, through: :weapon_skills
   has_many :skills, through: :weapon_skill_versions
   belongs_to :weapon_series, optional: true
   belongs_to :weapon_series_variant, optional: true
-  belongs_to :recruited_character, class_name: 'Character', primary_key: :granblue_id, foreign_key: :recruits, optional: true
-  belongs_to :base_weapon, class_name: 'Weapon', primary_key: :granblue_id, foreign_key: :forged_from, optional: true
-  has_many :forge_chain_weapons, class_name: 'Weapon', primary_key: :forge_chain_id, foreign_key: :forge_chain_id
+  belongs_to :recruited_character, class_name: 'Character', primary_key: :granblue_id, foreign_key: :recruits, optional: true,
+                                   inverse_of: false
+  belongs_to :base_weapon, class_name: 'Weapon', primary_key: :granblue_id, foreign_key: :forged_from, optional: true,
+                           inverse_of: false
+  # Every weapon sharing the chain id, this one included, so a restrict would
+  # block deleting any chain member; the others are left as they are.
+  has_many :forge_chain_weapons, class_name: 'Weapon', primary_key: :forge_chain_id, foreign_key: :forge_chain_id,
+                                 inverse_of: false, dependent: nil
 
   def blueprint
     WeaponBlueprint
@@ -102,7 +110,7 @@ class Weapon < ApplicationRecord
   end
 
   def compatible_with_key?(key)
-    return false unless weapon_series.present?
+    return false if weapon_series.blank?
     return false unless effective_has_weapon_keys
 
     key.weapon_series.include?(weapon_series)
@@ -110,14 +118,14 @@ class Weapon < ApplicationRecord
 
   # Returns whether the weapon is included in the Draconic or Dark Opus series
   def opus_or_draconic?
-    return false unless weapon_series.present?
+    return false if weapon_series.blank?
 
     [WeaponSeries::DARK_OPUS, WeaponSeries::DRACONIC].include?(weapon_series.slug)
   end
 
   # Returns whether the weapon belongs to the Draconic Weapon series or the Draconic Weapon Providence series
   def draconic_or_providence?
-    return false unless weapon_series.present?
+    return false if weapon_series.blank?
 
     [WeaponSeries::DRACONIC, WeaponSeries::DRACONIC_PROVIDENCE].include?(weapon_series.slug)
   end
@@ -195,17 +203,18 @@ class Weapon < ApplicationRecord
   scope :in_forge_chain, ->(chain_id) { where(forge_chain_id: chain_id).order(:forge_order) }
 
   # Forge chain callbacks
+  # rubocop:disable-next Rails/ActiveRecordCallbacksOrder -- moving it up would run it before the belongs_to autosaves
   before_save :compute_forge_chain_fields, if: :forged_from_changed?
 
   # Forge chain methods
   def forged_from_weapon
-    return nil unless forged_from.present?
+    return nil if forged_from.blank?
 
     Weapon.find_by(granblue_id: forged_from)
   end
 
   def forge_chain(same_element: true)
-    return [] unless forge_chain_id.present?
+    return [] if forge_chain_id.blank?
 
     chain = Weapon.in_forge_chain(forge_chain_id)
     same_element ? chain.where(element: element) : chain
@@ -293,7 +302,7 @@ class Weapon < ApplicationRecord
   validate :no_circular_forge_chain
 
   def no_circular_forge_chain
-    return unless forged_from.present?
+    return if forged_from.blank?
 
     visited = Set.new([granblue_id])
     current = forged_from
@@ -344,7 +353,7 @@ class Weapon < ApplicationRecord
         chain.unshift(current)
         visited.add(current.granblue_id)
 
-        break unless current.forged_from.present?
+        break if current.forged_from.blank?
 
           current = Weapon.find_by(granblue_id: current.forged_from)
 
@@ -361,6 +370,7 @@ class Weapon < ApplicationRecord
         updates = {}
         updates[:forge_chain_id] = root_chain_id if weapon.forge_chain_id != root_chain_id
         updates[:forge_order] = index if weapon.forge_order != index
+        # rubocop:disable-next Rails/SkipsModelValidations -- fixes the other chain rows from this weapon's save; their callbacks must not rerun
         weapon.update_columns(updates.merge(updated_at: Time.current)) if updates.any?
       end
     elsif forge_chain_id.present?

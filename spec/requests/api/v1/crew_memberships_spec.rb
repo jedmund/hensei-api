@@ -31,7 +31,7 @@ RSpec.describe 'Api::V1::CrewMemberships', type: :request do
     end
 
     context 'as captain' do
-      let!(:captain_membership) { create(:crew_membership, crew: crew, user: user, role: :captain) }
+      before { create(:crew_membership, crew: crew, user: user, role: :captain) }
 
       it 'updates member role' do
         put "/api/v1/crews/#{crew.id}/memberships/#{target_membership.id}",
@@ -113,7 +113,7 @@ RSpec.describe 'Api::V1::CrewMemberships', type: :request do
     end
 
     context 'as vice captain' do
-      let!(:vc_membership) { create(:crew_membership, crew: crew, user: user, role: :vice_captain) }
+      before { create(:crew_membership, crew: crew, user: user, role: :vice_captain) }
 
       it 'can remove regular members' do
         delete "/api/v1/crews/#{crew.id}/memberships/#{target_membership.id}",
@@ -125,7 +125,7 @@ RSpec.describe 'Api::V1::CrewMemberships', type: :request do
     end
 
     context 'as regular member' do
-      let!(:membership) { create(:crew_membership, crew: crew, user: user, role: :member) }
+      before { create(:crew_membership, crew: crew, user: user, role: :member) }
 
       it 'returns unauthorized' do
         delete "/api/v1/crews/#{crew.id}/memberships/#{target_membership.id}",
@@ -172,7 +172,7 @@ RSpec.describe 'Api::V1::CrewMemberships', type: :request do
     end
 
     context 'as vice captain' do
-      let!(:vc_membership) { create(:crew_membership, crew: crew, user: user, role: :vice_captain) }
+      before { create(:crew_membership, crew: crew, user: user, role: :vice_captain) }
 
       it 'returns unauthorized' do
         post "/api/v1/crews/#{crew.id}/memberships/#{target_membership.id}/promote",
@@ -210,7 +210,7 @@ RSpec.describe 'Api::V1::CrewMemberships', type: :request do
     end
 
     context 'as vice captain' do
-      let!(:vc_membership) { create(:crew_membership, crew: crew, user: user, role: :vice_captain) }
+      before { create(:crew_membership, crew: crew, user: user, role: :vice_captain) }
 
       it 'returns unauthorized' do
         post "/api/v1/crews/#{crew.id}/memberships/#{vc_target.id}/demote",

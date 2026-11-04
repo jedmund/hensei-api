@@ -49,9 +49,11 @@ RSpec.describe 'Collection Artifacts API', type: :request do
   end
 
   describe 'GET /api/v1/users/:user_id/collection/artifacts' do
-    let!(:collection_artifact1) { create(:collection_artifact, user: user, artifact: artifact) }
-    let!(:collection_artifact2) { create(:collection_artifact, user: user, element: :water) }
-    let!(:other_user_artifact) { create(:collection_artifact, user: other_user) }
+    before do
+      create(:collection_artifact, user: user, artifact: artifact)
+      create(:collection_artifact, user: user, element: :water)
+      create(:collection_artifact, user: other_user)
+    end
 
     it "returns the user's collection artifacts" do
       get "/api/v1/users/#{user.id}/collection/artifacts", headers: headers

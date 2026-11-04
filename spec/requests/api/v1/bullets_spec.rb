@@ -6,11 +6,6 @@ RSpec.describe 'Api::V1::Bullets', type: :request do
   let(:editor) { create(:user, role: 7) }
   let(:user) { create(:user, role: 3) }
 
-  def headers_for(account)
-    token = Doorkeeper::AccessToken.create!(resource_owner_id: account.id, expires_in: 30.days, scopes: 'public')
-    { 'Authorization' => "Bearer #{token.token}", 'Content-Type' => 'application/json' }
-  end
-
   let(:editor_headers) { headers_for(editor) }
   let(:user_headers) { headers_for(user) }
   let!(:bullet) { create(:bullet, granblue_id: '90101', slug: 'iron-bullet', name_en: 'Iron Bullet') }
@@ -18,6 +13,11 @@ RSpec.describe 'Api::V1::Bullets', type: :request do
   let(:valid_params) do
     { name_en: 'Rapid Bullet', name_jp: 'ラピッドバレット', granblue_id: '90201', slug: 'rapid-bullet',
       bullet_type: 1, atk: 60, hits_all: false, order: 6, effect_en: 'Double attack up' }
+  end
+
+  def headers_for(account)
+    token = Doorkeeper::AccessToken.create!(resource_owner_id: account.id, expires_in: 30.days, scopes: 'public')
+    { 'Authorization' => "Bearer #{token.token}", 'Content-Type' => 'application/json' }
   end
 
   describe 'GET /api/v1/bullets/:id' do

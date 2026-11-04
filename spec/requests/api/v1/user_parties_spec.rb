@@ -24,7 +24,7 @@ RSpec.describe 'Api::V1::UserParties', type: :request do
         get "/api/v1/users/#{user.username}/parties", headers: auth_headers
         expect(response).to have_http_status(:ok)
 
-        ids = response.parsed_body['results'].map { |p| p['id'] }
+        ids = response.parsed_body['results'].pluck('id')
         expect(ids).to include(public_party.id, unlisted_party.id, private_party.id)
       end
     end
@@ -41,7 +41,7 @@ RSpec.describe 'Api::V1::UserParties', type: :request do
         get "/api/v1/users/#{user.username}/parties", headers: other_headers
         expect(response).to have_http_status(:ok)
 
-        ids = response.parsed_body['results'].map { |p| p['id'] }
+        ids = response.parsed_body['results'].pluck('id')
         expect(ids).to include(public_party.id)
         expect(ids).not_to include(private_party.id)
       end
@@ -52,7 +52,7 @@ RSpec.describe 'Api::V1::UserParties', type: :request do
         get "/api/v1/users/#{user.username}/parties", headers: unauth_headers
         expect(response).to have_http_status(:ok)
 
-        ids = response.parsed_body['results'].map { |p| p['id'] }
+        ids = response.parsed_body['results'].pluck('id')
         expect(ids).to include(public_party.id)
         expect(ids).not_to include(private_party.id)
       end
@@ -63,7 +63,7 @@ RSpec.describe 'Api::V1::UserParties', type: :request do
         get "/api/v1/users/#{user.username.upcase}/parties", headers: unauth_headers
         expect(response).to have_http_status(:ok)
 
-        ids = response.parsed_body['results'].map { |p| p['id'] }
+        ids = response.parsed_body['results'].pluck('id')
         expect(ids).to include(public_party.id)
       end
     end
@@ -73,7 +73,7 @@ RSpec.describe 'Api::V1::UserParties', type: :request do
         get "/api/v1/users/#{user.username}/parties", params: { element: 4 }, headers: auth_headers
         expect(response).to have_http_status(:ok)
 
-        ids = response.parsed_body['results'].map { |p| p['id'] }
+        ids = response.parsed_body['results'].pluck('id')
         expect(ids).to include(public_party.id, private_party.id)
         expect(ids).not_to include(unlisted_party.id)
       end
@@ -87,13 +87,13 @@ RSpec.describe 'Api::V1::UserParties', type: :request do
         get "/api/v1/users/#{user.username}/parties", params: { raid: raid.id }, headers: auth_headers
         expect(response).to have_http_status(:ok)
 
-        ids = response.parsed_body['results'].map { |p| p['id'] }
+        ids = response.parsed_body['results'].pluck('id')
         expect(ids).to include(public_party.id)
         expect(ids).not_to include(other_raid_party.id)
       end
     end
 
-    context 'pagination' do
+    context 'with pagination' do
       it 'includes pagination metadata' do
         get "/api/v1/users/#{user.username}/parties", headers: auth_headers
         expect(response).to have_http_status(:ok)

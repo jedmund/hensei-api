@@ -136,6 +136,7 @@ module SummonAuras
         # surrounding (shadow) transaction usable.
         ActiveRecord::Base.transaction(requires_new: true) do
           report = Writer.call(summon.granblue_id, records)
+          # rubocop:disable-next Rails/SkipsModelValidations -- build bookkeeping; no summon callbacks
           summon.update_columns(summon_aura_build_fingerprint: fingerprint) if @mode == 'write'
         end
         @summary.counts.merge!(report)

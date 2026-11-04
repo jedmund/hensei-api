@@ -6,20 +6,6 @@ RSpec.describe 'Admin job skills collection', type: :request do
   let(:path) { '/api/v1/admin/job_skills' }
   let(:editor_headers) { auth_headers(create(:user, role: 7)) }
 
-  def auth_headers(account)
-    token = Doorkeeper::AccessToken.create!(resource_owner_id: account.id, expires_in: 30.days, scopes: 'public')
-    { 'Authorization' => "Bearer #{token.token}" }
-  end
-
-  def fetch(params = {}, headers = editor_headers)
-    get path, params: params, headers: headers
-    response.parsed_body
-  end
-
-  def names(body = response.parsed_body)
-    body['results'].map { |r| r['name_en'] }
-  end
-
   let!(:berserker) { create(:job, name_en: 'Berserker', name_jp: 'ベルセルク') }
   let!(:sage) { create(:job, name_en: 'Sage', name_jp: 'セージ') }
   let!(:rage) do
@@ -33,6 +19,20 @@ RSpec.describe 'Admin job skills collection', type: :request do
   let!(:veil) do
     create(:job_skill, job: sage, name_en: 'Veil', name_jp: 'ヴェール', slug: 'veil', color: 3, main: true,
                        order: 1)
+  end
+
+  def auth_headers(account)
+    token = Doorkeeper::AccessToken.create!(resource_owner_id: account.id, expires_in: 30.days, scopes: 'public')
+    { 'Authorization' => "Bearer #{token.token}" }
+  end
+
+  def fetch(params = {}, headers = editor_headers)
+    get path, params: params, headers: headers
+    response.parsed_body
+  end
+
+  def names(body = response.parsed_body)
+    body['results'].map { |r| r['name_en'] }
   end
 
   before do

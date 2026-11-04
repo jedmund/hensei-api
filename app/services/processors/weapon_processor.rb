@@ -364,7 +364,7 @@ module Processors
       end
 
       unless weapon_series
-        Rails.logger.debug "[WEAPON] Skipping weapon keys: no weapon_series for weapon #{grid_weapon.weapon&.granblue_id}"
+        Rails.logger.debug { "[WEAPON] Skipping weapon keys: no weapon_series for weapon #{grid_weapon.weapon&.granblue_id}" }
         return
       end
 

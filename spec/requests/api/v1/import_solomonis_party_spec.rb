@@ -42,12 +42,12 @@ RSpec.describe 'ImportController Evoking Solomonis parties', type: :request do
     deck['deck']['pc']
   end
 
-  # The real blessing catalogue, as the data migration seeds it.
-  before { ActiveRecord::Migration.suppress_messages { LoadSolomonisBlessings.new.up } }
-
-  # Every weapon and summon in the fixture, able to take the uncaps its level
-  # implies.
   before do
+    # The real blessing catalogue, as the data migration seeds it.
+    ActiveRecord::Migration.suppress_messages { LoadSolomonisBlessings.new.up }
+
+    # Every weapon and summon in the fixture, able to take the uncaps its level
+    # implies.
     pc['weapons'].each do |slot, entry|
       id = entry['master']['id']
       weapon = Weapon.find_by(granblue_id: id) || create(:weapon, granblue_id: id, name_en: entry['master']['name'])

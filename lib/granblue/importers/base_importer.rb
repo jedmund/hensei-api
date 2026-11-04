@@ -181,7 +181,7 @@ module Granblue
         missing_columns = required_columns.select do |column|
           attributes[column.to_sym].nil? &&
             !model_class.column_defaults[column] &&
-            !%w[id created_at updated_at].include?(column)
+            %w[id created_at updated_at].exclude?(column)
         end
 
         return unless missing_columns.any?
@@ -214,7 +214,7 @@ module Granblue
           update_columns.include?(column) &&
             update_attributes[column.to_sym].nil? &&
             !model_class.column_defaults[column] &&
-            !%w[id created_at updated_at].include?(column)
+            %w[id created_at updated_at].exclude?(column)
         end
 
         return unless missing_columns.any?

@@ -31,7 +31,7 @@ namespace :granblue do
         Weapon.where(id: pages.select(:owner_id))
       },
       'skillless' => lambda {
-        Weapon.with_source(:wiki_raw).left_joins(:weapon_skills).where(weapon_skills: { id: nil }, rarity: 3)
+        Weapon.with_source(:wiki_raw).where.missing(:weapon_skills).where(rarity: 3)
       }
     }
     unknown = groups - scopes.keys

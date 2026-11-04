@@ -12,7 +12,7 @@ module Api
       end
 
       def show
-        render json: StatusBlueprint.render(Status.find(params[:id]))
+        render json: StatusBlueprint.render(Status.find(params.expect(:id)))
       end
     end
   end

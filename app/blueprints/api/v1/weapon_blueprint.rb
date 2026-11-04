@@ -20,7 +20,7 @@ module Api
 
       # Series - returns full object with flags resolved through variant overrides
       field :series do |w|
-        next nil unless w.weapon_series.present?
+        next nil if w.weapon_series.blank?
 
         {
           id: w.weapon_series_id,
@@ -70,7 +70,7 @@ module Api
                  :forge_order, :extra, :promotion_names
 
         field :series do |w|
-          next nil unless w.weapon_series.present?
+          next nil if w.weapon_series.blank?
 
           { id: w.weapon_series_id, slug: w.weapon_series.slug }
         end
@@ -117,7 +117,7 @@ module Api
         include_view :dates
 
         field :forged_from do |w|
-          next nil unless w.forged_from.present?
+          next nil if w.forged_from.blank?
 
           parent = w.base_weapon
           next nil unless parent
@@ -133,7 +133,7 @@ module Api
         end
 
         field :recruits do |w|
-          next nil unless w.recruits.present?
+          next nil if w.recruits.blank?
 
           character = w.recruited_character
           next nil unless character
@@ -210,7 +210,7 @@ module Api
         fields :gamewith, :kamigame
 
         field :forge_chain do |w|
-          next nil unless w.forge_chain_id.present?
+          next nil if w.forge_chain_id.blank?
 
           w.forge_chain_weapons.select { |fw| fw.element == w.element }.sort_by(&:forge_order).map do |weapon|
             {

@@ -92,12 +92,12 @@ RSpec.describe 'Artifact Skills API', type: :request do
     let(:skill) { ArtifactSkill.find_by!(skill_group: :group_i, modifier: 1) }
     let(:path) { "/api/v1/artifact_skills/#{skill.id}" }
 
+    let(:editor_headers) { auth_headers(create(:user, role: 7)) }
+
     def auth_headers(account)
       token = Doorkeeper::AccessToken.create!(resource_owner_id: account.id, expires_in: 30.days, scopes: 'public')
       { 'Authorization' => "Bearer #{token.token}", 'Content-Type' => 'application/json' }
     end
-
-    let(:editor_headers) { auth_headers(create(:user, role: 7)) }
 
     it 'lets an editor change the permitted fields' do
       patch path, params: { name_en: 'Attack', game_name_en: 'ATK Up', growth: 250, polarity: 'negative',

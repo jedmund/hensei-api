@@ -6,6 +6,13 @@ RSpec.describe 'Admin character roles collection', type: :request do
   let(:path) { '/api/v1/admin/character_roles' }
   let(:editor_headers) { auth_headers(create(:user, role: 7)) }
 
+  let!(:healer) { create(:grid_character_role, name_en: 'Healer', name_jp: 'ヒーラー', sort_order: 3) }
+  let!(:attacker) { create(:grid_character_role, name_en: 'Attacker', name_jp: 'アタッカー', sort_order: 1) }
+  let!(:defender) do
+    create(:grid_character_role, name_en: 'Defender', name_jp: 'ディフェンダー', sort_order: 2,
+                                 icon_key: 'images/grid_character_roles/d7734020-1031-406f-a6c9-b9690205b8f7.png')
+  end
+
   def auth_headers(account)
     token = Doorkeeper::AccessToken.create!(resource_owner_id: account.id, expires_in: 30.days, scopes: 'public')
     { 'Authorization' => "Bearer #{token.token}" }
@@ -18,13 +25,6 @@ RSpec.describe 'Admin character roles collection', type: :request do
 
   def names(body = response.parsed_body)
     body['results'].map { |r| r['name_en'] }
-  end
-
-  let!(:healer) { create(:grid_character_role, name_en: 'Healer', name_jp: 'ヒーラー', sort_order: 3) }
-  let!(:attacker) { create(:grid_character_role, name_en: 'Attacker', name_jp: 'アタッカー', sort_order: 1) }
-  let!(:defender) do
-    create(:grid_character_role, name_en: 'Defender', name_jp: 'ディフェンダー', sort_order: 2,
-                                 icon_key: 'images/grid_character_roles/d7734020-1031-406f-a6c9-b9690205b8f7.png')
   end
 
   before do

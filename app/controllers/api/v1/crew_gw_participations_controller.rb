@@ -25,7 +25,7 @@ module Api
       # GET /crew/gw_participations/by_event/:event_id
       def by_event
         # Support lookup by event_id (UUID) or event_number (integer)
-        event = if params[:event_id].match?(/\A\d+\z/)
+        event = if params.expect(:event_id).match?(/\A\d+\z/)
                   Event.unite_and_fight.find_by(event_number: params[:event_id])
                 else
                   Event.unite_and_fight.find_by(id: params[:event_id])
@@ -65,7 +65,7 @@ module Api
 
       # POST /gw_events/:id/participations
       def create
-        event = Event.unite_and_fight.find(params[:id])
+        event = Event.unite_and_fight.find(params.expect(:id))
 
         participation = @crew.crew_gw_participations.build(event: event)
 
@@ -93,11 +93,11 @@ module Api
       end
 
       def set_participation
-        @participation = @crew.crew_gw_participations.find(params[:id])
+        @participation = @crew.crew_gw_participations.find(params.expect(:id))
       end
 
       def participation_params
-        params.require(:crew_gw_participation).permit(:preliminary_ranking, :final_ranking)
+        params.expect(crew_gw_participation: %i[preliminary_ranking final_ranking])
       end
     end
   end

@@ -156,7 +156,7 @@ namespace :deploy do
     nil
   end
 
-  def promotions_from_obtain(obtain)
+  def promotions_from_obtain(obtain) # rubocop:disable Rails/Delegate -- a rake helper on main, where delegate is undefined
     Granblue::Parsers::Wiki.promotions_from_obtain(obtain)
   end
 
@@ -170,15 +170,15 @@ namespace :deploy do
 
     # Additional from obtain
     obtain = obtain.to_s.downcase
-    series << 2 if obtain.include?('grand') && !series.include?(2)
-    series << 3 if obtain.include?('zodiac') && !series.include?(3)
+    series << 2 if obtain.include?('grand') && series.exclude?(2)
+    series << 3 if obtain.include?('zodiac') && series.exclude?(3)
 
     # Seasonal from page name
-    series << 10 if (wiki_en.include?('summer') || wiki_en.include?('swimsuit')) && !series.include?(10)
-    series << 11 if wiki_en.include?('yukata') && !series.include?(11)
-    series << 12 if wiki_en.include?('valentine') && !series.include?(12)
-    series << 13 if wiki_en.include?('halloween') && !series.include?(13)
-    series << 14 if wiki_en.include?('formal') && !series.include?(14)
+    series << 10 if (wiki_en.include?('summer') || wiki_en.include?('swimsuit')) && series.exclude?(10)
+    series << 11 if wiki_en.include?('yukata') && series.exclude?(11)
+    series << 12 if wiki_en.include?('valentine') && series.exclude?(12)
+    series << 13 if wiki_en.include?('halloween') && series.exclude?(13)
+    series << 14 if wiki_en.include?('formal') && series.exclude?(14)
 
     series.uniq.sort
   end
@@ -213,8 +213,8 @@ namespace :deploy do
     include LoggingHelper
 
     # Load all required files
-    Dir[Rails.root.join("lib/post_deployment/**/*.rb")].each { |file| require file }
-    Dir[Rails.root.join("lib/granblue/**/*.rb")].each { |file| require file }
+    Rails.root.glob("lib/post_deployment/**/*.rb").each { |file| require file }
+    Rails.root.glob("lib/granblue/**/*.rb").each { |file| require file }
 
     # Ensure Rails environment is loaded
     Rails.application.eager_load!

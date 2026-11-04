@@ -146,7 +146,7 @@ module WeaponSkills
 
             change = if mine.nil? then { 'missing' => theirs }
                      elsif theirs.nil? then { 'added' => mine }
-                     else { 'fields' => mine.keys.reject { |k| mine[k] == theirs[k] }.to_h { |k| [k, [theirs[k], mine[k]]] } }
+                     else { 'fields' => mine.keys.reject { |k| mine[k] == theirs[k] }.index_with { |k| [theirs[k], mine[k]] } }
                      end
             key = (version.identity + [version.skill_name_en, *rk.first(2), JSON.generate(rk.last)]).join('|')
             klass = classify(key, record, rk, mine || theirs, notes_compiled)

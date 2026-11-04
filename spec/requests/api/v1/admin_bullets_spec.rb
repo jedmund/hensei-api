@@ -6,6 +6,11 @@ RSpec.describe 'Admin bullets collection', type: :request do
   let(:path) { '/api/v1/admin/bullets' }
   let(:editor_headers) { auth_headers(create(:user, role: 7)) }
 
+  let(:iron) do
+    create(:bullet, name_en: 'Iron Bullet', name_jp: 'アイアンバレット', granblue_id: '91101', slug: 'iron-bullet',
+                    bullet_type: 1, atk: 90, hits_all: false, order: 2)
+  end
+
   def auth_headers(account)
     token = Doorkeeper::AccessToken.create!(resource_owner_id: account.id, expires_in: 30.days, scopes: 'public')
     { 'Authorization' => "Bearer #{token.token}" }
@@ -20,15 +25,10 @@ RSpec.describe 'Admin bullets collection', type: :request do
     body['results'].map { |r| r['name_en'] }
   end
 
-  let!(:rifle) do
+  before do
     create(:bullet, name_en: 'Ghost Rifle', name_jp: 'ゴーストライフル', granblue_id: '92101', slug: 'ghost-rifle',
                     bullet_type: 2, atk: 300, hits_all: true, order: 21)
-  end
-  let!(:iron) do
-    create(:bullet, name_en: 'Iron Bullet', name_jp: 'アイアンバレット', granblue_id: '91101', slug: 'iron-bullet',
-                    bullet_type: 1, atk: 90, hits_all: false, order: 2)
-  end
-  let!(:rapid) do
+    iron
     create(:bullet, name_en: 'Rapid Bullet', name_jp: 'ラピッドバレット', granblue_id: '91201', slug: 'rapid-bullet',
                     bullet_type: 1, atk: 60, hits_all: false, order: 1, effect_en: 'Double attack up')
   end

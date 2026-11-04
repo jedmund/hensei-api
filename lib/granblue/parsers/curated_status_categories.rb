@@ -108,7 +108,7 @@ module Granblue
         raise Invalid, "#{@path}: entry #{index} has no name_en" if name.blank?
         raise Invalid, "#{@path}: #{name.inspect} has no reason" if reason.blank?
         raise Invalid, "#{@path}: #{name.inspect} sets neither category nor game_status_id" if category.nil? && game_status_id.nil?
-        raise Invalid, "#{@path}: #{name.inspect} has category #{category.inspect}" if category && !CATEGORIES.include?(category)
+        raise Invalid, "#{@path}: #{name.inspect} has category #{category.inspect}" if category && CATEGORIES.exclude?(category)
         if game_status_id && !GAME_STATUS_ID.match?(game_status_id.to_s)
           raise Invalid, "#{@path}: #{name.inspect} has game_status_id #{game_status_id.inspect}"
         end

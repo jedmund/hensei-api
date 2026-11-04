@@ -91,6 +91,7 @@ class ArtifactImportService < CollectionImport::Inventory
       skill = ArtifactSkill.find_by_game_name(info['name'])
       next if skill.nil? || skill.score_category.present?
 
+      # rubocop:disable-next Rails/SkipsModelValidations -- fills one catalog column during import
       skill.update_columns(score_category: category.to_i, updated_at: Time.current)
     end
   end

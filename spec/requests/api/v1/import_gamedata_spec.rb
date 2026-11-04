@@ -114,10 +114,10 @@ RSpec.describe 'Import gamedata', type: :request do
         firsts = slots.map { |slot| slot[:versions].first[:attrs] }
         abilities = firsts.first(3)
 
-        expect(abilities.map { |a| a[:game_icon] }).to eq(%w[2559_3 2560_3 2561_1])
-        expect(abilities.map { |a| a[:game_action_id] }).to eq(%w[244171 244181 244191])
-        expect(firsts.map { |a| a[:name_jp] }).to eq(%w[運気揚々 開寅招福 運気下々 寅気上昇 寅神合体 桃色なデート])
-        expect(abilities.map { |a| a[:name_en] }).to eq(['Luck Goes Up', 'Bringer of Proarsperity', 'Luck Goes Down'])
+        expect(abilities.pluck(:game_icon)).to eq(%w[2559_3 2560_3 2561_1])
+        expect(abilities.pluck(:game_action_id)).to eq(%w[244171 244181 244191])
+        expect(firsts.pluck(:name_jp)).to eq(%w[運気揚々 開寅招福 運気下々 寅気上昇 寅神合体 桃色なデート])
+        expect(abilities.pluck(:name_en)).to eq(['Luck Goes Up', 'Bringer of Proarsperity', 'Luck Goes Down'])
       end
 
       it 'takes English names from name_en when there is no English payload' do
@@ -174,10 +174,15 @@ RSpec.describe 'Import gamedata', type: :request do
   end
 
   describe 'a failure while storing' do
-    let!(:character) { create(:character, granblue_id: '3040377000') }
+    before { create(:character, granblue_id: '3040377000') }
 
     it 'answers with a generic message' do
-      allow_any_instance_of(Character).to receive(:update!).and_raise(StandardError, 'secret detail')
+      # Records loaded from the database skip .new, so stub the ones the import looks up
+      allow(Character).to receive(:find_by).and_wrap_original do |original, *args, **kwargs|
+        original.call(*args, **kwargs).tap do |found|
+          allow(found).to receive(:update!).and_raise(StandardError, 'secret detail') if found
+        end
+      end
       post '/api/v1/import/characters?lang=en', params: { 'id' => '3040377000' }.to_json, headers: headers_for(editor)
 
       expect(response).to have_http_status(:unprocessable_content)

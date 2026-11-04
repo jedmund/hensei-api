@@ -27,6 +27,7 @@ module GridDamage
       composition ||= GridComposition.for_party(party)
       panel_element = ElementScope.panel_element(party)
       out = []
+      # rubocop:disable-next Rails/FindEach -- a party has only a few grid rows to load
       party.weapons.includes(weapon: { weapon_skills: :weapon_skill_versions }).each do |gw|
         w = gw.weapon
         next unless w

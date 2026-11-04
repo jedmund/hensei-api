@@ -49,7 +49,7 @@ module CharacterSkills
         { wiki_name: row[:wiki_name], name_en: row[:display], qualifier: row[:target_qualifier], source: row[:source] }
       end
       { renamed: changed.count { |row| row[:name_en] != row[:display] }, qualified: qualified,
-        review: qualified.select { |q| q[:source] == :game_id }.map { |q| q[:wiki_name] } }
+        review: qualified.select { |q| q[:source] == :game_id }.pluck(:wiki_name) }
     end
 
     private

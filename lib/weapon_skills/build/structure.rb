@@ -190,7 +190,7 @@ module WeaponSkills
 
       # Expanded skills no parsed tier has, with the slot each lands in.
       def placed_rows(rows, slots, dropped, mode)
-        next_position = (slots.map { |s| s[:position] }.max || -1) + 1
+        next_position = (slots.pluck(:position).max || -1) + 1
         free = mode == :key ? dropped.sort_by { |e| [e[:position], e[:ordinal]] } : []
         rows.filter_map do |row|
           if (tier = free.shift)
@@ -253,7 +253,7 @@ module WeaponSkills
       def filled_tier(name, dropped, fields)
         matches = dropped.select { |entry| resolved_name(entry, fields) == name }
         matches = dropped.select { |entry| name_pattern(entry[:name_en], fields)&.match?(name) } if matches.empty?
-        return nil unless matches.map { |e| e[:position] }.uniq.size == 1
+        return nil unless matches.pluck(:position).uniq.size == 1
 
         matches.min_by { |e| e[:ordinal] }
       end

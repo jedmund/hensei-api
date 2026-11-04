@@ -6,20 +6,6 @@ RSpec.describe 'Admin artifact skills collection', type: :request do
   let(:path) { '/api/v1/admin/artifact_skills' }
   let(:editor_headers) { auth_headers(create(:user, role: 7)) }
 
-  def auth_headers(account)
-    token = Doorkeeper::AccessToken.create!(resource_owner_id: account.id, expires_in: 30.days, scopes: 'public')
-    { 'Authorization' => "Bearer #{token.token}" }
-  end
-
-  def fetch(params = {}, headers = editor_headers)
-    get path, params: params, headers: headers
-    response.parsed_body
-  end
-
-  def names(body = response.parsed_body)
-    body['results'].map { |r| r['name_en'] }
-  end
-
   let!(:atk) do
     create(:artifact_skill, skill_group: :group_i, modifier: 1, name_en: 'ATK', name_jp: '攻撃力',
                             score_category: 1, base_values: [1320, 1440, 1560, 1680, 1800], growth: 300)
@@ -37,6 +23,20 @@ RSpec.describe 'Admin artifact skills collection', type: :request do
     create(:artifact_skill, skill_group: :group_iii, modifier: 20, name_en: 'Gain Flurry after hitting a foe',
                             name_jp: '連撃', polarity: :negative, score_category: nil,
                             base_values: [], growth: nil, suffix_en: '%')
+  end
+
+  def auth_headers(account)
+    token = Doorkeeper::AccessToken.create!(resource_owner_id: account.id, expires_in: 30.days, scopes: 'public')
+    { 'Authorization' => "Bearer #{token.token}" }
+  end
+
+  def fetch(params = {}, headers = editor_headers)
+    get path, params: params, headers: headers
+    response.parsed_body
+  end
+
+  def names(body = response.parsed_body)
+    body['results'].map { |r| r['name_en'] }
   end
 
   before do

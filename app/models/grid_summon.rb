@@ -23,7 +23,7 @@ class GridSummon < ApplicationRecord
 
   has_many :substitutions, as: :grid, dependent: :destroy
   has_many :substitute_of, class_name: 'Substitution', as: :substitute_grid, dependent: :destroy
-  validates_presence_of :party
+  validates :party, presence: true # rubocop:disable Rails/RedundantPresenceValidationOnBelongsTo -- keeps the "can't be blank" message
 
   # Associations the nested blueprint walks. Reused by controllers and the
   # polymorphic substitute-grid preloader so a single source of truth keeps
@@ -73,14 +73,6 @@ class GridSummon < ApplicationRecord
   end
 
   ##
-  # Returns the blueprint for rendering the grid summon.
-  #
-  # @return [GridSummonBlueprint] the blueprint class for grid summons.
-  def blueprint
-    GridSummonBlueprint
-  end
-
-  ##
   # Sets an uncap from a request: a level past the summon's max is lowered to
   # it, and a transcendence step on a summon that can transcend raises the
   # level to the max. A summon that can't transcend stays at step 0.
@@ -122,7 +114,7 @@ class GridSummon < ApplicationRecord
   # @param fields [Array<String>, nil] optional list of camelCase keys to sync
   # @return [Boolean] true if sync was performed, false if no collection link
   def sync_from_collection!(fields: nil)
-    return false unless collection_summon.present?
+    return false if collection_summon.blank?
 
     columns = sync_columns_for(fields)
     return true if columns.empty?
@@ -137,7 +129,7 @@ class GridSummon < ApplicationRecord
   # @param fields [Array<String>, nil] optional list of camelCase keys to sync
   # @return [Boolean] true if sync was performed, false if no collection link
   def sync_to_collection!(fields: nil)
-    return false unless collection_summon.present?
+    return false if collection_summon.blank?
 
     columns = sync_columns_for(fields)
     return true if columns.empty?
@@ -158,7 +150,7 @@ class GridSummon < ApplicationRecord
   # Returns the list of fields that differ from the linked collection summon.
   # Uses camelCase keys matching the frontend's grid item shape.
   def out_of_sync_fields
-    return [] unless collection_summon.present?
+    return [] if collection_summon.blank?
 
     fields = []
     fields << 'uncapLevel' if uncap_level != collection_summon.uncap_level
@@ -197,6 +189,8 @@ class GridSummon < ApplicationRecord
     self.uncap_level ||= 0
   end
 
+  # Hand-rolled counter cache: one SQL increment, no Party callbacks.
+  # rubocop:disable Rails/SkipsModelValidations
   def increment_party_counter
     Party.increment_counter(:summons_count, party_id)
   end
@@ -204,6 +198,7 @@ class GridSummon < ApplicationRecord
   def decrement_party_counter
     Party.decrement_counter(:summons_count, party_id)
   end
+  # rubocop:enable Rails/SkipsModelValidations
 
   def recompute_party_boost!
     return if is_substitute?

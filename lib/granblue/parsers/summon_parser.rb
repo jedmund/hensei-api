@@ -38,7 +38,7 @@ module Granblue
       def self.fetch_all(save: false, overwrite: false, debug: false, start: nil)
         errors = []
 
-        summons = Summon.all.order(:granblue_id)
+        summons = Summon.order(:granblue_id)
 
         start_index = start.nil? ? 0 : summons.index { |w| w.granblue_id == start }
         count = summons.drop(start_index).count
@@ -47,7 +47,7 @@ module Granblue
 
         summons.drop(start_index).each_with_index do |w, i|
           percentage = ((i + 1) / count.to_f * 100).round(2)
-          ap "#{percentage}%: Fetching #{w.wiki_en}... (#{i + 1}/#{count})" if debug
+          Rails.logger.info "#{percentage}%: Fetching #{w.wiki_en}... (#{i + 1}/#{count})" if debug
           next unless w.release_date.nil? || overwrite
 
           begin
@@ -59,8 +59,7 @@ module Granblue
           sleep(Granblue::WikiThrottle::MIN_DELAY) # gbf.wiki: one request per 2s
         end
 
-        ap 'The following pages were unable to be fetched:'
-        ap errors
+        Rails.logger.warn "The following pages were unable to be fetched: #{errors.inspect}"
       end
 
       def self.fetch_list(list: [], save: false, overwrite: false, debug: false, start: nil)
@@ -74,7 +73,7 @@ module Granblue
         list.drop(start_index).each_with_index do |id, i|
           summon = Summon.find_by(granblue_id: id)
           percentage = ((i + 1) / count.to_f * 100).round(2)
-          ap "#{percentage}%: Fetching #{summon.wiki_en}... (#{i + 1}/#{count})" if debug
+          Rails.logger.info "#{percentage}%: Fetching #{summon.wiki_en}... (#{i + 1}/#{count})" if debug
           next unless summon.release_date.nil? || overwrite
 
           begin
@@ -86,8 +85,7 @@ module Granblue
           sleep(Granblue::WikiThrottle::MIN_DELAY) # gbf.wiki: one request per 2s
         end
 
-        ap 'The following pages were unable to be fetched:'
-        ap errors
+        Rails.logger.warn "The following pages were unable to be fetched: #{errors.inspect}"
       end
 
       private
@@ -95,7 +93,7 @@ module Granblue
       # Handle the response from the wiki if the response is successful
       # If the save flag is set, it will persist the data to the database
       def handle_fetch_success(response, save)
-        ap "#{@summon.granblue_id}: Successfully fetched info for #{@summon.wiki_en}" if @debug
+        Rails.logger.info "#{@summon.granblue_id}: Successfully fetched info for #{@summon.wiki_en}" if @debug
 
         extracted = parse_string(response)
 
@@ -116,7 +114,7 @@ module Granblue
       def fetch_wiki_info(name = nil)
         @wiki.fetch(name || @summon.wiki_en)
       rescue WikiError => e
-        ap e
+        Rails.logger.warn "#{e.class}: #{e.message}"
         # ap "There was an error fetching #{e.page}: #{e.message}" if @debug
         {
           error: {
@@ -148,7 +146,7 @@ module Granblue
             next if substr.start_with?(*disallowed)
 
             if substr.start_with?('Summon')
-              ap "--> Found template: #{substr}" if @debug
+              Rails.logger.info "--> Found template: #{substr}" if @debug
 
               substr = substr.split('|').first
               data[:template] = substr if substr != 'Summon'
@@ -235,8 +233,7 @@ module Granblue
         @summon.promotions = hash[:promotions] if hash[:promotions].present?
 
         if @summon.save
-          ap "#{@summon.granblue_id}: Successfully saved info for #{@summon.wiki_en}" if @debug
-          puts
+          Rails.logger.info "#{@summon.granblue_id}: Successfully saved info for #{@summon.wiki_en}" if @debug
           true
         end
 

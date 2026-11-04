@@ -18,9 +18,9 @@ class Api::V1::CrewRostersController < Api::V1::ApiController
     result = { roster: Api::V1::CrewRosterBlueprint.render_as_hash(@roster, view: :full) }
 
     if @roster.items.present?
-      character_ids = @roster.items.select { |i| i['type'] == 'Character' }.map { |i| i['id'] }
-      weapon_ids = @roster.items.select { |i| i['type'] == 'Weapon' }.map { |i| i['id'] }
-      summon_ids = @roster.items.select { |i| i['type'] == 'Summon' }.map { |i| i['id'] }
+      character_ids = @roster.items.select { |i| i['type'] == 'Character' }.pluck('id')
+      weapon_ids = @roster.items.select { |i| i['type'] == 'Weapon' }.pluck('id')
+      summon_ids = @roster.items.select { |i| i['type'] == 'Summon' }.pluck('id')
 
       result[:items] = enrich_items(character_ids, weapon_ids, summon_ids)
       result[:members] = fetch_roster_members(character_ids, weapon_ids, summon_ids)
@@ -50,7 +50,7 @@ class Api::V1::CrewRostersController < Api::V1::ApiController
   end
 
   def set_roster
-    @roster = @crew.crew_rosters.find(params[:id])
+    @roster = @crew.crew_rosters.find(params.expect(:id))
   end
 
   def roster_params
@@ -61,7 +61,7 @@ class Api::V1::CrewRostersController < Api::V1::ApiController
     items = []
 
     if character_ids.present?
-      Character.where(id: character_ids).each do |c|
+      Character.where(id: character_ids).find_each do |c|
         items << {
           id: c.id, type: 'Character', granblue_id: c.granblue_id, name: c.name_en,
           element: c.element, season: c.season,
@@ -72,7 +72,7 @@ class Api::V1::CrewRostersController < Api::V1::ApiController
     end
 
     if weapon_ids.present?
-      Weapon.where(id: weapon_ids).each do |w|
+      Weapon.where(id: weapon_ids).find_each do |w|
         items << {
           id: w.id, type: 'Weapon', granblue_id: w.granblue_id, name: w.name_en,
           element: w.element,
@@ -82,7 +82,7 @@ class Api::V1::CrewRostersController < Api::V1::ApiController
     end
 
     if summon_ids.present?
-      Summon.where(id: summon_ids).each do |s|
+      Summon.where(id: summon_ids).find_each do |s|
         items << {
           id: s.id, type: 'Summon', granblue_id: s.granblue_id, name: s.name_en,
           element: s.element,
@@ -92,7 +92,7 @@ class Api::V1::CrewRostersController < Api::V1::ApiController
     end
 
     # Preserve the original ordering from the roster
-    item_order = @roster.items.map { |i| i['id'] }
+    item_order = @roster.items.pluck('id')
     items.sort_by { |i| item_order.index(i[:id]) || items.length }
   end
 

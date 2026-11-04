@@ -86,10 +86,11 @@ module Api
       # so strong-params can't enumerate keys generically — DifficultyRule's
       # params_valid_for_rule_type validator constrains the payload after assignment.
       # Reject non-hash params explicitly so callers get a 422 instead of having
-      # the field silently dropped.
+      # the field silently dropped. `params: {}` is listed so a payload holding
+      # only params still passes expect; the raw value below replaces it.
       def rule_params
-        permitted = params.require(:difficulty_rule).permit(:name, :description, :component,
-                                                            :rule_type, :weight, :active)
+        permitted = params.expect(difficulty_rule: [:name, :description, :component,
+                                                    :rule_type, :weight, :active, { params: {} }])
         raw = params.require(:difficulty_rule)[:params]
 
         case raw

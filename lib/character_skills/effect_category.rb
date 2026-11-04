@@ -32,7 +32,7 @@ module CharacterSkills
       ids = ids.compact
       hits = game_details.select { |detail| ids.include?(detail[:id]) }
       hits = game_details.select { |detail| Granblue::Parsers::StatusName.base_game_id(detail[:id]) == family } if hits.empty? && family.present?
-      categories = hits.map { |detail| detail[:category] }.uniq
+      categories = hits.pluck(:category).uniq
       categories.first if categories.one?
     end
   end

@@ -47,7 +47,7 @@ module GachaSimulation
     end
 
     def reward_ids
-      @rates.fetch(1).map { |row| row[1] }
+      @rates.fetch(1).pluck(1)
     end
 
     # The displayed percentages of the banner's rate-ups, by reward id

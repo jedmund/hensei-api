@@ -45,7 +45,7 @@ class GwIndividualScore < ApplicationRecord
   private
 
   def membership_belongs_to_crew
-    return unless crew_membership.present?
+    return if crew_membership.blank?
 
     return if crew_membership.crew_id == crew_gw_participation.crew_id
 
@@ -53,7 +53,7 @@ class GwIndividualScore < ApplicationRecord
   end
 
   def phantom_belongs_to_crew
-    return unless phantom_player.present?
+    return if phantom_player.blank?
 
     return if phantom_player.crew_id == crew_gw_participation.crew_id
 

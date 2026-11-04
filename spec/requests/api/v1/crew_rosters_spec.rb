@@ -13,9 +13,11 @@ RSpec.describe 'Api::V1::CrewRosters', type: :request do
 
   describe 'GET /api/v1/crew/crew_rosters' do
     context 'as captain' do
-      let!(:membership) { create(:crew_membership, crew: crew, user: user, role: :captain) }
-      let!(:fire_roster) { create(:crew_roster, crew: crew, created_by: user, element: 1, name: 'Fire') }
-      let!(:water_roster) { create(:crew_roster, crew: crew, created_by: user, element: 2, name: 'Water') }
+      before do
+        create(:crew_membership, crew: crew, user: user, role: :captain)
+        create(:crew_roster, crew: crew, created_by: user, element: 1, name: 'Fire')
+        create(:crew_roster, crew: crew, created_by: user, element: 2, name: 'Water')
+      end
 
       it 'returns all rosters ordered by element' do
         get '/api/v1/crew/crew_rosters', headers: auth_headers
@@ -24,13 +26,15 @@ RSpec.describe 'Api::V1::CrewRosters', type: :request do
         json = response.parsed_body
         rosters = json['crew_rosters']
         expect(rosters.length).to eq(2)
-        expect(rosters.map { |r| r['element'] }).to eq([1, 2])
+        expect(rosters.pluck('element')).to eq([1, 2])
       end
     end
 
     context 'as regular member' do
-      let!(:membership) { create(:crew_membership, crew: crew, user: user, role: :member) }
-      let!(:roster) { create(:crew_roster, crew: crew, created_by: user, element: 1, name: 'Fire') }
+      before do
+        create(:crew_membership, crew: crew, user: user, role: :member)
+        create(:crew_roster, crew: crew, created_by: user, element: 1, name: 'Fire')
+      end
 
       it 'returns rosters (visible to all crew members)' do
         get '/api/v1/crew/crew_rosters', headers: auth_headers
@@ -51,7 +55,7 @@ RSpec.describe 'Api::V1::CrewRosters', type: :request do
   end
 
   describe 'GET /api/v1/crew/crew_rosters/:id' do
-    let!(:membership) { create(:crew_membership, crew: crew, user: user, role: :captain) }
+    before { create(:crew_membership, crew: crew, user: user, role: :captain) }
 
     context 'with an empty roster' do
       let!(:roster) { create(:crew_roster, crew: crew, created_by: user, element: 1, name: 'Fire') }
@@ -108,8 +112,8 @@ RSpec.describe 'Api::V1::CrewRosters', type: :request do
         get "/api/v1/crew/crew_rosters/#{roster.id}", headers: auth_headers
 
         json = response.parsed_body
-        item_ids = json['items'].map { |i| i['id'] }
-        roster_ids = roster.items.map { |i| i['id'] }
+        item_ids = json['items'].pluck('id')
+        roster_ids = roster.items.pluck('id')
         expect(item_ids).to eq(roster_ids)
       end
     end
@@ -125,17 +129,13 @@ RSpec.describe 'Api::V1::CrewRosters', type: :request do
       end
 
       let(:member_user) { create(:user) }
-      let!(:member_membership) { create(:crew_membership, crew: crew, user: member_user, role: :member) }
 
-      let!(:collection_char) do
+      before do
+        create(:crew_membership, crew: crew, user: member_user, role: :member)
         create(:collection_character, user: member_user, character: character,
                                       uncap_level: 5, transcendence_step: 3)
-      end
-      let!(:collection_wpn) do
         create(:collection_weapon, user: member_user, weapon: weapon,
                                    uncap_level: 4, transcendence_step: 0)
-      end
-      let!(:story_collection_char) do
         create(:collection_character, user: member_user, character: story_character,
                                       uncap_level: 5, transcendence_step: 0)
       end
@@ -150,27 +150,16 @@ RSpec.describe 'Api::V1::CrewRosters', type: :request do
         expect(member['username']).to eq(member_user.username)
 
         char_ownership = member['characters'].find { |c| c['id'] == character.id }
-        expect(char_ownership['uncap_level']).to eq(5)
-        expect(char_ownership['transcendence_step']).to eq(3)
-        expect(char_ownership['flb']).to be true
-        expect(char_ownership['ulb']).to be false
-        expect(char_ownership['transcendence']).to be true
-        expect(char_ownership['special']).to be false
+        expect(char_ownership).to include('uncap_level' => 5, 'transcendence_step' => 3, 'flb' => true, 'ulb' => false,
+                                          'transcendence' => true, 'special' => false)
 
         story_ownership = member['characters'].find { |c| c['id'] == story_character.id }
-        expect(story_ownership['uncap_level']).to eq(5)
-        expect(story_ownership['transcendence_step']).to eq(0)
-        expect(story_ownership['flb']).to be true
-        expect(story_ownership['ulb']).to be true
-        expect(story_ownership['transcendence']).to be false
-        expect(story_ownership['special']).to be true
+        expect(story_ownership).to include('uncap_level' => 5, 'transcendence_step' => 0, 'flb' => true, 'ulb' => true,
+                                           'transcendence' => false, 'special' => true)
 
         wpn_ownership = member['weapons'].find { |w| w['id'] == weapon.id }
-        expect(wpn_ownership['uncap_level']).to eq(4)
-        expect(wpn_ownership['transcendence_step']).to eq(0)
-        expect(wpn_ownership['flb']).to be true
-        expect(wpn_ownership['ulb']).to be true
-        expect(wpn_ownership['transcendence']).to be true
+        expect(wpn_ownership).to include('uncap_level' => 4, 'transcendence_step' => 0, 'flb' => true, 'ulb' => true,
+                                         'transcendence' => true)
       end
 
       it 'returns empty arrays for members who do not own the items' do
@@ -193,7 +182,7 @@ RSpec.describe 'Api::V1::CrewRosters', type: :request do
         get "/api/v1/crew/crew_rosters/#{roster.id}", headers: auth_headers
 
         json = response.parsed_body
-        member_ids = json['members'].map { |m| m['user_id'] }
+        member_ids = json['members'].pluck('user_id')
         expect(member_ids).not_to include(retired_user.id)
       end
     end
@@ -205,7 +194,7 @@ RSpec.describe 'Api::V1::CrewRosters', type: :request do
     let(:weapon) { create(:weapon, element: 1) }
 
     context 'as captain' do
-      let!(:membership) { create(:crew_membership, crew: crew, user: user, role: :captain) }
+      before { create(:crew_membership, crew: crew, user: user, role: :captain) }
 
       it 'updates roster items' do
         put "/api/v1/crew/crew_rosters/#{roster.id}",
@@ -215,7 +204,7 @@ RSpec.describe 'Api::V1::CrewRosters', type: :request do
         expect(response).to have_http_status(:ok)
         roster.reload
         expect(roster.items.length).to eq(2)
-        expect(roster.items.map { |i| i['type'] }).to contain_exactly('Character', 'Weapon')
+        expect(roster.items.pluck('type')).to contain_exactly('Character', 'Weapon')
       end
 
       it 'updates roster name' do
@@ -240,7 +229,7 @@ RSpec.describe 'Api::V1::CrewRosters', type: :request do
     end
 
     context 'as vice captain' do
-      let!(:membership) { create(:crew_membership, crew: crew, user: user, role: :vice_captain) }
+      before { create(:crew_membership, crew: crew, user: user, role: :vice_captain) }
 
       it 'allows updates (officers can edit)' do
         put "/api/v1/crew/crew_rosters/#{roster.id}",
@@ -252,7 +241,7 @@ RSpec.describe 'Api::V1::CrewRosters', type: :request do
     end
 
     context 'as regular member' do
-      let!(:membership) { create(:crew_membership, crew: crew, user: user, role: :member) }
+      before { create(:crew_membership, crew: crew, user: user, role: :member) }
 
       it 'returns unauthorized' do
         put "/api/v1/crew/crew_rosters/#{roster.id}",
@@ -269,7 +258,7 @@ RSpec.describe 'Api::V1::CrewRosters', type: :request do
     let!(:roster) { create(:crew_roster, crew: crew, created_by: user, element: 1, name: 'Fire') }
 
     context 'as captain' do
-      let!(:membership) { create(:crew_membership, crew: crew, user: user, role: :captain) }
+      before { create(:crew_membership, crew: crew, user: user, role: :captain) }
 
       it 'deletes the roster' do
         expect do
@@ -281,7 +270,7 @@ RSpec.describe 'Api::V1::CrewRosters', type: :request do
     end
 
     context 'as regular member' do
-      let!(:membership) { create(:crew_membership, crew: crew, user: user, role: :member) }
+      before { create(:crew_membership, crew: crew, user: user, role: :member) }
 
       it 'returns unauthorized' do
         expect do

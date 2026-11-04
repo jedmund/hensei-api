@@ -112,29 +112,6 @@
         915
       ],
       "note": "Search params feed hash conditions (no raw SQL). Replace permit! with explicit keys (backlog)."
-    },
-    {
-      "warning_type": "Mass Assignment",
-      "warning_code": 105,
-      "fingerprint": "f38c4da7c0835f26ac9e8c38c38134a87992e158f05f7ed8c72280d6eab2072d",
-      "check_name": "PermitAttributes",
-      "message": "Potentially dangerous key allowed for mass assignment",
-      "file": "app/controllers/api/v1/crew_memberships_controller.rb",
-      "line": 136,
-      "link": "https://brakemanscanner.org/docs/warning_types/mass_assignment/",
-      "code": "params.require(:membership).permit(:role, :joined_at, :retired, :retired_at)",
-      "render_path": null,
-      "location": {
-        "type": "method",
-        "class": "Api::V1::CrewMembershipsController",
-        "method": "membership_params"
-      },
-      "user_input": ":role",
-      "confidence": "Medium",
-      "cwe_id": [
-        915
-      ],
-      "note": "False positive: update only lets captains change role; officers are limited to joined_at."
     }
   ],
   "updated": "2026-10-01",

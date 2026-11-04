@@ -97,7 +97,7 @@ module Api
       end
 
       def draft_params
-        permitted = params.require(:draft).permit(:target_type, :target_id, :operation, attributes: {})
+        permitted = params.expect(draft: [:target_type, :target_id, :operation, { attributes: {} }])
         raw_attrs = params.require(:draft)[:attributes]
         permitted[:attributes] = raw_attrs.to_unsafe_h if raw_attrs.is_a?(ActionController::Parameters)
         permitted

@@ -83,18 +83,18 @@ RSpec.describe 'Collection Controller API', type: :request do
   end
 
   describe 'GET /api/v1/users/:user_id/collection/game_ids' do
-    let(:weapon1) { create(:weapon, granblue_id: '1040000100') }
-    let(:weapon2) { create(:weapon, granblue_id: '1040000200') }
-    let(:character1) { create(:character, granblue_id: '3040000100') }
-    let(:character2) { create(:character, granblue_id: '3040000200') }
+    let(:first_weapon) { create(:weapon, granblue_id: '1040000100') }
+    let(:second_weapon) { create(:weapon, granblue_id: '1040000200') }
+    let(:first_character) { create(:character, granblue_id: '3040000100') }
+    let(:second_character) { create(:character, granblue_id: '3040000200') }
     let(:summon1) { create(:summon, granblue_id: '2040000100') }
 
     let(:other_user) { create(:user, collection_privacy: :everyone) }
 
     before do
-      create(:collection_weapon, user: user, weapon: weapon1, game_id: '11111')
-      create(:collection_weapon, user: user, weapon: weapon2, game_id: '22222')
-      create(:collection_character, user: user, character: character1)
+      create(:collection_weapon, user: user, weapon: first_weapon, game_id: '11111')
+      create(:collection_weapon, user: user, weapon: second_weapon, game_id: '22222')
+      create(:collection_character, user: user, character: first_character)
       create(:collection_summon, user: user, summon: summon1, game_id: '33333')
       create(:collection_artifact, user: user, game_id: '44444')
     end
@@ -134,7 +134,7 @@ RSpec.describe 'Collection Controller API', type: :request do
     end
 
     it 'excludes weapons with null game_id' do
-      create(:collection_weapon, user: user, weapon: weapon1, game_id: nil)
+      create(:collection_weapon, user: user, weapon: first_weapon, game_id: nil)
 
       get "/api/v1/users/#{user.id}/collection/game_ids", headers: headers
 
@@ -162,7 +162,7 @@ RSpec.describe 'Collection Controller API', type: :request do
     end
 
     it 'returns both game_ids when user owns two copies of the same weapon' do
-      create(:collection_weapon, user: user, weapon: weapon1, game_id: '55555')
+      create(:collection_weapon, user: user, weapon: first_weapon, game_id: '55555')
 
       get "/api/v1/users/#{user.id}/collection/game_ids", headers: headers
 
@@ -171,6 +171,10 @@ RSpec.describe 'Collection Controller API', type: :request do
     end
 
     it 'returns distinct granblue_ids for characters' do
+      # A style shift shares its base character's granblue_id
+      style = create(:character, granblue_id: first_character.granblue_id, style_swap: true)
+      create(:collection_character, user: user, character: style)
+
       get "/api/v1/users/#{user.id}/collection/game_ids", headers: headers
 
       json = response.parsed_body
@@ -178,10 +182,10 @@ RSpec.describe 'Collection Controller API', type: :request do
     end
 
     it 'does not leak other users game_ids' do
-      create(:collection_weapon, user: other_user, weapon: weapon1, game_id: '99999')
+      create(:collection_weapon, user: other_user, weapon: first_weapon, game_id: '99999')
       create(:collection_summon, user: other_user, game_id: '88888')
       create(:collection_artifact, user: other_user, game_id: '77777')
-      create(:collection_character, user: other_user, character: character2)
+      create(:collection_character, user: other_user, character: second_character)
 
       get "/api/v1/users/#{user.id}/collection/game_ids", headers: headers
 
