@@ -294,14 +294,14 @@ class Party < ApplicationRecord
   # work in SubstituteGridPreloading.
   #
   # @return [Boolean]
-  def has_substitutions?
-    return @has_substitutions if defined?(@has_substitutions)
+  def substitutions?
+    return @substitutions if defined?(@substitutions)
 
-    @has_substitutions = Substitution
-                         .where(grid_type: 'GridCharacter', grid_id: GridCharacter.where(party_id: id).select(:id))
-                         .or(Substitution.where(grid_type: 'GridWeapon', grid_id: GridWeapon.where(party_id: id).select(:id)))
-                         .or(Substitution.where(grid_type: 'GridSummon', grid_id: GridSummon.where(party_id: id).select(:id)))
-                         .exists?
+    @substitutions = Substitution
+                     .where(grid_type: 'GridCharacter', grid_id: GridCharacter.where(party_id: id).select(:id))
+                     .or(Substitution.where(grid_type: 'GridWeapon', grid_id: GridWeapon.where(party_id: id).select(:id)))
+                     .or(Substitution.where(grid_type: 'GridSummon', grid_id: GridSummon.where(party_id: id).select(:id)))
+                     .exists?
   end
 
   ##
@@ -361,7 +361,7 @@ class Party < ApplicationRecord
   # indicating the user no longer has that item in their game inventory.
   #
   # @return [Boolean] true if the party has orphaned weapons, summons, or artifacts.
-  def has_orphaned_items?
+  def orphaned_items?
     if weapons.loaded? && summons.loaded? && characters.loaded?
       loaded_items_orphaned?
     else
@@ -391,7 +391,7 @@ class Party < ApplicationRecord
     end
   end
 
-  # #has_orphaned_items? for a party whose grid is already loaded.
+  # #orphaned_items? for a party whose grid is already loaded.
   def loaded_items_orphaned?
     weapons.any?(&:orphaned?) ||
       summons.any?(&:orphaned?) ||

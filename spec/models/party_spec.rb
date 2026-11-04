@@ -704,10 +704,10 @@ RSpec.describe Party, type: :model do
     end
   end
 
-  describe '#has_orphaned_items?' do
+  describe '#orphaned_items?' do
     it 'returns false when party has no grid items' do
       party = create(:party)
-      expect(party.has_orphaned_items?).to be false
+      expect(party.orphaned_items?).to be false
     end
   end
 
