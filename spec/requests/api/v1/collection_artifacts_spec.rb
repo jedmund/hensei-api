@@ -138,10 +138,17 @@ RSpec.describe 'Collection Artifacts API', type: :request do
       expect(ids(proficiency: sabre.to_s)).to eq([alpha.id])
     end
 
-    it 'fails on a proficiency name (current behavior)' do
-      get url, params: { proficiency: 'dagger' }, headers: headers
+    it 'filters by proficiency names, alone or mixed with integers' do
+      sabre = CollectionArtifact.proficiencies['sabre']
+      expect(ids(proficiency: 'dagger')).to contain_exactly(zeta.id, quirk.id)
+      expect(ids(proficiency: 'Sabre')).to eq([alpha.id])
+      expect(ids(proficiency: "dagger,#{sabre}")).to contain_exactly(zeta.id, alpha.id, quirk.id)
+    end
 
-      expect(response).to have_http_status(:internal_server_error)
+    it 'matches nothing for unknown proficiencies, like the other filters' do
+      expect(ids(proficiency: 'bogus')).to eq([])
+      expect(ids(proficiency: '2.5')).to eq([])
+      expect(ids(proficiency: 'bogus,dagger')).to contain_exactly(zeta.id, quirk.id)
     end
 
     it 'filters by rarity' do
