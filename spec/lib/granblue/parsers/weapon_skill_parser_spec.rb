@@ -53,7 +53,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
     # --- Template syntax ---
 
     context 'with template syntax' do
-      context '{{WeaponSkillMod|big normal}} Enmity' do
+      context 'with {{WeaponSkillMod|big normal}} Enmity' do
         let(:input) { '{{WeaponSkillMod|big normal}} Enmity' }
 
         it 'extracts modifier, series, and size' do
@@ -66,7 +66,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
         end
       end
 
-      context '{{WeaponSkillMod|medium normal}} Might' do
+      context 'with {{WeaponSkillMod|medium normal}} Might' do
         let(:input) { '{{WeaponSkillMod|medium normal}} Might' }
 
         it 'extracts medium size' do
@@ -74,7 +74,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
         end
       end
 
-      context '{{WeaponSkillMod|color}} Enmity' do
+      context 'with {{WeaponSkillMod|color}} Enmity' do
         let(:input) { '{{WeaponSkillMod|color}} Enmity' }
 
         it 'maps color to ex series with nil size' do
@@ -85,7 +85,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
         end
       end
 
-      context '{{WeaponSkillMod|unique}} Supremacy' do
+      context 'with {{WeaponSkillMod|unique}} Supremacy' do
         let(:input) { '{{WeaponSkillMod|unique}} Supremacy' }
 
         it 'maps unique to nil series' do
@@ -96,7 +96,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
         end
       end
 
-      context 'preserves original skill_name' do
+      describe 'preserves original skill_name' do
         let(:input) { '{{WeaponSkillMod|big normal}} Enmity' }
 
         it 'keeps the template string in skill_name' do
@@ -108,7 +108,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
     # --- Possessive format with known modifier ---
 
     context 'with possessive format and known modifier' do
-      context 'normal series aura' do
+      context 'with a normal series aura' do
         let(:input) { "Inferno's Might II" }
 
         it 'parses aura, modifier, series, and size' do
@@ -121,7 +121,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
         end
       end
 
-      context 'omega series aura' do
+      context 'with an omega series aura' do
         let(:input) { "Ironflame's Enmity III" }
 
         it 'maps to omega series' do
@@ -134,7 +134,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
         end
       end
 
-      context 'ex series aura' do
+      context 'with an ex series aura' do
         let(:input) { "Scarlet's Might II" }
 
         it 'maps to ex series' do
@@ -142,7 +142,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
         end
       end
 
-      context 'odious series aura (multi-word)' do
+      context 'with an odious series aura (multi-word)' do
         let(:input) { "Taboo Doomfire's Enmity" }
 
         it 'maps multi-word aura to odious series' do
@@ -154,7 +154,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
         end
       end
 
-      context 'no roman numeral' do
+      context 'without a roman numeral' do
         let(:input) { "Oblivion's Might" }
 
         it 'returns nil size' do
@@ -165,7 +165,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
         end
       end
 
-      context 'Militis aura with known modifier' do
+      context 'with a Militis aura and known modifier' do
         let(:input) { "Knightcode's Trituration" }
 
         it 'keeps the known modifier for canonical family backfill' do
@@ -182,7 +182,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
     # --- Possessive format with known aura, unknown modifier ---
 
     context 'with possessive format and known aura but unknown modifier' do
-      context 'Militis aura' do
+      context 'with a Militis aura' do
         let(:input) { "Purgatory's Initiation" }
 
         it 'accepts the skill because aura is recognized' do
@@ -194,7 +194,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
         end
       end
 
-      context 'CCW aura' do
+      context 'with a CCW aura' do
         let(:input) { "Kengo's Essence" }
 
         it 'accepts the skill because aura is recognized' do
@@ -205,7 +205,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
         end
       end
 
-      context 'Arcana aura (hyphenated)' do
+      context 'with an Arcana aura (hyphenated)' do
         let(:input) { "Hierophant-Sun's Blessing" }
 
         it 'handles hyphenated aura names' do
@@ -220,7 +220,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
     # --- Non-possessive multi-word modifier ---
 
     context 'with non-possessive multi-word modifier' do
-      context 'odious aura + multi-word modifier' do
+      context 'with an odious aura + multi-word modifier' do
         let(:input) { 'Taboo Nightfall Supremacy: Decimation' }
 
         it 'splits aura and multi-word modifier' do
@@ -231,7 +231,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
         end
       end
 
-      context 'short aura + multi-word modifier' do
+      context 'with a short aura + multi-word modifier' do
         let(:input) { 'Fire Grand Epic' }
 
         it 'splits short aura from multi-word modifier' do
@@ -247,7 +247,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
     # --- Non-possessive single-word modifier ---
 
     context 'with non-possessive single-word modifier' do
-      context 'omega aura' do
+      context 'with an omega aura' do
         let(:input) { 'Ironflame Might III' }
 
         it 'parses aura, modifier, series, and size' do
@@ -260,7 +260,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
         end
       end
 
-      context 'normal aura' do
+      context 'with a normal aura' do
         let(:input) { 'Fire Might I' }
 
         it 'maps to normal series with small size' do
@@ -276,7 +276,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
     # --- Standalone modifier (no aura) ---
 
     context 'with standalone modifier' do
-      context 'single-word with numeral' do
+      context 'with a single word and numeral' do
         let(:input) { 'Godblade I' }
 
         it 'returns modifier with nil aura' do
@@ -289,7 +289,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
         end
       end
 
-      context 'multi-word standalone' do
+      context 'with a multi-word standalone' do
         let(:input) { 'Scandere Aggressio' }
 
         it 'matches the full name as modifier' do
@@ -301,7 +301,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
         end
       end
 
-      context 'Strike: Element (colon in modifier)' do
+      context 'with Strike: Element (colon in modifier)' do
         let(:input) { 'Strike: Light' }
 
         it 'matches the full modifier including colon' do
@@ -312,7 +312,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
         end
       end
 
-      context 'Fortified Gauntlet' do
+      context 'with Fortified Gauntlet' do
         let(:input) { 'Fortified Gauntlet' }
 
         it 'keeps the Fortified variant instead of classifying as Gauntlet' do
@@ -323,7 +323,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
         end
       end
 
-      context 'Synchronized Artistry (special skill)' do
+      context 'with Synchronized Artistry (special skill)' do
         let(:input) { 'Synchronized Artistry' }
 
         it 'recognizes as standalone modifier' do
@@ -331,7 +331,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
         end
       end
 
-      context 'Greek letter modifier' do
+      context 'with a Greek letter modifier' do
         let(:input) { 'α Revelation' }
 
         it 'recognizes modifier with Greek letters' do
@@ -346,7 +346,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
     # --- Sephira element normalization ---
 
     context 'with Sephira element-specific names' do
-      context 'Tek pattern' do
+      context 'with the Tek pattern' do
         let(:input) { 'Sephira Fire-Tek' }
 
         it 'normalizes to Sephira Tek' do
@@ -358,7 +358,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
         end
       end
 
-      context 'Tek pattern (different element)' do
+      context 'with the Tek pattern (different element)' do
         let(:input) { 'Sephira Dark-Tek' }
 
         it 'normalizes to Sephira Tek' do
@@ -366,7 +366,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
         end
       end
 
-      context 'Soul pattern' do
+      context 'with the Soul pattern' do
         let(:input) { 'Sephira Windsoul' }
 
         it 'normalizes to Sephira Soul' do
@@ -374,7 +374,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
         end
       end
 
-      context 'Soul pattern (different element)' do
+      context 'with the Soul pattern (different element)' do
         let(:input) { 'Sephira Firesoul' }
 
         it 'normalizes to Sephira Soul' do
@@ -382,7 +382,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
         end
       end
 
-      context 'Legio sub-pattern' do
+      context 'with the Legio sub-pattern' do
         let(:input) { 'Sephira Legio Ventus' }
 
         it 'normalizes to Sephira Legio' do
@@ -390,7 +390,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
         end
       end
 
-      context 'Manus sub-pattern' do
+      context 'with the Manus sub-pattern' do
         let(:input) { 'Sephira Manus Terra' }
 
         it 'normalizes to Sephira Manus' do
@@ -398,7 +398,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
         end
       end
 
-      context 'Salire sub-pattern' do
+      context 'with the Salire sub-pattern' do
         let(:input) { 'Sephira Salire Lux' }
 
         it 'normalizes to Sephira Salire' do
@@ -406,7 +406,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
         end
       end
 
-      context 'Telum sub-pattern' do
+      context 'with the Telum sub-pattern' do
         let(:input) { 'Sephira Telum Ignis' }
 
         it 'normalizes to Sephira Telum' do
@@ -418,7 +418,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
     # --- Element-specific Exalto ---
 
     context 'with element-specific Exalto' do
-      context 'Omega Exalto' do
+      context 'with Omega Exalto' do
         let(:input) { 'Omega Exalto Caliginis' }
 
         it 'normalizes to Omega Exalto with omega series' do
@@ -430,7 +430,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
         end
       end
 
-      context 'Omega Exalto (different element)' do
+      context 'with Omega Exalto (different element)' do
         let(:input) { 'Omega Exalto Luminis' }
 
         it 'normalizes to Omega Exalto with omega series' do
@@ -439,7 +439,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
         end
       end
 
-      context 'Optimus Exalto' do
+      context 'with Optimus Exalto' do
         let(:input) { 'Optimus Exalto Terrae' }
 
         it 'normalizes to Optimus Exalto with normal series' do
@@ -451,7 +451,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
         end
       end
 
-      context 'Optimus Exalto (different element)' do
+      context 'with Optimus Exalto (different element)' do
         let(:input) { 'Optimus Exalto Ardendi' }
 
         it 'normalizes to Optimus Exalto with normal series' do
@@ -464,7 +464,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
     # --- Element-specific Preemptive ---
 
     context 'with element-specific Preemptive' do
-      context 'Preemptive Fire Blade' do
+      context 'with Preemptive Fire Blade' do
         let(:input) { 'Preemptive Fire Blade' }
 
         it 'strips element word and normalizes to Preemptive Blade' do
@@ -476,7 +476,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
         end
       end
 
-      context 'Preemptive Ice Wall' do
+      context 'with Preemptive Ice Wall' do
         let(:input) { 'Preemptive Ice Wall' }
 
         it 'normalizes to Preemptive Wall' do
@@ -484,7 +484,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
         end
       end
 
-      context 'Preemptive Shadow Barrier' do
+      context 'with Preemptive Shadow Barrier' do
         let(:input) { 'Preemptive Shadow Barrier' }
 
         it 'normalizes to Preemptive Barrier' do
@@ -493,7 +493,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
       end
 
       %w[Frost Light Shadow Terra].each do |element|
-        context "Preemptive #{element} Blade" do
+        context "with Preemptive #{element} Blade" do
           let(:input) { "Preemptive #{element} Blade" }
 
           it 'normalizes to Preemptive Blade' do
@@ -501,7 +501,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
           end
         end
 
-        context "Mutiny's #{element} Blade" do
+        context "with Mutiny's #{element} Blade" do
           let(:input) { "Mutiny's #{element} Blade" }
 
           it 'does not misclassify Mutiny as a preemptive family' do
@@ -522,7 +522,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
     # --- Element-suffixed modifiers ---
 
     context 'with element-suffixed modifiers' do
-      context 'Clawed' do
+      context 'with Clawed' do
         let(:input) { 'Clawed Shadow' }
 
         it 'strips element word' do
@@ -534,7 +534,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
         end
       end
 
-      context 'Armed' do
+      context 'with Armed' do
         let(:input) { 'Armed Gale' }
 
         it 'strips element word' do
@@ -542,7 +542,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
         end
       end
 
-      context 'Resilient' do
+      context 'with Resilient' do
         let(:input) { 'Resilient Shine' }
 
         it 'strips element word' do
@@ -550,7 +550,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
         end
       end
 
-      context 'Willed' do
+      context 'with Willed' do
         let(:input) { 'Willed Flood' }
 
         it 'strips element word' do
@@ -569,7 +569,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
         'IV' => 'massive',
         'V' => 'massive'
       }.each do |numeral, expected_size|
-        context "numeral #{numeral}" do
+        context "with numeral #{numeral}" do
           let(:input) { "Might #{numeral}" }
 
           it "maps to #{expected_size}" do
@@ -578,7 +578,7 @@ RSpec.describe Granblue::Parsers::WeaponSkillParser do
         end
       end
 
-      context 'no numeral' do
+      context 'without a numeral' do
         let(:input) { 'Might' }
 
         it 'returns nil size' do

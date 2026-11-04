@@ -25,7 +25,7 @@ require 'rspec/rails'
 # ending in _spec.rb) are automatically required here. This is useful for custom
 # matchers, macros, and shared contexts.
 # -----------------------------------------------------------------------------
-Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
+Rails.root.glob("spec/support/**/*.rb").each { |f| require f }
 
 # -----------------------------------------------------------------------------
 # Check for Pending Migrations:
@@ -88,7 +88,7 @@ RSpec.configure do |config|
     load Rails.root.join("db/seed/canonical.rb")
 
     # Run data migrations so test DB has element_variant_ids etc.
-    Dir[Rails.root.join("db/data/*.rb")].each do |migration_file|
+    Rails.root.glob("db/data/*.rb").each do |migration_file|
       load migration_file
     end
     PopulateElementVariantIds.new.up

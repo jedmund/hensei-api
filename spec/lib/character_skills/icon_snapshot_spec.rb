@@ -54,7 +54,7 @@ RSpec.describe CharacterSkills::IconSnapshot do
 
     it 'collapses identical duplicates into one entry' do
       slot = create(:character_skill, character: create(:character, granblue_id: '3040001000'), kind: 'ability', position: 1)
-      2.times { create(:character_skill_version, character_skill: slot, ordinal: 2, name_en: 'Same', game_icon: '1_1') }
+      create_list(:character_skill_version, 2, character_skill: slot, ordinal: 2, name_en: 'Same', game_icon: '1_1')
 
       expect(described_class.export).to eq(1)
     end

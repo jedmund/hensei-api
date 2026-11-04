@@ -6,13 +6,9 @@ require 'rake'
 RSpec.describe 'granblue:build_weapon_skills' do
   let(:runner) { instance_double(WeaponSkills::Build::Runner, call: WeaponSkills::Build::Runner::Summary.new(failed: 0)) }
 
-  before(:all) do
-    Rails.application.load_tasks unless Rake::Task.task_defined?('granblue:build_weapon_skills')
-  end
-
   around do |example|
     keys = %w[ids series all mode WEAPON_SKILL_BUILD]
-    saved = keys.to_h { |k| [k, ENV.fetch(k, nil)] }
+    saved = keys.index_with { |k| ENV.fetch(k, nil) }
     keys.each { |k| ENV.delete(k) }
     example.run
   ensure
@@ -20,6 +16,7 @@ RSpec.describe 'granblue:build_weapon_skills' do
   end
 
   before do
+    Rails.application.load_tasks unless Rake::Task.task_defined?('granblue:build_weapon_skills')
     allow(WeaponSkills::Build::Runner).to receive(:new).and_return(runner)
     allow(ActiveRecord::Base).to receive(:logger=)
   end

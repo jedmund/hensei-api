@@ -4,8 +4,8 @@ require 'rails_helper'
 
 RSpec.describe Granblue::Downloaders::SummonDownloader do
   let(:cdn) { 'https://prd-game-a-granbluefantasy.akamaized.net/assets_en/img/sp/assets/summon' }
-  let(:aws_double) { double('AwsService', file_exists?: false, upload_stream: nil) }
-  let(:summon) { double('Summon', granblue_id: '2040330000', ulb: false, transcendence: false) }
+  let(:aws_double) { instance_double(AwsService, file_exists?: false, upload_stream: nil) }
+  let(:summon) { instance_double(Summon, granblue_id: '2040330000', ulb: false, transcendence: false) }
   let(:opened_urls) { [] }
 
   before do

@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe Granblue::Parsers::ValidationErrorsSerializer do
+  subject(:result) { described_class.new(record).serialize }
+
   let(:record_class) { Struct.new(:name, :errors) }
 
   let(:error_details) do
@@ -12,10 +14,8 @@ RSpec.describe Granblue::Parsers::ValidationErrorsSerializer do
     }
   end
 
-  let(:errors) { double('Errors', details: error_details) }
+  let(:errors) { instance_double(ActiveModel::Errors, details: error_details) }
   let(:record) { record_class.new('Test', errors) }
-
-  subject(:result) { described_class.new(record).serialize }
 
   it 'flattens errors from all fields' do
     expect(result.length).to eq(3)

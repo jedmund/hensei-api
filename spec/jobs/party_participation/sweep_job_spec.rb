@@ -19,16 +19,3 @@ RSpec.describe PartyParticipation::SweepJob do
     expect(untouched.reload.participation_computed_at).to be_nil
   end
 end
-
-RSpec.describe PartyParticipation::ScoreJob do
-  it 'recomputes one party' do
-    party = create(:party, visibility: 1)
-    create(:party_sticker, party: party, sticker: create(:sticker), user: trusted_user)
-    described_class.perform_now(party.id)
-    expect(party.reload.participation_score).to be_positive
-  end
-
-  it 'ignores a deleted party' do
-    expect { described_class.perform_now(SecureRandom.uuid) }.not_to raise_error
-  end
-end

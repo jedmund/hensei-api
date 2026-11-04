@@ -6,12 +6,6 @@ RSpec.describe WeaponSkills::Build::Rows do
   let(:registry_class) { WeaponSkills::Build::Rows::Registry }
   let(:curve) { registry_class::Curve }
 
-  def curve_row(modifier, boost_type, size, sl15, **rest)
-    curve.new(modifier: modifier, boost_type: boost_type, size: size, sl15: sl15,
-              series: rest.fetch(:series, 'normal'), formula_type: rest.fetch(:formula_type, 'flat'),
-              **rest.slice(:sl1, :sl10, :sl20, :sl25, :coefficient, :max_value))
-  end
-
   let(:data) do
     [
       curve_row('Tyranny', 'atk', 'big', 18.0, sl1: 6.0, sl10: 15.0),
@@ -42,6 +36,12 @@ RSpec.describe WeaponSkills::Build::Rows do
       def suppressed(_version) = @suppressed
       def modifier_pinned?(_version) = @pinned
     end
+  end
+
+  def curve_row(modifier, boost_type, size, sl15, **rest)
+    curve.new(modifier: modifier, boost_type: boost_type, size: size, sl15: sl15,
+              series: rest.fetch(:series, 'normal'), formula_type: rest.fetch(:formula_type, 'flat'),
+              **rest.slice(:sl1, :sl10, :sl20, :sl25, :coefficient, :max_value))
   end
 
   def version(name, modifier: nil, series: 'normal', size: nil)

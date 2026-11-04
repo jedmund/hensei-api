@@ -28,7 +28,7 @@ RSpec.describe Granblue::Parsers::StatusName do
   end
 
   it 'is idempotent: the base of a base is itself' do
-    Granblue::Parsers::StatusList.use(File.read(Rails.root.join('spec/fixtures/wiki/status_list_extract.lua')))
+    Granblue::Parsers::StatusList.use(Rails.root.join('spec/fixtures/wiki/status_list_extract.lua').read)
     allow(Granblue::Parsers::StatusAliases).to receive(:map).and_return('def lowered' => 'DEF Down', 'blinded' => 'Blind')
     names = ['DEF Down 4', 'DEF Lowered', 'Blind', 'Blinded', 'Accuracy Lowered 2', 'Other Self', 'Hellfire Crest 3', 'Charge Boost']
     expect(names.map { |n| described_class.base(described_class.base(n)) }).to eq(names.map { |n| described_class.base(n) })
@@ -47,7 +47,7 @@ RSpec.describe Granblue::Parsers::StatusName do
   end
 
   it 'asks the status list first, then strips the number for names it lacks' do
-    Granblue::Parsers::StatusList.use(File.read(Rails.root.join('spec/fixtures/wiki/status_list_extract.lua')))
+    Granblue::Parsers::StatusList.use(Rails.root.join('spec/fixtures/wiki/status_list_extract.lua').read)
     resolved = described_class.resolve('DEF Down 4')
     expect([resolved.name, resolved.variant, resolved.game_status_id]).to eq(['DEF Lowered', 4, '1020_14'])
     expect(described_class.split('Charm')).to eq(['Charm', nil])

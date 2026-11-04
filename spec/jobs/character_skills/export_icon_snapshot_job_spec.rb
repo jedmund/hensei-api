@@ -19,7 +19,7 @@ RSpec.describe CharacterSkills::ExportIconSnapshotJob do
     ENV['CHARACTER_SKILL_BUILD'] = 'write'
     expect { expect(described_class.perform_now).to eq(1) }
       .to have_enqueued_job(CharacterSkills::StaleBuildJob).exactly(:once)
-    expect(JSON.parse(stored_text).map { |entry| entry['game_icon'] }).to eq(['1_1'])
+    expect(JSON.parse(stored_text).pluck('game_icon')).to eq(['1_1'])
   end
 
   it 'stores nothing new and queues nothing when the snapshot is unchanged' do

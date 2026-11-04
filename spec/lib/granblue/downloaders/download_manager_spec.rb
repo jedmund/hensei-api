@@ -3,12 +3,12 @@
 require 'rails_helper'
 
 RSpec.describe Granblue::Downloaders::DownloadManager do
-  let(:downloader_double) { double('Downloader', download: nil) }
+  let(:downloader_double) { instance_double(Granblue::Downloaders::BaseDownloader, download: nil) }
 
   before do
     allow(FileUtils).to receive(:mkdir_p)
     allow(Rails).to receive(:root).and_return(Pathname.new('/app'))
-    allow(AwsService).to receive(:new).and_return(double('AwsService', file_exists?: false))
+    allow(AwsService).to receive(:new).and_return(instance_double(AwsService, file_exists?: false))
     Granblue::Downloaders::BaseDownloader.reset_aws_service
   end
 

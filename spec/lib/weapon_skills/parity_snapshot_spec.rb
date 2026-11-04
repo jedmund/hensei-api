@@ -30,7 +30,7 @@ RSpec.describe WeaponSkills::ParitySnapshot do
     after = described_class.capture
 
     diff = described_class.diff(before, after)
-    expect(diff['changed'].map { |c| c['key'] }).to eq([key_for(version)])
+    expect(diff['changed'].pluck('key')).to eq([key_for(version)])
     expect(diff['changed'].first['fields'].keys).to eq(['data'])
     expect(diff['added']).to eq([key_for(other)])
     expect(described_class.empty_diff?(described_class.diff(after, after))).to be(true)

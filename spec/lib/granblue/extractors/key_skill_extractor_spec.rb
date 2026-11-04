@@ -14,7 +14,7 @@ RSpec.describe Granblue::Extractors::KeySkillExtractor do
 
   describe '.run' do
     it 'reads series pages from the source store and never the live wiki' do
-      expect(Granblue::Parsers::Wiki).not_to receive(:new)
+      allow(Granblue::Parsers::Wiki).to receive(:new)
       store = WeaponSkills::SourceStore::Memory.new
       store.put('wiki_raw', 'Destroyer Weapons', 'no key tables here')
 
@@ -22,6 +22,7 @@ RSpec.describe Granblue::Extractors::KeySkillExtractor do
 
       expect(stats[:fetch_failed]).to eq(described_class::SERIES_PAGES.size - 1)
       expect(preview).to eq([])
+      expect(Granblue::Parsers::Wiki).not_to have_received(:new)
     end
 
     it 'requires a store' do
@@ -33,14 +34,16 @@ RSpec.describe Granblue::Extractors::KeySkillExtractor do
     it 'does not replace effects for curated key families' do
       stats = Hash.new(0)
 
-      expect(WeaponSkillEffect).not_to receive(:for_key)
-      expect(WeaponSkillEffect).not_to receive(:create!)
+      allow(WeaponSkillEffect).to receive(:for_key)
+      allow(WeaponSkillEffect).to receive(:create!)
 
       %w[chain-forbiddance pendulum-strength gauph-strength teluma-inferno].each do |slug|
         described_class.send(:persist, slug, [{ value: 10 }], stats)
       end
 
       expect(stats[:curated_skipped]).to eq(4)
+      expect(WeaponSkillEffect).not_to have_received(:for_key)
+      expect(WeaponSkillEffect).not_to have_received(:create!)
     end
 
     it 'replaces extracted rows but keeps rows a curator edited' do

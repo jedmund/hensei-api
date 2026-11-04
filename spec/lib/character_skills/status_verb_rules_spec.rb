@@ -51,7 +51,7 @@ RSpec.describe CharacterSkills::StatusVerbRules do
     end
 
     it 'reads the list table through the mention' do
-      Granblue::Parsers::StatusList.use(File.read(Rails.root.join('spec/fixtures/wiki/status_list_extract.lua')))
+      Granblue::Parsers::StatusList.use(Rails.root.join('spec/fixtures/wiki/status_list_extract.lua').read)
       expect(rule('Raise {{status|Blinded}} lvl by 1 (Max: 10).')).to eq('foe_held_counter')
       expect(rule('Raise {{status|Rev}} lvl by 1.')).to eq('caster_counter')
     ensure

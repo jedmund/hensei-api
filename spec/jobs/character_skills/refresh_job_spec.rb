@@ -5,6 +5,16 @@ require 'rails_helper'
 RSpec.describe CharacterSkills::RefreshJob do
   let(:editor) { create(:user, role: 7) }
 
+  let!(:first) { make('3040900001') }
+  let!(:second) { make('3040900002') }
+  let(:batch) { CharacterSkills::RefreshBatch.create(user: editor, characters: [first, second], refetch_jp: false) }
+
+  def make(granblue_id, **attrs)
+    Character.without_skill_build do
+      create(:character, granblue_id: granblue_id, element: 1, wiki_en: "Page #{granblue_id}", wiki_raw: wiki(7), **attrs)
+    end
+  end
+
   def wiki(cooldown)
     <<~WIKI
       {{Character
@@ -17,23 +27,15 @@ RSpec.describe CharacterSkills::RefreshJob do
     WIKI
   end
 
-  def make(granblue_id, **attrs)
-    Character.without_skill_build do
-      create(:character, granblue_id: granblue_id, element: 1, wiki_en: "Page #{granblue_id}", wiki_raw: wiki(7), **attrs)
-    end
-  end
-
-  let!(:first) { make('3040900001') }
-  let!(:second) { make('3040900002') }
-  let(:batch) { CharacterSkills::RefreshBatch.create(user: editor, characters: [first, second], refetch_jp: false) }
-
   def reload_batch = CharacterSkills::RefreshBatch.find(batch.id)
 
   before do
     CharacterSkills::RefreshStore.clear
     allow(CharacterSkills::WikiPacer.instance).to receive(:wait)
     # The network is the wiki client; the fetcher and the pacer run for real.
-    allow_any_instance_of(Granblue::Parsers::Wiki).to receive(:fetch) { |_, page| page == 'Page 3040900002' ? wiki(4) : wiki(5) }
+    on_new_instances(Granblue::Parsers::Wiki) do |client|
+      allow(client).to receive(:fetch) { |page| page == 'Page 3040900002' ? wiki(4) : wiki(5) }
+    end
   end
 
   describe 'preview' do
@@ -53,7 +55,7 @@ RSpec.describe CharacterSkills::RefreshJob do
 
     it 'marks a character whose page fails and carries on' do
       error = Granblue::WikiError.new(code: 502, message: 'Server error', page: 'Page 3040900001')
-      allow_any_instance_of(Granblue::Parsers::Wiki).to receive(:fetch).with('Page 3040900001').and_raise(error)
+      on_new_instances(Granblue::Parsers::Wiki) { |client| allow(client).to receive(:fetch).with('Page 3040900001').and_raise(error) }
 
       described_class.perform_now(batch.id, 'preview')
 
@@ -66,8 +68,9 @@ RSpec.describe CharacterSkills::RefreshJob do
     end
 
     it 'codes an unreachable wiki as wiki_fetch_failed without a status' do
-      allow_any_instance_of(Granblue::Parsers::Wiki).to receive(:fetch).with('Page 3040900001')
-                                                                       .and_raise(Net::OpenTimeout, 'execution expired')
+      on_new_instances(Granblue::Parsers::Wiki) do |client|
+        allow(client).to receive(:fetch).with('Page 3040900001').and_raise(Net::OpenTimeout, 'execution expired')
+      end
 
       described_class.perform_now(batch.id, 'preview')
 
@@ -76,7 +79,7 @@ RSpec.describe CharacterSkills::RefreshJob do
     end
 
     it 'codes a build that makes no skills as build_refused' do
-      allow_any_instance_of(Granblue::Parsers::Wiki).to receive(:fetch).with('Page 3040900001').and_return('{{Nothing}}')
+      on_new_instances(Granblue::Parsers::Wiki) { |client| allow(client).to receive(:fetch).with('Page 3040900001').and_return('{{Nothing}}') }
       CharacterSkills::Build::Runner.new(mode: 'write', characters: [first], all: true, io: StringIO.new,
                                          enqueue_icons: false).call
 
@@ -97,7 +100,7 @@ RSpec.describe CharacterSkills::RefreshJob do
     end
 
     it 'codes anything else as unexpected' do
-      allow_any_instance_of(CharacterSkills::Refresh).to receive(:preview).and_raise(NoMethodError, 'oops')
+      on_new_instances(CharacterSkills::Refresh) { |refresh| allow(refresh).to receive(:preview).and_raise(NoMethodError, 'oops') }
 
       described_class.perform_now(batch.id, 'preview')
 
@@ -106,15 +109,16 @@ RSpec.describe CharacterSkills::RefreshJob do
     end
 
     it 'fails the refresh when no character could be previewed' do
-      allow_any_instance_of(Granblue::Parsers::Wiki).to receive(:fetch)
-        .and_raise(Granblue::WikiError.new(code: 502, message: 'Server error', page: 'x'))
+      on_new_instances(Granblue::Parsers::Wiki) do |client|
+        allow(client).to receive(:fetch).and_raise(Granblue::WikiError.new(code: 502, message: 'Server error', page: 'x'))
+      end
 
       described_class.perform_now(batch.id, 'preview')
       expect(reload_batch.status).to eq('failed')
     end
 
     it 'fails the refresh, without raising, when the run itself breaks' do
-      allow_any_instance_of(CharacterSkills::RefreshBatch).to receive(:previewed_ids).and_raise('boom')
+      on_new_instances(CharacterSkills::RefreshBatch) { |state| allow(state).to receive(:previewed_ids).and_raise('boom') }
 
       expect { described_class.perform_now(batch.id, 'preview') }.not_to raise_error
       expect(reload_batch.status).to eq('failed')

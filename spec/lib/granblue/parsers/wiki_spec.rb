@@ -91,48 +91,35 @@ RSpec.describe Granblue::Parsers::Wiki do
       allow(Rails.application.credentials).to receive(:wiki_user_agent).and_return('TestBot/1.0')
     end
 
+    def stub_wiki_api(status:, body: {})
+      stub_request(:get, %r{\Ahttps://gbf\.wiki/api\.php})
+        .to_return(status: status, body: body.to_json, headers: { 'Content-Type' => 'application/json' })
+    end
+
     context 'when response is 200 with valid data' do
       it 'returns wikitext content' do
-        response = double('Response',
-                          code: 200,
-                          key?: false,
-                          :[] => nil)
-        allow(response).to receive(:key?).with('error').and_return(false)
-        allow(response).to receive(:[]).with('parse').and_return({
-                                                                   'wikitext' => { '*' => '|name = Katalina' }
-                                                                 })
-
-        allow(HTTParty).to receive(:get).and_return(response)
+        stub_wiki_api(status: 200, body: { 'parse' => { 'wikitext' => { '*' => '|name = Katalina' } } })
         expect(wiki.fetch('Katalina')).to eq('|name = Katalina')
       end
     end
 
     context 'when response has error key' do
       it 'raises WikiError with error details' do
-        response = double('Response', code: 200)
-        allow(response).to receive(:key?).with('error').and_return(true)
-        allow(response).to receive(:[]).with('error').and_return({
-                                                                   'code' => 'missingtitle',
-                                                                   'info' => 'Page not found'
-                                                                 })
-
-        allow(HTTParty).to receive(:get).and_return(response)
+        stub_wiki_api(status: 200, body: { 'error' => { 'code' => 'missingtitle', 'info' => 'Page not found' } })
         expect { wiki.fetch('Missing') }.to raise_error(Granblue::WikiError, /missingtitle|Page not found/)
       end
     end
 
     context 'when response is 404' do
       it 'raises WikiError' do
-        response = double('Response', code: 404)
-        allow(HTTParty).to receive(:get).and_return(response)
+        stub_wiki_api(status: 404)
         expect { wiki.fetch('Missing') }.to raise_error(Granblue::WikiError)
       end
     end
 
     context 'when response is 500' do
       it 'raises WikiError' do
-        response = double('Response', code: 500)
-        allow(HTTParty).to receive(:get).and_return(response)
+        stub_wiki_api(status: 500)
         expect { wiki.fetch('Broken') }.to raise_error(Granblue::WikiError)
       end
     end
@@ -146,12 +133,12 @@ RSpec.describe Granblue::Parsers::Wiki do
 
     context 'when the wiki does not answer in time' do
       it 'sets open and read timeouts on the request' do
-        response = double('Response', code: 404)
-        expect(HTTParty).to receive(:get)
+        stub_wiki_api(status: 404)
+        allow(HTTParty).to receive(:get).and_call_original
+        expect { wiki.fetch('Missing') }.to raise_error(Granblue::WikiError)
+        expect(HTTParty).to have_received(:get)
           .with(anything, hash_including(open_timeout: Granblue::WikiHttp::OPEN_TIMEOUT,
                                          read_timeout: Granblue::WikiHttp::READ_TIMEOUT))
-          .and_return(response)
-        expect { wiki.fetch('Missing') }.to raise_error(Granblue::WikiError)
       end
 
       it 'raises a WikiError with a 5xx code, so callers and the fetcher retry handle it' do

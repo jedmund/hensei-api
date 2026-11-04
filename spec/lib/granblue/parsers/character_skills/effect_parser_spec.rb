@@ -3,11 +3,11 @@
 require 'rails_helper'
 
 RSpec.describe Granblue::Parsers::CharacterSkills::EffectParser do
-  let(:veil) { instance_double('Status', game_status_id: nil, variant_kind: nil, id: 'veil-id', category: 'buff') }
-  let(:jammed) { instance_double('Status', game_status_id: nil, variant_kind: nil, id: 'jammed-id', category: 'debuff') }
-  let(:lookup) { { by_name: { 'veil' => veil, 'jammed' => jammed }, by_id: {} } }
-
   subject(:parser) { described_class.new(lookup) }
+
+  let(:veil) { instance_double(Status, game_status_id: nil, variant_kind: nil, id: 'veil-id', category: 'buff') }
+  let(:jammed) { instance_double(Status, game_status_id: nil, variant_kind: nil, id: 'jammed-id', category: 'debuff') }
+  let(:lookup) { { by_name: { 'veil' => veil, 'jammed' => jammed }, by_id: {} } }
 
   it 'grants a known buff to the clause subject' do
     effects = parser.parse('All allies gain {{status|Veil|t=i}}.')
@@ -25,11 +25,11 @@ RSpec.describe Granblue::Parsers::CharacterSkills::EffectParser do
   end
 
   describe 'effect_type' do
-    let(:charge_boost) { instance_double('Status', game_status_id: nil, variant_kind: nil, id: 'cb-id', category: 'buff') }
-    let(:paradise) { instance_double('Status', game_status_id: nil, variant_kind: nil, id: 'field-id', category: 'field') }
+    let(:charge_boost) { instance_double(Status, game_status_id: nil, variant_kind: nil, id: 'cb-id', category: 'buff') }
+    let(:paradise) { instance_double(Status, game_status_id: nil, variant_kind: nil, id: 'field-id', category: 'field') }
     let(:mystery) do
-      instance_double('Status', game_status_id: nil, variant_kind: nil, id: 'mystery-id', category: 'special', name_en: 'Mystery',
-                                description: nil)
+      instance_double(Status, game_status_id: nil, variant_kind: nil, id: 'mystery-id', category: 'special', name_en: 'Mystery',
+                              description: nil)
     end
     let(:lookup) do
       { by_name: { 'veil' => veil, 'jammed' => jammed, 'charge boost' => charge_boost, 'paradise' => paradise,
@@ -79,9 +79,9 @@ RSpec.describe Granblue::Parsers::CharacterSkills::EffectParser do
   end
 
   describe 'status variants (D31)' do
-    let(:def_down) { instance_double('Status', id: 'dd', category: 'debuff', game_status_id: '1020', variant_kind: 'turns') }
-    let(:crest) { instance_double('Status', id: 'crest', category: 'buff', game_status_id: '6528', variant_kind: 'level') }
-    let(:other_self) { instance_double('Status', id: 'os', category: 'buff', game_status_id: '1405', variant_kind: 'uses') }
+    let(:def_down) { instance_double(Status, id: 'dd', category: 'debuff', game_status_id: '1020', variant_kind: 'turns') }
+    let(:crest) { instance_double(Status, id: 'crest', category: 'buff', game_status_id: '6528', variant_kind: 'level') }
+    let(:other_self) { instance_double(Status, id: 'os', category: 'buff', game_status_id: '1405', variant_kind: 'uses') }
     let(:lookup) { { by_name: { 'def down' => def_down, 'deluge crest' => crest, 'other self' => other_self }, by_id: {} } }
 
     before { allow(Granblue::Parsers::StatusName).to receive(:exceptions).and_return(Set.new) }
@@ -114,30 +114,30 @@ RSpec.describe Granblue::Parsers::CharacterSkills::EffectParser do
 
   describe 'instant effects (category special)' do
     let(:charge) do
-      instance_double('Status', id: 'cb', category: 'special', game_status_id: '1061', variant_kind: nil, name_en: 'Charge Boost',
-                                description: 'Instantly boosts Charge Bar by %a%')
+      instance_double(Status, id: 'cb', category: 'special', game_status_id: '1061', variant_kind: nil, name_en: 'Charge Boost',
+                              description: 'Instantly boosts Charge Bar by %a%')
     end
     let(:delay) do
-      instance_double('Status', id: 'dl', category: 'special', game_status_id: '1040', variant_kind: nil, name_en: 'Delay',
-                                description: "Reduce a foe's filled charge diamonds by 1")
+      instance_double(Status, id: 'dl', category: 'special', game_status_id: '1040', variant_kind: nil, name_en: 'Delay',
+                              description: "Reduce a foe's filled charge diamonds by 1")
     end
     let(:bomb) do
-      instance_double('Status', id: 'bm', category: 'special', game_status_id: '7097', variant_kind: nil, name_en: 'Bomb',
-                                description: "All foes take DMG at end of turn (Can't be removed)")
+      instance_double(Status, id: 'bm', category: 'special', game_status_id: '7097', variant_kind: nil, name_en: 'Bomb',
+                              description: "All foes take DMG at end of turn (Can't be removed)")
     end
     let(:lookup) { { by_name: { 'charge boost' => charge, 'delay' => delay, 'bomb' => bomb }, by_id: {} } }
 
     it "types each by its own mention's verb, not the previous clause" do
       effects = parser.parse("Big damage to a foe.\nAll allies gain {{status|Charge Boost|a=10%}}.\nInflict {{status|Delay}}.")
       expect(effects.map { |e| [e[:status_id], e[:effect_type]] }).to eq([%w[cb grant_status], %w[dl inflict_status]])
-      expect(effects.map { |e| e[:category] }).to eq(%w[special special])
+      expect(effects.pluck(:category)).to eq(%w[special special])
       expect(parser.counted_instants).to be_empty
     end
 
     describe 'one that lasts (D56)' do
       it 'counts a mention with a duration in turns as a buff or debuff by its verb, and flags it' do
         effects = parser.parse("Gain {{status|Charge Boost|t=3T}}.\nInflict {{status|Delay|t=2T}} on a foe.")
-        expect(effects.map { |e| e[:category] }).to eq(%w[buff debuff])
+        expect(effects.pluck(:category)).to eq(%w[buff debuff])
         expect(parser.counted_instants).to eq(
           [{ status: 'Charge Boost', raw: '{{status|Charge Boost|t=3T}}', reason: 'duration 3T' },
            { status: 'Delay', raw: '{{status|Delay|t=2T}}', reason: 'duration 2T' }]
@@ -159,19 +159,19 @@ RSpec.describe Granblue::Parsers::CharacterSkills::EffectParser do
 
   describe 'labels (D57)' do
     let(:jammed_listed) do
-      instance_double('Status', id: 'jm', category: 'debuff', game_status_id: '1037', variant_kind: nil, name_en: 'Jammed', wiki_name: 'Jammed')
+      instance_double(Status, id: 'jm', category: 'debuff', game_status_id: '1037', variant_kind: nil, name_en: 'Jammed', wiki_name: 'Jammed')
     end
     let(:def_down) do
-      instance_double('Status', id: 'dd', category: 'debuff', game_status_id: '1020', variant_kind: 'turns', name_en: 'DEF Lowered',
-                                wiki_name: 'DEF Lowered')
+      instance_double(Status, id: 'dd', category: 'debuff', game_status_id: '1020', variant_kind: 'turns', name_en: 'DEF Lowered',
+                              wiki_name: 'DEF Lowered')
     end
     let(:seal) do
-      instance_double('Status', id: 'as', category: 'debuff', game_status_id: '1111', variant_kind: nil, name_en: 'Aetherial Seal',
-                                wiki_name: 'Aetherial Seal 1')
+      instance_double(Status, id: 'as', category: 'debuff', game_status_id: '1111', variant_kind: nil, name_en: 'Aetherial Seal',
+                              wiki_name: 'Aetherial Seal 1')
     end
     let(:shielded) do
-      instance_double('Status', id: 'sh', category: 'buff', game_status_id: '1022', variant_kind: nil, name_en: 'Shielded',
-                                wiki_name: 'Shielded')
+      instance_double(Status, id: 'sh', category: 'buff', game_status_id: '1022', variant_kind: nil, name_en: 'Shielded',
+                              wiki_name: 'Shielded')
     end
     let(:lookup) do
       { by_name: { 'jammed' => jammed_listed, 'def lowered' => def_down, 'aetherial seal 1' => seal, 'shielded' => shielded }, by_id: {} }
@@ -201,7 +201,7 @@ RSpec.describe Granblue::Parsers::CharacterSkills::EffectParser do
 
     it 'gives none when the mention names the status itself, another spelling of it, or a numbered variant' do
       effects = parser.parse('Inflict {{status|Jammed}}, {{status|DEF Down}}, {{status|DEF Down 2|t=2T}} and {{status|Aetherial Seal}}.')
-      expect(effects.map { |e| e[:status_id] }).to eq(%w[jm dd dd as])
+      expect(effects.pluck(:status_id)).to eq(%w[jm dd dd as])
       expect(effects.pluck(:label)).to all(be_nil)
     end
 
@@ -213,7 +213,7 @@ RSpec.describe Granblue::Parsers::CharacterSkills::EffectParser do
   end
 
   describe 'per-effect category (D36)' do
-    let(:hostility) { instance_double('Status', id: 'h', category: 'buff', game_status_id: '1463', variant_kind: nil) }
+    let(:hostility) { instance_double(Status, id: 'h', category: 'buff', game_status_id: '1463', variant_kind: nil) }
     let(:lookup) { { by_name: { 'hostility boosted' => hostility }, by_id: {} } }
 
     it "takes the game's array for the status in this skill" do
@@ -233,7 +233,7 @@ RSpec.describe Granblue::Parsers::CharacterSkills::EffectParser do
   end
 
   describe 'curated categories (D37)' do
-    let(:bon_vivant) { instance_double('Status', id: 'bv', category: 'buff', game_status_id: '7001', variant_kind: nil) }
+    let(:bon_vivant) { instance_double(Status, id: 'bv', category: 'buff', game_status_id: '7001', variant_kind: nil) }
     let(:lookup) { { by_name: { 'bon vivant' => bon_vivant }, by_id: {} } }
 
     before do
@@ -253,7 +253,7 @@ RSpec.describe Granblue::Parsers::CharacterSkills::EffectParser do
   end
 
   describe 'curated categories scoped to a character (D52)' do
-    let(:max_hp) { instance_double('Status', id: 'mhp', category: 'debuff', game_status_id: '6120', variant_kind: nil) }
+    let(:max_hp) { instance_double(Status, id: 'mhp', category: 'debuff', game_status_id: '6120', variant_kind: nil) }
     let(:lookup) { { by_name: { 'max hp lowered' => max_hp }, by_id: {} } }
 
     before do

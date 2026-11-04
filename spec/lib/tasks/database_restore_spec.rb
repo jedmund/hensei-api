@@ -4,7 +4,7 @@ require 'rails_helper'
 require 'rake'
 
 RSpec.describe 'db:restore' do
-  before(:all) do
+  before do
     Rails.application.load_tasks if Rake::Task.tasks.none? { |t| t.name == 'db:restore' }
   end
 
@@ -26,11 +26,12 @@ RSpec.describe 'db:restore' do
   it 'refuses a remote database before dropping or restoring anything' do
     remote = config_for('postgres://user:secret@db.example.com:5432/railway')
     allow(ActiveRecord::Base).to receive(:connection_db_config).and_return(remote)
-    expect(Rake::Task['db:drop']).not_to receive(:invoke)
+    allow(Rake::Task['db:drop']).to receive(:invoke)
 
     ENV['CLEAN'] = '1'
     Rake::Task['db:restore'].reenable
     expect { Rake::Task['db:restore'].invoke }.to raise_error(/Refusing to restore into railway on db.example.com/)
+    expect(Rake::Task['db:drop']).not_to have_received(:invoke)
   ensure
     ENV.delete('CLEAN')
   end

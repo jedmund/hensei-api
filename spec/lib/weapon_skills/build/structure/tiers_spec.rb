@@ -81,23 +81,23 @@ RSpec.describe WeaponSkills::Build::Structure::Tiers do
 
   describe '.slots' do
     it 'extracts all 4 slots' do
-      expect(skills.map { |s| s[:position] }).to eq([0, 1, 2, 3])
+      expect(skills.pluck(:position)).to eq([0, 1, 2, 3])
     end
 
     it "orders slot 0's tiers by level, not suffix: base → T1@210 → T4@240" do
       versions = skills[0][:versions]
-      expect(versions.map { |v| v[:ordinal] }).to eq([0, 1, 2])
-      expect(versions.map { |v| v[:unlock_level] }).to eq([nil, 210, 240])
+      expect(versions.pluck(:ordinal)).to eq([0, 1, 2])
+      expect(versions.pluck(:unlock_level)).to eq([nil, 210, 240])
       expect(versions.map { |v| [v[:min_uncap], v[:transcendence_stage]] }).to eq([[3, 0], [5, 1], [5, 4]])
-      expect(versions.map { |v| v[:name_en] }).to eq(
+      expect(versions.pluck(:name_en)).to eq(
         ['Savage Mythology', 'Savage Mythology II', 'Savage Mythology III']
       )
     end
 
     it 'gives slot 1 a base tier and T2@220' do
       versions = skills[1][:versions]
-      expect(versions.map { |v| v[:unlock_level] }).to eq([nil, 220])
-      expect(versions.map { |v| v[:transcendence_stage] }).to eq([0, 2])
+      expect(versions.pluck(:unlock_level)).to eq([nil, 220])
+      expect(versions.pluck(:transcendence_stage)).to eq([0, 2])
     end
 
     it "reads slot 2 as a single FLB-tier grid skill (Terra's Enmity)" do
@@ -109,20 +109,20 @@ RSpec.describe WeaponSkills::Build::Structure::Tiers do
 
     it 'gives slot 3 T3@230 and T5@250' do
       versions = skills[3][:versions]
-      expect(versions.map { |v| v[:unlock_level] }).to eq([230, 250])
-      expect(versions.map { |v| v[:transcendence_stage] }).to eq([3, 5])
+      expect(versions.pluck(:unlock_level)).to eq([230, 250])
+      expect(versions.pluck(:transcendence_stage)).to eq([3, 5])
     end
 
     it 'derives main_hand_only / mc_only from the description text' do
-      expect(skills[0][:versions].map { |v| v[:main_hand_only] }).to all(be true)
-      expect(skills[0][:versions].map { |v| v[:mc_only] }).to all(be true)
+      expect(skills[0][:versions].pluck(:main_hand_only)).to all(be true)
+      expect(skills[0][:versions].pluck(:mc_only)).to all(be true)
       # Abandoned Role is "When main weapon" but not "(MC only)"
-      expect(skills[1][:versions].map { |v| v[:main_hand_only] }).to all(be true)
-      expect(skills[1][:versions].map { |v| v[:mc_only] }).to all(be false)
+      expect(skills[1][:versions].pluck(:main_hand_only)).to all(be true)
+      expect(skills[1][:versions].pluck(:mc_only)).to all(be false)
     end
 
     it 'never collects the charge attack as a weapon skill' do
-      names = skills.flat_map { |s| s[:versions] }.map { |v| v[:name_en] }
+      names = skills.flat_map { |s| s[:versions] }.pluck(:name_en)
       expect(names).not_to include('Here at Last', 'Demise at Last')
     end
   end

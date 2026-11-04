@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Granblue::Parsers::LuaTable do
-  let(:data) { described_class.parse(File.read(Rails.root.join('spec/fixtures/wiki/status_list_extract.lua'))) }
+  let(:data) { described_class.parse(Rails.root.join('spec/fixtures/wiki/status_list_extract.lua').read) }
 
   it 'reads local tables and resolves the names the return table uses' do
     expect(data.keys).to contain_exactly('aliases', 'buffs', 'debuffs', 'effects')

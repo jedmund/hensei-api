@@ -27,7 +27,7 @@ RSpec.describe Granblue::Downloaders::BaseDownloader do
     end
   end
 
-  let(:aws_double) { double('AwsService', file_exists?: false, upload_stream: nil) }
+  let(:aws_double) { instance_double(AwsService, file_exists?: false, upload_stream: nil) }
 
   before do
     allow(AwsService).to receive(:new).and_return(aws_double)
@@ -124,8 +124,9 @@ RSpec.describe Granblue::Downloaders::BaseDownloader do
   describe '#download' do
     it 'returns early in test mode' do
       downloader = test_downloader_class.new('12345', test_mode: true)
-      expect(downloader).not_to receive(:process_download)
+      allow(downloader).to receive(:process_download)
       downloader.download
+      expect(downloader).not_to have_received(:process_download)
     end
   end
 

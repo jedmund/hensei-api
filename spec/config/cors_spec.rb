@@ -12,7 +12,8 @@ RSpec.describe 'CORS configuration' do
     allow(ENV).to receive(:fetch).and_call_original
     allow(ENV).to receive(:fetch).with('DEV_CORS_ORIGINS', '').and_return(extra_origins)
 
-    middleware = double('middleware')
+    # spec_helper only, so no Rails: plain stand-ins for the parts of Rails the initializer reads.
+    middleware = Class.new { def insert_before(*); end }.new
     cors = nil
     allow(middleware).to receive(:insert_before).with(0, Rack::Cors) do |_, klass, &configuration|
       cors = klass.new(->(_) { [200, { 'content-type' => 'text/plain' }, ['ok']] }, &configuration)
@@ -20,9 +21,8 @@ RSpec.describe 'CORS configuration' do
 
     # Evaluate the real initializer with a fresh middleware stack for each environment.
     namespace = Module.new
-    namespace.const_set(:Rails, double('Rails',
-                                       env: ActiveSupport::StringInquirer.new(environment),
-                                       application: double('application', config: double('config', middleware: middleware))))
+    application = Struct.new(:config).new(Struct.new(:middleware).new(middleware))
+    namespace.const_set(:Rails, Struct.new(:env, :application).new(ActiveSupport::StringInquirer.new(environment), application))
     initializer = File.expand_path('../../config/initializers/cors.rb', __dir__)
     namespace.module_eval(File.read(initializer), initializer)
     cors

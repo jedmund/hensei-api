@@ -50,8 +50,10 @@ RSpec.describe Granblue::Parsers::CharacterSkills::JpSkillText do
   end
 
   it 'replaces the JP wiki text' do
-    allow_any_instance_of(Granblue::Parsers::CharacterSkills::JpLocalizer).to receive(:apply) do |_, slots|
-      slots.each { |s| s[:versions].each { |v| v[:attrs][:name_jp] ||= 'ウィキ名' } }
+    on_new_instances(Granblue::Parsers::CharacterSkills::JpLocalizer) do |localizer|
+      allow(localizer).to receive(:apply) do |slots|
+        slots.each { |s| s[:versions].each { |v| v[:attrs][:name_jp] ||= 'ウィキ名' } }
+      end
     end
     row = create_row(jp_skill_text: text)
 

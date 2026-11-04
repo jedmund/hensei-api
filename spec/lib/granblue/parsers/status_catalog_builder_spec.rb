@@ -130,10 +130,12 @@ RSpec.describe Granblue::Parsers::StatusCatalogBuilder do
 
     it "counts a status it can't save and goes on" do
       character('One', 'Gain {{status|Veil}} and {{status|Shield}}.')
-      allow_any_instance_of(Status).to receive(:save!).and_wrap_original do |original, *args|
-        raise ActiveRecord::RecordNotUnique, 'clash' if original.receiver.name_en == 'Shield'
+      on_new_instances(Status) do |status|
+        allow(status).to receive(:save!).and_wrap_original do |original, *args|
+          raise ActiveRecord::RecordNotUnique, 'clash' if status.name_en == 'Shield'
 
-        original.call(*args)
+          original.call(*args)
+        end
       end
       expect(described_class.build_all).to include(created: 1, failed: 1)
       expect(Status.pluck(:name_en)).to eq(['Veil'])
@@ -158,7 +160,7 @@ RSpec.describe Granblue::Parsers::StatusCatalogBuilder do
     end
 
     it "takes status, id, description and wiki page from gbf.wiki's status list" do
-      Granblue::Parsers::StatusList.use(File.read(Rails.root.join('spec/fixtures/wiki/status_list_extract.lua')))
+      Granblue::Parsers::StatusList.use(Rails.root.join('spec/fixtures/wiki/status_list_extract.lua').read)
       character('One', 'Inflict {{status|DEF Down 4|t=4T}} on a foe. Gain {{status|Other Self}}.')
       described_class.build_all
       expect(Status.order(:name_en).pluck(:name_en, :category, :game_status_id, :description, :wiki_slug))
@@ -217,7 +219,7 @@ RSpec.describe Granblue::Parsers::StatusCatalogBuilder do
     end
 
     it 'merges rows the list ties together on the full build' do
-      Granblue::Parsers::StatusList.use(File.read(Rails.root.join('spec/fixtures/wiki/status_list_extract.lua')))
+      Granblue::Parsers::StatusList.use(Rails.root.join('spec/fixtures/wiki/status_list_extract.lua').read)
       charm = Status.create!(name_en: 'Blind', category: 'debuff')
       effect = create(:skill_effect, status: charm)
       character('One', 'Inflict {{status|Blinded}} on a foe.')
@@ -227,7 +229,7 @@ RSpec.describe Granblue::Parsers::StatusCatalogBuilder do
     end
 
     it 'refreshes a status no text mentions from the list' do
-      Granblue::Parsers::StatusList.use(File.read(Rails.root.join('spec/fixtures/wiki/status_list_extract.lua')))
+      Granblue::Parsers::StatusList.use(Rails.root.join('spec/fixtures/wiki/status_list_extract.lua').read)
       orphan = Status.create!(name_en: 'Accuracy Lowered', category: 'buff')
       character('One', 'Gain {{status|Veil}}.')
       described_class.build_all

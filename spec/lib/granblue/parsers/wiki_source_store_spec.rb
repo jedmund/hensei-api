@@ -107,7 +107,7 @@ RSpec.describe Granblue::Parsers::Wiki do
       end
 
       expect(wiki_requests).to be_empty
-      expect(results.map { |r| r[:skills] }).to all(be_positive)
+      expect(results.pluck(:skills)).to all(be_positive)
       expect(template.skills.reload.map(&:name_en)).to include("Fire's Might")
     end
 

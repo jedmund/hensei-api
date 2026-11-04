@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe Granblue::Parsers::JpWikiSkillParser do
   def parse(slug)
-    html = File.read(Rails.root.join("spec/fixtures/character_skills/character-#{slug}-jpwiki.html"))
+    html = Rails.root.join("spec/fixtures/character_skills/character-#{slug}-jpwiki.html").read
     described_class.new(build(:character, wiki_raw_jp: html)).parse
   end
 
@@ -12,12 +12,12 @@ RSpec.describe Granblue::Parsers::JpWikiSkillParser do
     result = parse(:vikala)
 
     aggregate_failures do
-      expect(result[:ougi].map { |o| o[:name_jp] }).to include('金牙神然')
-      expect(result[:abilities].map { |a| a[:name_jp] })
+      expect(result[:ougi].pluck(:name_jp)).to include('金牙神然')
+      expect(result[:abilities].pluck(:name_jp))
         .to include('グリーティング・ドーマウス', 'エンチャンテッド・ドリーム', 'エキセントリックパレード')
       expect(result[:abilities].first)
         .to include(name_jp: 'グリーティング・ドーマウス', unlock_level: nil, enhance_levels: [55], cooldown: 11)
-      expect(result[:support].map { |s| s[:name_jp] }).to eq(%w[鼠神宮の主 ビート・ザ・マウス])
+      expect(result[:support].pluck(:name_jp)).to eq(%w[鼠神宮の主 ビート・ザ・マウス])
     end
   end
 
@@ -26,7 +26,7 @@ RSpec.describe Granblue::Parsers::JpWikiSkillParser do
 
     aggregate_failures do
       expect(result[:abilities].size).to eq(5)
-      expect(result[:abilities].map { |a| a[:name_jp] }).to include('ブランクフェイス', 'シークレットハンズ')
+      expect(result[:abilities].pluck(:name_jp)).to include('ブランクフェイス', 'シークレットハンズ')
       expect(result[:support].size).to eq(4)
     end
   end
@@ -36,7 +36,7 @@ RSpec.describe Granblue::Parsers::JpWikiSkillParser do
 
     aggregate_failures do
       expect(result[:ougi].size).to eq(6)
-      expect(result[:abilities].map { |a| a[:name_jp] }).to include('グラウンドゼロ')
+      expect(result[:abilities].pluck(:name_jp)).to include('グラウンドゼロ')
       expect(result[:support].size).to eq(3)
     end
   end
@@ -45,9 +45,9 @@ RSpec.describe Granblue::Parsers::JpWikiSkillParser do
     result = parse(:wamdus)
 
     aggregate_failures do
-      expect(result[:abilities].map { |a| a[:name_jp] }).to start_with('スターヴィングドレイン', 'イノセントトキシン')
+      expect(result[:abilities].pluck(:name_jp)).to start_with('スターヴィングドレイン', 'イノセントトキシン')
       expect(result[:abilities].size).to eq(3)
-      expect(result[:support].map { |s| s[:name_jp] }).to eq(%w[ろーどーのよろこび 理外の『碧』])
+      expect(result[:support].pluck(:name_jp)).to eq(%w[ろーどーのよろこび 理外の『碧』])
     end
   end
 end

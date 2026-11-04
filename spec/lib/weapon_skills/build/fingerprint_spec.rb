@@ -30,8 +30,9 @@ RSpec.describe WeaponSkills::Build::Fingerprint do
   end
 
   it 'is a stable SHA256 hex digest' do
-    expect(fingerprint).to match(/\A\h{64}\z/)
-    expect(fingerprint).to eq(fingerprint)
+    first = fingerprint
+    expect(first).to match(/\A\h{64}\z/)
+    expect(fingerprint).to eq(first) # computed again from the same sources
   end
 
   it "changes when one of the weapon's sources changes" do

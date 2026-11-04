@@ -6,28 +6,21 @@ RSpec.describe CharacterSkills::Coverage do
   let(:today) { Date.new(2026, 10, 20) }
   let(:storage) { instance_double(AwsService) }
 
-  let!(:complete) do
-    create(:character, granblue_id: '3040000001', name_en: 'Complete', rarity: 3, wiki_raw: '{{Character}}',
-                       wiki_raw_fetched_at: today - 5, wiki_raw_jp: '<html/>',
-                       game_raw_en: { 'id' => '3040000001' }, game_raw_jp: { 'id' => '3040000001' })
-  end
-  let!(:no_skills) do
-    create(:character, granblue_id: '3040000002', name_en: 'New', rarity: 3, wiki_raw: '{{Character}}',
-                       wiki_raw_fetched_at: today - 100, game_raw_en: nil)
-  end
-  let!(:unreleased) do
-    create(:character, granblue_id: '3040000003', name_en: 'Soon', rarity: 2, release_date: today + 3, wiki_raw: nil, wiki_en: '')
-  end
-  let!(:json_null) do
-    create(:character, granblue_id: '3030000004', name_en: 'Nulled', rarity: 2, wiki_raw: '{{Character}}',
-                       wiki_raw_fetched_at: nil, game_raw_en: nil)
-  end
-  let!(:style_row) do
-    create(:character, granblue_id: '3040000001', name_en: 'Complete', style_swap: true, rarity: 3,
-                       wiki_raw: '{{Character}}', wiki_raw_fetched_at: today - 40)
-  end
+  # The test database carries seeded characters; the report looks at this spec's only.
+  let(:own_ids) { %w[3040000001 3040000002 3040000003 3030000004] }
 
   before do
+    complete = create(:character, granblue_id: '3040000001', name_en: 'Complete', rarity: 3, wiki_raw: '{{Character}}',
+                                  wiki_raw_fetched_at: today - 5, wiki_raw_jp: '<html/>',
+                                  game_raw_en: { 'id' => '3040000001' }, game_raw_jp: { 'id' => '3040000001' })
+    create(:character, granblue_id: '3040000002', name_en: 'New', rarity: 3, wiki_raw: '{{Character}}',
+                       wiki_raw_fetched_at: today - 100, game_raw_en: nil)
+    create(:character, granblue_id: '3040000003', name_en: 'Soon', rarity: 2, release_date: today + 3, wiki_raw: nil, wiki_en: '')
+    json_null = create(:character, granblue_id: '3030000004', name_en: 'Nulled', rarity: 2, wiki_raw: '{{Character}}',
+                                   wiki_raw_fetched_at: nil, game_raw_en: nil)
+    create(:character, granblue_id: '3040000001', name_en: 'Complete', style_swap: true, rarity: 3,
+                       wiki_raw: '{{Character}}', wiki_raw_fetched_at: today - 40)
+
     put_icon_snapshot([
                         { granblue_id: '3030000004', style: 1, kind: 'ability', position: 1, ordinal: 1, name_en: 'Kept',
                           game_icon: '100_1' }
@@ -43,9 +36,6 @@ RSpec.describe CharacterSkills::Coverage do
     create(:character_skill_version, character_skill: nulled, ordinal: 1, name_en: 'Kept', name_jp: 'a', game_icon: '100_1')
     create(:character_skill_version, character_skill: nulled, ordinal: 2, name_en: 'Renamed', name_jp: 'b', game_icon: '200_1')
   end
-
-  # The test database carries seeded characters; the report looks at this spec's only.
-  let(:own_ids) { %w[3040000001 3040000002 3040000003 3030000004] }
 
   def coverage(**)
     described_class.new(today: today, ids: own_ids, **)
@@ -113,10 +103,10 @@ RSpec.describe CharacterSkills::Coverage do
 
   it 'writes the gap rows to CSV' do
     rows = CSV.parse(coverage.to_csv, headers: true)
-    expect(rows.map { |r| r['check'] }.uniq).to all(satisfy { |key| row(coverage, key.to_sym).gap })
+    expect(rows.pluck('check').uniq).to all(satisfy { |key| row(coverage, key.to_sym).gap })
     expect(rows.find { |r| r['check'] == 'ability_versions_wiki_stem_only' }.to_h)
       .to include('granblue_id' => '3030000004', 'style' => '1', 'name_en' => 'Nulled', 'rarity' => 'SR')
-    expect(rows.map { |r| r['check'] }).not_to include('characters', 'wiki_raw_fetched_recent')
+    expect(rows.pluck('check')).not_to include('characters', 'wiki_raw_fetched_recent')
   end
 
   describe 's3: true' do

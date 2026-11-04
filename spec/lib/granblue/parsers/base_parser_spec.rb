@@ -17,8 +17,8 @@ RSpec.describe Granblue::Parsers::BaseParser do
   end
 
   let(:entity) do
-    double('Entity', wiki_en: 'Katalina', wiki_raw: nil,
-                     :wiki_en= => nil, :wiki_raw= => nil, save!: true)
+    instance_double(Character, wiki_en: 'Katalina', wiki_raw: nil,
+                               :wiki_en= => nil, :wiki_raw= => nil, save!: true)
   end
 
   let(:parser) { test_parser_class.new(entity) }
