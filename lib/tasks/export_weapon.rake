@@ -27,7 +27,7 @@ namespace :granblue do
 
       # Write to file
       File.open(filename, 'w') do |f|
-        Weapon.all.each do |w|
+        Weapon.find_each do |w|
           f.write("#{build_weapon_url(w.granblue_id.to_s, size)} \n")
         end
       end

@@ -23,7 +23,7 @@ module WeaponSkills
       # no longer has, and how many titles were checked.
       def check(scope = WeaponSource.all)
         rows = scope.where(kind: KINDS).pluck(:weapon_id, :kind, :key, :fetched_at)
-        titles = rows.map { |r| r[2] }.uniq.sort
+        titles = rows.pluck(2).uniq.sort
         edited = titles.each_slice(50).with_object({}) { |slice, out| out.merge!(@fetcher.last_edited(slice)) }
 
         missing = titles.select { |t| edited[t].nil? }

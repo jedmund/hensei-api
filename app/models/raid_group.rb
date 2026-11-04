@@ -8,7 +8,7 @@ class RaidGroup < ApplicationRecord
   # Where a group sits in the raid picker. Farming is 0.
   SECTIONS = { 'farming' => 0, 'raid' => 1, 'event' => 2, 'solo' => 3 }.freeze
 
-  has_many :raids, class_name: 'Raid', foreign_key: :group_id, dependent: :restrict_with_error
+  has_many :raids, class_name: 'Raid', foreign_key: :group_id, inverse_of: :group, dependent: :restrict_with_error
 
   # Validations
   validates :name_en, presence: true

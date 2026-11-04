@@ -8,6 +8,9 @@ module PartyDifficulty
   # When a party is not scoreable (doesn't meet the min_count thresholds), all
   # five difficulty columns are nulled so the UI hides the badge.
   class Persister
+    # The difficulty columns are written directly: a party save would bump
+    # updated_at and enqueue this recompute again.
+    # rubocop:disable-next Rails/SkipsModelValidations
     def self.call(party_id)
       party = Calculator.eager_load_party(party_id)
       result = Calculator.new(party).call

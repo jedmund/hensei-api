@@ -41,7 +41,7 @@ module Granblue
           master = char_data['master']
           param = char_data['param']
 
-          Rails.logger.debug "[TRANSFORM] Processing character: #{master['name']}"
+          Rails.logger.debug { "[TRANSFORM] Processing character: #{master['name']}" }
 
           # Build base character hash with required attributes
           character = {
@@ -50,7 +50,7 @@ module Granblue
             uncap: param['evolution'].to_i # Current uncap level
           }
 
-          Rails.logger.debug "[TRANSFORM] Base character data: #{character}"
+          Rails.logger.debug { "[TRANSFORM] Base character data: #{character}" }
 
           # Add perpetuity ring status if present
           if param['has_npcaugment_constant']
@@ -62,7 +62,7 @@ module Granblue
           phase = param['phase'].to_i
           if phase&.positive?
             character[:transcend] = phase
-            Rails.logger.debug "[TRANSFORM] Character has transcendence: #{phase}"
+            Rails.logger.debug { "[TRANSFORM] Character has transcendence: #{phase}" }
           end
 
           # Only add characters with valid IDs to result set

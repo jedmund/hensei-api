@@ -6,6 +6,11 @@
 module SolomonisPartySeals
   extend ActiveSupport::Concern
 
+  # Seal state and unseal priority are bookkeeping columns: they're written
+  # directly so the grid items' save callbacks (party recompute, collection
+  # sync, last_updated) don't fire for each row.
+  # rubocop:disable Rails/SkipsModelValidations
+
   ##
   # Replaces the unseal priority lists. Weapons and summons are ranked in
   # two independent lists: the items come in one ordered array, and each
@@ -49,7 +54,7 @@ module SolomonisPartySeals
     return unless expedition
 
     justice = PartyBlessing.joins(:arcarum_blessing)
-                           .where(party_id: id, arcarum_blessings: { slug: ArcarumBlessing::JUSTICE }).exists?
+                           .exists?(party_id: id, arcarum_blessings: { slug: ArcarumBlessing::JUSTICE })
     weapons = GridWeapon.where(party_id: id, is_substitute: false).to_a
     summons = GridSummon.where(party_id: id, is_substitute: false).to_a
 
@@ -101,6 +106,8 @@ module SolomonisPartySeals
       rows.each { |row| row.update_columns(unseal_priority: row.unseal_priority) if row.unseal_priority_changed? }
     end
   end
+
+  # rubocop:enable Rails/SkipsModelValidations
 
   private
 

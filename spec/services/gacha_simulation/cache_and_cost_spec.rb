@@ -53,13 +53,13 @@ RSpec.describe 'Gacha cache and purchase estimates' do
   it 'uses JPY divided by JPY-per-USD and retains a dated stale quote for seven days' do
     redis = double('redis')
     allow(Sidekiq).to receive(:redis).and_yield(redis)
-    quote = { 'provider' => 'Frankfurter / ECB', 'date' => (Date.today - 7).iso8601, 'jpy_per_usd' => '150' }
+    quote = { 'provider' => 'Frankfurter / ECB', 'date' => (Time.zone.today - 7).iso8601, 'jpy_per_usd' => '150' }
     allow(redis).to receive(:get).and_return(JSON.generate(quote))
     cost = GachaSimulation::ExchangeRate.cost('10')
     expect(cost['jpy']).to eq('3150.0')
     expect(cost['usd']).to eq('21.0')
     expect(cost['exchange_rate']['stale']).to be true
-    quote['date'] = (Date.today - 8).iso8601
+    quote['date'] = (Time.zone.today - 8).iso8601
     allow(redis).to receive(:get).and_return(JSON.generate(quote))
     expect(GachaSimulation::ExchangeRate.cost('10')['usd']).to be_nil
     expect(GachaSimulation::ExchangeRate.cost('90071992547409930')['jpy']).to eq('28372677652434127950.0')
@@ -72,7 +72,7 @@ RSpec.describe 'Gacha cache and purchase estimates' do
     expect(http).to receive(:get).with(uri.request_uri).and_return(Net::HTTPServiceUnavailable.new('1.1', '503', 'Unavailable'))
     expect { GachaSimulation::ExchangeRate.refresh }.to raise_error(GachaSimulation::Unavailable)
     response = Net::HTTPOK.new('1.1', '200', 'OK')
-    allow(response).to receive(:body).and_return({ date: Date.today.iso8601, rate: 150 }.to_json)
+    allow(response).to receive(:body).and_return({ date: Time.zone.today.iso8601, rate: 150 }.to_json)
     expect(http).to receive(:get).with(uri.request_uri).and_return(response)
     redis = double('redis')
     allow(Sidekiq).to receive(:redis).and_yield(redis)

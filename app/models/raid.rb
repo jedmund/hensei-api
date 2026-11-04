@@ -21,7 +21,7 @@ class Raid < ApplicationRecord
   validates :short_name_en, :short_name_jp, length: { maximum: 64 }
   validates :slug, presence: true, uniqueness: true
   validates :slug, format: { with: SLUG_FORMAT }, allow_blank: true
-  validates :group_id, presence: true
+  validates :group_id, presence: true # rubocop:disable Rails/RedundantPresenceValidationOnBelongsTo -- the admin form shows errors under group_id
   validates :element, inclusion: { in: GranblueEnums::ELEMENTS.values }, allow_nil: true
   validates :level, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, allow_nil: true
   validates :player_count, inclusion: { in: PLAYER_COUNTS.values }

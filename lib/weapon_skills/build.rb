@@ -61,7 +61,7 @@ module WeaponSkills
       end
       slots = (slots + version_slots).uniq(&:identity).sort_by(&:identity)
 
-      BuildResult.new(weapon_granblue_id: weapon.granblue_id, slots: slots, versions: built.map { |b| b[:version] },
+      BuildResult.new(weapon_granblue_id: weapon.granblue_id, slots: slots, versions: built.pluck(:version),
                       rows: rows, warnings: warnings).validate!
     end
 

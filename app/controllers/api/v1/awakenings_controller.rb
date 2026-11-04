@@ -56,7 +56,7 @@ module Api
 
       # DELETE /awakenings/:id
       def destroy
-        @awakening.destroy
+        @awakening.destroy!
         head :no_content
       end
 

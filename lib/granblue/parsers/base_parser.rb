@@ -89,7 +89,7 @@ module Granblue
         @entity.wiki_en = redirect
         return unless @entity.save!
 
-        ap "Saved new wiki_en value: #{redirect}" if @debug
+        Rails.logger.info "Saved new wiki_en value: #{redirect}" if @debug
         redirect
       end
 
@@ -104,7 +104,7 @@ module Granblue
         @entity.wiki_raw_fetched_at = Time.current if fetched && @entity.respond_to?(:wiki_raw_fetched_at=)
         @entity.save!
 
-        ap "Successfully fetched info for #{@entity.wiki_en}" if @debug
+        Rails.logger.info "Successfully fetched info for #{@entity.wiki_en}" if @debug
 
         extracted = parse_string(response)
 
@@ -122,7 +122,7 @@ module Granblue
       def fetch_wiki_info
         @wiki.fetch(@entity.wiki_en)
       rescue WikiError => e
-        ap "Error fetching #{e.page}: #{e.message}" if @debug
+        Rails.logger.info "Error fetching #{e.page}: #{e.message}" if @debug
         nil
       end
 

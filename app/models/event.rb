@@ -70,11 +70,11 @@ class Event < ApplicationRecord
 
   scope :current, ->(now = Time.current) { where('starts_at <= ? AND ends_at > ?', now, now) }
   scope :upcoming, ->(now = Time.current) { where('starts_at > ?', now) }
-  scope :past, ->(now = Time.current) { where('ends_at <= ?', now) }
+  scope :past, ->(now = Time.current) { where(ends_at: ..now) }
   # Ended within the last `days` JST days (counting from the start of today in JST).
   scope :recently_ended, lambda { |days: 7, now: Time.current|
     today = now.in_time_zone(GW_TIME_ZONE).beginning_of_day
-    where('ends_at >= ? AND ends_at <= ?', today - days.days, now).order(starts_at: :desc)
+    where(ends_at: (today - days.days)..now).order(starts_at: :desc)
   }
 
   # Converts JST calendar days (Date or "YYYY-MM-DD") to a Guild War's

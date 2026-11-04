@@ -43,7 +43,7 @@ module Granblue
         count = Character.count
         Character.all.each_with_index do |c, i|
           percentage = ((i + 1) / count.to_f * 100).round(2)
-          ap "#{percentage}%: Fetching #{c.name_en}... (#{i + 1}/#{count})" if debug
+          Rails.logger.info "#{percentage}%: Fetching #{c.name_en}... (#{i + 1}/#{count})" if debug
           next unless c.release_date.nil? || overwrite
 
           begin
@@ -55,8 +55,7 @@ module Granblue
           sleep(Granblue::WikiThrottle::MIN_DELAY) # gbf.wiki: one request per 2s
         end
 
-        ap 'The following pages were unable to be fetched:'
-        ap errors
+        Rails.logger.warn "The following pages were unable to be fetched: #{errors.inspect}"
       end
 
       def self.fetch_list(list: [], save: false, overwrite: false, debug: false, start: nil)
@@ -70,7 +69,7 @@ module Granblue
         list.drop(start_index).each_with_index do |id, i|
           chara = Character.find_by(granblue_id: id)
           percentage = ((i + 1) / count.to_f * 100).round(2)
-          ap "#{percentage}%: Fetching #{chara.wiki_en}... (#{i + 1}/#{count})" if debug
+          Rails.logger.info "#{percentage}%: Fetching #{chara.wiki_en}... (#{i + 1}/#{count})" if debug
           next unless chara.release_date.nil? || overwrite
 
           begin
@@ -82,8 +81,7 @@ module Granblue
           sleep(Granblue::WikiThrottle::MIN_DELAY) # gbf.wiki: one request per 2s
         end
 
-        ap 'The following pages were unable to be fetched:'
-        ap errors
+        Rails.logger.warn "The following pages were unable to be fetched: #{errors.inspect}"
       end
 
       private
@@ -96,10 +94,10 @@ module Granblue
 
         @character.wiki_en = redirect
         if @character.save!
-          ap "Saved new wiki_en value for #{@character.granblue_id}: #{redirect}" if @debug
+          Rails.logger.info "Saved new wiki_en value for #{@character.granblue_id}: #{redirect}" if @debug
           redirect
         else
-          ap "Unable to save new wiki_en value for #{@character.granblue_id}: #{redirect}" if @debug
+          Rails.logger.info "Unable to save new wiki_en value for #{@character.granblue_id}: #{redirect}" if @debug
           nil
         end
       end
@@ -113,7 +111,7 @@ module Granblue
         @character.wiki_raw_fetched_at = Time.current if fetched
         @character.save!
 
-        ap "#{@character.granblue_id}: Successfully fetched info for #{@character.wiki_en}" if @debug
+        Rails.logger.info "#{@character.granblue_id}: Successfully fetched info for #{@character.wiki_en}" if @debug
         extracted = parse_string(response)
         info = parse(extracted)
         persist(info) if save
@@ -153,7 +151,7 @@ module Granblue
       def fetch_wiki_info
         @wiki.fetch(@character.wiki_en)
       rescue WikiError => e
-        ap "There was an error fetching #{e.page}: #{e.message}" if @debug
+        Rails.logger.info "There was an error fetching #{e.page}: #{e.message}" if @debug
         nil
       end
 
@@ -224,8 +222,7 @@ module Granblue
         @character.season = hash[:season] if hash[:season].present?
 
         if @character.save
-          ap "#{@character.granblue_id}: Successfully saved info for #{@character.name_en}" if @debug
-          puts
+          Rails.logger.info "#{@character.granblue_id}: Successfully saved info for #{@character.name_en}" if @debug
           true
         end
 
@@ -258,27 +255,27 @@ module Granblue
 
         # Additional series indicators from |obtain= field
         obtain = hash['obtain'].to_s.downcase
-        series << 1 if obtain.include?('grand') && !series.include?(1)  # Grand
-        series << 2 if obtain.include?('zodiac') && !series.include?(2) # Zodiac
+        series << 1 if obtain.include?('grand') && series.exclude?(1)  # Grand
+        series << 2 if obtain.include?('zodiac') && series.exclude?(2) # Zodiac
 
         # Seasonal series based on page name or obtain field
         page_name = @character.wiki_en.to_s.downcase
-        if (page_name.include?('summer') || page_name.include?('(swimsuit)')) && !series.include?(9)
+        if (page_name.include?('summer') || page_name.include?('(swimsuit)')) && series.exclude?(9)
           series << 9# Summer
         end
-        if page_name.include?('yukata') && !series.include?(10)
+        if page_name.include?('yukata') && series.exclude?(10)
           series << 10# Yukata
         end
-        if page_name.include?('valentine') && !series.include?(11)
+        if page_name.include?('valentine') && series.exclude?(11)
           series << 11# Valentine
         end
-        if page_name.include?('halloween') && !series.include?(12)
+        if page_name.include?('halloween') && series.exclude?(12)
           series << 12# Halloween
         end
-        if (page_name.include?('(formal)') || page_name.include?('formal ')) && !series.include?(13)
+        if (page_name.include?('(formal)') || page_name.include?('formal ')) && series.exclude?(13)
           series << 13# Formal
         end
-        if (page_name.include?('holiday') || page_name.include?('(holiday)')) && !series.include?(14)
+        if (page_name.include?('holiday') || page_name.include?('(holiday)')) && series.exclude?(14)
           series << 14# Holiday
         end
 

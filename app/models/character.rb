@@ -26,8 +26,11 @@ class Character < ApplicationRecord
   belongs_to :solomonis_zone, class_name: 'Raid', optional: true, inverse_of: :solomonis_evokers
   has_many :character_series_records, through: :character_series_memberships, source: :character_series
   has_many :character_skills, -> { order(:position) }, inverse_of: :character, dependent: :destroy
+  # Characters sharing the granblue_id, a variant itself included, so a
+  # restrict would block deleting any variant; the others are left as they are.
   has_many :style_swap_variants, -> { where(style_swap: true) },
-           class_name: 'Character', primary_key: :granblue_id, foreign_key: :granblue_id
+           class_name: 'Character', primary_key: :granblue_id, foreign_key: :granblue_id,
+           inverse_of: false, dependent: nil
 
   # Eager-load spec for the serialized skill graph (CharacterBlueprint :full
   # `skills` + `skill_links`). Preload this wherever :full is rendered to avoid
@@ -215,7 +218,7 @@ class Character < ApplicationRecord
   def series_names
     records = ordered_series_records
     return records.map(&:name_en) if records.any?
-    return [] unless series.present?
+    return [] if series.blank?
 
     # Legacy fallback for rows that haven't been migrated to the lookup table.
     series.filter_map { |s| GranblueEnums::CHARACTER_SERIES.key(s)&.to_s }

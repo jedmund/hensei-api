@@ -51,7 +51,7 @@ module WeaponSkills
 
       def put(kind, key, body, page_kind: nil, fetched_at: Time.current)
         raise ArgumentError, "unknown source kind #{kind}" unless KINDS.include?(kind.to_s)
-        raise ArgumentError, "unknown page kind #{page_kind}" if page_kind && !PAGE_KINDS.include?(page_kind.to_s)
+        raise ArgumentError, "unknown page kind #{page_kind}" if page_kind && PAGE_KINDS.exclude?(page_kind.to_s)
 
         @sources[[kind.to_s, key.to_s]] = Source.new(kind: kind.to_s, key: key.to_s, body: body,
                                                      sha256: Digest::SHA256.hexdigest(body.to_s),

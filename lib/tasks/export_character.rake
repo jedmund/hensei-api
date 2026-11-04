@@ -27,7 +27,7 @@ namespace :granblue do
 
       # Write to file
       File.open(filename, 'w+') do |f|
-        Character.all.each do |c|
+        Character.find_each do |c|
           f.write("#{build_chara_url("#{c.granblue_id}_01", size)} \n")
           f.write("#{build_chara_url("#{c.granblue_id}_02", size)} \n")
           f.write("#{build_chara_url("#{c.granblue_id}_03", size)} \n") if c.flb

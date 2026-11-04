@@ -16,7 +16,7 @@ module PostDeployment
     end
 
     def process_all_files(&block)
-      files = Dir.glob(Rails.root.join("db/seed/updates/*.csv"))
+      files = Rails.root.glob("db/seed/updates/*.csv")
 
       files.each do |file|
         if (result = import_csv(file))

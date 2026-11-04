@@ -27,7 +27,7 @@ namespace :granblue do
 
       # Write to file
       File.open(filename, 'w') do |f|
-        Summon.all.each do |s|
+        Summon.find_each do |s|
           series = s.series.to_i
           f.write("#{build_summon_url(s.granblue_id.to_s, size)} \n")
 

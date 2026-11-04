@@ -23,7 +23,7 @@ class CrewMembership < ApplicationRecord
   # Uses joined_at (editable) instead of created_at (system timestamp) for historical accuracy
   scope :active_during, lambda { |start_date, end_date|
     where('retired = false OR retired_at >= ?', start_date)
-      .where('joined_at <= ?', end_date)
+      .where(joined_at: ..end_date)
   }
 
   def retire!

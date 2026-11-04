@@ -8,7 +8,8 @@ class Awakening < ApplicationRecord
   # What an awakening applies to: collection items check it against their own type
   OBJECT_TYPES = %w[Character Weapon].freeze
 
-  has_many :weapon_awakenings
+  # A weapon still listing the awakening blocks deleting it (a validation error).
+  has_many :weapon_awakenings, dependent: :restrict_with_error
   has_many :weapons, through: :weapon_awakenings
 
   validates :name_en, presence: true

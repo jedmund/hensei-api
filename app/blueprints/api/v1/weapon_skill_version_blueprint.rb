@@ -15,9 +15,9 @@ module Api
       # markup resolved against the weapon's element (WeaponSkills::WikiMarkup).
       field(:description_segments) do |version|
         element = version.weapon_skill&.weapon&.element
-        %i[en ja].to_h do |locale|
-          [locale, WeaponSkills::WikiMarkup.segments(WeaponSkills::VersionText.for(version, locale),
-                                                     element: element, locale: locale)]
+        %i[en ja].index_with do |locale|
+          WeaponSkills::WikiMarkup.segments(WeaponSkills::VersionText.for(version, locale),
+                                            element: element, locale: locale)
         end
       end
 

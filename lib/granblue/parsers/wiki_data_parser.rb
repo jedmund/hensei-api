@@ -437,7 +437,7 @@ module Granblue
 
         tokens = obtain.split(',').map(&:strip)
         # Classic III-only imports must not restore ordinary availability.
-        promotions.push(1, 4, 5) unless tokens.include?('classic3') && !tokens.include?('premium')
+        promotions.push(1, 4, 5) unless tokens.include?('classic3') && tokens.exclude?('premium')
 
         # Add Classic pools only if explicitly mentioned
         promotions << 2 if tokens.include?('classic')

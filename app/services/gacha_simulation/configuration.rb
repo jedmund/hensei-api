@@ -34,7 +34,7 @@ module GachaSimulation
         { 'identity' => identity(entry), 'percent' => rate.to_s('F') }
       end
       rates.sort_by! { |entry| entry['identity'] }
-      raise ValidationError, 'Duplicate rate-up identity' unless rates.map { |r| r['identity'] }.uniq.size == rates.size
+      raise ValidationError, 'Duplicate rate-up identity' unless rates.pluck('identity').uniq.size == rates.size
 
       return { 'mode' => mode, 'season' => season, 'purchase' => purchase, 'rateups' => rates } unless mode == CURRENT
 

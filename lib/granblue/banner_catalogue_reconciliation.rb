@@ -59,7 +59,7 @@ module Granblue
         raise "Source drift #{entry['granblue_id']}" unless obtain == entry['expected_obtain'] && row.recruits == entry['expected_recruits']
       end
       promotion = entry['add_promotion']
-      if entry['rarity'] == 3 && row.promotions.include?(12) && promotion && !row.promotions.include?(1)
+      if entry['rarity'] == 3 && row.promotions.include?(12) && promotion && row.promotions.exclude?(1)
         raise "Classic III SSR exclusion conflict #{entry['granblue_id']}"
       end
 

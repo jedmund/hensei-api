@@ -63,7 +63,7 @@ module GridDamage
 
     # Convenience: per-frame "Enhancement %" the in-game panel shows = (ATK boost − 1)×100.
     def enhancement_percents(result)
-      %i[normal omega ex].to_h { |f| [f, ((result[f][:atk] - 1.0) * 100.0).round(4)] }
+      %i[normal omega ex].index_with { |f| ((result[f][:atk] - 1.0) * 100.0).round(4) }
     end
 
     private_class_method :frame, :elemental_boost

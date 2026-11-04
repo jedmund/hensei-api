@@ -13,6 +13,7 @@ module GridDamage
       totals = { optimus: 0.0, omega: 0.0 }
       # Skills belong to the grid character's own row, so a style shift counts its own
       # support skills, not its base's. Filtered in Ruby to stay on the preload.
+      # rubocop:disable-next Rails/FindEach -- a party has only a few grid rows to load
       party.characters.includes(character: { character_skills: { character_skill_versions: :skill_effects } }).each do |gc|
         next unless gc.character
 

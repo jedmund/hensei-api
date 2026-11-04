@@ -34,7 +34,7 @@ class GridWeapon < ApplicationRecord
 
   belongs_to :party,
              inverse_of: :weapons
-  validates_presence_of :party
+  validates :party, presence: true # rubocop:disable Rails/RedundantPresenceValidationOnBelongsTo -- keeps the "can't be blank" message
 
   has_many :substitutions, as: :grid, dependent: :destroy
   has_many :substitute_of, class_name: 'Substitution', as: :substitute_grid, dependent: :destroy
@@ -86,10 +86,10 @@ class GridWeapon < ApplicationRecord
   validate :no_duplicate_weapon_keys
   validate :no_duplicate_weapon_key_slots
 
-  before_save :assign_mainhand
   before_validation :set_default_uncap_level, on: :create
   before_validation :set_default_exorcism_level, on: :create
   before_validation :default_awakening_level
+  before_save :assign_mainhand
 
   after_create :increment_party_counter, unless: :is_substitute?
   after_destroy :decrement_party_counter, unless: :is_substitute?
@@ -141,14 +141,6 @@ class GridWeapon < ApplicationRecord
   end
 
   ##
-  # Returns the blueprint for rendering the grid weapon.
-  #
-  # @return [GridWeaponBlueprint] the blueprint class for grid weapons.
-  def blueprint
-    GridWeaponBlueprint
-  end
-
-  ##
   # Syncs customizations from the linked collection weapon.
   #
   # @return [Boolean] true if sync was performed, false if no collection link
@@ -177,7 +169,7 @@ class GridWeapon < ApplicationRecord
   ALL_SYNC_COLUMNS = SYNC_FIELD_MAP.values.flatten.uniq.freeze
 
   def sync_from_collection!(fields: nil)
-    return false unless collection_weapon.present?
+    return false if collection_weapon.blank?
 
     columns = sync_columns_for(fields)
     bullet_positions = sync_bullet_positions_for(fields)
@@ -202,7 +194,7 @@ class GridWeapon < ApplicationRecord
   # @param fields [Array<String>, nil] optional list of camelCase keys to sync
   # @return [Boolean] true if sync was performed, false if no collection link
   def sync_to_collection!(fields: nil)
-    return false unless collection_weapon.present?
+    return false if collection_weapon.blank?
 
     columns = sync_columns_for(fields)
     bullet_positions = sync_bullet_positions_for(fields)
@@ -243,7 +235,7 @@ class GridWeapon < ApplicationRecord
   # 1-based weapon key slots, and dotted keys (`ax.0`/`ax.1`, `bullets.N` by
   # position) for fields the UI renders as individual rows.
   def out_of_sync_fields
-    return [] unless collection_weapon.present?
+    return [] if collection_weapon.blank?
 
     fields = []
     fields << 'uncapLevel' if uncap_level != collection_weapon.uncap_level
@@ -291,7 +283,7 @@ class GridWeapon < ApplicationRecord
 
     party.weapons.select do |party_weapon|
       # Skip if the record is not persisted.
-      next false unless party_weapon.id.present?
+      next false if party_weapon.id.blank?
 
       id_match = weapon.id == party_weapon.id
       series_match = weapon.weapon_series_id.present? &&
@@ -375,7 +367,7 @@ class GridWeapon < ApplicationRecord
   #
   # @return [void]
   def compatible_with_position
-    return unless weapon.present?
+    return if weapon.blank?
 
     return unless EXTRA_POSITIONS.include?(position.to_i)
 
@@ -455,7 +447,7 @@ class GridWeapon < ApplicationRecord
   #
   # @return [void]
   def out_of_sync_bullet_positions
-    return [] unless collection_weapon.present?
+    return [] if collection_weapon.blank?
 
     grid_by_pos = grid_weapon_bullets.index_by(&:position)
     collection_by_pos = collection_weapon.collection_weapon_bullets.index_by(&:position)
@@ -477,6 +469,8 @@ class GridWeapon < ApplicationRecord
     self.uncap_level ||= 0
   end
 
+  # Hand-rolled counter cache: one SQL increment, no Party callbacks.
+  # rubocop:disable Rails/SkipsModelValidations
   def increment_party_counter
     Party.increment_counter(:weapons_count, party_id)
   end
@@ -484,9 +478,10 @@ class GridWeapon < ApplicationRecord
   def decrement_party_counter
     Party.decrement_counter(:weapons_count, party_id)
   end
+  # rubocop:enable Rails/SkipsModelValidations
 
   def set_default_exorcism_level
-    return unless weapon.present?
+    return if weapon.blank?
     return unless exorcism_level.nil? || exorcism_level.zero?
     return unless weapon_augment_type == 'befoulment'
 

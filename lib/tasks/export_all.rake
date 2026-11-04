@@ -1,7 +1,7 @@
 namespace :granblue do
   namespace :export do
     desc 'Exports files of URLs for every object at every size'
-    task :all do
+    task all: :environment do
       # Run character tasks
       Rake::Task['granblue:export:character'].invoke('main')
       Rake::Task['granblue:export:character'].reenable

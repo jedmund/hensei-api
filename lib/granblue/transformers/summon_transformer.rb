@@ -54,7 +54,7 @@ module Granblue
         # Process keys sorted numerically.
         data.keys.sort_by(&:to_i).each do |key|
           summon_data = data[key]
-          Rails.logger.debug "[TRANSFORM] Processing summon: #{summon_data['master']['name'] if summon_data['master']}"
+          Rails.logger.debug { "[TRANSFORM] Processing summon: #{summon_data['master']['name'] if summon_data['master']}" }
 
           master, param = get_master_param(summon_data)
           unless master && param
@@ -97,7 +97,7 @@ module Granblue
         return 1 unless level
 
         level = 1 + TRANSCENDENCE_LEVELS.count { |cutoff| level > cutoff }
-        Rails.logger.debug "[TRANSFORM] Calculated transcendence level: #{level}"
+        Rails.logger.debug { "[TRANSFORM] Calculated transcendence level: #{level}" }
         level
       end
     end
