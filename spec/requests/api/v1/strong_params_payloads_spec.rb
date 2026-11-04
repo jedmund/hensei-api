@@ -87,6 +87,23 @@ RSpec.describe 'Strong params payload shapes', type: :request do
     end
   end
 
+  describe 'PUT /api/v1/users/me with password_prompt_dismissed' do
+    it 'dismisses the prompt from a payload holding only the flag' do
+      put '/api/v1/users/me', params: { user: { password_prompt_dismissed: true } }, headers: headers, as: :json
+
+      expect(response).to have_http_status(:ok)
+      expect(admin.reload.password_prompt_dismissed_at).to be_present
+    end
+
+    it 'applies the flag alongside a profile field' do
+      put '/api/v1/users/me', params: { user: { password_prompt_dismissed: true, display_name: 'Renamed' } },
+                              headers: headers, as: :json
+
+      expect(response).to have_http_status(:ok)
+      expect(admin.reload).to have_attributes(display_name: 'Renamed', password_prompt_dismissed_at: be_present)
+    end
+  end
+
   describe 'PUT /api/v1/difficulty_rules/:id with only params' do
     let(:rule_id) do
       post '/api/v1/difficulty_rules', params: {

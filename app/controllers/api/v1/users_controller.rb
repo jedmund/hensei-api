@@ -29,6 +29,11 @@ module Api
       DEFAULT_MIN_WEAPONS = 0
 
       DEFAULT_MAX_CLEAR_TIME = 5400
+      USER_FIELDS = %i[username email password password_confirmation display_name
+                       description granblue_id picture element language gender private
+                       theme show_gamertag wiki_profile youtube collection_privacy
+                       import_weapons default_import_visibility simple_portraits
+                       default_rep_view timezone support_summons_public].freeze
 
       def show
         if @user.nil?
@@ -112,8 +117,10 @@ module Api
       # Email and password are not updatable here; they change only through
       # registration and the password reset flow.
       def update
-        @user.assign_attributes(user_update_params)
-        dismiss_password_prompt
+        attrs = user_update_params
+        dismissed = attrs.delete(:password_prompt_dismissed)
+        @user.assign_attributes(attrs)
+        dismiss_password_prompt(dismissed)
         if @user.save
           render json: UserBlueprint.render(@user, view: :minimal)
         else
@@ -220,8 +227,7 @@ module Api
 
       # The settings banner suggesting a password stays dismissed once
       # dismissed. Only the flag is accepted, never the timestamp itself.
-      def dismiss_password_prompt
-        dismissed = params.dig(:user, :password_prompt_dismissed)
+      def dismiss_password_prompt(dismissed)
         return unless ActiveModel::Type::Boolean.new.cast(dismissed)
 
         @user.password_prompt_dismissed_at ||= Time.current
@@ -342,21 +348,15 @@ module Api
         @user = User.includes(active_crew_membership: :crew).find(current_user.id)
       end
 
-      # password_prompt_dismissed is accepted so a payload holding only that flag
-      # (see dismiss_password_prompt) still passes expect, then dropped: it isn't
-      # a column.
       def user_params
-        params.expect(
-          user: %i[username email password password_confirmation display_name
-                   description granblue_id picture element language gender private
-                   theme show_gamertag wiki_profile youtube collection_privacy
-                   import_weapons default_import_visibility simple_portraits
-                   default_rep_view timezone support_summons_public password_prompt_dismissed]
-        ).except(:password_prompt_dismissed)
+        params.expect(user: USER_FIELDS)
       end
 
+      # Also takes password_prompt_dismissed, which update hands to
+      # dismiss_password_prompt rather than assigning (it isn't a column)
       def user_update_params
-        user_params.except(:email, :password, :password_confirmation)
+        params.expect(user: [*USER_FIELDS, :password_prompt_dismissed])
+              .except(:email, :password, :password_confirmation)
       end
     end
   end
