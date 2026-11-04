@@ -13,9 +13,10 @@ module Api
       # Params: { event_number:, round:, is_cumulative:, members: [{ granblue_id:, name:, score: }] }
       def create
         event = Event.unite_and_fight.find_by!(event_number: params.expect(:event_number))
+        members = list_param(:members)
         participation = @crew.crew_gw_participations.find_or_create_by!(event: event)
 
-        result = GwScoreImport.new(@crew).import(participation, params[:members],
+        result = GwScoreImport.new(@crew).import(participation, members,
                                                  round: params[:round],
                                                  cumulative: params[:is_cumulative] || false,
                                                  recorded_by: current_user)
@@ -30,10 +31,19 @@ module Api
       # POST /crew/preview_gw_phantoms
       # Params: { granblue_ids: ["12345", "67890", ...] }
       def preview
-        render json: GwScoreImport.new(@crew).preview(params[:granblue_ids])
+        render json: GwScoreImport.new(@crew).preview(list_param(:granblue_ids))
       end
 
       private
+
+      # The array at params[key]; a missing or non-array value is a 422
+      # (ParameterMissing) rather than a 500. An empty array is allowed.
+      def list_param(key)
+        value = params[key]
+        raise ActionController::ParameterMissing, key unless value.is_a?(Array)
+
+        value
+      end
 
       def set_crew
         @crew = current_user.crew

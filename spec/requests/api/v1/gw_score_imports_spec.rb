@@ -78,6 +78,17 @@ RSpec.describe 'GW score imports', type: :request do
       expect(response).to have_http_status(:not_found)
     end
 
+    it 'refuses a missing or malformed members list without recording anything' do
+      [{}, { members: 'x' }, { members: { granblue_id: '1' } }].each do |extra|
+        post '/api/v1/crew/import_gw_scores',
+             params: { event_number: event.event_number, round: 'preliminaries', **extra }.to_json, headers: headers
+
+        expect(response).to have_http_status(:unprocessable_content), extra.inspect
+        expect(response.parsed_body.dig('errors', 'param')).to eq('members')
+      end
+      expect(CrewGwParticipation.count).to eq(0)
+    end
+
     it 'refuses a regular member' do
       officer.update!(role: :member)
 
@@ -110,6 +121,15 @@ RSpec.describe 'GW score imports', type: :request do
 
       expect(response).to have_http_status(:ok)
       expect(response.parsed_body).to eq('existing_phantom_ids' => ['22222'], 'new_phantom_ids' => ['33333'])
+    end
+
+    it 'refuses a missing or malformed id list' do
+      [{}, { granblue_ids: '22222' }].each do |params|
+        post '/api/v1/crew/preview_gw_phantoms', params: params.to_json, headers: headers
+
+        expect(response).to have_http_status(:unprocessable_content), params.inspect
+        expect(response.parsed_body.dig('errors', 'param')).to eq('granblue_ids')
+      end
     end
   end
 end
