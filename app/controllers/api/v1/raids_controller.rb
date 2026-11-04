@@ -52,7 +52,7 @@ module Api
 
       # DELETE /raids/:id
       def destroy
-        if Party.where(raid_id: @raid.id).exists?
+        if Party.exists?(raid_id: @raid.id)
           render json: ErrorBlueprint.render(nil, error: {
                                                message: 'Cannot delete raid with associated parties',
                                                code: 'has_dependencies'
