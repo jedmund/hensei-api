@@ -47,8 +47,8 @@ module Api
       }.freeze
 
       before_action :set_from_slug, except: %w[create destroy update index favorites grid_update unlink_collection sync_all]
-      before_action :set, only: %w[update destroy grid_update]
-      before_action :authorize_party!, only: %w[update destroy grid_update]
+      before_action :set, only: %w[update destroy grid_update sync_all]
+      before_action :authorize_party!, only: %w[update destroy grid_update sync_all]
       before_action :ensure_party_viewable!, only: %w[show skill_boosts remix]
 
       # Primary CRUD Actions
@@ -196,51 +196,14 @@ module Api
       #
       # POST /parties/:id/sync_all
       def sync_all
-        @party = Party.find_by(id: params[:id])
-        return render_not_found_response('party') unless @party
-
-        authorize_party!
-        return if performed?
-
-        synced = { characters: 0, weapons: 0, summons: 0, artifacts: 0 }
-        skipped = { characters: 0, weapons: 0, summons: 0, artifacts: 0 }
-
-        # Items whose collection the current user can no longer see are left
-        # as they are and counted, rather than failing the whole party.
-        sync_linked = lambda do |rows, kind, link|
-          rows.each do |row|
-            if collection_accessible?(row.public_send(link))
-              row.sync_from_collection!
-              synced[kind] += 1
-            else
-              skipped[kind] += 1
-            end
-          end
-        end
-
-        ActiveRecord::Base.transaction do
-          sync_linked.call(@party.characters.where.not(collection_character_id: nil)
-                                 .includes(collection_character: :user),
-                           :characters, :collection_character)
-          sync_linked.call(@party.weapons.where.not(collection_weapon_id: nil)
-                                 .includes(collection_weapon: :user),
-                           :weapons, :collection_weapon)
-          sync_linked.call(@party.summons.where.not(collection_summon_id: nil)
-                                 .includes(collection_summon: :user),
-                           :summons, :collection_summon)
-          sync_linked.call(GridArtifact.joins(:grid_character)
-                                       .where(grid_characters: { party_id: @party.id })
-                                       .where.not(collection_artifact_id: nil)
-                                       .includes(collection_artifact: :user),
-                           :artifacts, :collection_artifact)
-        end
+        result = PartyCollectionSync.new(@party).sync_all! { |item| collection_accessible?(item) }
 
         render json: {
           party: PartyBlueprint.render_as_hash(load_full_party(@party.id), view: :full,
                                                                            current_user: current_user,
                                                                            admin_mode: admin_mode),
-          synced: synced,
-          skipped: skipped
+          synced: result.synced,
+          skipped: result.skipped
         }, status: :ok
       end
 
@@ -253,15 +216,7 @@ module Api
         return render_not_found_response('party') unless @party
         return render_unauthorized_response unless current_user && @party.user_id == current_user.id
 
-        ActiveRecord::Base.transaction do
-          @party.characters.where.not(collection_character_id: nil)
-                .update_all(collection_character_id: nil)
-          @party.weapons.where.not(collection_weapon_id: nil)
-                .update_all(collection_weapon_id: nil, orphaned: false)
-          @party.summons.where.not(collection_summon_id: nil)
-                .update_all(collection_summon_id: nil, orphaned: false)
-          @party.update!(collection_source_user_id: nil)
-        end
+        PartyCollectionSync.new(@party).unlink!
 
         render json: {
           party: PartyBlueprint.render_as_hash(load_full_party(@party.id), view: :full,
