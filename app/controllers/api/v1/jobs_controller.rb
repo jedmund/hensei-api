@@ -102,7 +102,7 @@ module Api
           # Validate all skills exist and are compatible
           new_skill_ids.each do |id|
             skill = new_skills_loaded[id]
-            raise ActiveRecord::RecordNotFound.new("Couldn't find JobSkill") unless skill
+            raise ActiveRecord::RecordNotFound, "Couldn't find JobSkill" unless skill
             raise Api::V1::IncompatibleSkillError.new(job: @party.job, skill: skill) if mismatched_skill?(@party.job, skill)
           end
 

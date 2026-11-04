@@ -336,7 +336,7 @@ class Character < ApplicationRecord
   def validate_series_values
     return if series.blank?
 
-    invalid_values = series.reject { |s| GranblueEnums::CHARACTER_SERIES.values.include?(s) }
+    invalid_values = series.reject { |s| GranblueEnums::CHARACTER_SERIES.value?(s) }
     return if invalid_values.empty?
 
     errors.add(:series, "contains invalid values: #{invalid_values.join(', ')}")

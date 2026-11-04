@@ -133,7 +133,7 @@ module Granblue
         suggestions[:name_en] = data['name'] if data['name'].present?
         suggestions[:name_jp] = data['jpname'] if data['jpname'].present?
         # Strip _note suffix from null element weapon IDs
-        suggestions[:granblue_id] = data['id'].sub(/_note\z/, '') if data['id'].present?
+        suggestions[:granblue_id] = data['id'].delete_suffix('_note') if data['id'].present?
 
         # Rarity
         suggestions[:rarity] = rarity_from(data['rarity'], data['id'])

@@ -437,7 +437,7 @@ module Processors
 
       return nil if raw_data.nil?
       return nil unless raw_data.is_a?(Hash)
-      return nil unless raw_data.has_key?('form')
+      return nil unless raw_data.key?('form')
 
       id = raw_data['form'].to_s
       return unless AWAKENING_MAPPING.key?(id)

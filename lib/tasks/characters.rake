@@ -46,11 +46,11 @@ module CharacterNameInference
     # Check known character lists (base name without suffix)
     base_name = name.gsub(/\s*\([^)]+\)/, '').strip
 
-    series << GranblueEnums::CHARACTER_SERIES[:Eternal] if ETERNALS.any? { |e| base_name == e }
+    series << GranblueEnums::CHARACTER_SERIES[:Eternal] if ETERNALS.any?(base_name)
 
-    series << GranblueEnums::CHARACTER_SERIES[:Evoker] if EVOKERS.any? { |e| base_name == e }
+    series << GranblueEnums::CHARACTER_SERIES[:Evoker] if EVOKERS.any?(base_name)
 
-    series << GranblueEnums::CHARACTER_SERIES[:Zodiac] if ZODIACS.any? { |z| base_name == z }
+    series << GranblueEnums::CHARACTER_SERIES[:Zodiac] if ZODIACS.any?(base_name)
 
     # Default to Standard if no series detected and not a special type
     series << GranblueEnums::CHARACTER_SERIES[:Standard] if series.empty?
@@ -69,7 +69,7 @@ module CharacterNameInference
     ]
 
     # If any series is non-gachable, the character is not gachable
-    (series & non_gachable).empty?
+    !series.intersect?(non_gachable)
   end
 end
 

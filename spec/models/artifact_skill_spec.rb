@@ -136,6 +136,19 @@ RSpec.describe ArtifactSkill, type: :model do
     end
   end
 
+  describe '.find_by_game_name' do
+    after { described_class.clear_cache! }
+
+    it 'sees skills added after clear_cache!' do
+      described_class.clear_cache!
+      expect(described_class.find_by_game_name('Cache Probe')).to be_nil
+      skill = create(:artifact_skill, game_name_en: 'Cache Probe')
+      expect(described_class.find_by_game_name('Cache Probe')).to be_nil
+      described_class.clear_cache!
+      expect(described_class.find_by_game_name('Cache Probe')).to eq(skill)
+    end
+  end
+
   describe '#calculate_value' do
     let(:skill) { build(:artifact_skill, growth: 300.0) }
 

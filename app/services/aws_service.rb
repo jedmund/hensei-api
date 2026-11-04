@@ -60,14 +60,14 @@ class AwsService
 
   def get_credentials
     # Try Rails credentials first
-    rails_creds = Rails.application.credentials.dig(:aws)
+    rails_creds = Rails.application.credentials[:aws]
     if rails_creds&.dig(:access_key_id)
       Rails.logger.debug 'Using Rails credentials'
       return rails_creds.merge(source: 'rails_credentials')
     end
 
     # Try string keys
-    rails_creds = Rails.application.credentials.dig('aws')
+    rails_creds = Rails.application.credentials['aws']
     if rails_creds&.dig('access_key_id')
       Rails.logger.debug 'Using Rails credentials (string keys)'
       return {
