@@ -132,18 +132,23 @@ class Party < ApplicationRecord
              class_name: 'Guidebook',
              optional: true
 
+  # The filtered views of the grid; the all_* associations below own the rows
+  # and destroy them.
   has_many :characters, -> { where(is_substitute: false) },
            foreign_key: 'party_id',
+           dependent: nil,
            class_name: 'GridCharacter',
            inverse_of: :party
 
   has_many :weapons, -> { where(is_substitute: false) },
            foreign_key: 'party_id',
+           dependent: nil,
            class_name: 'GridWeapon',
            inverse_of: :party
 
   has_many :summons, -> { where(is_substitute: false) },
            foreign_key: 'party_id',
+           dependent: nil,
            class_name: 'GridSummon',
            inverse_of: :party
 
@@ -229,12 +234,10 @@ class Party < ApplicationRecord
   # ActiveRecord Validations
   validates :name,
             profanity: { languages: %i[en ja], tier: :moderate, message: 'contains inappropriate language' },
-            allow_nil: true,
             allow_blank: true
 
   validates :description,
             profanity: { languages: %i[en ja], tier: :moderate, message: 'contains inappropriate language' },
-            allow_nil: true,
             allow_blank: true
   validates :description, rich_text_description: true, if: :description_changed?
 
@@ -331,22 +334,12 @@ class Party < ApplicationRecord
   end
 
   def mod_and_side
-    main_summon = summons.detect { |gs| gs.main? }&.summon
-    friend_summon = summons.detect { |gs| gs.friend? }&.summon
+    main_summon = summons.detect(&:main?)&.summon
+    friend_summon = summons.detect(&:friend?)&.summon
     return nil unless main_summon && friend_summon
 
-    main_type = SUMMON_SERIES_MOD[main_summon.summon_series&.slug]
-    friend_type = SUMMON_SERIES_MOD[friend_summon.summon_series&.slug]
-
-    if main_type && main_type == friend_type
-      { mod: main_type, side: 'double' }
-    elsif main_type
-      { mod: main_type, side: 'single' }
-    elsif friend_type
-      { mod: friend_type, side: 'single' }
-    else
-      { mod: 'unboosted', side: 'none' }
-    end
+    summon_boost(SUMMON_SERIES_MOD[main_summon.summon_series&.slug],
+                 SUMMON_SERIES_MOD[friend_summon.summon_series&.slug])
   end
 
   def recompute_boost!
@@ -370,17 +363,40 @@ class Party < ApplicationRecord
   # @return [Boolean] true if the party has orphaned weapons, summons, or artifacts.
   def has_orphaned_items?
     if weapons.loaded? && summons.loaded? && characters.loaded?
-      weapons.any?(&:orphaned?) ||
-        summons.any?(&:orphaned?) ||
-        characters.any? { |c| c.grid_artifact&.orphaned? }
+      loaded_items_orphaned?
     else
       weapons.orphaned.exists? ||
         summons.orphaned.exists? ||
-        characters.joins(:grid_artifact).where(grid_artifacts: { orphaned: true }).exists?
+        characters.joins(:grid_artifact).exists?(grid_artifacts: { orphaned: true })
     end
   end
 
   private
+
+  ##
+  # The boost a main and friend summon series give together.
+  #
+  # @param main_type [String, nil] the main summon's mod ('omega', 'primal', 'odious').
+  # @param friend_type [String, nil] the friend summon's mod.
+  # @return [Hash] the mod and the side ('double', 'single' or 'none').
+  def summon_boost(main_type, friend_type)
+    if main_type && main_type == friend_type
+      { mod: main_type, side: 'double' }
+    elsif main_type
+      { mod: main_type, side: 'single' }
+    elsif friend_type
+      { mod: friend_type, side: 'single' }
+    else
+      { mod: 'unboosted', side: 'none' }
+    end
+  end
+
+  # #has_orphaned_items? for a party whose grid is already loaded.
+  def loaded_items_orphaned?
+    weapons.any?(&:orphaned?) ||
+      summons.any?(&:orphaned?) ||
+      characters.any? { |c| c.grid_artifact&.orphaned? }
+  end
 
   ##
   # Updates the party's element based on its main weapon.
