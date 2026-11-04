@@ -1,0 +1,43 @@
+{
+  "list": [
+    {
+      "master": {
+        "id": "3040425000",
+        "character_id": "3042",
+        "name": "Percival",
+        "attribute": 1,
+        "rarity": "4",
+        "tribe": "1"
+      },
+      "param": {
+        "attack": 83069,
+        "hp": 21974,
+        "level": "80",
+        "evolution": "4",
+        "phase": "0",
+        "style": "1",
+        "rarity": "4",
+        "id": 205376859,
+        "arousal_level": "4",
+        "has_npcaugment_constant": true,
+        "image_id_3": "skin/3710026000_01_s1"
+      }
+    },
+    {
+      "master": { "id": "3040036000", "character_id": "1021", "name": "Siegfried", "attribute": 3, "rarity": "4" },
+      "param": {
+        "level": "100",
+        "evolution": "6",
+        "phase": "3",
+        "style": "1",
+        "id": 205376860,
+        "arousal_level": "10",
+        "has_npcaugment_constant": false
+      }
+    },
+    {
+      "master": { "id": "3049999900", "name": "Unknown Character", "rarity": "4" },
+      "param": { "level": "1", "evolution": "0", "phase": "0", "id": 205376861 }
+    }
+  ]
+}
