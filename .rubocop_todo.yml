@@ -1113,16 +1113,6 @@ Rails/FindEach:
     - 'app/controllers/api/v1/crews_controller.rb'
     - 'spec/services/party_difficulty/weapon_tier_match_spec.rb'
 
-# Offense count: 11
-Rails/HasManyOrHasOneDependent:
-  Exclude:
-    - 'app/models/awakening.rb'
-    - 'app/models/character.rb'
-    - 'app/models/crew.rb'
-    - 'app/models/job.rb'
-    - 'app/models/user.rb'
-    - 'app/models/weapon.rb'
-
 # Offense count: 23
 # This cop supports unsafe autocorrection (--autocorrect-all).
 Rails/IndexWith:
@@ -1133,16 +1123,6 @@ Rails/IndexWith:
     - 'spec/models/solomonis/seal_state_spec.rb'
     - 'spec/requests/goldens_spec.rb'
     - 'spec/services/client_ip_resolver_spec.rb'
-
-# Offense count: 15
-# Configuration parameters: IgnoreScopes.
-Rails/InverseOf:
-  Exclude:
-    - 'app/models/character.rb'
-    - 'app/models/crew.rb'
-    - 'app/models/raid_group.rb'
-    - 'app/models/user.rb'
-    - 'app/models/weapon.rb'
 
 # Offense count: 43
 # This cop supports unsafe autocorrection (--autocorrect-all).

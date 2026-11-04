@@ -68,16 +68,20 @@ class Weapon < ApplicationRecord
                     }
                   }
 
-  has_many :weapon_awakenings
+  has_many :weapon_awakenings, dependent: nil
   has_many :awakenings, through: :weapon_awakenings
-  has_many :weapon_skills, -> { order(:position) }, primary_key: :granblue_id, foreign_key: :weapon_granblue_id, inverse_of: :weapon
+  has_many :weapon_skills, -> { order(:position) }, primary_key: :granblue_id, foreign_key: :weapon_granblue_id, inverse_of: :weapon,
+                                                    dependent: nil
   has_many :weapon_skill_versions, through: :weapon_skills
   has_many :skills, through: :weapon_skill_versions
   belongs_to :weapon_series, optional: true
   belongs_to :weapon_series_variant, optional: true
-  belongs_to :recruited_character, class_name: 'Character', primary_key: :granblue_id, foreign_key: :recruits, optional: true
-  belongs_to :base_weapon, class_name: 'Weapon', primary_key: :granblue_id, foreign_key: :forged_from, optional: true
-  has_many :forge_chain_weapons, class_name: 'Weapon', primary_key: :forge_chain_id, foreign_key: :forge_chain_id
+  belongs_to :recruited_character, class_name: 'Character', primary_key: :granblue_id, foreign_key: :recruits, optional: true,
+                                   inverse_of: false
+  belongs_to :base_weapon, class_name: 'Weapon', primary_key: :granblue_id, foreign_key: :forged_from, optional: true,
+                           inverse_of: false
+  has_many :forge_chain_weapons, class_name: 'Weapon', primary_key: :forge_chain_id, foreign_key: :forge_chain_id,
+                                 inverse_of: false, dependent: nil
 
   def blueprint
     WeaponBlueprint

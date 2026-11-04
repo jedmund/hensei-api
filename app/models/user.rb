@@ -17,12 +17,15 @@ class User < ApplicationRecord
 
   # Crew associations
   has_many :crew_memberships, dependent: :destroy
-  has_one :active_crew_membership, -> { where(retired: false) }, class_name: 'CrewMembership'
+  has_one :active_crew_membership, -> { where(retired: false) }, class_name: 'CrewMembership',
+                                                                 inverse_of: :user, dependent: nil
   has_one :crew, through: :active_crew_membership
   has_many :crew_invitations, dependent: :destroy
-  has_many :pending_crew_invitations, -> { where(status: :pending) }, class_name: 'CrewInvitation'
-  has_many :sent_crew_invitations, class_name: 'CrewInvitation', foreign_key: :invited_by_id, dependent: :nullify
-  has_many :party_shares, foreign_key: :shared_by_id, dependent: :destroy
+  has_many :pending_crew_invitations, -> { where(status: :pending) }, class_name: 'CrewInvitation',
+                                                                      inverse_of: :user, dependent: nil
+  has_many :sent_crew_invitations, class_name: 'CrewInvitation', foreign_key: :invited_by_id, inverse_of: :invited_by,
+                                   dependent: :nullify
+  has_many :party_shares, foreign_key: :shared_by_id, inverse_of: :shared_by, dependent: :destroy
   has_many :user_edit_keys, dependent: :destroy
   has_many :user_identities, dependent: :destroy
   has_many :extension_auth_codes, dependent: :delete_all
@@ -31,11 +34,14 @@ class User < ApplicationRecord
   # Records that belong to a crew, another user's party, or the audit trail
   # outlive the account; deleting it only removes the attribution.
   has_many :difficulty_change_logs, dependent: :nullify
-  has_many :created_crew_rosters, class_name: 'CrewRoster', foreign_key: :created_by_id, dependent: :nullify
-  has_many :recorded_gw_scores, class_name: 'GwIndividualScore', foreign_key: :recorded_by_id, dependent: :nullify
+  has_many :created_crew_rosters, class_name: 'CrewRoster', foreign_key: :created_by_id, inverse_of: :created_by,
+                                  dependent: :nullify
+  has_many :recorded_gw_scores, class_name: 'GwIndividualScore', foreign_key: :recorded_by_id, inverse_of: :recorded_by,
+                                dependent: :nullify
   has_many :collection_source_parties, class_name: 'Party', foreign_key: :collection_source_user_id,
-                                       dependent: :nullify
-  has_many :claimed_phantom_players, class_name: 'PhantomPlayer', foreign_key: :claimed_by_id
+                                       inverse_of: :collection_source_user, dependent: :nullify
+  has_many :claimed_phantom_players, class_name: 'PhantomPlayer', foreign_key: :claimed_by_id,
+                                     inverse_of: :claimed_by, dependent: nil
 
   ##### ActiveRecord Validations
   USERNAME_FORMAT = /\A[a-zA-Z0-9_-]+\z/
