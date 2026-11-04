@@ -4,7 +4,7 @@ require 'rails_helper'
 
 # What destroying a parent does to the rows of each association whose
 # `dependent:` option was chosen by hand (see the model comments).
-RSpec.describe 'Association dependents' do # rubocop:disable RSpec/DescribeClass
+RSpec.describe 'Association dependents' do
   describe Awakening do
     it 'cannot be destroyed while a weapon lists it' do
       awakening = create(:awakening, :for_weapon)
