@@ -1187,11 +1187,6 @@ Rails/EagerEvaluationLogMessage:
     - 'lib/granblue/transformers/summon_transformer.rb'
     - 'lib/granblue/transformers/weapon_transformer.rb'
 
-# Offense count: 1
-Rails/Exit:
-  Exclude:
-    - 'lib/post_deployment/manager.rb'
-
 # Offense count: 18
 # This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: AllowedMethods, AllowedPatterns.
