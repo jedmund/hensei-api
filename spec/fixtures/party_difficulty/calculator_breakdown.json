@@ -1,0 +1,90 @@
+[
+  {
+    "name": "weapon",
+    "weight": 2.0,
+    "present": true,
+    "raw_score": 0.5391,
+    "weighted_score": 1.0781,
+    "contribution_sum": 4.31,
+    "max_weight": 8.0,
+    "target_max": 8.0,
+    "fired": [
+      {
+        "id": "00000000-0000-0000-0000-000000000001",
+        "name": "rule 00000000-0000-0000-0000-000000000001",
+        "rule_type": "weapon_uncap_at_least",
+        "weight": 1.5,
+        "match_count": 1,
+        "kind": "base"
+      },
+      {
+        "id": "00000000-0000-0000-0000-000000000001-additional",
+        "name": "rule 00000000-0000-0000-0000-000000000001",
+        "rule_type": "weapon_uncap_at_least",
+        "weight": 2.81,
+        "match_count": 2,
+        "kind": "additional"
+      }
+    ]
+  },
+  {
+    "name": "character",
+    "weight": 1.5,
+    "present": true,
+    "raw_score": 0.875,
+    "weighted_score": 1.3125,
+    "contribution_sum": 3.5,
+    "max_weight": 4.0,
+    "target_max": null,
+    "fired": [
+      {
+        "id": "00000000-0000-0000-0000-000000000003",
+        "name": "rule 00000000-0000-0000-0000-000000000003",
+        "rule_type": "weapon_uncap_at_least",
+        "weight": 1.5,
+        "match_count": 1,
+        "kind": "base"
+      },
+      {
+        "id": "00000000-0000-0000-0000-000000000004",
+        "name": "rule 00000000-0000-0000-0000-000000000004",
+        "rule_type": "weapon_uncap_at_least",
+        "weight": 1.0,
+        "match_count": 1,
+        "kind": "base"
+      },
+      {
+        "id": "00000000-0000-0000-0000-000000000004-additional",
+        "name": "rule 00000000-0000-0000-0000-000000000004",
+        "rule_type": "weapon_uncap_at_least",
+        "weight": 1.0,
+        "match_count": 1,
+        "kind": "additional"
+      }
+    ]
+  },
+  {
+    "name": "summon",
+    "weight": 1.0,
+    "present": true,
+    "raw_score": null,
+    "weighted_score": null,
+    "fired": []
+  },
+  {
+    "name": "job",
+    "weight": 1.0,
+    "present": false,
+    "raw_score": null,
+    "weighted_score": null,
+    "fired": []
+  },
+  {
+    "name": "accessory",
+    "weight": 1.0,
+    "present": true,
+    "raw_score": null,
+    "weighted_score": null,
+    "fired": []
+  }
+]

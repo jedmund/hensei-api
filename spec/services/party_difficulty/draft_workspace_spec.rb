@@ -128,6 +128,83 @@ RSpec.describe PartyDifficulty::DraftWorkspace do
 
       expect(rule_loads).to eq(1)
     end
+
+    it 'reports creates, updates and destroys with their labels, snapshots and staleness' do
+      created = workspace.stage!(target_type: 'Difficulty', target_id: nil, operation: 'create',
+                                 attributes: { name: 'Hard', slug: 'hard', min_score: 50, ignored: 'x' })
+      updated = workspace.stage!(target_type: 'Difficulty', target_id: tier.id, operation: 'update',
+                                 attributes: { name: 'Renamed', sort_order: 99 })
+      destroyed = workspace.stage!(target_type: 'DifficultyRule', target_id: rule.id, operation: 'destroy', attributes: { weight: 1 })
+      tier.update!(description: 'edited elsewhere')
+
+      diff = described_class.for(user).diff
+      expect(diff[:tiers]).to eq(
+        creates: [{ draft_id: created.id, attributes: { 'name' => 'Hard', 'slug' => 'hard', 'min_score' => 50 } }],
+        updates: [{ draft_id: updated.id, target_id: tier.id, label: 'Spec', changes: { 'name' => { old: 'Spec', new: 'Renamed' } },
+                    stale: true }],
+        destroys: []
+      )
+      expect(diff[:rules]).to eq(
+        creates: [], updates: [],
+        destroys: [{ draft_id: destroyed.id, target_id: rule.id, label: 'Spec base rule', stale: false,
+                     snapshot: rule.attributes.slice('name', 'component', 'rule_type', 'weight', 'active') }]
+      )
+      expect(diff[:components]).to eq(creates: [], updates: [], destroys: [])
+    end
+
+    it 'skips updates that change nothing' do
+      workspace.stage!(target_type: 'DifficultyRule', target_id: rule.id, operation: 'update',
+                       attributes: { weight: 2.0, params: { min_uncap_level: 1, min_count: 1 } })
+
+      expect(described_class.for(user).diff[:rules][:updates]).to eq([])
+    end
+
+    it 'flags drafts whose target was deleted since staging' do
+      updated = workspace.stage!(target_type: 'Difficulty', target_id: tier.id, operation: 'update', attributes: { name: 'X' })
+      destroyed = workspace.stage!(target_type: 'DifficultyRule', target_id: rule.id, operation: 'destroy', attributes: {})
+      Difficulty.with_coverage_validation_skipped { tier.destroy! }
+      rule.destroy!
+
+      diff = described_class.for(user).diff
+      expect(diff[:tiers][:updates]).to eq([{ draft_id: updated.id, target_id: tier.id, stale: true, reason: 'target_missing' }])
+      expect(diff[:rules][:destroys]).to eq([{ draft_id: destroyed.id, target_id: rule.id, stale: true, reason: 'target_missing' }])
+    end
+  end
+
+  describe '#stage! operations' do
+    it 'turns an update draft into a destroy that keeps no attributes' do
+      workspace.stage!(target_type: 'DifficultyRule', target_id: rule.id, operation: 'update', attributes: { weight: 5 })
+      draft = workspace.stage!(target_type: 'DifficultyRule', target_id: rule.id, operation: 'destroy', attributes: { weight: 6 })
+
+      expect(draft.reload).to have_attributes(operation: 'destroy', attributes_payload: {}, target_updated_at: rule.updated_at)
+      expect(workspace.drafts).to eq([draft])
+      expect(workspace.pending_count).to eq(1)
+    end
+
+    it 'stages a component update without validating it as a rule' do
+      draft = workspace.stage!(target_type: 'DifficultyComponent', target_id: component.id, operation: 'update',
+                               attributes: { weight: 3, name: 'ignored' })
+
+      expect(draft.attributes_payload).to eq('weight' => 3)
+      expect(workspace.merged_components.find { |c| c.id == component.id }.weight.to_f).to eq(3.0)
+    end
+
+    it 'validates created rules and rule updates, and refuses a missing rule' do
+      expect do
+        workspace.stage!(target_type: 'DifficultyRule', target_id: nil, operation: 'create', attributes: { name: 'Bad' })
+      end.to raise_error(ActiveRecord::RecordInvalid)
+      expect do
+        workspace.stage!(target_type: 'DifficultyRule', target_id: SecureRandom.uuid, operation: 'update', attributes: { weight: 1 })
+      end.to raise_error(ActiveRecord::RecordNotFound)
+      expect(DifficultyDraft.count).to eq(0)
+    end
+
+    it 'rejects unknown target types and operations' do
+      expect { workspace.stage!(target_type: 'Party', target_id: nil, operation: 'create', attributes: {}) }
+        .to raise_error(ArgumentError, 'Unknown target_type Party')
+      expect { workspace.stage!(target_type: 'Difficulty', target_id: nil, operation: 'merge', attributes: {}) }
+        .to raise_error(ArgumentError, 'Unknown operation merge')
+    end
   end
 
   describe '#commit!' do
