@@ -339,15 +339,6 @@ RSpec.describe GridSummon, type: :model do
     end
   end
 
-  describe '#blueprint' do
-    it 'returns the GridSummonBlueprint constant' do
-      # #blueprint names a top-level constant the app doesn't define
-      stub_const('GridSummonBlueprint', Class.new)
-      grid_summon = build(:grid_summon)
-      expect(grid_summon.blueprint).to eq(GridSummonBlueprint)
-    end
-  end
-
   describe 'Collection Sync' do
     let(:party) { create(:party) }
     let(:user) { create(:user) }

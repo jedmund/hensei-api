@@ -73,14 +73,6 @@ class GridSummon < ApplicationRecord
   end
 
   ##
-  # Returns the blueprint for rendering the grid summon.
-  #
-  # @return [GridSummonBlueprint] the blueprint class for grid summons.
-  def blueprint
-    GridSummonBlueprint
-  end
-
-  ##
   # Sets an uncap from a request: a level past the summon's max is lowered to
   # it, and a transcendence step on a summon that can transcend raises the
   # level to the max. A summon that can't transcend stays at step 0.

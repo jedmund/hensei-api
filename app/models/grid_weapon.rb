@@ -141,14 +141,6 @@ class GridWeapon < ApplicationRecord
   end
 
   ##
-  # Returns the blueprint for rendering the grid weapon.
-  #
-  # @return [GridWeaponBlueprint] the blueprint class for grid weapons.
-  def blueprint
-    GridWeaponBlueprint
-  end
-
-  ##
   # Syncs customizations from the linked collection weapon.
   #
   # @return [Boolean] true if sync was performed, false if no collection link
