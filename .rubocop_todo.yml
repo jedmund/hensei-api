@@ -1136,18 +1136,6 @@ Rails/DurationArithmetic:
   Exclude:
     - 'spec/scripts/fetch_gacha_rates_spec.rb'
 
-# Offense count: 21
-# This cop supports safe autocorrection (--autocorrect).
-Rails/EagerEvaluationLogMessage:
-  Exclude:
-    - 'app/services/aws_service.rb'
-    - 'app/services/processors/weapon_processor.rb'
-    - 'lib/granblue/transformers/base_deck_transformer.rb'
-    - 'lib/granblue/transformers/base_transformer.rb'
-    - 'lib/granblue/transformers/character_transformer.rb'
-    - 'lib/granblue/transformers/summon_transformer.rb'
-    - 'lib/granblue/transformers/weapon_transformer.rb'
-
 # Offense count: 18
 # This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: AllowedMethods, AllowedPatterns.

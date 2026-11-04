@@ -8,12 +8,12 @@ class AwsService
   DEFAULT_REGION = 'us-west-2'.freeze
 
   def initialize
-    Rails.logger.debug "Environment: #{Rails.env}"
+    Rails.logger.debug { "Environment: #{Rails.env}" }
 
     # Static keys (Rails credentials or env vars) win; production uses them.
     creds = get_credentials
     if creds
-      Rails.logger.debug "Credentials source: #{creds[:source]}"
+      Rails.logger.debug { "Credentials source: #{creds[:source]}" }
       @s3_client = Aws::S3::Client.new(
         region: creds[:region],
         access_key_id: creds[:access_key_id],
@@ -31,7 +31,7 @@ class AwsService
                                   'such as `aws login`)'
       end
 
-      Rails.logger.debug "Credentials source: #{@s3_client.config.credentials.class.name}"
+      Rails.logger.debug { "Credentials source: #{@s3_client.config.credentials.class.name}" }
       @bucket = ENV['AWS_BUCKET_NAME'].presence || DEFAULT_BUCKET
     end
   rescue KeyError => e
