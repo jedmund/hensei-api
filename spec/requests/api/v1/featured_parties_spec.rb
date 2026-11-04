@@ -11,7 +11,7 @@ RSpec.describe 'Api::V1::FeaturedParties', type: :request do
   let(:event) { create(:event) }
 
   def json_response
-    JSON.parse(response.body)
+    response.parsed_body
   end
 
   describe 'GET /api/v1/featured_parties' do

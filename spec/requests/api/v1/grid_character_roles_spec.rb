@@ -24,7 +24,7 @@ RSpec.describe 'GridCharacterRoles API', type: :request do
     it 'returns all roles without auth' do
       get '/api/v1/grid_character_roles'
       expect(response).to have_http_status(:ok)
-      body = JSON.parse(response.body)
+      body = response.parsed_body
       expect(body.length).to eq(3)
     end
   end
@@ -35,7 +35,7 @@ RSpec.describe 'GridCharacterRoles API', type: :request do
     it 'returns the role without auth' do
       get "/api/v1/grid_character_roles/#{role.id}"
       expect(response).to have_http_status(:ok)
-      body = JSON.parse(response.body)
+      body = response.parsed_body
       expect(body['id']).to eq(role.id)
     end
 
@@ -59,7 +59,7 @@ RSpec.describe 'GridCharacterRoles API', type: :request do
         end.to change(GridCharacterRole, :count).by(1)
 
         expect(response).to have_http_status(:created)
-        body = JSON.parse(response.body)
+        body = response.parsed_body
         expect(body['name_en']).to eq('Defender')
         expect(body['sort_order']).to eq(6)
       end
@@ -186,7 +186,7 @@ RSpec.describe 'GridCharacterRoles API', type: :request do
            headers: editor_headers, as: :json
 
       expect(response).to have_http_status(:unprocessable_content)
-      body = JSON.parse(response.body)
+      body = response.parsed_body
       expect(body['ids']).to include(bogus)
 
       # The valid update is rejected up front, not partially applied.
@@ -248,7 +248,7 @@ RSpec.describe 'GridCharacterRoles API', type: :request do
            params: { image: tiny_png_b64, filename: 'icon.png' },
            headers: editor_headers, as: :json
 
-      body = JSON.parse(response.body)
+      body = response.parsed_body
       expect(body['icon_key']).to match(%r{\Aimages/grid_character_roles/#{role.id}\.png\?v=\d+\z})
     end
 
@@ -277,7 +277,7 @@ RSpec.describe 'GridCharacterRoles API', type: :request do
            headers: editor_headers, as: :json
 
       expect(response).to have_http_status(:unprocessable_content)
-      expect(JSON.parse(response.body)['error']).to match(/128x128 or smaller/)
+      expect(response.parsed_body['error']).to match(/128x128 or smaller/)
     end
 
     it 'rejects an icon over the byte cap' do
@@ -288,7 +288,7 @@ RSpec.describe 'GridCharacterRoles API', type: :request do
            headers: editor_headers, as: :json
 
       expect(response).to have_http_status(:unprocessable_content)
-      expect(JSON.parse(response.body)['error']).to match(/256KB or smaller/)
+      expect(response.parsed_body['error']).to match(/256KB or smaller/)
       expect(role.reload.icon_key).to be_nil
     end
 

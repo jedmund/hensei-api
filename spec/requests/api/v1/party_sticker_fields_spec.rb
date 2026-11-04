@@ -13,7 +13,7 @@ RSpec.describe 'Party sticker fields', type: :request do
   let!(:accessible) { create(:sticker, slug: 'accessible', position: 2) }
 
   def json_response
-    JSON.parse(response.body)
+    response.parsed_body
   end
 
   # The explore list hides parties below the default grid counts.

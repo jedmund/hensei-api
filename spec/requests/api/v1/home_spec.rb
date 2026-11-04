@@ -9,7 +9,7 @@ RSpec.describe 'Api::V1::Home', type: :request do
   let!(:other_sticker) { create(:sticker, slug: 'fast') }
 
   def json_response
-    JSON.parse(response.body)
+    response.parsed_body
   end
 
   def give(party, sticker:, by: trusted_user, at: 1.day.ago)

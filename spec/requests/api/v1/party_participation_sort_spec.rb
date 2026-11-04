@@ -6,7 +6,7 @@ require 'rails_helper'
 # when a party's score is recomputed.
 RSpec.describe 'Party participation', type: :request do
   def json_response
-    JSON.parse(response.body)
+    response.parsed_body
   end
 
   # The explore list hides parties below the default grid counts.

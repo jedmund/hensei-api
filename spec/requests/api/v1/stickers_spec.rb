@@ -9,7 +9,7 @@ RSpec.describe 'Api::V1::Stickers', type: :request do
   let(:member_headers) { bearer_headers(member) }
 
   def json_response
-    JSON.parse(response.body)
+    response.parsed_body
   end
 
   describe 'GET /api/v1/stickers' do

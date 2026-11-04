@@ -42,7 +42,7 @@ RSpec.describe 'Substitutions API', type: :request do
 
       expect(response).to have_http_status(:created)
 
-      body = JSON.parse(response.body)
+      body = response.parsed_body
       expect(body['position']).to eq(0)
       # Polymorphic substitute_grid renders under the per-type key the frontend reads.
       expect(body).to have_key('grid_weapon')
@@ -64,7 +64,7 @@ RSpec.describe 'Substitutions API', type: :request do
       }
 
       post '/api/v1/substitutions', params: params.to_json, headers: headers
-      body = JSON.parse(response.body)
+      body = response.parsed_body
       expect(body).to have_key('grid_character')
       expect(body).not_to have_key('substitute_grid')
     end
@@ -120,7 +120,7 @@ RSpec.describe 'Substitutions API', type: :request do
 
       post '/api/v1/substitutions', params: params.to_json, headers: headers
       expect(response).to have_http_status(:created)
-      body = JSON.parse(response.body)
+      body = response.parsed_body
       expect(body['position']).to eq(1)
     end
 
@@ -309,7 +309,7 @@ RSpec.describe 'Substitutions API', type: :request do
       end.not_to change(Substitution, :count)
 
       expect(response).to have_http_status(:unprocessable_content)
-      expect(JSON.parse(response.body)['error']).to match(/already a substitute/i)
+      expect(response.parsed_body['error']).to match(/already a substitute/i)
     end
   end
 
@@ -331,7 +331,7 @@ RSpec.describe 'Substitutions API', type: :request do
       end.not_to change(Substitution, :count)
 
       expect(response).to have_http_status(:unprocessable_content)
-      expect(JSON.parse(response.body)['error']).to match(/unknown item_id/i)
+      expect(response.parsed_body['error']).to match(/unknown item_id/i)
     end
   end
 
@@ -482,7 +482,7 @@ RSpec.describe 'Substitutions API', type: :request do
                                          .and change(GridSummon, :count).by(1)
 
       expect(response).to have_http_status(:created)
-      body = JSON.parse(response.body)
+      body = response.parsed_body
       expect(body).to have_key('grid_summon')
     end
 
@@ -539,7 +539,7 @@ RSpec.describe 'Substitutions API', type: :request do
 
       post '/api/v1/substitutions/reorder', params: params.to_json, headers: headers
 
-      body = JSON.parse(response.body)
+      body = response.parsed_body
       expect(body.pluck('id')).to eq([s_b.id, s_c.id, s_a.id])
     end
 

@@ -11,7 +11,7 @@ RSpec.describe 'Api::V1::PartyStickers', type: :request do
   let(:headers) { bearer_headers(giver) }
 
   def json_response
-    JSON.parse(response.body)
+    response.parsed_body
   end
 
   describe 'PUT /api/v1/parties/:id/sticker' do

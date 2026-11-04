@@ -10,7 +10,7 @@ RSpec.describe 'Api::V1::Events', type: :request do
   let(:curator_headers) { bearer_headers(create(:user, role: 6)) }
 
   def json_response
-    JSON.parse(response.body)
+    response.parsed_body
   end
 
   describe 'GET /api/v1/events' do

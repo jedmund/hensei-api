@@ -651,7 +651,7 @@ RSpec.describe 'GridCharacters API', type: :request do
       expect(response).to have_http_status(:ok)
       expect(grid_character.reload.grid_character_role_ids).to contain_exactly(role_a.id, role_b.id)
 
-      body = JSON.parse(response.body)
+      body = response.parsed_body
       expect(body['grid_character']['roles'].pluck('id')).to eq([role_a.id, role_b.id])
     end
 
@@ -693,7 +693,7 @@ RSpec.describe 'GridCharacters API', type: :request do
           headers: headers
 
       expect(response).to have_http_status(:ok)
-      body = JSON.parse(response.body)
+      body = response.parsed_body
       subs = body['grid_character']['substitutions']
       expect(subs.size).to eq(2)
       expect(subs.find { |s| s['position'] == 0 }['grid_character']['owned']).to be true
