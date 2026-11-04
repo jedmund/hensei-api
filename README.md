@@ -54,6 +54,12 @@ rails db:create
 rails db:migrate
 ```
 
+Without `DATABASE_URL`, the test database is `hensei_test` in the main checkout and `hensei_test_<hash>` in each linked git worktree, so parallel worktrees don't share one. A new worktree needs it created once:
+
+```bash
+RAILS_ENV=test bin/rails db:create db:schema:load
+```
+
 ### 5. AWS S3 Configuration
 
 Hensei requires an AWS S3 bucket for storing images. Configure your credentials:

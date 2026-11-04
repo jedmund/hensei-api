@@ -12,6 +12,18 @@ development:
   <<: *default
   url: <%= ENV.fetch('DATABASE_URL', 'postgres://localhost/hensei_dev') %>
 
+# DATABASE_URL always wins (CI sets it). Without it, the main checkout uses
+# hensei_test and each linked git worktree (where .git is a file, not a
+# directory) gets hensei_test_<first 8 hex of the SHA-256 of its path>, so
+# parallel worktrees don't deadlock on one shared test database. A new
+# worktree needs `RAILS_ENV=test bin/rails db:create db:schema:load` once.
+<%
+  test_db = 'hensei_test'
+  if File.file?(Rails.root.join('.git'))
+    require 'digest'
+    test_db = "hensei_test_#{Digest::SHA256.hexdigest(Rails.root.to_s)[0, 8]}"
+  end
+%>
 test:
   <<: *default
-  url: <%= ENV.fetch('DATABASE_URL', 'postgres://localhost/hensei_test') %>
+  url: <%= ENV.fetch('DATABASE_URL', "postgres://localhost/#{test_db}") %>
