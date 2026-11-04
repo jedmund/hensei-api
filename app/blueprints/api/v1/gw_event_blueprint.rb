@@ -8,7 +8,10 @@ module Api
     class GwEventBlueprint < ApiBlueprint
       fields :start_date, :end_date, :event_number
 
+      # The boss element, as stored. Crews call a Guild War by the element they
+      # bring against it, which is advantage_element (a Light-boss GW is a Dark GW).
       field :element, &:element_value
+      field :advantage_element, &:advantage_element
 
       field :status do |event|
         if event.active?
