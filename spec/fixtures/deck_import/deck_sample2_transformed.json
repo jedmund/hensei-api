@@ -1,0 +1,225 @@
+{
+  "lang": "ja",
+  "name": "Party 3",
+  "class": "Manadiver",
+  "extra": false,
+  "subskills": [],
+  "characters": [
+    {
+      "name": "Tikoh",
+      "id": "3040337000",
+      "uncap": 4
+    },
+    {
+      "name": "Fediel",
+      "id": "3040376000",
+      "uncap": 4,
+      "ringed": true
+    },
+    {
+      "name": "Halluel and Malluel",
+      "id": "3040443000",
+      "uncap": 4
+    },
+    {
+      "name": "Nier",
+      "id": "3040169000",
+      "uncap": 5,
+      "ringed": true
+    },
+    {
+      "name": "Lich",
+      "id": "3040357000",
+      "uncap": 4,
+      "ringed": true
+    }
+  ],
+  "weapons": [
+    {
+      "name": "Parazonium",
+      "id": "1040108700",
+      "uncap": 4,
+      "awakening": {
+        "type": "Attack",
+        "lvl": 4
+      },
+      "keys": [
+        "631",
+        "637"
+      ]
+    },
+    {
+      "name": "Eternal Signature",
+      "id": "1040116600",
+      "uncap": 4,
+      "keys": [
+        "1918",
+        "379"
+      ]
+    },
+    {
+      "name": "Eternal Signature",
+      "id": "1040116600",
+      "uncap": 4,
+      "keys": [
+        "1918",
+        "379"
+      ]
+    },
+    {
+      "name": "Blutgang",
+      "id": "1040008700",
+      "uncap": 4,
+      "awakening": {
+        "type": "Defense",
+        "lvl": 4
+      },
+      "keys": [
+        "631",
+        "850"
+      ]
+    },
+    {
+      "name": "Pain and Suffering",
+      "id": "1040314300",
+      "uncap": 4,
+      "keys": [
+        "1793",
+        "1794",
+        "1785"
+      ]
+    },
+    {
+      "name": "Pain and Suffering",
+      "id": "1040314300",
+      "uncap": 4,
+      "keys": [
+        "1793",
+        "1794",
+        "1785"
+      ]
+    },
+    {
+      "name": "Katana of Repudiation",
+      "id": "1040911000",
+      "uncap": 6,
+      "transcend": 5,
+      "keys": [
+        "2197",
+        "2209",
+        "2217"
+      ]
+    },
+    {
+      "name": "Bab-el-Mandeb",
+      "id": "1040311600",
+      "uncap": 4,
+      "keys": [
+        "1415",
+        "769"
+      ]
+    },
+    {
+      "name": "Bab-el-Mandeb",
+      "id": "1040311600",
+      "uncap": 4,
+      "keys": [
+        "1415",
+        "769"
+      ]
+    },
+    {
+      "name": "Celeste Zaghnal Omega",
+      "id": "1040301400",
+      "uncap": 5,
+      "keys": [
+        "116",
+        "149"
+      ]
+    },
+    {
+      "name": "Dagger of Bahamut Coda",
+      "id": "1040106700",
+      "uncap": 5,
+      "keys": [
+        "404",
+        "1799"
+      ]
+    },
+    {
+      "name": "Ultima Claw",
+      "id": "1040608100",
+      "attr": 4,
+      "uncap": 5,
+      "keys": [
+        "733",
+        "759",
+        "1809"
+      ]
+    },
+    {
+      "name": "Pain of Death",
+      "id": "1040113200",
+      "uncap": 5,
+      "keys": [
+        "1828",
+        "1962",
+        "379"
+      ]
+    }
+  ],
+  "summons": [
+    {
+      "name": "Lucifer",
+      "id": "2040056000",
+      "uncap": 6,
+      "transcend": 5,
+      "sub_aura": "Lucifer's Aura"
+    },
+    {
+      "name": "Beelzebub",
+      "id": "2040408000",
+      "uncap": 4,
+      "transcend": 1,
+      "sub_aura": "All-in-One, One-in-All"
+    },
+    {
+      "name": "Bahamut",
+      "id": "2040003000",
+      "uncap": 6,
+      "transcend": 5,
+      "sub_aura": "Bahamut's Aura"
+    },
+    {
+      "name": "Sariel",
+      "id": "2040327000",
+      "uncap": 4,
+      "transcend": 1,
+      "sub_aura": "Sariel's Aura"
+    },
+    {
+      "name": "Zirnitra",
+      "id": "2040385000",
+      "uncap": 3,
+      "transcend": 1,
+      "sub_aura": "Zirnitra's Aura"
+    }
+  ],
+  "sub_summons": [
+    {
+      "name": "Death",
+      "id": "2040315000",
+      "uncap": 5,
+      "transcend": 1,
+      "sub_aura": "Death's Aura"
+    },
+    {
+      "name": "Fediel",
+      "id": "2040418000",
+      "uncap": 4,
+      "transcend": 1,
+      "sub_aura": "Fediel's Aura"
+    }
+  ],
+  "friend_summon": "Hades"
+}

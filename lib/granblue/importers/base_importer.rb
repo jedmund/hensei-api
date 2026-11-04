@@ -28,6 +28,8 @@ module Granblue
     # @note Tracks both new and updated records during import
     # @note Supports test mode for simulating imports
     class BaseImporter
+      include ValueParsing
+
       # @return [Hash<String, Array<Hash>>] New records created during import
       attr_reader :new_records
 
@@ -341,71 +343,6 @@ module Granblue
       # @return [void]
       def log_updated_record(record)
         @logger&.log_verbose("Updated #{model_class.name} with ID: #{record.granblue_id}\n")
-      end
-
-      # Parse a string value, returning nil if empty
-      # @param value [String, nil] Value to parse
-      # @return [String, nil] Parsed value
-      def parse_value(value)
-        return nil if value.nil? || value.strip.empty?
-
-        value
-      end
-
-      # Parse an integer value
-      # @param value [String, nil] Value to parse
-      # @return [Integer, nil] Parsed value
-      def parse_integer(value)
-        return nil if value.nil? || value.strip.empty?
-
-        value.to_i
-      end
-
-      # Parse a float value
-      # @param value [String, nil] Value to parse
-      # @return [Float, nil] Parsed value
-      def parse_float(value)
-        return nil if value.nil? || value.strip.empty?
-
-        value.to_f
-      end
-
-      # Parse a boolean value
-      # @param value [String, nil] Value to parse
-      # @return [Boolean, nil] Parsed value
-      def parse_boolean(value)
-        return nil if value.nil? || value.strip.empty?
-
-        value == 'true'
-      end
-
-      # Parse a date string
-      # @param date_str [String, nil] Date string to parse
-      # @return [Date, nil] Parsed date
-      def parse_date(date_str)
-        return nil if date_str.nil? || date_str.strip.empty?
-
-        begin
-          Date.parse(date_str)
-        rescue StandardError
-          nil
-        end
-      end
-
-      # Parse a string array
-      # @param array_str [String, nil] Array string to parse
-      # @return [Array<String>] Parsed array
-      def parse_array(array_str)
-        return [] if array_str.nil? || array_str.strip.empty?
-
-        array_str.tr('{}', '').split(',')
-      end
-
-      # Parse an integer array
-      # @param array_str [String, nil] Array string to parse
-      # @return [Array<Integer>] Parsed array
-      def parse_integer_array(array_str)
-        parse_array(array_str).map(&:to_i)
       end
 
       # Get the model class for this importer

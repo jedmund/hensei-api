@@ -10,6 +10,52 @@ module Granblue
     #
     # @see BaseImporter Base class with core import logic
     class CharacterImporter < BaseImporter
+      # Each attribute and how its CSV column (of the same name) is parsed.
+      COLUMNS = {
+        name_en: :value,
+        name_jp: :value,
+        granblue_id: :value,
+        rarity: :integer,
+        element: :integer,
+        proficiency1: :integer,
+        proficiency2: :integer,
+        gender: :integer,
+        race1: :integer,
+        race2: :integer,
+        flb: :boolean,
+        min_hp: :integer,
+        max_hp: :integer,
+        max_hp_flb: :integer,
+        min_atk: :integer,
+        max_atk: :integer,
+        max_atk_flb: :integer,
+        base_da: :integer,
+        base_ta: :integer,
+        ougi_ratio: :float,
+        ougi_ratio_flb: :float,
+        special: :boolean,
+        ulb: :boolean,
+        transcendence: :boolean,
+        max_transcendence_stage: :integer,
+        max_hp_ulb: :integer,
+        max_atk_ulb: :integer,
+        max_hp_transcendence: :integer,
+        max_atk_transcendence: :integer,
+        character_id: :integer_array,
+        wiki_en: :value,
+        release_date: :value,
+        flb_date: :value,
+        ulb_date: :value,
+        transcendence_date: :value,
+        wiki_ja: :value,
+        gamewith: :value,
+        kamigame: :value,
+        nicknames_en: :array,
+        nicknames_jp: :array,
+        season: :integer,
+        series: :integer_array
+      }.freeze
+
       private
 
       # Returns the model class for character records
@@ -64,54 +110,11 @@ module Granblue
       #
       # @raise [ImportError] If required attributes are missing or invalid
       def build_attributes(row)
-        transcendence = parse_boolean(row['transcendence']) || false
-        max_transcendence_stage = parse_integer(row['max_transcendence_stage'])
-        max_transcendence_stage = 0 unless transcendence
-
-        {
-          name_en: parse_value(row['name_en']),
-          name_jp: parse_value(row['name_jp']),
-          granblue_id: parse_value(row['granblue_id']),
-          rarity: parse_integer(row['rarity']),
-          element: parse_integer(row['element']),
-          proficiency1: parse_integer(row['proficiency1']),
-          proficiency2: parse_integer(row['proficiency2']),
-          gender: parse_integer(row['gender']),
-          race1: parse_integer(row['race1']),
-          race2: parse_integer(row['race2']),
-          flb: parse_boolean(row['flb']),
-          min_hp: parse_integer(row['min_hp']),
-          max_hp: parse_integer(row['max_hp']),
-          max_hp_flb: parse_integer(row['max_hp_flb']),
-          min_atk: parse_integer(row['min_atk']),
-          max_atk: parse_integer(row['max_atk']),
-          max_atk_flb: parse_integer(row['max_atk_flb']),
-          base_da: parse_integer(row['base_da']),
-          base_ta: parse_integer(row['base_ta']),
-          ougi_ratio: parse_float(row['ougi_ratio']),
-          ougi_ratio_flb: parse_float(row['ougi_ratio_flb']),
-          special: parse_boolean(row['special']),
-          ulb: parse_boolean(row['ulb']) || false,
-          transcendence: transcendence,
-          max_transcendence_stage: max_transcendence_stage,
-          max_hp_ulb: parse_integer(row['max_hp_ulb']),
-          max_atk_ulb: parse_integer(row['max_atk_ulb']),
-          max_hp_transcendence: parse_integer(row['max_hp_transcendence']),
-          max_atk_transcendence: parse_integer(row['max_atk_transcendence']),
-          character_id: parse_integer_array(row['character_id']),
-          wiki_en: parse_value(row['wiki_en']),
-          release_date: parse_value(row['release_date']),
-          flb_date: parse_value(row['flb_date']),
-          ulb_date: parse_value(row['ulb_date']),
-          transcendence_date: parse_value(row['transcendence_date']),
-          wiki_ja: parse_value(row['wiki_ja']),
-          gamewith: parse_value(row['gamewith']),
-          kamigame: parse_value(row['kamigame']),
-          nicknames_en: parse_array(row['nicknames_en']),
-          nicknames_jp: parse_array(row['nicknames_jp']),
-          season: parse_integer(row['season']),
-          series: parse_integer_array(row['series'])
-        }
+        attributes = parse_columns(row, COLUMNS)
+        # Without transcendence a character has no transcendence stages.
+        transcendence = attributes[:transcendence] || false
+        attributes.merge(ulb: attributes[:ulb] || false, transcendence: transcendence,
+                         max_transcendence_stage: transcendence ? attributes[:max_transcendence_stage] : 0)
       end
     end
   end

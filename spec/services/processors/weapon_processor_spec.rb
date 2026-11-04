@@ -20,24 +20,6 @@ RSpec.describe Processors::WeaponProcessor, type: :model do
     end
   end
 
-  describe '#matches_key?' do
-    it 'returns true if candidate key falls within a range' do
-      expect(processor.send(:matches_key?, '700', '697-706')).to be true
-    end
-
-    it 'returns false if candidate key is below the range' do
-      expect(processor.send(:matches_key?, '696', '697-706')).to be false
-    end
-
-    it 'returns false if candidate key is above the range' do
-      expect(processor.send(:matches_key?, '707', '697-706')).to be false
-    end
-
-    it 'returns true if candidate key exactly matches the mapping' do
-      expect(processor.send(:matches_key?, '700', '700')).to be true
-    end
-  end
-
   describe '#find_weapon' do
     let(:element_changeable_series) do
       WeaponSeries.find_by(slug: 'ultima') ||
