@@ -6,8 +6,9 @@
 #     allow(wiki).to receive(:fetch).and_return('{{Page}}')
 #   end
 #
-# Only instances built after the call are stubbed. Calls add up: a later call
-# (say, a `.with` stub in an example) applies on top of the ones before it.
+# Only instances built with .new after the call are stubbed, not records loaded
+# from the database. Calls add up: a later call (say, a `.with` stub in an
+# example) applies on top of the ones before it.
 module NewInstanceStubs
   def on_new_instances(klass, &stub)
     stubs = new_instance_stubs[klass]
