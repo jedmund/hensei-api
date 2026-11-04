@@ -49,7 +49,7 @@ module Api
           next unless version.attribute_changed?(field)
 
           value = version[field]
-          version.errors.add(field, :inclusion, value: value) if value && !values.include?(value)
+          version.errors.add(field, :inclusion, value: value) if value && values.exclude?(value)
         end
         version.errors.empty?
       end

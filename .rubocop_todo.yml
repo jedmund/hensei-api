@@ -1288,10 +1288,6 @@ Rails/InverseOf:
 # This cop supports unsafe autocorrection (--autocorrect-all).
 Rails/NegateInclude:
   Exclude:
-    - 'app/controllers/api/v1/characters_controller.rb'
-    - 'app/controllers/api/v1/summons_controller.rb'
-    - 'app/controllers/api/v1/weapon_skill_versions_controller.rb'
-    - 'app/controllers/api/v1/weapons_controller.rb'
     - 'app/models/difficulty_rule.rb'
     - 'app/services/gacha_simulation/compiler.rb'
     - 'app/services/grid_damage/calculator.rb'

@@ -98,7 +98,7 @@ module Api
 
         # Validate transformation for characters (01, 02, 03, 04, or style for style swaps)
         valid_transformations = %w[01 02 03 04 style]
-        if transformation.present? && !valid_transformations.include?(transformation)
+        if transformation.present? && valid_transformations.exclude?(transformation)
           return render json: { error: "Invalid transformation. Must be one of: #{valid_transformations.join(', ')}" }, status: :unprocessable_content
         end
 
