@@ -344,6 +344,13 @@ RSpec.describe 'Api::V1::Users', type: :request do
       expect(response).to have_http_status(:ok)
       expect(response.parsed_body).to eq('available' => false)
     end
+
+    it 'reports a registered email as unavailable in any case' do
+      post '/api/v1/check/email', params: { email: " #{user.email.upcase} " }.to_json,
+                                  headers: { 'Content-Type' => 'application/json' }
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body).to eq('available' => false)
+    end
   end
 
   describe 'POST /api/v1/check/username' do

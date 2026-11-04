@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_03_150000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_04_183347) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1575,6 +1575,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_03_150000) do
     t.index "lower((username)::text) text_pattern_ops", name: "index_users_on_lower_username", unique: true
     t.index ["collection_privacy"], name: "index_users_on_collection_privacy"
     t.index ["deletion_scheduled_at"], name: "index_users_on_deletion_scheduled_at", where: "(deletion_scheduled_at IS NOT NULL)"
+    t.index ["email"], name: "index_users_on_email", unique: true
   end
 
   create_table "weapon_awakenings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

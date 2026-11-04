@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
-  before_save { self.email = email&.downcase }
+  # Normalized before validation (so the uniqueness check compares like with like)
+  # and in finders, so where(email:) and find_by(email:) match regardless of case.
+  normalizes :email, with: ->(email) { email.strip.downcase }
 
   ##### ActiveRecord Associations
   has_many :parties, dependent: :destroy

@@ -31,7 +31,10 @@ class WeaponSkillEffect < ApplicationRecord
   validate :count_basis_is_canonical
   # condition is in the scope so tiered key upgrades (Δ/γ Pendulum at transcendence
   # steps 1/4) can coexist as separate rows under one modifier.
-  validates :modifier, uniqueness: { scope: %i[boost_type scaling_kind key_slug weapon_skill_version_id condition] }
+  # Enforced in the database by two partial unique indexes, which the cop can't
+  # read: index_wse_canonical_uniqueness (no version) and
+  # index_wse_versioned_uniqueness (per version).
+  validates :modifier, uniqueness: { scope: %i[boost_type scaling_kind key_slug weapon_skill_version_id condition] } # rubocop:disable Rails/UniqueValidationWithoutIndex
   validate :count_condition_is_canonical
 
   # Conditional/fixed effects for a weapon-skill version, keyed by modifier.

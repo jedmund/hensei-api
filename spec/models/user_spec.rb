@@ -488,6 +488,29 @@ RSpec.describe User, type: :model do
       user = create(:user, email: 'Test@Example.COM')
       expect(user.reload.email).to eq('test@example.com')
     end
+
+    it 'trims and downcases the email before validation' do
+      user = described_class.new(email: '  Test@Example.COM ')
+      expect(user.email).to eq('test@example.com')
+    end
+
+    it 'rejects an email that differs from an existing one only by case' do
+      create(:user, email: 'taken@example.com')
+      user = build(:user, email: 'Taken@Example.com')
+      expect(user).not_to be_valid
+      expect(user.errors[:email]).to be_present
+    end
+
+    it 'finds users by email regardless of case' do
+      user = create(:user, email: 'finder@example.com')
+      expect(described_class.find_by(email: 'Finder@Example.COM')).to eq(user)
+    end
+
+    it 'has a unique index that rejects duplicates the validation never sees' do
+      create(:user, email: 'indexed@example.com')
+      row = { username: 'indexdupe', email: 'indexed@example.com', password_digest: 'x' }
+      expect { described_class.insert_all!([row]) }.to raise_error(ActiveRecord::RecordNotUnique)
+    end
   end
 
   describe 'password validations' do
