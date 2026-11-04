@@ -107,8 +107,8 @@ Rails.application.routes.draw do
 
     post 'users/edit_keys', to: 'users#deposit_edit_keys'
 
-    post 'parties/migrate', to: 'parties#migrate'
-    post 'parties/preview_migrate', to: 'parties#preview_migrate'
+    post 'parties/migrate', to: 'party_migrations#create'
+    post 'parties/preview_migrate', to: 'party_migrations#preview'
     get 'parties/favorites', to: 'parties#favorites'
     get 'parties/:id/skill_boosts', to: 'parties#skill_boosts'
     get 'parties/:id', to: 'parties#show'

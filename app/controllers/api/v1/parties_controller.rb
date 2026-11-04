@@ -11,30 +11,6 @@ module Api
       include SubstituteGridPreloading
       include PartyFullLoading
 
-      # Constants used for filtering validations.
-
-      # Maximum number of characters allowed in a party
-      MAX_CHARACTERS = 5
-
-      # Maximum number of summons allowed in a party
-      MAX_SUMMONS = 8
-
-      # Maximum number of weapons allowed in a party
-      MAX_WEAPONS = 13
-
-      # Default minimum number of characters required for filtering.
-      # 0 so MC-only teams (no characters) appear in the Gallery by default.
-      DEFAULT_MIN_CHARACTERS = 0
-
-      # Default minimum number of summons required for filtering
-      DEFAULT_MIN_SUMMONS = 2
-
-      # Default minimum number of weapons required for filtering
-      DEFAULT_MIN_WEAPONS = 5
-
-      # Default maximum clear time in seconds
-      DEFAULT_MAX_CLEAR_TIME = 5400
-
       # Fields of `party[solomonis]` a client may write. ended_at, stats and
       # game_report_id are import-only; ownership comes from the party.
       SOLOMONIS_PARAMS = %i[route_evoker_id pledge_level outcome].freeze
@@ -46,16 +22,65 @@ module Api
         'solomonis_expedition.route_evoker' => 'solomonis.route_evoker_id'
       }.freeze
 
-      before_action :set_from_slug, except: %w[create destroy update index favorites grid_update unlink_collection sync_all migrate preview_migrate]
-      before_action :set, only: %w[update destroy grid_update]
-      before_action :authorize_party!, only: %w[update destroy grid_update]
+      # Fields of `party` a client may write. Ownership (user, edit key) is
+      # never among them.
+      PARTY_FIELDS = %i[
+        local_id extra name description raid_id job_id visibility
+        accessory_id skill0_id skill1_id skill2_id skill3_id
+        collection_source_user_id full_auto auto_guard auto_summon charge_attack solo clear_time button_count
+        turn_count chain_count summon_count ultimate_mastery ultimate_mastery_level
+        video_url guidebook1_id guidebook2_id guidebook3_id
+      ].freeze
+
+      RING_FIELDS = %i[modifier strength].freeze
+
+      # Fields of the nested grid items in `party`.
+      CHARACTER_FIELDS = [
+        :id, :character_id, :position, :uncap_level, :transcendence_step, :perpetuity, :awakening_id, :awakening_level,
+        { ring1: RING_FIELDS, ring2: RING_FIELDS, ring3: RING_FIELDS, ring4: RING_FIELDS, earring: RING_FIELDS }
+      ].freeze
+      SUMMON_FIELDS = %i[id summon_id position main friend quick_summon uncap_level transcendence_step].freeze
+      WEAPON_FIELDS = %i[
+        id weapon_id position mainhand uncap_level transcendence_step element
+        weapon_key1_id weapon_key2_id weapon_key3_id ax_modifier1_id ax_modifier2_id ax_strength1 ax_strength2
+        befoulment_modifier_id befoulment_strength befoulment_permeation exorcism_level awakening_id awakening_level
+      ].freeze
+
+      before_action :set_from_slug, except: %w[create destroy update index favorites grid_update unlink_collection sync_all]
+      before_action :set, only: %w[update destroy grid_update sync_all]
+      before_action :authorize_party!, only: %w[update destroy grid_update sync_all]
       before_action :ensure_party_viewable!, only: %w[show skill_boosts remix]
 
-      # Primary CRUD Actions
+      # Lists parties based on query parameters.
+      def index
+        query = build_filtered_query(build_preview_base_query)
+        @parties = query.paginate(page: params[:page], per_page: page_size)
 
-      # Creates a new party with optional user association
-      # @return [void]
-      # Creates a new party.
+        render json: Api::V1::PartyBlueprint.render(
+          @parties,
+          view: :list,
+          root: :results,
+          meta: pagination_meta(@parties),
+          current_user: current_user
+        )
+      end
+
+      # Shows a party, with the viewer's matching collection items and those of
+      # the party's collection source when the viewer may see them. Private
+      # parties 404 unless viewable (ensure_party_viewable!).
+      def show
+        options = { view: :full, root: :party, current_user: current_user, admin_mode: admin_mode }
+        options[:viewer_collection] = PartyCollectionMatches.for(@party, current_user) if current_user
+
+        source_user = @party.collection_source_user
+        if source_user && source_user != current_user && source_user.collection_viewable_by?(current_user)
+          options[:source_collection] = PartyCollectionMatches.for(@party, source_user)
+        end
+
+        render json: PartyBlueprint.render(@party, **options)
+      end
+
+      # Creates a party, owned by the current user when signed in.
       def create
         party = Party.new(party_params)
         party.user = current_user if current_user
@@ -64,7 +89,7 @@ module Api
         if party_params[:collection_source_user_id].present?
           source_user = User.find_by(id: party_params[:collection_source_user_id])
           return render_not_found_response('user') if source_user.nil?
-          return render_forbidden_response('Collection is not accessible') unless source_user == current_user || source_user.collection_viewable_by?(current_user)
+          return render_forbidden_response('Collection is not accessible') unless collection_visible?(source_user)
         end
 
         if party_params && party_params[:raid_id].present? && (raid = Raid.find_by(id: party_params[:raid_id]))
@@ -81,36 +106,6 @@ module Api
                  status: :created
         else
           render_party_errors(party)
-        end
-      end
-
-      # Shows a specific party.
-      # Uses viewable_by? to check visibility including crew sharing.
-      # Also allows access via edit_key for anonymous parties.
-      # The in-game "Weapon Skill Boosts" panel for this party's grid, computed by
-      # GridDamage::Calculator and shaped for display. Battle-state params (the game's
-      # "Calculator Conditions"): hp_percent (0–100), turn (1+), foe_element, and
-      # ally_max_hp for max-HP-scaled effects, plus arcarum for venue-gated effects;
-      # the foe defaults to the grid element's advantaged target, like the in-game estimate.
-      def skill_boosts
-        state = skill_boost_state
-        render json: GridDamage::PanelPresenter.present(@party, state: state).merge(state: state)
-      end
-
-      def show
-        if @party
-          options = { view: :full, root: :party, current_user: current_user, admin_mode: admin_mode }
-
-          options[:viewer_collection] = fetch_collection_for(@party, current_user) if current_user
-
-          if @party.collection_source_user_id.present?
-            source_user = @party.collection_source_user
-            options[:source_collection] = fetch_collection_for(@party, source_user) if source_user && source_user != current_user && source_user.collection_viewable_by?(current_user)
-          end
-
-          render json: PartyBlueprint.render(@party, **options)
-        else
-          render_not_found_response('party')
         end
       end
 
@@ -145,118 +140,32 @@ module Api
         end
       end
 
-      # Migrates anonymous parties to the authenticated user's account.
-      def migrate
+      # GET /api/v1/parties/favorites
+      def favorites
         raise Api::V1::UnauthorizedError unless current_user
 
-        entries = resolve_edit_key_entries
-        return render json: { error: 'Too many parties (max 100)' }, status: :unprocessable_content if entries.nil?
+        # A subquery rather than a join + DISTINCT, which Postgres can't order
+        # by an expression such as the Rising rank
+        base_query = build_preview_base_query
+                     .where(id: Favorite.where(user_id: current_user.id).select(:party_id))
+        query = build_filtered_query(base_query)
+        @parties = query.paginate(page: params[:page], per_page: page_size)
 
-        results = []
-        migrated_count = 0
-
-        ActiveRecord::Base.transaction do
-          entries.each do |entry|
-            shortcode = entry[:shortcode]
-            party = Party.find_by(shortcode: shortcode) || Party.find_by(id: shortcode)
-
-            if party.nil?
-              results << { shortcode: shortcode, status: 'not_found' }
-            elsif party.user_id.present?
-              results << { shortcode: shortcode, status: claimed_status(party) }
-            elsif !valid_edit_key?(entry[:edit_key].to_s.strip.force_encoding('UTF-8'),
-                                   party.edit_key.to_s.strip.force_encoding('UTF-8'))
-              results << { shortcode: shortcode, status: 'invalid_key' }
-            else
-              party.update!(user_id: current_user.id, edit_key: nil)
-              migrated_count += 1
-              results << { shortcode: shortcode, status: 'migrated' }
-            end
-          end
-
-          # Clean up deposited edit keys for migrated or already-claimed parties
-          claimed_shortcodes = results.select { |r| r[:status].in?(%w[migrated already_claimed]) }.map { |r| r[:shortcode] }
-          current_user.user_edit_keys.where(shortcode: claimed_shortcodes).delete_all if claimed_shortcodes.any?
-        end
-
-        render json: { results: results, migrated_count: migrated_count }, status: :ok
-      end
-
-      # Returns a preview of what migrate would do, without modifying any data.
-      def preview_migrate
-        raise Api::V1::UnauthorizedError unless current_user
-
-        entries = resolve_edit_key_entries
-        return render json: { error: 'Too many parties (max 100)' }, status: :unprocessable_content if entries.nil?
-
-        identifiers = entries.map { |e| e[:shortcode] }.uniq
-        uuid_pattern = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/i
-        uuid_ids, non_uuid_ids = identifiers.partition { |i| i.match?(uuid_pattern) }
-
-        query = Party.includes(
-          { raid: :group }, :job,
-          { characters: { character: :character_series_records } },
-          { weapons: { weapon: %i[weapon_series weapon_series_variant] } },
-          { summons: { summon: :summon_series } }
+        render json: Api::V1::PartyBlueprint.render(
+          @parties,
+          view: :list,
+          root: :results,
+          meta: pagination_meta(@parties),
+          current_user: current_user
         )
-        conditions = []
-        binds = []
-        if non_uuid_ids.any?
-          conditions << 'shortcode IN (?)'
-          binds << non_uuid_ids
-        end
-        if uuid_ids.any?
-          conditions << 'shortcode IN (?)'
-          binds << uuid_ids
-          conditions << 'id IN (?)'
-          binds << uuid_ids
-        end
-        parties = conditions.any? ? query.where(conditions.join(' OR '), *binds) : Party.none
-
-        # Build lookup by both id and shortcode so either format resolves
-        party_lookup = {}
-        parties.each do |p|
-          party_lookup[p.shortcode] = p
-          party_lookup[p.id] = p
-        end
-
-        # Each party renders on its own, so their stickers are looked up together
-        # here. Without current_user so `favorited` keeps its signed-out value.
-        sticker_options = PartyStickerSummary.batch_options(parties.to_a, current_user)
-
-        # Deduplicate: skip entries that resolve to an already-seen party
-        seen_party_ids = Set.new
-        results = []
-
-        entries.each do |entry|
-          party = party_lookup[entry[:shortcode]]
-          next if party && seen_party_ids.include?(party.id)
-
-          seen_party_ids.add(party.id) if party
-
-          result = if party.nil?
-                     { party: nil, status: 'not_found' }
-                   elsif party.user_id.present?
-                     if party.viewable_by?(current_user, admin_mode: admin_mode)
-                       { party: PartyBlueprint.render_as_hash(party, view: :preview, **sticker_options),
-                         status: 'already_claimed' }
-                     else
-                       { party: nil, status: 'not_found' }
-                     end
-                   elsif !valid_edit_key?(entry[:edit_key].to_s.strip.force_encoding('UTF-8'),
-                                          party.edit_key.to_s.strip.force_encoding('UTF-8'))
-                     { party: nil, status: 'invalid_key' }
-                   else
-                     { party: PartyBlueprint.render_as_hash(party, view: :preview, **sticker_options), status: 'ready' }
-                   end
-
-          results << result
-        end
-
-        render json: { parties: results }, status: :ok
       end
 
-      # Extended Party Actions
+      # The in-game "Weapon Skill Boosts" panel for this party's grid, computed by
+      # GridDamage::Calculator for the battle state in the params (GridDamage::PanelState).
+      def skill_boosts
+        state = GridDamage::PanelState.from_params(params, @party)
+        render json: GridDamage::PanelPresenter.present(@party, state: state).merge(state: state)
+      end
 
       # Creates a remixed copy of an existing party.
       def remix
@@ -278,29 +187,16 @@ module Api
 
       # Batch updates grid items (weapons, characters, summons) atomically.
       def grid_update
-        operations = grid_update_params[:operations]
-        options = grid_update_params[:options] || {}
-
-        # Validate all operations first
-        validation_errors = validate_grid_operations(operations)
+        batch = PartyGridOperations.new(@party, grid_update_params[:operations],
+                                        maintain_character_sequence: grid_update_params.dig(:options, :maintain_character_sequence))
+        validation_errors = batch.errors
         if validation_errors.any?
           return render_unprocessable_entity_response(
             Api::V1::GranblueError.new("Validation failed: #{validation_errors.join(', ')}")
           )
         end
 
-        changes = []
-
-        ActiveRecord::Base.transaction do
-          operations.each do |operation|
-            change = apply_grid_operation(operation)
-            changes << change if change
-          end
-
-          # Compact character positions if needed
-          compact_party_character_positions if options[:maintain_character_sequence]
-        end
-
+        changes = batch.apply!
         @party.mark_updated!
 
         render json: {
@@ -320,51 +216,14 @@ module Api
       #
       # POST /parties/:id/sync_all
       def sync_all
-        @party = Party.find_by(id: params[:id])
-        return render_not_found_response('party') unless @party
-
-        authorize_party!
-        return if performed?
-
-        synced = { characters: 0, weapons: 0, summons: 0, artifacts: 0 }
-        skipped = { characters: 0, weapons: 0, summons: 0, artifacts: 0 }
-
-        # Items whose collection the current user can no longer see are left
-        # as they are and counted, rather than failing the whole party.
-        sync_linked = lambda do |rows, kind, link|
-          rows.each do |row|
-            if collection_accessible?(row.public_send(link))
-              row.sync_from_collection!
-              synced[kind] += 1
-            else
-              skipped[kind] += 1
-            end
-          end
-        end
-
-        ActiveRecord::Base.transaction do
-          sync_linked.call(@party.characters.where.not(collection_character_id: nil)
-                                 .includes(collection_character: :user),
-                           :characters, :collection_character)
-          sync_linked.call(@party.weapons.where.not(collection_weapon_id: nil)
-                                 .includes(collection_weapon: :user),
-                           :weapons, :collection_weapon)
-          sync_linked.call(@party.summons.where.not(collection_summon_id: nil)
-                                 .includes(collection_summon: :user),
-                           :summons, :collection_summon)
-          sync_linked.call(GridArtifact.joins(:grid_character)
-                                       .where(grid_characters: { party_id: @party.id })
-                                       .where.not(collection_artifact_id: nil)
-                                       .includes(collection_artifact: :user),
-                           :artifacts, :collection_artifact)
-        end
+        result = PartyCollectionSync.new(@party).sync_all! { |item| collection_accessible?(item) }
 
         render json: {
           party: PartyBlueprint.render_as_hash(load_full_party(@party.id), view: :full,
                                                                            current_user: current_user,
                                                                            admin_mode: admin_mode),
-          synced: synced,
-          skipped: skipped
+          synced: result.synced,
+          skipped: result.skipped
         }, status: :ok
       end
 
@@ -377,55 +236,13 @@ module Api
         return render_not_found_response('party') unless @party
         return render_unauthorized_response unless current_user && @party.user_id == current_user.id
 
-        ActiveRecord::Base.transaction do
-          @party.characters.where.not(collection_character_id: nil)
-                .update_all(collection_character_id: nil)
-          @party.weapons.where.not(collection_weapon_id: nil)
-                .update_all(collection_weapon_id: nil, orphaned: false)
-          @party.summons.where.not(collection_summon_id: nil)
-                .update_all(collection_summon_id: nil, orphaned: false)
-          @party.update!(collection_source_user_id: nil)
-        end
+        PartyCollectionSync.new(@party).unlink!
 
         render json: {
           party: PartyBlueprint.render_as_hash(load_full_party(@party.id), view: :full,
                                                                            current_user: current_user,
                                                                            admin_mode: admin_mode)
         }, status: :ok
-      end
-
-      # Lists parties based on query parameters.
-      def index
-        query = build_filtered_query(build_preview_base_query)
-        @parties = query.paginate(page: params[:page], per_page: page_size)
-
-        render json: Api::V1::PartyBlueprint.render(
-          @parties,
-          view: :list,
-          root: :results,
-          meta: pagination_meta(@parties),
-          current_user: current_user
-        )
-      end
-
-      # GET /api/v1/parties/favorites
-      def favorites
-        raise Api::V1::UnauthorizedError unless current_user
-
-        # A subquery rather than a join + DISTINCT, which Postgres can't order
-        # by an expression such as the Rising rank
-        base_query = build_preview_base_query
-                     .where(id: Favorite.where(user_id: current_user.id).select(:party_id))
-        query = build_filtered_query(base_query)
-        @parties = query.paginate(page: params[:page], per_page: page_size)
-
-        render json: Api::V1::PartyBlueprint.render(
-          @parties,
-          view: :list,
-          root: :results,
-          meta: pagination_meta(@parties),
-          current_user: current_user
-        )
       end
 
       private
@@ -443,44 +260,7 @@ module Api
         return true if @party.viewable_by?(current_user, admin_mode: admin_mode)
         return false unless @party.user_id.nil?
 
-        valid_edit_key?(edit_key.to_s.strip.force_encoding('UTF-8'),
-                        @party.edit_key.to_s.strip.force_encoding('UTF-8'))
-      end
-
-      # Sanitized battle state for skill_boosts: clamp HP/turn/max HP, cast Arcarum,
-      # whitelist the foe element, and default the foe to what the grid element is strong against.
-
-      def skill_boost_state
-        hp = params[:hp_percent].presence&.to_f&.clamp(0, 100) || 100.0
-        ally_max_hp = params[:ally_max_hp].presence&.to_f&.clamp(0, 999_999)
-        turn = params[:turn].presence&.to_i&.clamp(1, 999) || 1
-        arcarum = ActiveModel::Type::Boolean.new.cast(params[:arcarum]) || false
-        foe = params[:foe_element].presence&.downcase
-        # "null" is a real foe element (element-less foes) — advantaged effects turn off.
-        foe = nil unless foe == 'null' || GridDamage::Calculator::ELEMENT_WORD.value?(foe)
-        foe ||= GridDamage::Calculator::ADVANTAGED_FOE[GridDamage::ElementScope.panel_element(@party)]
-        { hp_percent: hp, ally_max_hp: ally_max_hp, turn: turn, foe_element: foe, arcarum: arcarum }.compact
-      end
-
-      # Resolves edit key entries from params or the current user's deposited keys.
-      # Returns nil if there are too many entries (> 100).
-      def resolve_edit_key_entries
-        entries = if params[:parties].present?
-                    params.require(:parties).map { |p| p.permit(:shortcode, :edit_key) }
-                  else
-                    current_user.user_edit_keys.map { |uek| { shortcode: uek.shortcode, edit_key: uek.edit_key } }
-                  end
-
-        return nil if entries.size > 100
-
-        entries
-      end
-
-      # A claimed party only confirms itself (and previews) to users who can
-      # view it; someone else's private party reports not_found, matching
-      # GET /parties/:shortcode, so its existence isn't revealed here either.
-      def claimed_status(party)
-        party.viewable_by?(current_user, admin_mode: admin_mode) ? 'already_claimed' : 'not_found'
+        @party.edit_key_matches?(edit_key)
       end
 
       # Loads the party by its shortcode.
@@ -499,24 +279,20 @@ module Api
         @party = Party.find_by(id: params[:id].to_s[UUID_FORMAT])
       end
 
-      # Sanitizes and permits party parameters.
+      # Sanitizes and permits party parameters. Not `params.expect`: a `party`
+      # holding only `solomonis` permits to nothing, which expect would refuse.
       def party_params
-        return unless params[:party].present?
+        return if params[:party].blank?
 
-        params.require(:party).permit(
-          :local_id, :extra, :name, :description, :raid_id, :job_id, :visibility,
-          :accessory_id, :skill0_id, :skill1_id, :skill2_id, :skill3_id,
-          :collection_source_user_id, :full_auto, :auto_guard, :auto_summon, :charge_attack, :solo, :clear_time, :button_count,
-          :turn_count, :chain_count, :summon_count, :ultimate_mastery, :ultimate_mastery_level,
-          :video_url, :guidebook1_id, :guidebook2_id, :guidebook3_id,
-          full_auto_skills: %w[0 1 2 3],
-          characters_attributes: [:id, :character_id, :position, :uncap_level,
-                                  :transcendence_step, :perpetuity, :awakening_id, :awakening_level,
-                                  { ring1: %i[modifier strength], ring2: %i[modifier strength], ring3: %i[modifier strength], ring4: %i[modifier strength],
-                                    earring: %i[modifier strength] }],
-          summons_attributes: %i[id summon_id position main friend quick_summon uncap_level transcendence_step],
-          weapons_attributes: %i[id weapon_id position mainhand uncap_level transcendence_step element weapon_key1_id weapon_key2_id weapon_key3_id ax_modifier1_id ax_modifier2_id ax_strength1 ax_strength2 befoulment_modifier_id befoulment_strength befoulment_permeation exorcism_level awakening_id awakening_level]
-        )
+        params.fetch(:party).permit(*PARTY_FIELDS, full_auto_skills: %w[0 1 2 3],
+                                                   characters_attributes: CHARACTER_FIELDS,
+                                                   summons_attributes: SUMMON_FIELDS,
+                                                   weapons_attributes: WEAPON_FIELDS)
+      end
+
+      # Whether the current user may see a user's collection.
+      def collection_visible?(user)
+        user == current_user || user.collection_viewable_by?(current_user)
       end
 
       def solomonis_params
@@ -563,156 +339,6 @@ module Api
           operations: %i[type entity id source_id target_id position container],
           options: %i[maintain_character_sequence validate_before_execute]
         )
-      end
-
-      # Validates grid operations before executing.
-      def validate_grid_operations(operations)
-        errors = []
-
-        operations.each_with_index do |op, index|
-          case op[:type]
-          when 'move'
-            errors << "Operation #{index}: missing id" unless op[:id].present?
-            errors << "Operation #{index}: missing position" unless op[:position].present?
-          when 'swap'
-            errors << "Operation #{index}: missing source_id" unless op[:source_id].present?
-            errors << "Operation #{index}: missing target_id" unless op[:target_id].present?
-          when 'remove'
-            errors << "Operation #{index}: missing id" unless op[:id].present?
-          else
-            errors << "Operation #{index}: unknown operation type #{op[:type]}"
-          end
-
-          errors << "Operation #{index}: invalid entity type #{op[:entity]}" unless %w[weapon character summon].include?(op[:entity])
-        end
-
-        errors
-      end
-
-      # Applies a single grid operation.
-      def apply_grid_operation(operation)
-        case operation[:type]
-        when 'move'
-          apply_move_operation(operation)
-        when 'swap'
-          apply_swap_operation(operation)
-        when 'remove'
-          apply_remove_operation(operation)
-        end
-      end
-
-      # Applies a move operation.
-      def apply_move_operation(operation)
-        model_class = grid_model_for_entity(operation[:entity])
-        item = model_class.find_by(id: operation[:id], party_id: @party.id)
-
-        raise ActiveRecord::RecordNotFound, "#{operation[:entity]} #{operation[:id]} not found" unless item
-
-        old_position = item.position
-        item.update!(position: operation[:position])
-
-        {
-          entity: operation[:entity],
-          id: operation[:id],
-          action: 'moved',
-          from: old_position,
-          to: operation[:position]
-        }
-      end
-
-      # Applies a swap operation.
-      def apply_swap_operation(operation)
-        model_class = grid_model_for_entity(operation[:entity])
-        source = model_class.find_by(id: operation[:source_id], party_id: @party.id)
-        target = model_class.find_by(id: operation[:target_id], party_id: @party.id)
-
-        return nil unless source && target
-
-        source_pos = source.position
-        target_pos = target.position
-
-        # Use a temporary position to avoid conflicts
-        source.update!(position: -999)
-        target.update!(position: source_pos)
-        source.update!(position: target_pos)
-
-        {
-          entity: operation[:entity],
-          id: operation[:source_id],
-          action: 'swapped',
-          with: operation[:target_id]
-        }
-      end
-
-      # Applies a remove operation.
-      def apply_remove_operation(operation)
-        model_class = grid_model_for_entity(operation[:entity])
-        item = model_class.find_by(id: operation[:id], party_id: @party.id)
-
-        return nil unless item
-
-        item.destroy
-
-        {
-          entity: operation[:entity],
-          id: operation[:id],
-          action: 'removed'
-        }
-      end
-
-      # Returns the model class for a given entity type.
-      def grid_model_for_entity(entity)
-        case entity
-        when 'weapon'
-          GridWeapon
-        when 'character'
-          GridCharacter
-        when 'summon'
-          GridSummon
-        end
-      end
-
-      # Fetches collection items for a user that match the party's grid items.
-      # Uses the already-eager-loaded grid associations to extract granblue_ids,
-      # then batch-queries the user's collection with WHERE IN.
-      def fetch_collection_for(party, user)
-        char_gids = party.characters.filter_map { |gc| gc.character&.granblue_id }.uniq
-        weap_gids = party.weapons.filter_map { |gw| gw.weapon&.granblue_id }.uniq
-        summ_gids = party.summons.filter_map { |gs| gs.summon&.granblue_id }.uniq
-
-        {
-          characters: if char_gids.any?
-                        user.collection_characters.joins(:character)
-                            .includes({ character: :character_series_records }, :awakening)
-                            .where(characters: { granblue_id: char_gids })
-                      else
-                        []
-                      end,
-          weapons: if weap_gids.any?
-                     user.collection_weapons.joins(:weapon)
-                         .includes({ weapon: %i[weapon_series weapon_series_variant] }, :awakening, :weapon_key1, :weapon_key2, :weapon_key3, :weapon_key4,
-                                   :ax_modifier1, :ax_modifier2, :befoulment_modifier, { collection_weapon_bullets: :bullet })
-                         .where(weapons: { granblue_id: weap_gids })
-                   else
-                     []
-                   end,
-          summons: if summ_gids.any?
-                     user.collection_summons.joins(:summon)
-                         .includes(summon: :summon_series)
-                         .where(summons: { granblue_id: summ_gids })
-                   else
-                     []
-                   end
-        }
-      end
-
-      # Compacts character positions to maintain sequential filling.
-      def compact_party_character_positions
-        main_characters = @party.characters.where(position: 0..4).order(:position)
-
-        main_characters.each_with_index do |char, index|
-          char.update!(position: index) if char.position != index
-        end
       end
     end
   end
