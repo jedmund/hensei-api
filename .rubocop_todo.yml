@@ -1235,7 +1235,6 @@ Rails/IndexWith:
     - 'lib/granblue/parsers/status_list.rb'
     - 'lib/summon_auras/build/writer.rb'
     - 'lib/weapon_skills/build/rows/comparison.rb'
-    - 'script/fetch_gacha_rates.rb'
     - 'spec/lib/tasks/build_character_skills_spec.rb'
     - 'spec/lib/tasks/build_weapon_skills_spec.rb'
     - 'spec/lib/tasks/character_source_fetch_tasks_spec.rb'
@@ -1565,7 +1564,6 @@ Rails/TimeZone:
     - 'lib/tasks/database.rake'
     - 'lib/tasks/download_all_images.rake'
     - 'lib/tasks/download_images.rake'
-    - 'script/fetch_gacha_rates.rb'
 
 # Offense count: 3
 Rails/UniqueValidationWithoutIndex:

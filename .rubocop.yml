@@ -105,6 +105,12 @@ Naming/PredicateMethod:
     - update_mention_for_entity
 
 # --- Rails ---
+# A standalone cron script: plain Ruby with no gems and no Rails, so
+# Time.zone, index_with and friends don't exist there.
+Rails:
+  Exclude:
+    - 'script/fetch_gacha_rates.rb'
+
 # Bulk relation writes (update_all, insert_all, upsert_all, touch_all) exist to
 # change many rows in one statement without loading models, so skipping
 # callbacks there is always deliberate. The cop still flags single-record skips
