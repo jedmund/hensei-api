@@ -35,14 +35,14 @@ module Api
           flag :has_wiki_profile, "COALESCE(users.wiki_profile, '') <> ''"
           filter :created_at, type: :datetime
 
-          sort :created_at, :username, :role
+          sort :created_at, :last_seen_at, :username, :role
           default_sort '-created_at'
 
           # Email is searchable but not listed; it's in the detail only
-          %i[username display_name role created_at deletion_scheduled_at
+          %i[username display_name role created_at last_seen_at deletion_scheduled_at
              granblue_id youtube wiki_profile].each { |name| field name }
 
-          default_fields :username, :display_name, :role, :created_at, :deletion_scheduled_at
+          default_fields :username, :display_name, :role, :created_at, :last_seen_at, :deletion_scheduled_at
 
           etag_sources :access_changes
         end
@@ -97,6 +97,7 @@ module Api
             role: user.role,
             avatar: { picture: user.picture, element: user.element },
             created_at: user.created_at,
+            last_seen_at: user.last_seen_at,
             deletion_scheduled_at: user.deletion_scheduled_at,
             party_count: user.parties.count,
             history: history(user)

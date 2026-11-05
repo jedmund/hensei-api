@@ -76,6 +76,14 @@ RSpec.describe 'Admin users', type: :request do
       expect(response.parsed_body['results']).to be_empty
     end
 
+    it 'sorts by when users were last seen' do
+      member.update_columns(last_seen_at: 1.day.ago)
+      recent = create(:user, username: 'recent', last_seen_at: 1.minute.ago)
+
+      get '/api/v1/admin/users', params: { sort: '-last_seen_at', filter: { role: '1' } }, headers: auth_headers(admin)
+      expect(response.parsed_body['results'].first(2).pluck('username')).to eq([recent.username, 'member'])
+    end
+
     it 'filters by role' do
       editor
       get '/api/v1/admin/users', params: { filter: { role: '7' } }, headers: auth_headers(admin)

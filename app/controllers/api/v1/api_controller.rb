@@ -70,7 +70,7 @@ module Api
       ##### Hooks
       before_action :current_user
       before_action :default_content_type
-      before_action :record_extension_version
+      before_action :record_activity
       around_action :n_plus_one_detection, if: -> { Rails.env.development? }
 
       ##### Responders
@@ -98,26 +98,37 @@ module Api
         @current_user
       end
 
-      # Capture the X-Extension-Version header on each request and persist it
-      # as the user's last-seen extension version. Debounced so we only write
-      # when the version changes or the timestamp is more than an hour stale.
-      def record_extension_version
+      # How stale last_seen_at may get: the Users section shows it to admins
+      LAST_SEEN_INTERVAL = 5.minutes
+      # The extension version is rewritten when it changes, else at most this often
+      EXTENSION_VERSION_INTERVAL = 1.hour
+
+      # Stamps the signed-in user's last_seen_at (admins see it in the Users
+      # section) and the extension version from X-Extension-Version, in one
+      # write. Most requests write nothing.
+      def record_activity
         return unless current_user
 
-        version = request.headers['X-Extension-Version'].presence
-        return unless version
+        changes = {}
+        now = Time.current
+        last_seen = current_user.last_seen_at
+        changes[:last_seen_at] = now if last_seen.nil? || last_seen < now - LAST_SEEN_INTERVAL
 
-        last_at = current_user.last_extension_version_at
-        return if current_user.last_extension_version == version &&
-                  last_at && last_at > 1.hour.ago
+        version = request.headers['X-Extension-Version'].presence
+        if version
+          last_at = current_user.last_extension_version_at
+          stale = last_at.nil? || last_at < now - EXTENSION_VERSION_INTERVAL
+          if current_user.last_extension_version != version || stale
+            changes[:last_extension_version] = version
+            changes[:last_extension_version_at] = now
+          end
+        end
+        return if changes.empty?
 
         # Request bookkeeping: skip the User callbacks and leave updated_at alone
-        current_user.update_columns( # rubocop:disable Rails/SkipsModelValidations
-          last_extension_version: version,
-          last_extension_version_at: Time.current
-        )
+        current_user.update_columns(changes) # rubocop:disable Rails/SkipsModelValidations
       rescue StandardError => e
-        Rails.logger.warn "[record_extension_version] #{e.class}: #{e.message}"
+        Rails.logger.warn "[record_activity] #{e.class}: #{e.message}"
       end
 
       def admin_mode
