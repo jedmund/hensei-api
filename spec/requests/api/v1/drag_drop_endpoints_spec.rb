@@ -229,93 +229,6 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
     end
   end
 
-  describe 'Batch Grid Update' do
-    let!(:weapon) { create(:grid_weapon, party: party, position: 0) }
-    let!(:first_character) { create(:grid_character, party: party, position: 0) }
-    let!(:second_character) { create(:grid_character, party: party, position: 1) }
-    let!(:summon) { create(:grid_summon, party: party, position: 1) }
-
-    describe 'POST /api/v1/parties/:id/grid_update' do
-      it 'performs multiple operations atomically' do
-        operations = [
-          { type: 'move', entity: 'weapon', id: weapon.id, position: 3 },
-          { type: 'swap', entity: 'character', source_id: first_character.id, target_id: second_character.id },
-          { type: 'remove', entity: 'summon', id: summon.id }
-        ]
-
-        post "/api/v1/parties/#{party.id}/grid_update",
-             params: { operations: operations }.to_json,
-             headers: headers
-
-        expect(response).to have_http_status(:ok)
-
-        json = response.parsed_body
-        expect(json['operations_applied']).to eq(3)
-        expect(json['changes'].count).to eq(3)
-
-        # Verify operations
-        expect(weapon.reload.position).to eq(3)
-        expect(first_character.reload.position).to eq(1)
-        expect(second_character.reload.position).to eq(0)
-        expect { summon.reload }.to raise_error(ActiveRecord::RecordNotFound)
-      end
-
-      it 'validates all operations before executing' do
-        operations = [
-          { type: 'move', entity: 'weapon', id: weapon.id, position: 3 },
-          { type: 'invalid', entity: 'character', id: first_character.id } # Invalid operation
-        ]
-
-        post "/api/v1/parties/#{party.id}/grid_update",
-             params: { operations: operations }.to_json,
-             headers: headers
-
-        expect(response).to have_http_status(:unprocessable_content)
-        expect(response.body).to include('unknown operation type')
-
-        # Ensure no operations were applied
-        expect(weapon.reload.position).to eq(0)
-      end
-
-      it 'maintains character sequence when option is set' do
-        third_character = create(:grid_character, party: party, position: 2)
-
-        operations = [
-          { type: 'move', entity: 'character', id: second_character.id, position: 5 } # Move to extra
-        ]
-
-        post "/api/v1/parties/#{party.id}/grid_update",
-             params: {
-               operations: operations,
-               options: { maintain_character_sequence: true }
-             }.to_json,
-             headers: headers
-
-        expect(response).to have_http_status(:ok)
-
-        # Check compaction happened
-        expect(first_character.reload.position).to eq(0)
-        expect(third_character.reload.position).to eq(1)
-        expect(second_character.reload.position).to eq(5)
-      end
-
-      it 'rolls back all operations on error' do
-        operations = [
-          { type: 'move', entity: 'weapon', id: weapon.id, position: 3 },
-          { type: 'move', entity: 'weapon', id: 'invalid-id', position: 4 }
-        ]
-
-        expect do
-          post "/api/v1/parties/#{party.id}/grid_update",
-               params: { operations: operations }.to_json,
-               headers: headers
-        end.not_to(change { weapon.reload.position })
-
-        expect(response).to have_http_status(:unprocessable_content)
-      end
-    end
-  end
-
   describe 'Authorization' do
     let(:other_user) { create(:user) }
     let(:other_party) { create(:party, user: other_user) }
@@ -334,14 +247,6 @@ RSpec.describe 'Drag Drop API Endpoints', type: :request do
 
       post "/api/v1/parties/#{other_party.id}/grid_weapons/swap",
            params: { source_id: weapon.id, target_id: second_weapon.id }.to_json,
-           headers: headers
-
-      expect(response).to have_http_status(:unauthorized)
-    end
-
-    it 'denies batch update on other users party' do
-      post "/api/v1/parties/#{other_party.id}/grid_update",
-           params: { operations: [] }.to_json,
            headers: headers
 
       expect(response).to have_http_status(:unauthorized)

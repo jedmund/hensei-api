@@ -4,8 +4,8 @@ require 'rails_helper'
 
 # Regression for the N+1 Sentry caught in PartiesController#update: rendering the
 # full PartyBlueprint over a non-eager-loaded party ran a summon (+ series +
-# substitution + collection) query per grid item. update and grid_update now
-# re-fetch through load_full_party, which eager-loads everything.
+# substitution + collection) query per grid item. update now re-fetches
+# through load_full_party, which eager-loads everything.
 RSpec.describe 'Api::V1::Parties N+1', type: :request do
   let(:user) { create(:user) }
   let(:access_token) do

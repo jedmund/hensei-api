@@ -338,7 +338,6 @@ Rails.application.routes.draw do
     put 'parties/:party_id/grid_summons/:id/position', to: 'grid_summons#update_position'
     post 'parties/:party_id/grid_summons/swap', to: 'grid_summons#swap'
 
-    post 'parties/:id/grid_update', to: 'parties#grid_update'
 
     delete 'favorites', to: 'favorites#destroy'
 
