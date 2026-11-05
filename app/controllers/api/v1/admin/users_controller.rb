@@ -29,14 +29,20 @@ module Api
 
           filter :role, type: :integer, facet: true
           flag :deletion_scheduled, 'users.deletion_scheduled_at IS NOT NULL'
+          # Accounts linked on the profile
+          flag :has_granblue_id, 'users.granblue_id IS NOT NULL'
+          flag :has_youtube, "COALESCE(users.youtube, '') <> ''"
+          flag :has_wiki_profile, "COALESCE(users.wiki_profile, '') <> ''"
           filter :created_at, type: :datetime
 
           sort :created_at, :username, :role
           default_sort '-created_at'
 
-          %i[username display_name email role created_at deletion_scheduled_at].each { |name| field name }
+          # Email is searchable but not listed; it's in the detail only
+          %i[username display_name role created_at deletion_scheduled_at
+             granblue_id youtube wiki_profile].each { |name| field name }
 
-          default_fields :username, :display_name, :email, :role, :created_at, :deletion_scheduled_at
+          default_fields :username, :display_name, :role, :created_at, :deletion_scheduled_at
 
           etag_sources :access_changes
         end
@@ -84,6 +90,9 @@ module Api
             username: user.username,
             display_name: user.display_name,
             email: user.email,
+            granblue_id: user.granblue_id,
+            youtube: user.youtube,
+            wiki_profile: user.wiki_profile,
             email_verified: user.email_verified,
             role: user.role,
             avatar: { picture: user.picture, element: user.element },

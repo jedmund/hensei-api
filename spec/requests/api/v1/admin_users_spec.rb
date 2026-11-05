@@ -31,12 +31,18 @@ RSpec.describe 'Admin users', type: :request do
   end
 
   describe 'GET /admin/users' do
-    it 'lists users with their email for admins' do
+    it 'lists users without their email' do
       get '/api/v1/admin/users', headers: auth_headers(admin)
 
       expect(response).to have_http_status(:ok)
       row = response.parsed_body['results'].find { |r| r['username'] == 'member' }
-      expect(row).to include('email' => 'member@example.com', 'role' => 1)
+      expect(row).to include('role' => 1)
+      expect(row).not_to have_key('email')
+    end
+
+    it 'refuses to list email even when asked for' do
+      get '/api/v1/admin/users', params: { fields: 'username,email' }, headers: auth_headers(admin)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     it 'searches usernames, display names and email with q' do
@@ -53,6 +59,21 @@ RSpec.describe 'Admin users', type: :request do
       filter = ActiveSupport::ParameterFilter.new(Rails.application.config.filter_parameters)
       expect(filter.filter('q' => 'member@example.com')).to eq('q' => '[FILTERED]')
       expect(filter.filter('q' => 'member')).to eq('q' => 'member')
+    end
+
+    it 'returns linked accounts on request and filters by them' do
+      member.update!(granblue_id: 12_345_678, wiki_profile: 'Member')
+
+      get '/api/v1/admin/users', params: { fields: 'username,granblue_id,youtube,wiki_profile' },
+                                 headers: auth_headers(admin)
+      row = response.parsed_body['results'].find { |r| r['username'] == 'member' }
+      expect(row).to include('granblue_id' => 12_345_678, 'wiki_profile' => 'Member', 'youtube' => nil)
+
+      get '/api/v1/admin/users', params: { filter: { has_wiki_profile: 'true' } }, headers: auth_headers(admin)
+      expect(response.parsed_body['results'].pluck('username')).to eq(['member'])
+
+      get '/api/v1/admin/users', params: { filter: { has_youtube: 'true' } }, headers: auth_headers(admin)
+      expect(response.parsed_body['results']).to be_empty
     end
 
     it 'filters by role' do
