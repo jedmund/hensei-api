@@ -224,9 +224,10 @@ module Granblue
         if @character.save
           Rails.logger.info "#{@character.granblue_id}: Successfully saved info for #{@character.name_en}" if @debug
           true
+        else
+          Rails.logger.warn "#{@character.granblue_id}: Could not save info for #{@character.name_en}: #{@character.errors.full_messages.join(', ')}"
+          false
         end
-
-        false
       end
 
       # Converts proficiencies from a string to a hash
