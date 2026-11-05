@@ -39,6 +39,10 @@ class User < ApplicationRecord
   # Records that belong to a crew, another user's party, or the audit trail
   # outlive the account; deleting it only removes the attribution.
   has_many :difficulty_change_logs, dependent: :nullify
+  # Admin changes to this user's access, and the ones this user made as an admin
+  has_many :access_changes, class_name: 'UserAccessChange', dependent: :nullify, inverse_of: :user
+  has_many :made_access_changes, class_name: 'UserAccessChange', foreign_key: :actor_id, dependent: :nullify,
+                                 inverse_of: :actor
   has_many :created_crew_rosters, class_name: 'CrewRoster', foreign_key: :created_by_id, inverse_of: :created_by,
                                   dependent: :nullify
   has_many :recorded_gw_scores, class_name: 'GwIndividualScore', foreign_key: :recorded_by_id, inverse_of: :recorded_by,

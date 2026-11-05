@@ -5,6 +5,10 @@
 # notations and behaviors.
 Rails.application.config.filter_parameters += [
   :passw, :secret, :token, :_key, :crypt, :salt, :certificate, :otp, :ssn,
+  # Account forms
+  :email,
+  # Searches that look like an email address (the admin user search)
+  ->(key, value) { value.replace('[FILTERED]') if key == 'q' && value.is_a?(String) && value.include?('@') },
   # Extension login: the one-time code and its PKCE verifier.
   /\Acode\z/, :code_verifier,
   # Deck imports: the player's user ID (`deck.pc.param.id`, also under the

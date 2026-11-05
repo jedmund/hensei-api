@@ -61,7 +61,7 @@ module AdminCollection
 
   def render_admin_collection
     query = Query.new(admin_collection_definition, params)
-    return unless stale?(etag: admin_collection_etag, public: false)
+    return if admin_collection_definition.conditional_get && !stale?(etag: admin_collection_etag, public: false)
 
     total = query.filtered.count
     body = { results: query.rows, meta: query.meta(total) }
