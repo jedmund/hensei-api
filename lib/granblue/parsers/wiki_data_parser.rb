@@ -75,16 +75,11 @@ module Granblue
         suggestions[:gamewith] = parse_gamewith_url(data['link_gamewith']) if data['link_gamewith'].present?
         suggestions[:kamigame] = parse_kamigame_url(data['link_kamigame'], :character) if data['link_kamigame'].present?
 
-        # Gacha fields - parse from obtain and series fields
+        # Season comes from the series field, with obtain as a fallback
         obtain = data['obtain'].to_s.downcase
         wiki_series = data['series'].to_s.downcase.strip
 
-        # Season (from series field)
         suggestions[:season] = character_season_from_series(wiki_series, obtain)
-
-        # Promotions (from obtain and series fields)
-        promotions = character_promotions_from_obtain(obtain, wiki_series)
-        suggestions[:promotions] = promotions if promotions.any?
 
         suggestions.compact
       end
@@ -354,9 +349,6 @@ module Granblue
         nil
       end
 
-      # Seasonal series that indicate a character is only available during that season
-      SEASONAL_SERIES = %w[holiday summer valentine halloween formal].freeze
-
       # Maps series values to CharacterSeason enum values
       SEASON_MAP = {
         'valentine' => 1,
@@ -365,21 +357,6 @@ module Granblue
         'halloween' => 4,
         'holiday' => 5
       }.freeze
-
-      # Maps series to Promotion enum values for seasonal characters
-      SEASONAL_PROMOTION_MAP = {
-        'holiday' => 9,
-        'summer' => 7,
-        'valentine' => 6,
-        'halloween' => 8,
-        'formal' => 11
-      }.freeze
-
-      # Indicators in obtain field that mean character is gacha-available
-      GACHA_INDICATORS = %w[premium flash legend classic classic2 classic3 grand zodiac valentine summer halloween holiday formal normal].freeze
-
-      # Non-gacha obtain values
-      NON_GACHA_INDICATORS = %w[rotb event side story promo eternal evoker archangel].freeze
 
       # Extract season from wiki series field
       # @param wiki_series [String] The series field value (e.g., "holiday", "summer")
@@ -396,55 +373,6 @@ module Granblue
 
         # Non-seasonal characters have nil season
         nil
-      end
-
-      # Determine if character can be pulled from gacha
-      # @param obtain [String] The obtain field value
-      # @param wiki_series [String] The series field value
-      # @return [Boolean]
-      def self.gacha_available_from_obtain(obtain, _wiki_series)
-        return false if obtain.blank?
-
-        # Check for non-gacha indicators
-        return false if NON_GACHA_INDICATORS.any? { |indicator| obtain.include?(indicator) }
-
-        # Check for gacha indicators
-        GACHA_INDICATORS.any? { |indicator| obtain.include?(indicator) }
-      end
-
-      # Extract promotions array from obtain and series fields
-      # @param obtain [String] The obtain field value
-      # @param wiki_series [String] The series field value
-      # @return [Array<Integer>] Array of Promotion enum values
-      def self.character_promotions_from_obtain(obtain, wiki_series)
-        return [] unless gacha_available_from_obtain(obtain, wiki_series)
-
-        promotions = []
-
-        # Seasonal characters ONLY get their seasonal promotion
-        if SEASONAL_SERIES.include?(wiki_series)
-          promotions << SEASONAL_PROMOTION_MAP[wiki_series] if SEASONAL_PROMOTION_MAP[wiki_series]
-          return promotions
-        end
-
-        # Check if obtain indicates a seasonal banner (e.g., obtain=premium,holiday)
-        SEASONAL_SERIES.each do |series|
-          if obtain.include?(series)
-            promotions << SEASONAL_PROMOTION_MAP[series] if SEASONAL_PROMOTION_MAP[series]
-            return promotions
-          end
-        end
-
-        tokens = obtain.split(',').map(&:strip)
-        # Classic III-only imports must not restore ordinary availability.
-        promotions.push(1, 4, 5) unless tokens.include?('classic3') && tokens.exclude?('premium')
-
-        # Add Classic pools only if explicitly mentioned
-        promotions << 2 if tokens.include?('classic')
-        promotions << 3 if tokens.include?('classic2')
-        promotions << 12 if tokens.include?('classic3')
-
-        promotions.uniq.sort
       end
 
       # Calculate max level for weapons based on rarity and uncap status

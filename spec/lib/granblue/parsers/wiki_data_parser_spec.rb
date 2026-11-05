@@ -140,49 +140,6 @@ RSpec.describe Granblue::Parsers::WikiDataParser do
     end
   end
 
-  describe '.gacha_available_from_obtain' do
-    it 'returns true for gacha indicators' do
-      expect(described_class.gacha_available_from_obtain('premium', '')).to be true
-      expect(described_class.gacha_available_from_obtain('flash', '')).to be true
-    end
-
-    it 'returns false for non-gacha indicators' do
-      expect(described_class.gacha_available_from_obtain('event', '')).to be false
-      expect(described_class.gacha_available_from_obtain('story', '')).to be false
-    end
-
-    it 'returns false for blank obtain' do
-      expect(described_class.gacha_available_from_obtain('', '')).to be false
-    end
-  end
-
-  describe '.character_promotions_from_obtain' do
-    it 'returns seasonal promotion for seasonal series' do
-      result = described_class.character_promotions_from_obtain('premium', 'summer')
-      expect(result).to eq([7]) # Summer seasonal promotion
-    end
-
-    it 'returns standard promotions for non-seasonal' do
-      result = described_class.character_promotions_from_obtain('premium', 'grand')
-      expect(result).to eq([1, 4, 5]) # Premium, Flash, Legend
-    end
-
-    it 'adds classic pool when explicitly mentioned' do
-      result = described_class.character_promotions_from_obtain('premium,classic', '')
-      expect(result).to include(2)
-    end
-
-    it 'recognizes Classic III without also assigning Classic I' do
-      expect(described_class.character_promotions_from_obtain('premium,classic3', '')).to eq([1, 4, 5, 12])
-      expect(described_class.character_promotions_from_obtain('classic3', '')).to eq([12])
-      expect(described_class.character_promotions_from_obtain('classic,classic2,classic3', '')).to eq([2, 3, 12])
-    end
-
-    it 'returns empty for non-gacha' do
-      expect(described_class.character_promotions_from_obtain('event', '')).to eq([])
-    end
-  end
-
   describe '.rarity_from' do
     it 'reads the wiki rarity regardless of case' do
       expect(described_class.rarity_from('sr', '1030000100')).to eq(2)

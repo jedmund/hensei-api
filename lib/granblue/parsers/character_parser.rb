@@ -307,20 +307,6 @@ module Granblue
         nil
       end
 
-      # Determines if character can be pulled from gacha based on obtain field and series
-      def gacha_available_from_hash(hash)
-        wiki_series = hash['series'].to_s.downcase.strip
-        obtain = hash['obtain'].to_s.downcase
-
-        # Non-gacha series
-        non_gacha_series = %w[eternal evoker archangel event promo collab]
-        return false if non_gacha_series.include?(wiki_series)
-
-        # Check obtain field for gacha indicators
-        gacha_indicators = %w[premium flash legend classic grand zodiac valentine summer halloween holiday formal]
-        gacha_indicators.any? { |indicator| obtain.include?(indicator) }
-      end
-
       # Parses a date string into a Date object
       def parse_date(date_str)
         Date.parse(date_str) if date_str.present?

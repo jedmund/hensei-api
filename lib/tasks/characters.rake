@@ -57,20 +57,6 @@ module CharacterNameInference
 
     series.uniq
   end
-
-  # Infer gacha_available from series
-  def self.infer_gacha_available?(series)
-    non_gachable = [
-      GranblueEnums::CHARACTER_SERIES[:Eternal],
-      GranblueEnums::CHARACTER_SERIES[:Evoker],
-      GranblueEnums::CHARACTER_SERIES[:Event],
-      GranblueEnums::CHARACTER_SERIES[:Collab],
-      GranblueEnums::CHARACTER_SERIES[:Promo]
-    ]
-
-    # If any series is non-gachable, the character is not gachable
-    !series.intersect?(non_gachable)
-  end
 end
 
 namespace :characters do
@@ -83,15 +69,13 @@ namespace :characters do
     Character.find_each do |character|
       season = CharacterNameInference.infer_season(character.name_en)
       series = CharacterNameInference.infer_series(character.name_en)
-      gacha_available = CharacterNameInference.infer_gacha_available?(series)
 
       if test_mode
         puts "#{character.name_en}:"
         puts "  season: #{season} (#{GranblueEnums::CHARACTER_SEASONS.key(season)})"
         puts "  series: #{series} (#{series.map { |s| GranblueEnums::CHARACTER_SERIES.key(s) }.join(', ')})"
-        puts "  gacha_available: #{gacha_available}"
         updated += 1
-      elsif character.update(season: season, series: series, gacha_available: gacha_available)
+      elsif character.update(season: season, series: series)
         updated += 1
       else
         puts "Failed to update #{character.name_en}: #{character.errors.full_messages.join(', ')}"
@@ -106,7 +90,7 @@ namespace :characters do
     output_path = ENV['OUTPUT'] || Rails.root.join('export/characters_for_mapping.csv')
     FileUtils.mkdir_p(File.dirname(output_path))
 
-    headers = %w[id granblue_id name_en name_jp rarity element season series gacha_available]
+    headers = %w[id granblue_id name_en name_jp rarity element season series]
 
     CSV.open(output_path, 'w', headers: headers, write_headers: true) do |csv|
       Character.order(:id).find_each do |character|
@@ -118,8 +102,7 @@ namespace :characters do
           character.rarity,
           character.element,
           character.season,
-          character.series&.join(','),
-          character.gacha_available
+          character.series&.join(',')
         ]
       end
     end
@@ -155,14 +138,10 @@ namespace :characters do
       # Parse series (comma-separated integers or empty)
       series = row['series'].presence&.split(',')&.map(&:to_i) || []
 
-      # Parse gacha_available (boolean)
-      # Only an explicit false value turns it off; blank or unknown values default to true
-      gacha_available = %w[false 0 f].exclude?(row['gacha_available']&.downcase)
-
       if test_mode
-        puts "Would update #{character.name_en}: season=#{season}, series=#{series}, gacha_available=#{gacha_available}"
+        puts "Would update #{character.name_en}: season=#{season}, series=#{series}"
         updated += 1
-      elsif character.update(season: season, series: series, gacha_available: gacha_available)
+      elsif character.update(season: season, series: series)
         updated += 1
       else
         errors << "Failed to update #{character.name_en} (#{character.id}): #{character.errors.full_messages.join(', ')}"
