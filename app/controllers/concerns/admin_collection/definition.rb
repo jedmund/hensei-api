@@ -3,7 +3,7 @@
 module AdminCollection
   # What a resource allows. Built by the block given to `admin_collection`.
   class Definition
-    attr_reader :model, :search_columns, :filters, :sorts, :fields, :facets, :etag_models
+    attr_reader :model, :search_columns, :filters, :sorts, :fields, :facets, :etag_models, :conditional_get
 
     def initialize(model)
       @model = model
@@ -17,6 +17,7 @@ module AdminCollection
       @etag_models = [model]
       @writable = []
       @enums = {}
+      @conditional_get = true
     end
 
     # Columns matched by `q` (case-insensitive substring).
@@ -35,10 +36,12 @@ module AdminCollection
     # `through` names a has_many association whose rows hold `column` (e.g. a
     # join table). A row matches when any associated row does, "none" means it
     # has no associated rows, and facets count associated rows per value.
-    def filter(name, type:, column: name, resolve: nil, facet: false, through: nil)
+    # `through_where` limits which associated rows count (e.g. current
+    # memberships only), since the association's own scope isn't applied.
+    def filter(name, type:, column: name, resolve: nil, facet: false, through: nil, through_where: nil)
       columns = Array(column).map(&:to_s)
       config = { type: type, column: columns.one? ? columns.first : columns, resolve: resolve }
-      config[:through] = through_config(through) if through
+      config[:through] = through_config(through, through_where) if through
       @filters[name.to_s] = config
       @facets[name.to_s] = config.slice(:type, :column, :through) if facet
     end
@@ -126,6 +129,12 @@ module AdminCollection
     # it has one, max(updated_at). Bulk writers to these tables (update_all,
     # update_columns, raw SQL) must set updated_at themselves, or revisits
     # get a stale 304.
+    # Skips the ETag and 304s: for lists whose fields count rows in tables too
+    # large to fingerprint on every request (a user's collection)
+    def no_conditional_get
+      @conditional_get = false
+    end
+
     def etag_sources(*sources)
       models = sources.map do |source|
         next source unless source.is_a?(Symbol) || source.is_a?(String)
@@ -140,13 +149,15 @@ module AdminCollection
 
     private
 
-    # { model:, key:, owner_key: }: rows of `model` whose `key` equals the
-    # collection row's `owner_key`. The association's own scope is not applied.
-    def through_config(association)
+    # { model:, key:, owner_key: }: rows of `model` (narrowed by `where`) whose
+    # `key` equals the collection row's `owner_key`. The association's own
+    # scope is not applied.
+    def through_config(association, where = nil)
       reflection = model.reflect_on_association(association)
       raise ArgumentError, "#{model} has no direct has_many #{association}" unless reflection&.collection? && !reflection.through_reflection?
 
-      { model: reflection.klass, key: reflection.foreign_key.to_s, owner_key: reflection.active_record_primary_key.to_s }
+      rows = where ? reflection.klass.where(where) : reflection.klass.all
+      { model: rows, key: reflection.foreign_key.to_s, owner_key: reflection.active_record_primary_key.to_s }
     end
   end
 end

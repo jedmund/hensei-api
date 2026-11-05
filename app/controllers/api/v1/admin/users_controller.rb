@@ -22,12 +22,30 @@ module Api
         before_action :ensure_admin_role
         before_action :set_user, only: %i[show update_role]
 
+        # Counts of what each user has, as correlated subqueries (one row each)
+        COUNTS = {
+          party_count: 'SELECT COUNT(*) FROM parties WHERE parties.user_id = users.id',
+          playlist_count: 'SELECT COUNT(*) FROM playlists WHERE playlists.user_id = users.id',
+          favorites_count: 'SELECT COUNT(*) FROM favorites WHERE favorites.user_id = users.id',
+          favorited_count: 'SELECT COUNT(*) FROM favorites JOIN parties ON parties.id = favorites.party_id ' \
+                           'WHERE parties.user_id = users.id',
+          collection_characters: 'SELECT COUNT(*) FROM collection_characters WHERE collection_characters.user_id = users.id',
+          collection_weapons: 'SELECT COUNT(*) FROM collection_weapons WHERE collection_weapons.user_id = users.id',
+          collection_summons: 'SELECT COUNT(*) FROM collection_summons WHERE collection_summons.user_id = users.id',
+          collection_artifacts: 'SELECT COUNT(*) FROM collection_artifacts WHERE collection_artifacts.user_id = users.id',
+          collection_job_accessories: 'SELECT COUNT(*) FROM collection_job_accessories ' \
+                                      'WHERE collection_job_accessories.user_id = users.id'
+        }.freeze
+
         admin_collection User do
           # Email too: a search containing @ is kept out of the logs
           # (config/initializers/filter_parameter_logging.rb)
           search :username, :display_name, :email
 
           filter :role, type: :integer, facet: true
+          # The user's current crew (leaving a crew retires the membership)
+          filter :crew, type: :uuid, column: :crew_id, through: :crew_memberships,
+                        through_where: { retired: false }, facet: true
           flag :deletion_scheduled, 'users.deletion_scheduled_at IS NOT NULL'
           # Accounts linked on the profile
           flag :has_granblue_id, 'users.granblue_id IS NOT NULL'
@@ -36,15 +54,18 @@ module Api
           filter :created_at, type: :datetime
 
           sort :created_at, :last_seen_at, :username, :role
+          COUNTS.each { |name, sql| sort name, sql: sql }
           default_sort '-created_at'
 
           # Email is searchable but not listed; it's in the detail only
           %i[username display_name role created_at last_seen_at deletion_scheduled_at
              granblue_id youtube wiki_profile].each { |name| field name }
+          COUNTS.each { |name, sql| field name, select: sql }
 
           default_fields :username, :display_name, :role, :created_at, :last_seen_at, :deletion_scheduled_at
 
-          etag_sources :access_changes
+          # The counts read tables far too big to fingerprint per request
+          no_conditional_get
         end
 
         def index
@@ -53,6 +74,11 @@ module Api
 
         def show
           render json: detail(@user)
+        end
+
+        # GET /admin/users/crews: every crew's id and name, for the Crew filter
+        def crews
+          render json: Crew.order(:name).pluck(:id, :name).map { |id, name| { id: id, name: name } }
         end
 
         # PATCH /admin/users/:id/role { role: }
@@ -100,6 +126,7 @@ module Api
             last_seen_at: user.last_seen_at,
             deletion_scheduled_at: user.deletion_scheduled_at,
             party_count: user.parties.count,
+            playlist_count: user.playlists.count,
             crew: crew(user),
             favorites_count: user.favorites.count,
             favorited_count: Favorite.joins(:party).where(parties: { user_id: user.id }).count,

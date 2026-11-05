@@ -445,6 +445,7 @@ Rails.application.routes.draw do
         get :schema, on: :collection
       end
       resources :users, only: %i[index show] do
+        get :crews, on: :collection
         patch :role, on: :member, action: :update_role
       end
     end

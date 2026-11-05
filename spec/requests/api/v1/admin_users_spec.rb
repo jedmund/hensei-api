@@ -84,10 +84,57 @@ RSpec.describe 'Admin users', type: :request do
       expect(response.parsed_body['results'].first(2).pluck('username')).to eq([recent.username, 'member'])
     end
 
+    it 'lists and sorts by counts on request' do
+      create_list(:party, 2, user: member)
+      create(:collection_character, user: member)
+
+      get '/api/v1/admin/users', params: { fields: 'username,party_count,collection_characters,playlist_count',
+                                           sort: '-party_count' }, headers: auth_headers(admin)
+      expect(response.parsed_body['results'].first).to include('username' => 'member', 'party_count' => 2,
+                                                               'collection_characters' => 1, 'playlist_count' => 0)
+
+      get '/api/v1/admin/users', params: { sort: '-collection_characters' }, headers: auth_headers(admin)
+      expect(response.parsed_body['results'].first['username']).to eq('member')
+    end
+
+    it 'filters by current crew, not crews they left' do
+      crew = create(:crew, name: 'Skyfarers')
+      create(:crew_membership, :captain, crew: crew, user: member)
+      former = create(:user, username: 'former')
+      create(:crew_membership, crew: crew, user: former, retired: true)
+
+      get '/api/v1/admin/users', params: { filter: { crew: crew.id }, facets: 'crew' }, headers: auth_headers(admin)
+      expect(response.parsed_body['results'].pluck('username')).to eq(['member'])
+      expect(response.parsed_body['facets']['crew']).to include(crew.id => 1)
+    end
+
+    it 'returns fresh counts when only another table changed' do
+      headers = auth_headers(admin)
+      params = { fields: 'username,party_count', filter: { role: '1' } }
+      get '/api/v1/admin/users', params: params, headers: headers
+      etag = response.headers['ETag']
+
+      create(:party, user: member)
+      get '/api/v1/admin/users', params: params, headers: headers.merge('If-None-Match' => etag)
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body['results'].find { |r| r['username'] == 'member' }['party_count']).to eq(1)
+    end
+
     it 'filters by role' do
       editor
       get '/api/v1/admin/users', params: { filter: { role: '7' } }, headers: auth_headers(admin)
       expect(response.parsed_body['results'].pluck('role').uniq).to eq([7])
+    end
+  end
+
+  describe 'GET /admin/users/crews' do
+    it 'lists crews for the filter, admins only' do
+      create(:crew, name: 'Skyfarers')
+      get '/api/v1/admin/users/crews', headers: auth_headers(admin)
+      expect(response.parsed_body.pluck('name')).to include('Skyfarers')
+
+      get '/api/v1/admin/users/crews', headers: auth_headers(editor)
+      expect(response).to have_http_status(:unauthorized)
     end
   end
 
