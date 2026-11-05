@@ -26,6 +26,13 @@ module Api
                        import_weapons default_import_visibility simple_portraits
                        default_rep_view timezone support_summons_public].freeze
 
+      # Flags that only ever turn on, each stamping its timestamp the first
+      # time it's sent as true. Only the flag is accepted, never the timestamp.
+      ONE_WAY_FLAGS = {
+        password_prompt_dismissed: :password_prompt_dismissed_at,
+        wiki_export_guidelines_accepted: :wiki_export_guidelines_accepted_at
+      }.freeze
+
       def show
         if @user.nil?
           render_not_found_response('user')
@@ -109,9 +116,9 @@ module Api
       # registration and the password reset flow.
       def update
         attrs = user_update_params
-        dismissed = attrs.delete(:password_prompt_dismissed)
+        flags = attrs.extract!(*ONE_WAY_FLAGS.keys)
         @user.assign_attributes(attrs)
-        dismiss_password_prompt(dismissed)
+        apply_one_way_flags(flags)
         if @user.save
           render json: UserBlueprint.render(@user, view: :minimal)
         else
@@ -216,12 +223,15 @@ module Api
         SendEmailVerificationJob.perform_later(user.id, raw_token)
       end
 
-      # The settings banner suggesting a password stays dismissed once
-      # dismissed. Only the flag is accepted, never the timestamp itself.
-      def dismiss_password_prompt(dismissed)
-        return unless ActiveModel::Type::Boolean.new.cast(dismissed)
+      # See ONE_WAY_FLAGS. Sending false never clears a timestamp.
+      def apply_one_way_flags(flags)
+        cast = ActiveModel::Type::Boolean.new
+        flags.each do |flag, value|
+          next unless cast.cast(value)
 
-        @user.password_prompt_dismissed_at ||= Time.current
+          column = ONE_WAY_FLAGS.fetch(flag.to_sym)
+          @user[column] ||= Time.current
+        end
       end
 
       # Loads the user named in the path. 404s for unknown usernames so bot
@@ -243,10 +253,10 @@ module Api
         params.expect(user: USER_FIELDS)
       end
 
-      # Also takes password_prompt_dismissed, which update hands to
-      # dismiss_password_prompt rather than assigning (it isn't a column)
+      # Also takes the ONE_WAY_FLAGS, which update hands to
+      # apply_one_way_flags rather than assigning (they aren't columns)
       def user_update_params
-        params.expect(user: [*USER_FIELDS, :password_prompt_dismissed])
+        params.expect(user: [*USER_FIELDS, *ONE_WAY_FLAGS.keys])
               .except(:email, :password, :password_confirmation)
       end
     end
