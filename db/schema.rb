@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_04_183347) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_04_200000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1571,6 +1571,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_04_183347) do
     t.boolean "support_summons_public", default: true, null: false
     t.datetime "password_prompt_dismissed_at"
     t.datetime "deletion_scheduled_at"
+    t.datetime "wiki_export_guidelines_accepted_at"
     t.index "lower((display_name)::text) text_pattern_ops", name: "index_users_on_lower_display_name"
     t.index "lower((username)::text) text_pattern_ops", name: "index_users_on_lower_username", unique: true
     t.index ["collection_privacy"], name: "index_users_on_collection_privacy"

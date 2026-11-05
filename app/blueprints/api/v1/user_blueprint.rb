@@ -70,6 +70,9 @@ module Api
         field :password_prompt_dismissed do |user|
           user.password_prompt_dismissed_at.present?
         end
+        field :wiki_export_guidelines_accepted do |user|
+          user.wiki_export_guidelines_accepted_at.present?
+        end
         field :deletion_scheduled_at
       end
     end
