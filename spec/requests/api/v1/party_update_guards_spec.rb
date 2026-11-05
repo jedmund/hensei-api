@@ -51,14 +51,6 @@ RSpec.describe 'Party update guards', type: :request do
     end
   end
 
-  describe 'POST /api/v1/parties/:id/grid_update' do
-    it 'returns 404 for an id that is not a UUID' do
-      post '/api/v1/parties/not-a-uuid/grid_update', params: { operations: [] }.to_json, headers: headers
-
-      expect(response).to have_http_status(:not_found)
-    end
-  end
-
   describe 'DELETE /api/v1/parties/:id' do
     it 'returns 404 for an id that is not a UUID' do
       delete '/api/v1/parties/not-a-uuid', headers: headers

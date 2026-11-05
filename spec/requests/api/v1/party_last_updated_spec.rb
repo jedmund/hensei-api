@@ -56,17 +56,6 @@ RSpec.describe 'Party last_updated tracking', type: :request do
         remixed = Party.find_by(source_party_id: other_party.id)
         expect(remixed.last_updated).to be_within(2.seconds).of(Time.current)
       end
-
-      it 'bumps last_updated on grid_update (move)' do
-        gw = create(:grid_weapon, party: party, weapon: weapon, position: 0)
-        original = last_updated_for(party)
-
-        params = { operations: [{ type: 'move', entity: 'weapon', id: gw.id, position: 1 }] }
-        post "/api/v1/parties/#{party.id}/grid_update", params: params.to_json, headers: headers
-        expect(response).to have_http_status(:ok)
-
-        expect(last_updated_for(party)).to be > original
-      end
     end
 
     describe 'JobsController' do

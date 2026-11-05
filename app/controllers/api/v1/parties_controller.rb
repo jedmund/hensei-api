@@ -46,9 +46,9 @@ module Api
         befoulment_modifier_id befoulment_strength befoulment_permeation exorcism_level awakening_id awakening_level
       ].freeze
 
-      before_action :set_from_slug, except: %w[create destroy update index favorites grid_update unlink_collection sync_all]
-      before_action :set, only: %w[update destroy grid_update sync_all]
-      before_action :authorize_party!, only: %w[update destroy grid_update sync_all]
+      before_action :set_from_slug, except: %w[create destroy update index favorites unlink_collection sync_all]
+      before_action :set, only: %w[update destroy sync_all]
+      before_action :authorize_party!, only: %w[update destroy sync_all]
       before_action :ensure_party_viewable!, only: %w[show skill_boosts remix]
 
       # Lists parties based on query parameters.
@@ -185,33 +185,6 @@ module Api
         end
       end
 
-      # Batch updates grid items (weapons, characters, summons) atomically.
-      def grid_update
-        batch = PartyGridOperations.new(@party, grid_update_params[:operations],
-                                        maintain_character_sequence: grid_update_params.dig(:options, :maintain_character_sequence))
-        validation_errors = batch.errors
-        if validation_errors.any?
-          return render_unprocessable_entity_response(
-            Api::V1::GranblueError.new("Validation failed: #{validation_errors.join(', ')}")
-          )
-        end
-
-        changes = batch.apply!
-        @party.mark_updated!
-
-        render json: {
-          party: PartyBlueprint.render_as_hash(load_full_party(@party.id), view: :full,
-                                                                           current_user: current_user,
-                                                                           admin_mode: admin_mode),
-          operations_applied: changes.count,
-          changes: changes
-        }, status: :ok
-      rescue StandardError => e
-        render_unprocessable_entity_response(
-          Api::V1::GranblueError.new("Grid update failed: #{e.message}")
-        )
-      end
-
       # Syncs all linked grid items from their collection sources.
       #
       # POST /parties/:id/sync_all
@@ -331,14 +304,6 @@ module Api
 
       def render_solomonis_errors(errors)
         render json: ErrorBlueprint.render_as_json(nil, errors: errors.to_h), status: :unprocessable_content
-      end
-
-      # Permits parameters for grid update operation.
-      def grid_update_params
-        params.permit(
-          operations: %i[type entity id source_id target_id position container],
-          options: %i[maintain_character_sequence validate_before_execute]
-        )
       end
     end
   end
