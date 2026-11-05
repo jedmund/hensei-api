@@ -104,10 +104,6 @@ class Summon < ApplicationRecord
   # The game's internal summon number, where known (not unique)
   validates :summon_id, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, allow_nil: true
 
-  def blueprint
-    SummonBlueprint
-  end
-
   def display_resource(summon)
     summon.name_en
   end

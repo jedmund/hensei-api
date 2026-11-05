@@ -16,8 +16,4 @@ class SummonSeries < ApplicationRecord
   MAGNA = 'magna'
   OPTIMUS = 'optimus'
   ARCARUM = 'arcarum'
-
-  def blueprint
-    SummonSeriesBlueprint
-  end
 end

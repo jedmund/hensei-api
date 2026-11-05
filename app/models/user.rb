@@ -160,10 +160,6 @@ class User < ApplicationRecord
     role.to_i >= 6
   end
 
-  def blueprint
-    UserBlueprint
-  end
-
   def password?
     password_digest.present?
   end

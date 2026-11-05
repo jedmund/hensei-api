@@ -87,10 +87,6 @@ class CollectionWeapon < ApplicationRecord
     end
   }
 
-  def blueprint
-    Api::V1::CollectionWeaponBlueprint
-  end
-
   def weapon_keys
     [weapon_key1, weapon_key2, weapon_key3, weapon_key4].compact
   end

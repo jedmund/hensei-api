@@ -41,8 +41,4 @@ class Crew < ApplicationRecord
   def member_count
     active_memberships.count
   end
-
-  def blueprint
-    CrewBlueprint
-  end
 end

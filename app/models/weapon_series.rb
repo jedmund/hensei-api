@@ -33,10 +33,6 @@ class WeaponSeries < ApplicationRecord
   SUPERLATIVE = 'superlative'
   CLASS_CHAMPION = 'class-champion'
 
-  def blueprint
-    WeaponSeriesBlueprint
-  end
-
   private
 
   # One uncap level (0–5; no key unlock needs transcendence) per key slot, at most num_weapon_keys of them.

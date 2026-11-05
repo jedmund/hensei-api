@@ -23,10 +23,6 @@ class Guidebook < ApplicationRecord
                     }
                   }
 
-  def blueprint
-    GuidebookBlueprint
-  end
-
   def display_resource(book)
     book.name_en
   end

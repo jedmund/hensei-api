@@ -16,10 +16,6 @@ class DifficultyComponent < ApplicationRecord
     find_by(name: name.to_s)
   end
 
-  def blueprint
-    DifficultyComponentBlueprint
-  end
-
   private
 
   def bump_ruleset_version

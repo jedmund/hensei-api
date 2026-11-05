@@ -313,14 +313,6 @@ class Party < ApplicationRecord
   end
 
   ##
-  # Returns the blueprint class used for rendering the party.
-  #
-  # @return [Class] the PartyBlueprint class.
-  def blueprint
-    PartyBlueprint
-  end
-
-  ##
   # Checks if the party is favorited by a given user.
   #
   # @param user [User, nil] the user to check for favoritism.

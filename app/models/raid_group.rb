@@ -31,8 +31,4 @@ class RaidGroup < ApplicationRecord
   def solomonis?
     content_mode == SOLOMONIS
   end
-
-  def blueprint
-    RaidGroupBlueprint
-  end
 end

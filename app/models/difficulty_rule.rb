@@ -21,10 +21,6 @@ class DifficultyRule < ApplicationRecord
     implementation.applies?(party)
   end
 
-  def blueprint
-    DifficultyRuleBlueprint
-  end
-
   private
 
   def params_valid_for_rule_type

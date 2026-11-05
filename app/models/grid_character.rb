@@ -254,14 +254,6 @@ class GridCharacter < ApplicationRecord
                 'aetherial_mastery')
   end
 
-  ##
-  # Returns the blueprint for rendering the grid character.
-  #
-  # @return [GridCharacterBlueprint] the blueprint class used for grid character representation.
-  def blueprint
-    GridCharacterBlueprint
-  end
-
   # Maps the camelCase keys emitted by #out_of_sync_fields to the underlying
   # column names. Used by the per-field sync flow so the frontend can target
   # individual sections (Uncap & Transcendence, Awakening, a single ring)

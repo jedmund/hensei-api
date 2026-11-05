@@ -69,10 +69,6 @@ class Job < ApplicationRecord
     (find_by(id: id) if id.to_s.match?(UUID_FORMAT)) || find_by(granblue_id: id)
   end
 
-  def blueprint
-    JobBlueprint
-  end
-
   def display_resource(job)
     job.name_en
   end

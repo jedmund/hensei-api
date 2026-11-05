@@ -4,10 +4,6 @@ class WeaponKey < ApplicationRecord
   has_many :weapon_key_series, dependent: :destroy
   has_many :weapon_series, through: :weapon_key_series
 
-  def blueprint
-    WeaponKeyBlueprint
-  end
-
   def compatible_with_weapon?(weapon)
     return false if weapon.weapon_series.blank?
 

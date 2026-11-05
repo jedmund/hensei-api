@@ -16,10 +16,6 @@ class SupportSummon < ApplicationRecord
   scope :ordered, -> { order(:section, :position) }
   scope :by_section, ->(section) { where(section: section) }
 
-  def blueprint
-    Api::V1::SupportSummonBlueprint
-  end
-
   private
 
   def position_within_section_bounds
