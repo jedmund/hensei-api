@@ -68,6 +68,18 @@ class User < ApplicationRecord
             profanity: { languages: %i[en ja], tier: :strict, message: 'contains inappropriate language' },
             allow_blank: true
 
+  # Linked accounts on the profile. The lowest Granblue IDs have three digits.
+  normalizes :youtube, with: ->(value) { YoutubeChannel.normalize(value) }
+  normalizes :wiki_profile, with: ->(value) { value.strip.presence }
+
+  validates :granblue_id,
+            numericality: { only_integer: true, greater_than_or_equal_to: 100 },
+            allow_nil: true
+
+  validates :youtube,
+            format: { with: YoutubeChannel::FORMAT, message: 'must be a channel handle or URL' },
+            allow_nil: true
+
   validates :description,
             length: { maximum: 140 },
             profanity: { languages: %i[en ja], tier: :strict, message: 'contains inappropriate language' },
