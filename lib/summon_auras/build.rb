@@ -7,7 +7,7 @@ module SummonAuras
   module Build
     # Bump whenever the builder's output changes on purpose: every summon becomes stale and
     # the next deploy rebuilds it.
-    VERSION = 1
+    VERSION = 2
 
     ELEMENT_WORD = GranblueEnums::ELEMENT_ENUM.invert.transform_values(&:to_s).freeze
 
