@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_04_200000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_05_050000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1337,7 +1337,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_04_200000) do
     t.index ["kind", "key"], name: "index_sources_on_shared_kind_key", unique: true, where: "(owner_id IS NULL)"
     t.index ["owner_type", "owner_id", "kind", "key"], name: "index_sources_on_owner_kind_key", unique: true, where: "(owner_id IS NOT NULL)"
     t.check_constraint "(owner_type IS NULL) = (owner_id IS NULL)", name: "sources_owner_pair"
-    t.check_constraint "kind::text = ANY (ARRAY['wiki_raw'::character varying, 'wiki_raw_jp'::character varying, 'game_raw_en'::character varying, 'game_raw_jp'::character varying, 'wiki_status_list'::character varying, 'jp_skill_text'::character varying, 'expanded'::character varying, 'transclusion'::character varying, 'family_template'::character varying, 'icon_snapshot'::character varying, 'wiki_cargo'::character varying]::text[])", name: "sources_kind"
+    t.check_constraint "kind::text = ANY (ARRAY['wiki_raw'::character varying::text, 'wiki_raw_jp'::character varying::text, 'game_raw_en'::character varying::text, 'game_raw_jp'::character varying::text, 'wiki_status_list'::character varying::text, 'jp_skill_text'::character varying::text, 'expanded'::character varying::text, 'transclusion'::character varying::text, 'family_template'::character varying::text, 'icon_snapshot'::character varying::text, 'wiki_cargo'::character varying::text])", name: "sources_kind"
     t.check_constraint "page_kind IS NULL OR (page_kind::text = ANY (ARRAY['inline'::character varying::text, 'series_template'::character varying::text, 'key_determined'::character varying::text]))", name: "sources_page_kind"
   end
 
@@ -1510,6 +1510,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_04_200000) do
     t.index ["collection_summon_id"], name: "index_support_summons_on_collection_summon_id"
     t.index ["user_id", "section", "position"], name: "index_support_summons_on_user_id_and_section_and_position", unique: true
     t.index ["user_id"], name: "index_support_summons_on_user_id"
+  end
+
+  create_table "user_access_changes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id"
+    t.uuid "actor_id"
+    t.string "kind", null: false
+    t.integer "from_role"
+    t.integer "to_role"
+    t.datetime "created_at", null: false
+    t.index ["actor_id"], name: "index_user_access_changes_on_actor_id"
+    t.index ["user_id", "created_at"], name: "index_user_access_changes_on_user_id_and_created_at"
   end
 
   create_table "user_edit_keys", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1999,6 +2010,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_04_200000) do
   add_foreign_key "summons", "summon_series"
   add_foreign_key "support_summons", "collection_summons"
   add_foreign_key "support_summons", "users"
+  add_foreign_key "user_access_changes", "users", column: "actor_id", on_delete: :nullify
+  add_foreign_key "user_access_changes", "users", on_delete: :nullify
   add_foreign_key "user_edit_keys", "users"
   add_foreign_key "user_identities", "users"
   add_foreign_key "weapon_awakenings", "awakenings"

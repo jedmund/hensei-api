@@ -191,6 +191,14 @@ module Api
                status: :unauthorized
       end
 
+      # Admin-only gate (role 9), e.g. user management.
+      def ensure_admin_role
+        return if current_user&.admin?
+
+        Rails.logger.warn "[#{controller_name.upcase}] Unauthorized access attempt by user #{current_user&.id}"
+        render json: { error: 'Unauthorized - Admin role required' }, status: :unauthorized
+      end
+
       # Shared editor-role gate. Use as a before_action in any controller that
       # exposes editor-only actions; logs the controller name and user id on
       # rejection so unauthorized attempts are auditable.

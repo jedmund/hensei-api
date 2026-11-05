@@ -444,6 +444,9 @@ Rails.application.routes.draw do
       resources :stickers, only: :index do
         get :schema, on: :collection
       end
+      resources :users, only: %i[index show] do
+        patch :role, on: :member, action: :update_role
+      end
     end
 
     # Pending phantom claims for current user (outside crew context)
