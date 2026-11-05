@@ -42,6 +42,19 @@ module GridDamage
       out
     end
 
+    # Whether this copy's equipped keys grant it an Omega-frame skill, which makes it a
+    # weapon "with Oceansoul's skills" for Vivification (oOtyJs: a Draconic Providence
+    # with Omega Teluma counts).
+    def grants_omega_skill?(grid_weapon, by_slug: nil)
+      keys = equipped_keys(grid_weapon)
+      return false if keys.empty?
+
+      by_slug ||= effects_by_slug
+      keys.any? do |key|
+        Array(by_slug[key.slug]).any? { |e| frame_for(e, grid_weapon.weapon, grid_weapon) == 'omega' }
+      end
+    end
+
     def effects_by_slug
       WeaponSkillEffect.where.not(key_slug: nil).group_by(&:key_slug)
     end
@@ -79,6 +92,6 @@ module GridDamage
       'normal'
     end
 
-    private_class_method :effects_by_slug, :equipped_keys, :equipped_key_slugs, :frame_for, :teluma_frame
+    private_class_method :equipped_keys, :equipped_key_slugs, :frame_for, :teluma_frame
   end
 end

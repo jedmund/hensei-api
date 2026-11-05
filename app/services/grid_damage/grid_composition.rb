@@ -40,8 +40,9 @@ module GridDamage
     end
 
     def for_party(party)
+      key_effects = KeySkills.effects_by_slug
       entries = party.weapons.includes(weapon: [:weapon_series, { weapon_skills: :weapon_skill_versions }]).filter_map do |gw|
-        entry_for(gw)
+        entry_for(gw, key_effects: key_effects)
       end
       mc_specialties = mc_specialties_for(party)
       summarize(entries).merge(
@@ -52,7 +53,7 @@ module GridDamage
     end
 
     # One grid weapon's entry for summarize, or nil for an empty slot.
-    def entry_for(grid_weapon)
+    def entry_for(grid_weapon, key_effects: nil)
       w = grid_weapon.weapon
       return unless w
 
@@ -70,6 +71,8 @@ module GridDamage
 
         modifiers << v.resolved_modifier
       end
+      # a key can grant one too: Omega Teluma puts Oceansoul's Majesty on a Draconic
+      omega ||= KeySkills.grants_omega_skill?(grid_weapon, by_slug: key_effects)
       {
         proficiency: w.proficiency,
         series_slug: w.weapon_series&.slug,
