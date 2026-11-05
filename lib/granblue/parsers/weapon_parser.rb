@@ -263,9 +263,10 @@ module Granblue
         if @weapon.save
           Rails.logger.info "#{@weapon.granblue_id}: Successfully saved info for #{@weapon.wiki_en}" if @debug
           true
+        else
+          Rails.logger.warn "#{@weapon.granblue_id}: Could not save info for #{@weapon.wiki_en}: #{@weapon.errors.full_messages.join(', ')}"
+          false
         end
-
-        false
       end
 
       # Converts rarities from a string to a hash

@@ -224,9 +224,10 @@ module Granblue
         if @character.save
           Rails.logger.info "#{@character.granblue_id}: Successfully saved info for #{@character.name_en}" if @debug
           true
+        else
+          Rails.logger.warn "#{@character.granblue_id}: Could not save info for #{@character.name_en}: #{@character.errors.full_messages.join(', ')}"
+          false
         end
-
-        false
       end
 
       # Converts proficiencies from a string to a hash
@@ -304,20 +305,6 @@ module Granblue
 
         # Non-seasonal characters have nil season
         nil
-      end
-
-      # Determines if character can be pulled from gacha based on obtain field and series
-      def gacha_available_from_hash(hash)
-        wiki_series = hash['series'].to_s.downcase.strip
-        obtain = hash['obtain'].to_s.downcase
-
-        # Non-gacha series
-        non_gacha_series = %w[eternal evoker archangel event promo collab]
-        return false if non_gacha_series.include?(wiki_series)
-
-        # Check obtain field for gacha indicators
-        gacha_indicators = %w[premium flash legend classic grand zodiac valentine summer halloween holiday formal]
-        gacha_indicators.any? { |indicator| obtain.include?(indicator) }
       end
 
       # Parses a date string into a Date object

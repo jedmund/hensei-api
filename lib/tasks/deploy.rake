@@ -26,7 +26,7 @@ namespace :deploy do
     Rake::Task['deploy:parse_summons'].invoke
     puts
 
-    # Step 4: Parse characters from wiki_raw for season/series/gacha_available
+    # Step 4: Parse characters from wiki_raw for season/series
     puts 'Step 4: Parsing characters from wiki_raw...'
     Rake::Task['deploy:parse_characters'].invoke
     puts
@@ -104,7 +104,7 @@ namespace :deploy do
     puts "  Updated: #{updated}, Skipped (no obtain): #{skipped}"
   end
 
-  desc 'Parse characters from wiki_raw to populate season/series/gacha_available. Options: OVERWRITE=true'
+  desc 'Parse characters from wiki_raw to populate season/series. Options: OVERWRITE=true'
   task parse_characters: :environment do
     overwrite = ENV['OVERWRITE'] == 'true'
 
@@ -126,13 +126,11 @@ namespace :deploy do
 
       series = series_from_wiki(wiki_series, obtain, character.wiki_en)
       season = season_from_wiki(obtain, character.wiki_en)
-      gacha_available = gacha_available_from_wiki(wiki_series, obtain)
 
       if series.present? || season.present?
         character.update_columns(
           series: series,
           season: season,
-          gacha_available: gacha_available,
           updated_at: Time.current
         )
         updated += 1
@@ -195,17 +193,6 @@ namespace :deploy do
 
     # Standard for gacha characters
     1 if obtain.present? && (obtain.include?('premium') || obtain.include?('flash') || obtain.include?('legend'))
-  end
-
-  def gacha_available_from_wiki(wiki_series, obtain)
-    wiki_series = wiki_series.to_s.downcase.strip
-    obtain = obtain.to_s.downcase
-
-    # Non-gacha series
-    return false if %w[eternal evoker archangel event promo collab].include?(wiki_series)
-
-    # Check obtain for gacha indicators
-    %w[premium flash legend classic grand zodiac valentine summer halloween holiday formal].any? { |g| obtain.include?(g) }
   end
 
   desc 'Post-deployment tasks: Run migrations, import data, download images, and rebuild search indices. ' \
