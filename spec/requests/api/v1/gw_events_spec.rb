@@ -35,7 +35,8 @@ RSpec.describe 'Api::V1::GwEvents', type: :request do
     it 'keeps the Guild War shape, with dates as JST days' do
       get '/api/v1/gw_events'
       event = json_response['gw_events'].find { |e| e['id'] == active_event.id }
-      expect(event.keys).to contain_exactly('id', 'start_date', 'end_date', 'event_number', 'element', 'status')
+      expect(event.keys).to contain_exactly('id', 'start_date', 'end_date', 'event_number', 'element',
+                                            'advantage_element', 'status')
       expect(event).to include('start_date' => 2.days.ago.to_date.iso8601,
                                'end_date' => 5.days.from_now.to_date.iso8601, 'status' => 'active')
     end
@@ -69,6 +70,13 @@ RSpec.describe 'Api::V1::GwEvents', type: :request do
       expect(response).to have_http_status(:ok)
       expect(json_response['gw_event']['id']).to eq(event.id)
       expect(json_response['gw_event']['element']).to eq(Event.elements[event.element])
+    end
+
+    it 'sends the element crews bring as advantage_element, next to the boss element' do
+      light_boss = create(:gw_event, element: :Light)
+      get "/api/v1/gw_events/#{light_boss.id}"
+      expect(json_response['gw_event']).to include('element' => Event.elements['Light'],
+                                                   'advantage_element' => Event.elements['Dark'])
     end
 
     it 'returns 404 for an event that is not a Guild War' do
