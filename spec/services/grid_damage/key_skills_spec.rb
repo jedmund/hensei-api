@@ -91,4 +91,31 @@ RSpec.describe GridDamage::KeySkills do
     expect(contributions).to include(have_attributes(boost_type: 'light_reduc', value: 30.0))
     expect(contributions).to include(have_attributes(boost_type: 'atk', series: 'omega', value: 20.0))
   end
+
+  # oOtyJs: a Draconic Providence with Omega Teluma counts for Vivification; Optimus doesn't.
+  it 'counts a Draconic as an omega-skill weapon only with Omega Teluma' do
+    series = WeaponSeries.find_by!(slug: 'draconic')
+    series.update!(has_weapon_keys: true)
+    omega_key = compatible_key(series, slug: 'teluma-omega', slot: 1)
+    optimus_key = compatible_key(series, slug: 'teluma-optimus', slot: 1)
+    WeaponSkillEffect.where(key_slug: [omega_key.slug, optimus_key.slug]).delete_all
+    [omega_key, optimus_key].each do |key|
+      WeaponSkillEffect.create!(
+        key_slug: key.slug, modifier: key.name_en, boost_type: 'atk', series: 'ex',
+        scaling_kind: 'weapon_skill_curve', value_unit: 'percent',
+        condition: { 'curve' => { 'formula_type' => 'flat', 'sl20' => 20 } },
+        stacking: 'additive', applies_to: 'element_allies', frame_rule: 'teluma'
+      )
+    end
+    weapon = create(:weapon, :transcendable, weapon_series: series, element: 2)
+    grid_weapon = create(:grid_weapon, party: party, weapon: weapon, position: 0, uncap_level: 5,
+                                       skill_level: 20, weapon_key2: omega_key)
+
+    expect(described_class.grants_omega_skill?(grid_weapon)).to be(true)
+    expect(GridDamage::GridComposition.for_party(party)[:omega_skill_counts_by_element]).to eq('water' => 1)
+
+    grid_weapon.update!(weapon_key2: optimus_key)
+    expect(described_class.grants_omega_skill?(grid_weapon.reload)).to be(false)
+    expect(GridDamage::GridComposition.for_party(party.reload)[:omega_skill_count]).to eq(0)
+  end
 end
