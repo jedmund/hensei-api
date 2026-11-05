@@ -104,6 +104,29 @@ RSpec.describe 'Admin users', type: :request do
                                                'actor' => include('username' => 'theadmin'))
     end
 
+    it 'counts crew, favorites and collection' do
+      crew = create(:crew, name: 'Skyfarers')
+      create(:crew_membership, :captain, crew: crew, user: member)
+      party = create(:party, user: member)
+      create(:favorite, user: admin, party: party)
+      create(:favorite, user: member, party: create(:party, user: admin))
+      create(:collection_character, user: member)
+
+      get "/api/v1/admin/users/#{member.id}", headers: auth_headers(admin)
+
+      expect(response.parsed_body).to include(
+        'crew' => include('name' => 'Skyfarers', 'role' => 'captain'),
+        'favorites_count' => 1,
+        'favorited_count' => 1,
+        'collection' => include('characters' => 1, 'weapons' => 0)
+      )
+    end
+
+    it 'shows no crew for someone without one' do
+      get "/api/v1/admin/users/#{member.id}", headers: auth_headers(admin)
+      expect(response.parsed_body['crew']).to be_nil
+    end
+
     it '404s for an unknown id' do
       get "/api/v1/admin/users/#{SecureRandom.uuid}", headers: auth_headers(admin)
       expect(response).to have_http_status(:not_found)

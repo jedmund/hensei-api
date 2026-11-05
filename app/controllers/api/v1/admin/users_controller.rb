@@ -100,7 +100,28 @@ module Api
             last_seen_at: user.last_seen_at,
             deletion_scheduled_at: user.deletion_scheduled_at,
             party_count: user.parties.count,
+            crew: crew(user),
+            favorites_count: user.favorites.count,
+            favorited_count: Favorite.joins(:party).where(parties: { user_id: user.id }).count,
+            collection: collection_counts(user),
             history: history(user)
+          }
+        end
+
+        def crew(user)
+          membership = user.active_crew_membership
+          return nil unless membership
+
+          { id: membership.crew.id, name: membership.crew.name, role: membership.role }
+        end
+
+        def collection_counts(user)
+          {
+            characters: user.collection_characters.count,
+            weapons: user.collection_weapons.count,
+            summons: user.collection_summons.count,
+            artifacts: user.collection_artifacts.count,
+            job_accessories: user.collection_job_accessories.count
           }
         end
 
