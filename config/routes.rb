@@ -155,7 +155,6 @@ Rails.application.routes.draw do
     post 'search/weapons', to: 'search#weapons'
     post 'search/summons', to: 'search#summons'
     post 'search/job_skills', to: 'search#job_skills'
-    post 'search/jobs', to: 'search#jobs'
     post 'search/guidebooks', to: 'search#guidebooks'
     get 'search/suggestions', to: 'search#suggestions'
 

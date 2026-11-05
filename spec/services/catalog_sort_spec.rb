@@ -30,21 +30,4 @@ RSpec.describe CatalogSort do
       expect(described_class::ITEMS.apply(Character.all, 'nonsense', 'asc', 'en').to_sql).not_to include('ORDER BY')
     end
   end
-
-  describe 'JOBS' do
-    it 'keeps in-row order ascending when sorting by row' do
-      sql = order_sql(described_class::JOBS.apply(Job.all, 'row', 'desc', 'en'))
-      expect(sql).to eq('"jobs"."row" DESC, "jobs"."order" ASC, "jobs"."id" ASC')
-    end
-
-    it 'sorts by the first proficiency' do
-      sql = order_sql(described_class::JOBS.apply(Job.all, 'proficiency', 'asc', 'en'))
-      expect(sql).to eq('"jobs"."proficiency1" ASC, "jobs"."id" ASC')
-    end
-
-    it 'falls back to row, order and id for an unknown key' do
-      sql = order_sql(described_class::JOBS.apply(Job.all, nil, 'desc', 'ja'))
-      expect(sql).to eq('"jobs"."row" ASC, "jobs"."order" ASC, "jobs"."id" ASC')
-    end
-  end
 end

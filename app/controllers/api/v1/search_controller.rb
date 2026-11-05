@@ -36,10 +36,6 @@ module Api
         render_page JobSkillSearchQuery.call(search_params, locale: search_locale, job: job), JobSkillBlueprint
       end
 
-      def jobs
-        render_page JobSearchQuery.call(search_params, locale: search_locale), JobBlueprint
-      end
-
       def suggestions
         count = params[:count].to_i.clamp(1, 30)
         per_type = (count / 3.0).ceil
