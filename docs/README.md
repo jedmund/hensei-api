@@ -36,7 +36,6 @@ rake granblue:fetch_wiki_data type=Character
   - Character, weapon, and summon information extraction
   - Skill parsing and data normalization
 
-- **[Transformers](./transformers.md)** - Data transformation utilities
   - Convert between different data formats
   - Element mapping and normalization
   - Error handling and validation
@@ -68,17 +67,11 @@ lib/
 │   │   ├── weapon_importer.rb
 │   │   └── summon_importer.rb
 │   │
-│   ├── parsers/             # Wiki parsing utilities
-│   │   ├── base_parser.rb
-│   │   ├── character_parser.rb
-│   │   ├── weapon_parser.rb
-│   │   └── summon_parser.rb
-│   │
-│   └── transformers/        # Data transformation
-│       ├── base_transformer.rb
-│       ├── character_transformer.rb
-│       ├── weapon_transformer.rb
-│       └── summon_transformer.rb
+│   └── parsers/             # Wiki parsing utilities
+│       ├── base_parser.rb
+│       ├── character_parser.rb
+│       ├── weapon_parser.rb
+│       └── summon_parser.rb
 │
 └── tasks/                   # Rake tasks
     ├── download_all_images.rake
