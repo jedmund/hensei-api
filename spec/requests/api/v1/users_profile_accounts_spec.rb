@@ -37,6 +37,17 @@ RSpec.describe 'Profile account fields', type: :request do
     expect(user.reload.youtube).to be_nil
   end
 
+  it 'stores a pasted wiki user page as the username' do
+    update(wiki_profile: 'https://gbf.wiki/User:ItsJustSly')
+    expect(response).to have_http_status(:ok)
+    expect(user.reload.wiki_profile).to eq('ItsJustSly')
+  end
+
+  it 'rejects wiki pages that are not a user page' do
+    update(wiki_profile: 'https://gbf.wiki/Siero')
+    expect(response).to have_http_status(:unprocessable_content)
+  end
+
   it 'clears the accounts when sent empty' do
     user.update!(granblue_id: 12_345_678, youtube: '@someone', wiki_profile: 'Someone')
     update(granblue_id: '', youtube: '', wiki_profile: '')

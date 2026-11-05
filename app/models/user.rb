@@ -70,7 +70,7 @@ class User < ApplicationRecord
 
   # Linked accounts on the profile. The lowest Granblue IDs have three digits.
   normalizes :youtube, with: ->(value) { YoutubeChannel.normalize(value) }
-  normalizes :wiki_profile, with: ->(value) { value.strip.presence }
+  normalizes :wiki_profile, with: ->(value) { WikiProfile.normalize(value) }
 
   validates :granblue_id,
             numericality: { only_integer: true, greater_than_or_equal_to: 100 },
@@ -78,6 +78,10 @@ class User < ApplicationRecord
 
   validates :youtube,
             format: { with: YoutubeChannel::FORMAT, message: 'must be a channel handle or URL' },
+            allow_nil: true
+
+  validates :wiki_profile,
+            format: { with: WikiProfile::FORMAT, message: 'must be a gbf.wiki username or user page URL' },
             allow_nil: true
 
   validates :description,
