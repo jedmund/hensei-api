@@ -41,9 +41,4 @@ class CatalogSort
     { 'name' => [:name], 'element' => [:element], 'rarity' => [:rarity], 'last_updated' => [:latest_date] },
     fallback: :itself.to_proc
   )
-
-  JOBS = new(
-    { 'name' => [:name], 'row' => [:row, { order: :asc }], 'proficiency' => [:proficiency1] },
-    fallback: ->(scope) { scope.order(:row, :order, :id) }
-  )
 end
