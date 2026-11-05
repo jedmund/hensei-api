@@ -67,10 +67,6 @@ class CollectionCharacter < ApplicationRecord
     end
   }
 
-  def blueprint
-    Api::V1::CollectionCharacterBlueprint
-  end
-
   private
 
   def clamp_transcendence_step

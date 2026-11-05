@@ -18,8 +18,4 @@ class CharacterSeries < ApplicationRecord
   ETERNAL = 'eternal'
   EVOKER = 'evoker'
   SAINT = 'saint'
-
-  def blueprint
-    CharacterSeriesBlueprint
-  end
 end

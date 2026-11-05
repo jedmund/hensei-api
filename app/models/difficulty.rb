@@ -22,10 +22,6 @@ class Difficulty < ApplicationRecord
     ordered.detect { |d| score.between?(d.min_score, d.max_score) }
   end
 
-  def blueprint
-    DifficultyBlueprint
-  end
-
   # The set of all tiers must tile [0, 100] with no overlaps and no gaps wider
   # than one score quantum (Calculator#composite_score rounds to 2 decimals, so
   # adjacent tiers may sit at .99 / .00 with a 0.01 difference). For multi-tier

@@ -62,11 +62,4 @@ RSpec.describe CollectionJobAccessory, type: :model do
       end
     end
   end
-
-  describe 'blueprint' do
-    it 'returns the correct blueprint class' do
-      collection_accessory = build(:collection_job_accessory)
-      expect(collection_accessory.blueprint).to eq(Api::V1::CollectionJobAccessoryBlueprint)
-    end
-  end
 end

@@ -57,10 +57,6 @@ class CollectionSummon < ApplicationRecord
     end
   }
 
-  def blueprint
-    Api::V1::CollectionSummonBlueprint
-  end
-
   private
 
   def validate_transcendence_requirements

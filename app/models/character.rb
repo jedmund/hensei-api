@@ -171,10 +171,6 @@ class Character < ApplicationRecord
     solomonis_zone_id.present?
   end
 
-  def blueprint
-    CharacterBlueprint
-  end
-
   def display_resource(character)
     character.name_en
   end

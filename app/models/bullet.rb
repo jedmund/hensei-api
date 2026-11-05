@@ -19,8 +19,4 @@ class Bullet < ApplicationRecord
   validates :atk, :order, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   scope :by_type, ->(type) { where(bullet_type: type) }
-
-  def blueprint
-    Api::V1::BulletBlueprint
-  end
 end

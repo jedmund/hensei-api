@@ -87,10 +87,6 @@ class Weapon < ApplicationRecord
   has_many :forge_chain_weapons, class_name: 'Weapon', primary_key: :forge_chain_id, foreign_key: :forge_chain_id,
                                  inverse_of: false, dependent: nil
 
-  def blueprint
-    WeaponBlueprint
-  end
-
   def display_resource(weapon)
     weapon.name_en
   end

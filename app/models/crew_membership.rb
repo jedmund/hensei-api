@@ -34,10 +34,6 @@ class CrewMembership < ApplicationRecord
     captain? || vice_captain?
   end
 
-  def blueprint
-    CrewMembershipBlueprint
-  end
-
   private
 
   def set_joined_at

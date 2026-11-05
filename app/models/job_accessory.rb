@@ -32,10 +32,6 @@ class JobAccessory < ApplicationRecord
                     }
                   }
 
-  def blueprint
-    JobAccessoryBlueprint
-  end
-
   def display_resource(skill)
     skill.name_en
   end

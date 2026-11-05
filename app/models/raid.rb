@@ -53,8 +53,4 @@ class Raid < ApplicationRecord
   def effective_extra
     extra.nil? ? group.extra : extra
   end
-
-  def blueprint
-    RaidBlueprint
-  end
 end

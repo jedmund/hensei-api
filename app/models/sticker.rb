@@ -30,10 +30,6 @@ class Sticker < ApplicationRecord
   scope :active, -> { where(active: true) }
   scope :ordered, -> { order(:position, :created_at) }
 
-  def blueprint
-    Api::V1::StickerBlueprint
-  end
-
   private
 
   def slug_unchanged

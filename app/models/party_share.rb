@@ -30,14 +30,6 @@ class PartyShare < ApplicationRecord
   scope :for_crews, ->(crew_ids) { where(shareable_type: 'Crew', shareable_id: crew_ids) }
   scope :for_party, ->(party) { where(party_id: party.id) }
 
-  ##
-  # Returns the blueprint class for serialization.
-  #
-  # @return [Class] the PartyShareBlueprint class.
-  def blueprint
-    PartyShareBlueprint
-  end
-
   private
 
   ##
