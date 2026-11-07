@@ -166,7 +166,7 @@ module WeaponSkills
         base_rows = Array(expanded_rows).reject { |row| row[:key_type] }
         names = kept.to_set { |entry| entry[:name_en] }
         by_name = base_rows.select { |row| names.include?(row[:name]) }.index_by { |row| row[:name] }
-        added = mode == :text ? [] : placed_rows(base_rows - by_name.values, slots, dropped, mode)
+        added = mode == :text ? [] : placed_rows(base_rows - by_name.values, slots, dropped, mode, fields)
 
         framed = mode == :repair ? framed_entries(kept, by_name) : Set.new
         versions = kept.map do |entry|
@@ -188,13 +188,20 @@ module WeaponSkills
         end
       end
 
-      # Expanded skills no parsed tier has, with the slot each lands in.
-      def placed_rows(rows, slots, dropped, mode)
+      # Expanded skills no parsed tier has, with the slot each lands in. In :repair, a skill
+      # that fills in a dropped tier's name takes that tier's slot and ordinal, so an upgrade
+      # stays in its base skill's slot (Exo's s1_4s "Phantom's Supremacy: Decimation" is
+      # s1's ULB tier, not a slot of its own); the rest follow the last slot.
+      def placed_rows(rows, slots, dropped, mode, fields)
         next_position = (slots.pluck(:position).max || -1) + 1
         free = mode == :key ? dropped.sort_by { |e| [e[:position], e[:ordinal]] } : []
+        taken = Set.new
         rows.filter_map do |row|
           if (tier = free.shift)
             row.merge(position: tier[:position], ordinal: tier[:ordinal], replaces: tier)
+          elsif mode == :repair && (tier = filled_tier(row[:name], dropped, fields)) &&
+                taken.add?([tier[:position], tier[:ordinal]])
+            row.merge(position: tier[:position], ordinal: tier[:ordinal], fills: tier)
           elsif mode == :repair
             row.merge(position: next_position).tap { next_position += 1 }
           end
@@ -231,7 +238,7 @@ module WeaponSkills
       end
 
       def added_version(gid, fields, raw, row, dropped)
-        source = row[:replaces] || filled_tier(row[:name], dropped, fields)
+        source = row[:replaces] || row[:fills] || filled_tier(row[:name], dropped, fields)
         gate = source ? source.slice(:unlock_level, :min_uncap, :transcendence_stage) : {}
         Version.new(
           weapon_granblue_id: gid, position: row[:position], ordinal: row[:ordinal] || 0,

@@ -45,7 +45,7 @@
     {
       "weapon": "1040612500",
       "skill": "Astral Claw II",
-      "ordinal": 0,
+      "ordinal": 1,
       "suppressed_boosts": [
         "dmg_cap"
       ],
@@ -94,7 +94,7 @@
     {
       "weapon": "1040416600",
       "skill": "Astral Arts II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Astral Arts II",
       "boost_type": "skill_dmg_cap",
       "series": "ex",

@@ -4,7 +4,7 @@
     {
       "weapon": "1040213300",
       "skill": "True Phantom's Supremacy",
-      "ordinal": 0,
+      "ordinal": 1,
       "suppressed_boosts": [],
       "edited_at": "2026-10-15T09:04:20Z"
     },
@@ -27,7 +27,7 @@
     {
       "weapon": "1040413100",
       "skill": "True Glacial Supremacy",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier_override": "Supremacy",
       "size_override": "massive",
       "edited_at": "2026-10-15T19:00:00Z"
@@ -51,7 +51,7 @@
     {
       "weapon": "1040809800",
       "skill": "True Glacial Supremacy",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier_override": "Supremacy",
       "size_override": "massive",
       "edited_at": "2026-10-15T19:00:00Z"
@@ -82,7 +82,7 @@
     {
       "weapon": "1040015400",
       "skill": "True Solaris's Supremacy",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "True Solaris's Supremacy",
       "boost_type": "hp",
       "series": "ex",
@@ -99,7 +99,7 @@
     {
       "weapon": "1040015800",
       "skill": "True Adjudicator's Supremacy",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "True Adjudicator's Supremacy",
       "boost_type": "hp",
       "series": "ex",
@@ -116,7 +116,7 @@
     {
       "weapon": "1040209500",
       "skill": "True Horseman's Supremacy",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "True Horseman's Supremacy",
       "boost_type": "hp",
       "series": "ex",
@@ -133,7 +133,7 @@
     {
       "weapon": "1040213300",
       "skill": "True Phantom's Supremacy",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "True Phantom's Supremacy",
       "boost_type": "hp",
       "series": "ex",
@@ -169,7 +169,7 @@
     {
       "weapon": "1040306300",
       "skill": "True Dreadflame's Supremacy",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "True Dreadflame's Supremacy",
       "boost_type": "hp",
       "series": "ex",
@@ -186,7 +186,7 @@
     {
       "weapon": "1040413100",
       "skill": "True Glacial Supremacy",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "True Glacial Supremacy",
       "boost_type": "hp",
       "series": "ex",
@@ -203,7 +203,7 @@
     {
       "weapon": "1040511600",
       "skill": "True Solaris's Supremacy",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "True Solaris's Supremacy",
       "boost_type": "hp",
       "series": "ex",
@@ -220,7 +220,7 @@
     {
       "weapon": "1040611100",
       "skill": "True Horseman's Supremacy",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "True Horseman's Supremacy",
       "boost_type": "hp",
       "series": "ex",
@@ -237,7 +237,7 @@
     {
       "weapon": "1040805800",
       "skill": "True Adjudicator's Supremacy",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "True Adjudicator's Supremacy",
       "boost_type": "hp",
       "series": "ex",
@@ -254,7 +254,7 @@
     {
       "weapon": "1040809800",
       "skill": "True Glacial Supremacy",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "True Glacial Supremacy",
       "boost_type": "hp",
       "series": "ex",
@@ -271,7 +271,7 @@
     {
       "weapon": "1040908700",
       "skill": "True Phantom's Supremacy",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "True Phantom's Supremacy",
       "boost_type": "hp",
       "series": "ex",
@@ -288,7 +288,7 @@
     {
       "weapon": "1040910200",
       "skill": "True Dreadflame's Supremacy",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "True Dreadflame's Supremacy",
       "boost_type": "hp",
       "series": "ex",
