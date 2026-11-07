@@ -31,7 +31,7 @@
     {
       "weapon": "1040815200",
       "skill": "Sephirath Brogue II",
-      "ordinal": 0,
+      "ordinal": 1,
       "suppressed_boosts": [
         "skill_amp_sp"
       ],
@@ -49,7 +49,7 @@
     {
       "weapon": "1040815300",
       "skill": "Sephirath Corant II",
-      "ordinal": 0,
+      "ordinal": 1,
       "suppressed_boosts": [
         "skill_amp_sp"
       ],
@@ -93,7 +93,7 @@
     {
       "weapon": "1040815000",
       "skill": "Sephirath Eparc II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Sephirath Eparc II",
       "boost_type": "ca_amp",
       "series": "ex",
@@ -116,7 +116,7 @@
     {
       "weapon": "1040815000",
       "skill": "Sephirath Eparc II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Sephirath Eparc II",
       "boost_type": "ca_amp_arc",
       "series": "ex",
@@ -164,7 +164,7 @@
     {
       "weapon": "1040815100",
       "skill": "Sephirath Fusame II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Sephirath Fusame II",
       "boost_type": "na_amp",
       "series": "ex",
@@ -187,7 +187,7 @@
     {
       "weapon": "1040815100",
       "skill": "Sephirath Fusame II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Sephirath Fusame II",
       "boost_type": "na_amp_arc",
       "series": "ex",
@@ -235,7 +235,7 @@
     {
       "weapon": "1040815200",
       "skill": "Sephirath Brogue II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Sephirath Brogue II",
       "boost_type": "skill_amp",
       "series": "ex",
@@ -258,7 +258,7 @@
     {
       "weapon": "1040815200",
       "skill": "Sephirath Brogue II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Sephirath Brogue II",
       "boost_type": "skill_amp_arc",
       "series": "ex",
@@ -306,7 +306,7 @@
     {
       "weapon": "1040815300",
       "skill": "Sephirath Corant II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Sephirath Corant II",
       "boost_type": "skill_amp",
       "series": "ex",
@@ -329,7 +329,7 @@
     {
       "weapon": "1040815300",
       "skill": "Sephirath Corant II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Sephirath Corant II",
       "boost_type": "skill_amp_arc",
       "series": "ex",
@@ -377,7 +377,7 @@
     {
       "weapon": "1040815400",
       "skill": "Sephirath Haton II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Sephirath Haton II",
       "boost_type": "na_amp",
       "series": "ex",
@@ -400,7 +400,7 @@
     {
       "weapon": "1040815400",
       "skill": "Sephirath Haton II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Sephirath Haton II",
       "boost_type": "na_amp_arc",
       "series": "ex",
@@ -514,7 +514,7 @@
       "op": "remove_row",
       "weapon": "1040815000",
       "skill": "Sephirath Eparc II",
-      "ordinal": 0,
+      "ordinal": 1,
       "section": "effects",
       "modifier": "Sephirath Eparc II",
       "boost_type": "ca_amp_sp",

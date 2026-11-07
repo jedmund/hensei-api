@@ -14,7 +14,7 @@
     {
       "weapon": "1040025400",
       "skill": "Star-Sea Sovereign's Decree II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier_override": "none",
       "edited_at": "2026-10-15T10:06:27Z"
     },
@@ -31,7 +31,7 @@
     {
       "weapon": "1040120100",
       "skill": "Dualblade Flash's Bond II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier_override": "none",
       "edited_at": "2026-10-15T10:06:27Z"
     },
@@ -48,7 +48,7 @@
     {
       "weapon": "1040219400",
       "skill": "Dawnfinder's Calm II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier_override": "none",
       "edited_at": "2026-10-15T10:06:27Z"
     },
@@ -65,7 +65,7 @@
     {
       "weapon": "1040319100",
       "skill": "Pillar-Smasher's Conviction II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier_override": "none",
       "edited_at": "2026-10-15T10:06:27Z"
     },
@@ -82,7 +82,7 @@
     {
       "weapon": "1040423300",
       "skill": "Ultimate Wisdom's Shine II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier_override": "none",
       "edited_at": "2026-10-15T10:06:27Z"
     },
@@ -99,7 +99,7 @@
     {
       "weapon": "1040517100",
       "skill": "Cloud of Howling Twilight II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier_override": "none",
       "edited_at": "2026-10-15T10:06:27Z"
     },
@@ -116,7 +116,7 @@
     {
       "weapon": "1040618600",
       "skill": "Realm-Breaker's Animus II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier_override": "none",
       "edited_at": "2026-10-15T10:06:27Z"
     },
@@ -133,7 +133,7 @@
     {
       "weapon": "1040713600",
       "skill": "Heaven-Eye's Light II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier_override": "none",
       "edited_at": "2026-10-15T10:06:27Z"
     },
@@ -150,7 +150,7 @@
     {
       "weapon": "1040816300",
       "skill": "Mystic Musician's Melody II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier_override": "none",
       "edited_at": "2026-10-15T10:06:27Z"
     },
@@ -167,7 +167,7 @@
     {
       "weapon": "1040916900",
       "skill": "Cyclic Rebirth's Reverie II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier_override": "none",
       "edited_at": "2026-10-15T10:06:27Z"
     }
@@ -314,7 +314,7 @@
     {
       "weapon": "1040025400",
       "skill": "Star-Sea Sovereign's Decree II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Star-Sea Sovereign's Decree II",
       "boost_type": "atk",
       "series": "ex",
@@ -337,7 +337,7 @@
     {
       "weapon": "1040025400",
       "skill": "Star-Sea Sovereign's Decree II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Star-Sea Sovereign's Decree II",
       "boost_type": "ca_dmg",
       "series": "ex",
@@ -360,7 +360,7 @@
     {
       "weapon": "1040025400",
       "skill": "Star-Sea Sovereign's Decree II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Star-Sea Sovereign's Decree II",
       "boost_type": "ca_dmg_cap",
       "series": "ex",
@@ -383,7 +383,7 @@
     {
       "weapon": "1040025400",
       "skill": "Star-Sea Sovereign's Decree II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Star-Sea Sovereign's Decree II",
       "boost_type": "da",
       "series": "ex",
@@ -406,7 +406,7 @@
     {
       "weapon": "1040025400",
       "skill": "Star-Sea Sovereign's Decree II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Star-Sea Sovereign's Decree II",
       "boost_type": "dmg_cap",
       "series": "ex",
@@ -429,7 +429,7 @@
     {
       "weapon": "1040025400",
       "skill": "Star-Sea Sovereign's Decree II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Star-Sea Sovereign's Decree II",
       "boost_type": "e_atk",
       "series": "ex",
@@ -451,7 +451,7 @@
     {
       "weapon": "1040025400",
       "skill": "Star-Sea Sovereign's Decree II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Star-Sea Sovereign's Decree II",
       "boost_type": "ta",
       "series": "ex",
@@ -657,7 +657,7 @@
     {
       "weapon": "1040120100",
       "skill": "Dualblade Flash's Bond II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Dualblade Flash's Bond II",
       "boost_type": "atk",
       "series": "ex",
@@ -680,7 +680,7 @@
     {
       "weapon": "1040120100",
       "skill": "Dualblade Flash's Bond II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Dualblade Flash's Bond II",
       "boost_type": "ca_dmg",
       "series": "ex",
@@ -703,7 +703,7 @@
     {
       "weapon": "1040120100",
       "skill": "Dualblade Flash's Bond II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Dualblade Flash's Bond II",
       "boost_type": "ca_dmg_cap",
       "series": "ex",
@@ -726,7 +726,7 @@
     {
       "weapon": "1040120100",
       "skill": "Dualblade Flash's Bond II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Dualblade Flash's Bond II",
       "boost_type": "da",
       "series": "ex",
@@ -749,7 +749,7 @@
     {
       "weapon": "1040120100",
       "skill": "Dualblade Flash's Bond II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Dualblade Flash's Bond II",
       "boost_type": "dmg_cap",
       "series": "ex",
@@ -772,7 +772,7 @@
     {
       "weapon": "1040120100",
       "skill": "Dualblade Flash's Bond II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Dualblade Flash's Bond II",
       "boost_type": "e_atk",
       "series": "ex",
@@ -794,7 +794,7 @@
     {
       "weapon": "1040120100",
       "skill": "Dualblade Flash's Bond II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Dualblade Flash's Bond II",
       "boost_type": "ta",
       "series": "ex",
@@ -955,7 +955,7 @@
     {
       "weapon": "1040219400",
       "skill": "Dawnfinder's Calm II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Dawnfinder's Calm II",
       "boost_type": "atk",
       "series": "ex",
@@ -978,7 +978,7 @@
     {
       "weapon": "1040219400",
       "skill": "Dawnfinder's Calm II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Dawnfinder's Calm II",
       "boost_type": "ca_dmg",
       "series": "ex",
@@ -1001,7 +1001,7 @@
     {
       "weapon": "1040219400",
       "skill": "Dawnfinder's Calm II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Dawnfinder's Calm II",
       "boost_type": "ca_dmg_cap",
       "series": "ex",
@@ -1024,7 +1024,7 @@
     {
       "weapon": "1040219400",
       "skill": "Dawnfinder's Calm II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Dawnfinder's Calm II",
       "boost_type": "da",
       "series": "ex",
@@ -1047,7 +1047,7 @@
     {
       "weapon": "1040219400",
       "skill": "Dawnfinder's Calm II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Dawnfinder's Calm II",
       "boost_type": "dmg_cap",
       "series": "ex",
@@ -1070,7 +1070,7 @@
     {
       "weapon": "1040219400",
       "skill": "Dawnfinder's Calm II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Dawnfinder's Calm II",
       "boost_type": "e_atk",
       "series": "ex",
@@ -1092,7 +1092,7 @@
     {
       "weapon": "1040219400",
       "skill": "Dawnfinder's Calm II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Dawnfinder's Calm II",
       "boost_type": "ta",
       "series": "ex",
@@ -1298,7 +1298,7 @@
     {
       "weapon": "1040319100",
       "skill": "Pillar-Smasher's Conviction II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Pillar-Smasher's Conviction II",
       "boost_type": "atk",
       "series": "ex",
@@ -1321,7 +1321,7 @@
     {
       "weapon": "1040319100",
       "skill": "Pillar-Smasher's Conviction II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Pillar-Smasher's Conviction II",
       "boost_type": "ca_dmg",
       "series": "ex",
@@ -1344,7 +1344,7 @@
     {
       "weapon": "1040319100",
       "skill": "Pillar-Smasher's Conviction II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Pillar-Smasher's Conviction II",
       "boost_type": "ca_dmg_cap",
       "series": "ex",
@@ -1367,7 +1367,7 @@
     {
       "weapon": "1040319100",
       "skill": "Pillar-Smasher's Conviction II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Pillar-Smasher's Conviction II",
       "boost_type": "da",
       "series": "ex",
@@ -1390,7 +1390,7 @@
     {
       "weapon": "1040319100",
       "skill": "Pillar-Smasher's Conviction II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Pillar-Smasher's Conviction II",
       "boost_type": "dmg_cap",
       "series": "ex",
@@ -1413,7 +1413,7 @@
     {
       "weapon": "1040319100",
       "skill": "Pillar-Smasher's Conviction II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Pillar-Smasher's Conviction II",
       "boost_type": "e_atk",
       "series": "ex",
@@ -1435,7 +1435,7 @@
     {
       "weapon": "1040319100",
       "skill": "Pillar-Smasher's Conviction II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Pillar-Smasher's Conviction II",
       "boost_type": "ta",
       "series": "ex",
@@ -1619,7 +1619,7 @@
     {
       "weapon": "1040423300",
       "skill": "Ultimate Wisdom's Shine II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Ultimate Wisdom's Shine II",
       "boost_type": "atk",
       "series": "ex",
@@ -1642,7 +1642,7 @@
     {
       "weapon": "1040423300",
       "skill": "Ultimate Wisdom's Shine II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Ultimate Wisdom's Shine II",
       "boost_type": "ca_dmg",
       "series": "ex",
@@ -1665,7 +1665,7 @@
     {
       "weapon": "1040423300",
       "skill": "Ultimate Wisdom's Shine II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Ultimate Wisdom's Shine II",
       "boost_type": "ca_dmg_cap",
       "series": "ex",
@@ -1688,7 +1688,7 @@
     {
       "weapon": "1040423300",
       "skill": "Ultimate Wisdom's Shine II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Ultimate Wisdom's Shine II",
       "boost_type": "da",
       "series": "ex",
@@ -1711,7 +1711,7 @@
     {
       "weapon": "1040423300",
       "skill": "Ultimate Wisdom's Shine II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Ultimate Wisdom's Shine II",
       "boost_type": "dmg_cap",
       "series": "ex",
@@ -1734,7 +1734,7 @@
     {
       "weapon": "1040423300",
       "skill": "Ultimate Wisdom's Shine II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Ultimate Wisdom's Shine II",
       "boost_type": "e_atk",
       "series": "ex",
@@ -1756,7 +1756,7 @@
     {
       "weapon": "1040423300",
       "skill": "Ultimate Wisdom's Shine II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Ultimate Wisdom's Shine II",
       "boost_type": "ta",
       "series": "ex",
@@ -1917,7 +1917,7 @@
     {
       "weapon": "1040517100",
       "skill": "Cloud of Howling Twilight II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Cloud of Howling Twilight II",
       "boost_type": "atk",
       "series": "ex",
@@ -1940,7 +1940,7 @@
     {
       "weapon": "1040517100",
       "skill": "Cloud of Howling Twilight II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Cloud of Howling Twilight II",
       "boost_type": "ca_dmg",
       "series": "ex",
@@ -1963,7 +1963,7 @@
     {
       "weapon": "1040517100",
       "skill": "Cloud of Howling Twilight II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Cloud of Howling Twilight II",
       "boost_type": "ca_dmg_cap",
       "series": "ex",
@@ -1986,7 +1986,7 @@
     {
       "weapon": "1040517100",
       "skill": "Cloud of Howling Twilight II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Cloud of Howling Twilight II",
       "boost_type": "da",
       "series": "ex",
@@ -2009,7 +2009,7 @@
     {
       "weapon": "1040517100",
       "skill": "Cloud of Howling Twilight II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Cloud of Howling Twilight II",
       "boost_type": "dmg_cap",
       "series": "ex",
@@ -2032,7 +2032,7 @@
     {
       "weapon": "1040517100",
       "skill": "Cloud of Howling Twilight II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Cloud of Howling Twilight II",
       "boost_type": "e_atk",
       "series": "ex",
@@ -2054,7 +2054,7 @@
     {
       "weapon": "1040517100",
       "skill": "Cloud of Howling Twilight II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Cloud of Howling Twilight II",
       "boost_type": "ta",
       "series": "ex",
@@ -2237,7 +2237,7 @@
     {
       "weapon": "1040618600",
       "skill": "Realm-Breaker's Animus II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Realm-Breaker's Animus II",
       "boost_type": "atk",
       "series": "ex",
@@ -2260,7 +2260,7 @@
     {
       "weapon": "1040618600",
       "skill": "Realm-Breaker's Animus II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Realm-Breaker's Animus II",
       "boost_type": "ca_dmg",
       "series": "ex",
@@ -2283,7 +2283,7 @@
     {
       "weapon": "1040618600",
       "skill": "Realm-Breaker's Animus II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Realm-Breaker's Animus II",
       "boost_type": "ca_dmg_cap",
       "series": "ex",
@@ -2306,7 +2306,7 @@
     {
       "weapon": "1040618600",
       "skill": "Realm-Breaker's Animus II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Realm-Breaker's Animus II",
       "boost_type": "da",
       "series": "ex",
@@ -2329,7 +2329,7 @@
     {
       "weapon": "1040618600",
       "skill": "Realm-Breaker's Animus II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Realm-Breaker's Animus II",
       "boost_type": "dmg_cap",
       "series": "ex",
@@ -2352,7 +2352,7 @@
     {
       "weapon": "1040618600",
       "skill": "Realm-Breaker's Animus II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Realm-Breaker's Animus II",
       "boost_type": "e_atk",
       "series": "ex",
@@ -2374,7 +2374,7 @@
     {
       "weapon": "1040618600",
       "skill": "Realm-Breaker's Animus II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Realm-Breaker's Animus II",
       "boost_type": "ta",
       "series": "ex",
@@ -2557,7 +2557,7 @@
     {
       "weapon": "1040713600",
       "skill": "Heaven-Eye's Light II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Heaven-Eye's Light II",
       "boost_type": "atk",
       "series": "ex",
@@ -2580,7 +2580,7 @@
     {
       "weapon": "1040713600",
       "skill": "Heaven-Eye's Light II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Heaven-Eye's Light II",
       "boost_type": "ca_dmg",
       "series": "ex",
@@ -2603,7 +2603,7 @@
     {
       "weapon": "1040713600",
       "skill": "Heaven-Eye's Light II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Heaven-Eye's Light II",
       "boost_type": "ca_dmg_cap",
       "series": "ex",
@@ -2626,7 +2626,7 @@
     {
       "weapon": "1040713600",
       "skill": "Heaven-Eye's Light II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Heaven-Eye's Light II",
       "boost_type": "da",
       "series": "ex",
@@ -2649,7 +2649,7 @@
     {
       "weapon": "1040713600",
       "skill": "Heaven-Eye's Light II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Heaven-Eye's Light II",
       "boost_type": "dmg_cap",
       "series": "ex",
@@ -2672,7 +2672,7 @@
     {
       "weapon": "1040713600",
       "skill": "Heaven-Eye's Light II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Heaven-Eye's Light II",
       "boost_type": "e_atk",
       "series": "ex",
@@ -2694,7 +2694,7 @@
     {
       "weapon": "1040713600",
       "skill": "Heaven-Eye's Light II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Heaven-Eye's Light II",
       "boost_type": "ta",
       "series": "ex",
@@ -2877,7 +2877,7 @@
     {
       "weapon": "1040816300",
       "skill": "Mystic Musician's Melody II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Mystic Musician's Melody II",
       "boost_type": "atk",
       "series": "ex",
@@ -2900,7 +2900,7 @@
     {
       "weapon": "1040816300",
       "skill": "Mystic Musician's Melody II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Mystic Musician's Melody II",
       "boost_type": "ca_dmg",
       "series": "ex",
@@ -2923,7 +2923,7 @@
     {
       "weapon": "1040816300",
       "skill": "Mystic Musician's Melody II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Mystic Musician's Melody II",
       "boost_type": "ca_dmg_cap",
       "series": "ex",
@@ -2946,7 +2946,7 @@
     {
       "weapon": "1040816300",
       "skill": "Mystic Musician's Melody II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Mystic Musician's Melody II",
       "boost_type": "da",
       "series": "ex",
@@ -2969,7 +2969,7 @@
     {
       "weapon": "1040816300",
       "skill": "Mystic Musician's Melody II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Mystic Musician's Melody II",
       "boost_type": "dmg_cap",
       "series": "ex",
@@ -2992,7 +2992,7 @@
     {
       "weapon": "1040816300",
       "skill": "Mystic Musician's Melody II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Mystic Musician's Melody II",
       "boost_type": "e_atk",
       "series": "ex",
@@ -3014,7 +3014,7 @@
     {
       "weapon": "1040816300",
       "skill": "Mystic Musician's Melody II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Mystic Musician's Melody II",
       "boost_type": "ta",
       "series": "ex",
@@ -3175,7 +3175,7 @@
     {
       "weapon": "1040916900",
       "skill": "Cyclic Rebirth's Reverie II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Cyclic Rebirth's Reverie II",
       "boost_type": "atk",
       "series": "ex",
@@ -3198,7 +3198,7 @@
     {
       "weapon": "1040916900",
       "skill": "Cyclic Rebirth's Reverie II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Cyclic Rebirth's Reverie II",
       "boost_type": "ca_dmg",
       "series": "ex",
@@ -3221,7 +3221,7 @@
     {
       "weapon": "1040916900",
       "skill": "Cyclic Rebirth's Reverie II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Cyclic Rebirth's Reverie II",
       "boost_type": "ca_dmg_cap",
       "series": "ex",
@@ -3244,7 +3244,7 @@
     {
       "weapon": "1040916900",
       "skill": "Cyclic Rebirth's Reverie II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Cyclic Rebirth's Reverie II",
       "boost_type": "da",
       "series": "ex",
@@ -3267,7 +3267,7 @@
     {
       "weapon": "1040916900",
       "skill": "Cyclic Rebirth's Reverie II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Cyclic Rebirth's Reverie II",
       "boost_type": "dmg_cap",
       "series": "ex",
@@ -3290,7 +3290,7 @@
     {
       "weapon": "1040916900",
       "skill": "Cyclic Rebirth's Reverie II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Cyclic Rebirth's Reverie II",
       "boost_type": "e_atk",
       "series": "ex",
@@ -3312,7 +3312,7 @@
     {
       "weapon": "1040916900",
       "skill": "Cyclic Rebirth's Reverie II",
-      "ordinal": 0,
+      "ordinal": 1,
       "modifier": "Cyclic Rebirth's Reverie II",
       "boost_type": "ta",
       "series": "ex",

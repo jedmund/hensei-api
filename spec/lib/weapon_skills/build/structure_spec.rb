@@ -57,14 +57,14 @@ RSpec.describe WeaponSkills::Build::Structure do
   describe 'inline page with template-garbled names (New World: Rise of Justice)' do
     subject(:result) { versions('1040020800') }
 
-    it "drops the garbled tiers and appends the expansion's skills after the last slot" do
-      expect(result.keys).to eq([[0, 0], [0, 1], [3, 0], [4, 0]])
-      expect(result[[3, 0]].skill_name_en).to eq('Sephira Maxi-Water')
-      expect(result[[4, 0]].skill_name_en).to eq("Water's Majesty")
+    it "puts the expansion's skills in the garbled tiers' slots" do
+      expect(result.keys).to eq([[0, 0], [0, 1], [1, 0], [2, 0]])
+      expect(result[[1, 0]].skill_name_en).to eq('Sephira Maxi-Water')
+      expect(result[[2, 0]].skill_name_en).to eq("Water's Majesty")
     end
 
     it 'gives the injected Majesty the gate of the template tier it fills in (P3)' do
-      expect(gate(result[[4, 0]])).to eq([120, 4, 0])
+      expect(gate(result[[2, 0]])).to eq([120, 4, 0])
     end
 
     it "keeps the template's literal icon over the page's, as the old merge did" do
@@ -75,16 +75,17 @@ RSpec.describe WeaponSkills::Build::Structure do
   describe 'series-template page (Exo Heliocentrum)' do
     subject(:result) { versions('1040424300') }
 
-    it 'builds the skills from the expansion' do
+    it "builds the skills from the expansion, Decimation as Supremacy's ULB tier" do
       expect(result.transform_values(&:skill_name_en)).to eq(
-        [1, 0] => "Resplendent Ruler's Jurisdiction",
-        [2, 0] => "Solaris's Supremacy",
-        [3, 0] => "Solaris's Supremacy: Decimation"
+        [0, 0] => "Solaris's Supremacy",
+        [0, 1] => "Solaris's Supremacy: Decimation",
+        [1, 0] => "Resplendent Ruler's Jurisdiction"
       )
     end
 
     it "gates Decimation by the template's {{#if: 5star_date | 200}} (P6)" do
-      expect(gate(result[[3, 0]])).to eq([200, 5, 0])
+      expect(gate(result[[0, 0]])).to eq([nil, 3, 0])
+      expect(gate(result[[0, 1]])).to eq([200, 5, 0])
     end
   end
 
@@ -93,16 +94,16 @@ RSpec.describe WeaponSkills::Build::Structure do
 
     it 'routes through Template:Weapon/Common/Celestial and its expansion' do
       expect(result.transform_values(&:skill_name_en)).to eq(
+        [0, 0] => 'Gun Voltage II',
         [1, 0] => 'Cloud of Howling Twilight',
-        [2, 0] => "Guiding Star's Splendor",
-        [3, 0] => 'Gun Voltage II',
-        [4, 0] => 'Cloud of Howling Twilight II'
+        [1, 1] => 'Cloud of Howling Twilight II',
+        [2, 0] => "Guiding Star's Splendor"
       )
     end
 
     it 'reads levels and frames from the template and the expansion' do
       expect(gate(result[[2, 0]])).to eq([150, 4, 0])
-      expect(gate(result[[4, 0]])).to eq([200, 5, 0])
+      expect(gate(result[[1, 1]])).to eq([200, 5, 0])
       expect(result[[2, 0]].multiplier_frame).to eq('normal')
     end
 
@@ -197,7 +198,7 @@ RSpec.describe WeaponSkills::Build::Structure do
       result = WeaponSkills::BuildResult.new(weapon_granblue_id: '1040020800', slots: slots, versions: versions)
 
       expect { result.validate! }.not_to raise_error
-      expect(slots.map(&:position)).to eq([0, 3, 4])
+      expect(slots.map(&:position)).to eq([0, 1, 2])
     end
   end
 end
