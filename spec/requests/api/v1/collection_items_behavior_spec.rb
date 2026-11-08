@@ -531,6 +531,28 @@ RSpec.describe 'Collection item endpoints', type: :request do
                     import_keys: %w[success created updated skipped errors reconciliation]
     it_behaves_like 'a full-inventory sync API', :weapon
 
+    # Sentry HENSEI-API-K: validations loaded each weapon and its series per row
+    it 'runs the same catalog lookups for 2 batch weapons as for 6' do
+      counts = [2, 6].map do |n|
+        items = Array.new(n) do
+          { weapon_id: create(:weapon, weapon_series: create(:weapon_series)).id, uncap_level: 3 }
+        end
+        lookups = []
+        sub = ActiveSupport::Notifications.subscribe('sql.active_record') do |*, payload|
+          sql = payload[:sql]
+          lookups << sql if sql.start_with?('SELECT') && sql.match?(/FROM "(weapons|weapon_series)"/)
+        end
+
+        post '/api/v1/collection/weapons/batch', params: { collection_weapons: items }.to_json, headers: headers
+
+        ActiveSupport::Notifications.unsubscribe(sub)
+        expect(response).to have_http_status(:created)
+        lookups.size
+      end
+
+      expect(counts.first).to eq(counts.last)
+    end
+
     it 'filters by proficiency and series on owned and unowned weapons' do
       series = create(:weapon_series)
       match = create(:weapon, name_en: 'Match FilterProbe', proficiency: 3, weapon_series: series)

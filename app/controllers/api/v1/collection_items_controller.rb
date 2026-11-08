@@ -123,6 +123,7 @@ module Api
         errors = []
         items = batch_items
         owned = owned_keys(items)
+        catalog = batch_catalog(items)
 
         ActiveRecord::Base.transaction do
           items.each_with_index do |attrs, index|
@@ -131,7 +132,7 @@ module Api
               next
             end
 
-            item = current_user_items.build(attrs)
+            item = build_batch_item(attrs, catalog)
             if item.save
               owned&.add(item.public_send(foreign_key).to_s)
               created << item
@@ -245,8 +246,24 @@ module Api
       def owned_keys(items)
         return unless item_type.unique_per_user
 
-        ids = items.filter_map { |attrs| attrs[foreign_key].presence }
-        current_user_items.where(foreign_key => ids).pluck(foreign_key).to_set(&:to_s)
+        current_user_items.where(foreign_key => batch_ids(items)).pluck(foreign_key).to_set(&:to_s)
+      end
+
+      # The catalog rows for the items by id, so validating each new item
+      # doesn't load its row again
+      def batch_catalog(items)
+        item_type.catalog.includes(item_type.unowned_includes).where(id: batch_ids(items)).index_by(&:id)
+      end
+
+      def batch_ids(items)
+        items.filter_map { |attrs| attrs[foreign_key].presence }
+      end
+
+      def build_batch_item(attrs, catalog)
+        item = current_user_items.build(attrs)
+        row = catalog[item.public_send(foreign_key)]
+        item.public_send(:"#{item_type.type}=", row) if row
+        item
       end
 
       def batch_meta(created, skipped, errors)
