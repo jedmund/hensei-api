@@ -732,11 +732,12 @@ RSpec.describe CharacterImportService, type: :service do
     end
 
     it 'records an exception with the item index' do
-      allow(Character).to receive(:find_by).and_raise(StandardError, 'boom')
       items = [{ 'param' => { 'id' => 5 }, 'master' => { 'id' => character.granblue_id } },
                { 'granblue_id' => character.granblue_id }]
+      service = described_class.new(user, { 'list' => items })
+      allow(service).to receive(:build_attrs).and_raise(StandardError, 'boom')
 
-      result = described_class.new(user, { 'list' => items }).import
+      result = service.import
 
       expect(result.errors).to eq([{ index: 0, game_id: 5, error: 'boom' }, { index: 1, game_id: nil, error: 'boom' }])
     end

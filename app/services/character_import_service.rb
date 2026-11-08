@@ -43,12 +43,14 @@ class CharacterImportService < CollectionImport::Base
   #
   # @return [Array<Hash>] one entry per changed record: { granblue_id:, changes: [...] }
   def preview_updates
-    extract_items.filter_map do |item|
+    items = extract_items
+    prepare(items)
+    items.filter_map do |item|
       granblue_id = item_granblue_id(item)
       next if granblue_id.blank?
 
       character = find_character(granblue_id)
-      existing = character && collection.find_by(character_id: character.id)
+      existing = character && @owned[character.id]
       next unless existing
 
       existing.assign_attributes(build_attrs(item, character))
@@ -73,11 +75,25 @@ class CharacterImportService < CollectionImport::Base
     character = find_character(item_granblue_id(item))
     return record_not_found(item) unless character
 
-    save_item(item, character, collection.find_by(character_id: character.id))
+    save_item(item, character, @owned[character.id])
+  end
+
+  # The characters the list names and the user's copies of them, in two
+  # queries. A style-shifted character shares its granblue_id with the base
+  # character; the game's lists don't say which, so the base one is used.
+  def prepare(items)
+    ids = items.filter_map { |item| item_granblue_id(item).presence&.to_s }.uniq
+    @characters = Character.where(granblue_id: ids).order(:style_swap).group_by(&:granblue_id)
+                           .transform_values(&:first)
+    @owned = collection.where(character_id: @characters.values.map(&:id)).index_by(&:character_id)
+  end
+
+  def remember_created(record)
+    @owned[record.character_id] = record
   end
 
   def find_character(granblue_id)
-    Character.find_by(granblue_id: granblue_id.to_s)
+    @characters[granblue_id.to_s]
   end
 
   def item_ref(item, character = nil)

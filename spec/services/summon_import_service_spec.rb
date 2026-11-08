@@ -576,8 +576,9 @@ RSpec.describe SummonImportService, type: :service do
     end
 
     it 'records an exception with the item index' do
-      allow(Summon).to receive(:find_by).and_raise(StandardError, 'boom')
-      result = described_class.new(user, { 'list' => [game_item('7', summon.granblue_id)] }).import
+      service = described_class.new(user, { 'list' => [game_item('7', summon.granblue_id)] })
+      allow(service).to receive(:build_attrs).and_raise(StandardError, 'boom')
+      result = service.import
 
       expect(result.errors).to eq([{ index: 0, game_id: '7', error: 'boom' }])
     end

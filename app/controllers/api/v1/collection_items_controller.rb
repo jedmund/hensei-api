@@ -121,16 +121,19 @@ module Api
         created = []
         skipped = []
         errors = []
+        items = batch_items
+        owned = owned_keys(items)
 
         ActiveRecord::Base.transaction do
-          batch_items.each_with_index do |attrs, index|
-            if already_owned?(attrs)
+          items.each_with_index do |attrs, index|
+            if owned&.include?(attrs[foreign_key].to_s)
               skipped << { index:, foreign_key => attrs[foreign_key], reason: 'already_exists' }
               next
             end
 
             item = current_user_items.build(attrs)
             if item.save
+              owned&.add(item.public_send(foreign_key).to_s)
               created << item
             else
               errors << { index:, foreign_key => attrs[foreign_key], error: item.errors.full_messages.join(', ') }
@@ -237,8 +240,13 @@ module Api
 
       # --- Batch ---
 
-      def already_owned?(attrs)
-        item_type.unique_per_user && current_user_items.exists?(foreign_key => attrs[foreign_key])
+      # For types a user owns at most one of: the ids the user already owns
+      # among the items, in one query (nil for other types)
+      def owned_keys(items)
+        return unless item_type.unique_per_user
+
+        ids = items.filter_map { |attrs| attrs[foreign_key].presence }
+        current_user_items.where(foreign_key => ids).pluck(foreign_key).to_set(&:to_s)
       end
 
       def batch_meta(created, skipped, errors)

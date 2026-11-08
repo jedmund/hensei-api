@@ -1096,8 +1096,9 @@ RSpec.describe WeaponImportService, type: :service do
     end
 
     it 'records an exception with the item index' do
-      allow(Weapon).to receive(:find_by).and_raise(StandardError, 'boom')
-      result = described_class.new(user, { 'list' => [game_item(7, weapon.granblue_id)] }).import
+      service = described_class.new(user, { 'list' => [game_item(7, weapon.granblue_id)] })
+      allow(service).to receive(:build_attrs).and_raise(StandardError, 'boom')
+      result = service.import
 
       expect(result.errors).to eq([{ index: 0, game_id: 7, error: 'boom' }])
       expect(result.success?).to be false
@@ -1105,11 +1106,11 @@ RSpec.describe WeaponImportService, type: :service do
 
     it 'keeps the items that worked when another one raises' do
       other = create(:weapon)
-      allow(Weapon).to receive(:find_by).and_call_original
-      allow(Weapon).to receive(:find_by).with(granblue_id: other.granblue_id).and_raise(StandardError, 'boom')
+      service = described_class.new(user, { 'list' => [game_item(1, other.granblue_id), game_item(2, weapon.granblue_id)] })
+      allow(service).to receive(:build_attrs).and_call_original
+      allow(service).to receive(:build_attrs).with(anything, other).and_raise(StandardError, 'boom')
 
-      result = described_class.new(user, { 'list' => [game_item(1, other.granblue_id), game_item(2, weapon.granblue_id)] })
-                              .import
+      result = service.import
 
       expect(result.created.map(&:game_id)).to eq(['2'])
       expect(user.collection_weapons.pluck(:game_id)).to eq(['2'])

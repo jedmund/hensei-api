@@ -12,12 +12,14 @@ module CollectionImport
     #
     # @return [Array<Hash>] one entry per changed copy: { game_id:, granblue_id:, changes: [...] }
     def preview_updates
-      extract_items.filter_map do |item|
+      items = extract_items
+      prepare(items)
+      items.filter_map do |item|
         id = game_id(item)
         next if id.blank? || granblue_id(item).blank?
 
         catalog = find_catalog(item)
-        existing = catalog && collection.find_by(game_id: id.to_s)
+        existing = catalog && owned_copy(item)
         next unless existing
 
         existing.assign_attributes(build_attrs(item, catalog))
@@ -28,6 +30,22 @@ module CollectionImport
     end
 
     private
+
+    # Preloads the catalog items the list names by granblue_id, besides the
+    # owned copies (Inventory#prepare). A type gives catalog_model, and may
+    # give find_catalog_fallback for ids the catalog stores another way.
+    def prepare(items)
+      super
+      ids = items.filter_map { |item| granblue_id(item).presence&.to_s }.uniq
+      @catalog = catalog_model.where(granblue_id: ids).index_by(&:granblue_id)
+    end
+
+    def find_catalog(item)
+      id = granblue_id(item).to_s
+      @catalog[id] || find_catalog_fallback(id)
+    end
+
+    def find_catalog_fallback(_granblue_id); end
 
     def game_params(item)
       item['param'] || {}
