@@ -84,6 +84,9 @@ namespace :granblue do
       manual["#{el}-taboo"] = "01_icon_#{el}evil.png"
       # elemental Bonus C.A. DMG badges ("Bonus Earth C.A.")
       manual["bonus-#{el}-ca"] = "01_icon_#{el}_special_skill_concurrent_attack.png"
+      # elemental Bonus DMG badges ("Bonus Light DMG"). The wiki gadget points
+      # 'bonus light dmg' at the wind file, so these are pinned here.
+      manual["bonus-#{el}-dmg"] = "01_icon_#{el}_concurrent_attack.png"
     end
 
     fetch = lambda do |url|
