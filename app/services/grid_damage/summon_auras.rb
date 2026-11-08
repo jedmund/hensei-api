@@ -13,19 +13,29 @@ module GridDamage
     def for_party(party, element:)
       totals = { optimus: 0.0, omega: 0.0, taboo: 0.0, elemental: 0.0 }
       exo_fraction = odious_exorcism_fraction(party, element)
-      party.summons.includes(:summon).each do |gs| # rubocop:disable Rails/FindEach -- a party has only a few grid rows to load
+      grid_summons = party.summons.includes(:summon).to_a
+      rows = aura_rows(grid_summons)
+      grid_summons.each do |gs|
         slot = slot_for(gs)
         next unless slot && gs.summon
 
         gid = gs.summon.granblue_id
         u = gs.uncap_level.to_i
         t = gs.transcendence_step.to_i
-        totals[:optimus]   += aura(gid, slot, 'normal_frame', u, t)
-        totals[:omega]     += aura(gid, slot, 'omega_frame', u, t)
-        totals[:taboo]     += taboo_aura(gid, slot, u, t, exo_fraction)
-        totals[:elemental] += aura(gid, slot, 'elemental_atk', u, t, element: element)
+        totals[:optimus]   += aura(rows[[gid, slot, 'normal_frame']], u, t)
+        totals[:omega]     += aura(rows[[gid, slot, 'omega_frame']], u, t)
+        totals[:taboo]     += taboo_aura(rows[[gid, slot, 'odious_frame']], u, exo_fraction)
+        totals[:elemental] += aura(rows[[gid, slot, 'elemental_atk']], u, t, element: element)
       end
       totals
+    end
+
+    # The party's summon_auras rows in one query, by [granblue_id, slot, target]
+    def aura_rows(grid_summons)
+      ids = grid_summons.filter_map { |gs| gs.summon&.granblue_id }.uniq
+      rows = SummonAura.where(summon_granblue_id: ids).group_by { |r| [r.summon_granblue_id, r.slot, r.target] }
+      rows.default = [].freeze
+      rows
     end
 
     # Odious summons scale with the equipped same-element Odious weapons' exorcision
@@ -48,8 +58,9 @@ module GridDamage
       (levels.sum / ODIOUS_MAX_EXO_LEVELS).clamp(0.0, 1.0)
     end
 
-    def taboo_aura(granblue_id, slot, uncap, _transcendence_step, exo_fraction)
-      return 0.0 unless SummonAura.exists?(summon_granblue_id: granblue_id, slot: slot, target: 'odious_frame')
+    # Any odious_frame row marks the summon as Odious; the rate table gives the value
+    def taboo_aura(rows, uncap, exo_fraction)
+      return 0.0 if rows.empty?
 
       odious_aura(uncap, exo_fraction)
     end
@@ -68,8 +79,8 @@ module GridDamage
       grid_summon.main? || grid_summon.friend? ? 'main' : 'sub'
     end
 
-    def aura(granblue_id, slot, target, uncap, transcendence_step, element: nil)
-      rows = SummonAura.where(summon_granblue_id: granblue_id, slot: slot, target: target).to_a
+    # rows: the summon's rows for one slot and target
+    def aura(rows, uncap, transcendence_step, element: nil)
       rows = rows.select { |r| r.element.nil? || r.element == 'all' || r.element.to_s.include?(element.to_s) } if element
       best_value(rows, uncap: uncap, transcendence_step: transcendence_step)
     end
