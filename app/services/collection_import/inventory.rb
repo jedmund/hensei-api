@@ -73,7 +73,7 @@ module CollectionImport
       @owned_copies = collection.where(game_id: game_ids).index_by(&:game_id)
     end
 
-    def remember_created(record)
+    def remember(record)
       @owned_copies[record.game_id] = record if record.game_id.present?
     end
 

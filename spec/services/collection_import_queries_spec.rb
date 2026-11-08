@@ -142,5 +142,17 @@ RSpec.describe 'Collection import lookups', type: :service do
       expect(result.updated.size).to eq(1)
       expect(user.collection_weapons.sole.uncap_level).to eq(4)
     end
+
+    it 'matches a later repeat to a hand-added copy the import adopted' do
+      weapon = create(:weapon)
+      create(:collection_weapon, user: user, weapon: weapon, game_id: nil, uncap_level: 3)
+      list = [game_item(9, weapon.granblue_id, evolution: 3), game_item(9, weapon.granblue_id, evolution: 4)]
+
+      result = described_class.new(user, { 'list' => list }, update_existing: true,
+                                                             conflict_resolutions: { '9' => 'import' }).import
+
+      expect(result.errors).to be_empty
+      expect(user.collection_weapons.sole).to have_attributes(game_id: '9', uncap_level: 4)
+    end
   end
 end

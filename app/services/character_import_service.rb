@@ -88,7 +88,7 @@ class CharacterImportService < CollectionImport::Base
     @owned = collection.where(character_id: @characters.values.map(&:id)).index_by(&:character_id)
   end
 
-  def remember_created(record)
+  def remember(record)
     @owned[record.character_id] = record
   end
 
