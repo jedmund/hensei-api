@@ -67,8 +67,18 @@ module CollectionImport
       end
     end
 
+    # The user's copies the items name, by game_id, in one query
+    def prepare(items)
+      game_ids = items.filter_map { |item| game_id(item).presence&.to_s }.uniq
+      @owned_copies = collection.where(game_id: game_ids).index_by(&:game_id)
+    end
+
+    def remember(record)
+      @owned_copies[record.game_id] = record if record.game_id.present?
+    end
+
     def owned_copy(item)
-      collection.find_by(game_id: game_id(item).to_s)
+      @owned_copies[game_id(item).to_s]
     end
 
     def skip_entry(item, _catalog, reason)

@@ -16,9 +16,12 @@ class SummonImportService < CollectionImport::Inventory
 
   private
 
-  def find_catalog(item)
-    id = granblue_id(item).to_s
-    Summon.find_by(granblue_id: id) || Summon.find_by(granblue_id: SummonIdMapping.resolve(id))
+  def catalog_model = Summon
+
+  # Some game ids map to another summon's id
+  def find_catalog_fallback(granblue_id)
+    mapped = SummonIdMapping.resolve(granblue_id)
+    Summon.find_by(granblue_id: mapped) if mapped != granblue_id
   end
 
   def build_attrs(item, summon)

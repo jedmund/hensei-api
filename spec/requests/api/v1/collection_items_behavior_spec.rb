@@ -456,6 +456,32 @@ RSpec.describe 'Collection item endpoints', type: :request do
       expect(meta['skipped_items']).to eq([{ 'index' => 0, 'character_id' => owned.id, 'reason' => 'already_exists' }])
     end
 
+    # Sentry HENSEI-API-N: the owned check ran once per item. What's left is the
+    # model's uniqueness validation, once per saved character.
+    it 'checks which batch characters are owned in one query' do
+      items = create_list(:character, 4).map { |character| { character_id: character.id, uncap_level: 3 } }
+      owned_checks = []
+      sub = ActiveSupport::Notifications.subscribe('sql.active_record') do |*, payload|
+        sql = payload[:sql]
+        owned_checks << sql if sql.start_with?('SELECT') && sql.include?('FROM "collection_characters"')
+      end
+
+      post '/api/v1/collection/characters/batch', params: { collection_characters: items }.to_json, headers: headers
+
+      ActiveSupport::Notifications.unsubscribe(sub)
+      expect(response).to have_http_status(:created)
+      expect(owned_checks.size).to eq(1 + items.size)
+    end
+
+    it 'skips a character listed twice in one batch' do
+      character = create(:character)
+      items = [{ character_id: character.id, uncap_level: 3 }, { character_id: character.id, uncap_level: 4 }]
+
+      post '/api/v1/collection/characters/batch', params: { collection_characters: items }.to_json, headers: headers
+
+      expect(response.parsed_body['meta']).to include('created' => 1, 'skipped' => 1, 'errors' => [])
+    end
+
     it 'imports characters and updates existing ones only when asked' do
       character = create(:character)
       create(:collection_character, user: user, character: character, uncap_level: 3)

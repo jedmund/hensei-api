@@ -23,11 +23,9 @@ class ArtifactImportService < CollectionImport::Inventory
 
   # Preloads the artifacts and the user's copies, avoiding N+1 queries.
   def prepare(items)
+    super
     artifact_ids = items.map { |item| (item['artifact_id'] || item[:artifact_id]).to_s }.uniq
     @artifacts_cache = Artifact.where(granblue_id: artifact_ids).index_by(&:granblue_id)
-
-    game_ids = items.map { |item| (item['id'] || item[:id]).to_s }.uniq
-    @existing_cache = collection.where(game_id: game_ids).index_by(&:game_id)
   end
 
   def game_id(item)
@@ -40,10 +38,6 @@ class ArtifactImportService < CollectionImport::Inventory
 
   def find_catalog(item)
     @artifacts_cache[item['artifact_id'].to_s]
-  end
-
-  def owned_copy(item)
-    @existing_cache[item['id'].to_s]
   end
 
   def item_ref(item, _catalog = nil)

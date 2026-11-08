@@ -35,10 +35,12 @@ class WeaponImportService < CollectionImport::Inventory
 
   # Element-changeable weapons arrive under element-variant ids that differ from
   # the base granblue_id; those are found through element_variant_ids.
-  def find_catalog(item)
-    id = granblue_id(item).to_s
-    Weapon.find_by(granblue_id: id) ||
-      Weapon.where('EXISTS (SELECT 1 FROM jsonb_each_text(element_variant_ids) AS kv WHERE kv.value = ?)', id).first
+  def catalog_model = Weapon
+
+  # An element variant's game id is stored on its base weapon
+  def find_catalog_fallback(granblue_id)
+    Weapon.where('EXISTS (SELECT 1 FROM jsonb_each_text(element_variant_ids) AS kv WHERE kv.value = ?)',
+                 granblue_id).first
   end
 
   # The element of the variant the game id names, or nil for a weapon without variants.

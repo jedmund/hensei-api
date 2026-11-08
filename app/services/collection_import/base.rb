@@ -101,8 +101,14 @@ module CollectionImport
 
     # --- Hooks a type may override ---
 
-    # Runs once before the items, e.g. to preload lookups.
+    # Runs once before the items (import and preview_updates), e.g. to preload
+    # lookups.
     def prepare(_items); end
+
+    # Called with each record the import creates or updates, so preloaded
+    # lookups see it when the same item appears again later in the list
+    # (an update can give a hand-added copy its game_id).
+    def remember(_record); end
 
     # The deletions a full sync made, or nil.
     def reconciliation; end
@@ -130,13 +136,19 @@ module CollectionImport
 
     def create_record(attrs, ref)
       record = collection.build(attrs)
-      return @created << record if record.save
+      if record.save
+        remember(record)
+        return @created << record
+      end
 
       record_failure(record, ref)
     end
 
     def update_record(record, attrs, ref)
-      return @updated << record if record.update(attrs)
+      if record.update(attrs)
+        remember(record)
+        return @updated << record
+      end
 
       record_failure(record, ref)
     end
