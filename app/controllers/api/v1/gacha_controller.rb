@@ -74,16 +74,21 @@ module Api
         GachaBanner.exists? ? [GachaSimulation::Configuration::CURRENT, *modes] : modes
       end
 
-      # Items whose identity, granblue id, names or recruits contain the
-      # (downcased) query; every item when it's blank.
+      # Items whose identity, granblue id or names, or whose recruit's granblue
+      # id or names, contain the (downcased) query; every item when it's blank.
       def search_catalogue(items, query)
         return items if query.blank?
 
         items.select do |item|
-          [item['identity'], item['granblue_id'], *item['name'].values, *item['recruits']&.values].compact.any? do |v|
-            v.downcase.include?(query)
-          end
+          searchable_text(item).any? { |text| text.downcase.include?(query) }
         end
+      end
+
+      # A recruit also carries its season and series, which aren't text
+      def searchable_text(item)
+        recruit = item['recruits'] || {}
+        [item['identity'], item['granblue_id'], *item['name'].values,
+         recruit['granblue_id'], recruit['en'], recruit['ja']].grep(String)
       end
 
       # The banner's details and its rate-ups as catalogue identities

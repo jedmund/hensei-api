@@ -34,6 +34,19 @@ RSpec.describe 'Gacha API', type: :request do
     expect(response.parsed_body['seasons']).to include('formal')
   end
 
+  it "searches a recruit's names but not its season and series" do
+    items.first['recruits'] = { 'granblue_id' => '3040000000', 'en' => 'Katalina', 'ja' => 'カタリナ',
+                                'season' => nil, 'series' => [{ 'id' => 1, 'slug' => 'grand', 'name' => { 'en' => 'Grand' } }] }
+    get '/api/v1/gacha/catalogue', params: { q: 'katalina' }
+    expect(response).to have_http_status(:ok)
+    expect(response.parsed_body['items'].pluck('identity')).to eq([items.first['identity']])
+
+    # A query the recruit doesn't match reaches its season and series
+    get '/api/v1/gacha/catalogue', params: { q: 'summon' }
+    expect(response).to have_http_status(:ok)
+    expect(response.parsed_body['items'].size).to eq(3)
+  end
+
   it 'draws, serializes counts, and replays' do
     input = { draws: '10', seed: 'fixed' }
     post '/api/v1/gacha/simulations', params: input, as: :json
