@@ -2,6 +2,7 @@
 
 class CharacterSeries < ApplicationRecord
   include Slugged
+  include UniqueOrder
 
   has_many :character_series_memberships, dependent: :destroy
   has_many :characters, through: :character_series_memberships

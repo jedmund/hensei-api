@@ -2,6 +2,7 @@
 
 class WeaponSeries < ApplicationRecord
   include Slugged
+  include UniqueOrder
 
   has_many :weapons, dependent: :restrict_with_error
   has_many :weapon_series_variants, dependent: :destroy

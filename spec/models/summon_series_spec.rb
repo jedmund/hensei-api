@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe SummonSeries, type: :model do
+  it_behaves_like 'a model with unique order', :summon_series
+
   describe 'associations' do
     it { is_expected.to have_many(:summons).dependent(:restrict_with_error) }
   end

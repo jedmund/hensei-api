@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class SummonSeries < ApplicationRecord
+  include UniqueOrder
+
   has_many :summons, dependent: :restrict_with_error
 
   validates :name_en, presence: true
