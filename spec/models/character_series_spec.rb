@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe CharacterSeries, type: :model do
+  it_behaves_like 'a model with unique order', :character_series
+
   describe 'associations' do
     it { is_expected.to have_many(:character_series_memberships).dependent(:destroy) }
     it { is_expected.to have_many(:characters).through(:character_series_memberships) }

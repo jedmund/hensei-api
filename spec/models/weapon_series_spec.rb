@@ -9,6 +9,8 @@ RSpec.describe WeaponSeries, type: :model do
     it { is_expected.to have_many(:weapon_keys).through(:weapon_key_series) }
   end
 
+  it_behaves_like 'a model with unique order', :weapon_series
+
   describe 'validations' do
     subject { build(:weapon_series) }
 
