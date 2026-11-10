@@ -72,6 +72,18 @@ RSpec.describe 'Api::V1::WeaponKeys', type: :request do
       expect(ids).not_to include(opus_key.id)
     end
 
+    it "lists each key's game series ids, all of them even when filtered by series" do
+      universal_key = create(:weapon_key, :universal_key)
+
+      get '/api/v1/weapon_keys'
+      entry = response.parsed_body.find { |k| k['id'] == universal_key.id }
+      expect(entry['game_series_ids']).to eq([3, 27])
+
+      get '/api/v1/weapon_keys', params: { series_slug: 'dark-opus' }
+      entry = response.parsed_body.find { |k| k['id'] == universal_key.id }
+      expect(entry['game_series_ids']).to eq([3, 27])
+    end
+
     it 'ignores an unknown series_slug' do
       get '/api/v1/weapon_keys', params: { series_slug: 'nope' }
 

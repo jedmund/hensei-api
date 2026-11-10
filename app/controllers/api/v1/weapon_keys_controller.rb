@@ -13,7 +13,7 @@ module Api
       end
 
       def all
-        weapon_keys = filter_by_series(WeaponKey.all, request.params)
+        weapon_keys = filter_by_series(WeaponKey.preload(:weapon_series), request.params)
 
         # Filter by slot and group
         weapon_keys = weapon_keys.where(slot: request.params['slot'].to_i) if request.params['slot'].present?
