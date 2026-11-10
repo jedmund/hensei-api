@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 # Contract tests for the schemas of the database editor's weapon series,
-# character series and awakenings (GBF-143):
-#   GET /api/v1/admin/{weapon_series,character_series,awakenings}/schema
+# character series, summon series and awakenings (GBF-143):
+#   GET /api/v1/admin/{weapon_series,character_series,summon_series,awakenings}/schema
 #
 # Each response must equal spec/fixtures/admin_schema/<resource>.json. The web
 # app keeps a copy of each fixture and checks its definition against it, so a
@@ -27,6 +27,8 @@ RSpec.describe 'Admin series and awakenings schemas', type: :request do
                         :weapon_series, :weapon_series_params],
     'character_series' => [Api::V1::Admin::CharacterSeriesController, Api::V1::CharacterSeriesController,
                            :character_series, :character_series_params],
+    'summon_series' => [Api::V1::Admin::SummonSeriesController, Api::V1::SummonSeriesController,
+                        :summon_series, :summon_series_params],
     'awakenings' => [Api::V1::Admin::AwakeningsController, Api::V1::AwakeningsController,
                      :awakening, :awakening_params]
   }.each do |resource, (admin_controller, controller_class, param_key, params_method)|

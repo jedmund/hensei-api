@@ -3,6 +3,9 @@
 module Api
   module V1
     class SummonSeriesController < Api::V1::ApiController
+      # What create and update accept; the admin schema publishes it
+      PERMITTED = %i[name_en name_jp slug order].freeze
+
       before_action :set_summon_series, only: %i[show update destroy]
       before_action :ensure_editor_role, only: %i[create update destroy]
 
@@ -58,7 +61,7 @@ module Api
       end
 
       def summon_series_params
-        params.expect(summon_series: %i[name_en name_jp slug order])
+        params.expect(summon_series: [*PERMITTED])
       end
     end
   end
