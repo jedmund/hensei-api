@@ -137,6 +137,17 @@ class User < ApplicationRecord
   validate :password_digest_presence
   validate :password_within_bcrypt_limit
 
+  # Avatars drawn for one person, keyed to their account id so a rename keeps
+  # them. Only that account can pick one; the web app's picture list
+  # (src/lib/utils/pictureData.ts) marks the same files with the same owner ids.
+  EXCLUSIVE_PICTURES = {
+    'custom_umikin' => '03e72999-a939-4b10-b23f-ee5b26ce4bc6', # umikin
+    'custom_reverie' => 'f255037f-7483-4971-9274-89aea82a803e', # reverie
+    'custom_jedmund' => '9c585fd6-ba4d-4983-afae-4f8d9190fc98' # jedmund
+  }.freeze
+
+  validate :picture_available_to_user, if: :will_save_change_to_picture?
+
   ##### ActiveModel Security
   has_secure_password validations: false
 
@@ -316,6 +327,14 @@ class User < ApplicationRecord
 
   def provider_signup_with_password?
     provider_signup? && password_digest.present?
+  end
+
+  # An exclusive avatar can only be set by the account it was drawn for.
+  def picture_available_to_user
+    owner_id = EXCLUSIVE_PICTURES[picture]
+    return if owner_id.nil? || owner_id == id
+
+    errors.add(:picture, 'is not available')
   end
 
   # Mirrors has_secure_password's presence check: a password signup needs a

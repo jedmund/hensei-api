@@ -184,6 +184,31 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe 'exclusive pictures' do
+    let(:owner_id) { described_class::EXCLUSIVE_PICTURES['custom_jedmund'] }
+
+    it 'lets the owning account pick its picture under any username' do
+      user = build(:user, id: owner_id, username: 'renamed', picture: 'custom_jedmund')
+      expect(user).to be_valid
+    end
+
+    it 'keeps other accounts from picking it, even with the same username' do
+      user = build(:user, username: 'jedmund', picture: 'custom_jedmund')
+      expect(user).not_to be_valid
+      expect(user.errors[:picture]).to include('is not available')
+    end
+
+    it 'keeps another owner from picking it' do
+      user = build(:user, id: described_class::EXCLUSIVE_PICTURES['custom_umikin'], picture: 'custom_jedmund')
+      expect(user).not_to be_valid
+    end
+
+    it 'leaves ordinary pictures open to everyone' do
+      user = build(:user, picture: 'zeta')
+      expect(user).to be_valid
+    end
+  end
+
   describe 'description' do
     it 'allows nil description' do
       user = build(:user, description: nil)
