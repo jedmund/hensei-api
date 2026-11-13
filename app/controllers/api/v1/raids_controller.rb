@@ -7,7 +7,7 @@ module Api
 
       # What create and update accept; the admin schema publishes it.
       PERMITTED = %i[name_en name_jp short_name_en short_name_jp level element slug group_id enemy_id summon_id
-                     quest_id extra player_count released_at].freeze
+                     quest_id extra player_count released_at trackable].freeze
 
       before_action :set_raid, only: %i[show update destroy download_image download_images download_status]
       before_action :ensure_editor_role, only: %i[create update destroy download_image download_images download_status]
@@ -169,11 +169,12 @@ module Api
         scope = scope.by_hl(filter_params[:hl]) if filter_params[:hl].present?
         scope = scope.by_extra(filter_params[:extra]) if filter_params[:extra].present?
         scope = scope.with_guidebooks if filter_params[:guidebooks] == 'true'
+        scope = scope.trackable if filter_params[:trackable] == 'true'
         scope
       end
 
       def filter_params
-        params.except(:controller, :action, :format, :raid).permit(:element, :group_id, :difficulty, :hl, :extra, :guidebooks)
+        params.except(:controller, :action, :format, :raid).permit(:element, :group_id, :difficulty, :hl, :extra, :guidebooks, :trackable)
       end
     end
   end
