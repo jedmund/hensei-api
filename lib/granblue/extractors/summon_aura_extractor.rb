@@ -82,8 +82,9 @@ module Granblue
         return nil if clean.blank?
 
         # An aura can carry several clauses ("…HP.<br />…Elemental ATK / …"); classify
-        # each and keep the most grid-relevant (frame > elemental > … > other).
-        clauses = clean.split(%r{<br\s*/?>|\s/\s|\.\s+(?=[A-Z])}).map(&:strip).compact_blank
+        # each and keep the most grid-relevant (frame > elemental > … > other). A sentence
+        # can start with a capital or an amount ("…(Up to 70%). 10% boost to dark allies' HP").
+        clauses = clean.split(%r{<br\s*/?>|\s/\s|\.\s+(?=[A-Z]|\d+(?:\.\d+)?%)}).map(&:strip).compact_blank
         clauses = [clean] if clauses.empty?
         # Ties on target go to the unconditional clause ("40% boost to ATK" over "During
         # Defense Order: 80% boost to ATK"), then to the earlier clause.
@@ -101,18 +102,27 @@ module Granblue
         }
       end
 
-      # value: the amount the clause states (per weapon group for Grand Order); max_value: its
-      # "(Max: N%)" cap. A clause that states only a cap ("Boost to Normal ATK (Max: 100%) for
-      # each weapon group") has no value: the per-group amount isn't given.
+      # A clause's cap: "(Max: N%)" (Grand Order), or "(Up to N%)" / "[Up to N%]" (auras that
+      # scale with the team or the battle: Bonito, the Xeno summons, Sethlans). Odious summons'
+      # "[Max: N%]" is deliberately not read: GridDamage::SummonAuras gives them a rate table.
+      CAP = /\(max:\s*(?<cap>\d+(?:\.\d+)?)%\)|[(\[]up to\s*(?<cap>\d+(?:\.\d+)?)%[)\]]/i
+      CAPPED_PHRASE = /boost to\s+(?<phrase>.+?)\s*(?:#{CAP})/i
+      private_constant :CAP, :CAPPED_PHRASE
+
+      # value: the amount the clause states (per weapon group for Grand Order; the starting
+      # amount for one that rises per turn); max_value: its cap (CAP). A clause that states only
+      # a cap ("Boost to Normal ATK (Max: 100%) for each weapon group", "Boost to Water
+      # Elemental ATK based on number of Water summons equipped (Up to 100%)") has no value:
+      # the amount depends on the team or the battle, so its condition is 'variable'.
       def parse_clause(clause, series:, summon_element:)
         value = nil
         condition = nil
-        max_value = clause[/\(max:\s*(\d+(?:\.\d+)?)%\)/i, 1]&.to_f
+        max_value = clause[CAP, :cap]&.to_f
         if clause =~ /(\d+(?:\.\d+)?)%\s*boost to\s+(.+)/i
           value = Regexp.last_match(1).to_f
           phrase = Regexp.last_match(2)
-        elsif clause =~ /boost to\s+(.+?)\s*\(max:\s*\d+(?:\.\d+)?%\)/i
-          phrase = Regexp.last_match(1)
+        elsif clause =~ CAPPED_PHRASE
+          phrase = Regexp.last_match(:phrase)
           condition = 'variable'
         else
           phrase = clause
