@@ -30,3 +30,7 @@
       cron: "0 17 * * *"
       class: GachaSimulation::ExchangeRateJob
       queue: maintenance
+    summon_stale_pages:
+      cron: "0 5 * * 1" # Mondays at 05:00 UTC: refetch summon pages older than the wiki
+      class: SummonAuras::RefreshStalePagesJob
+      queue: maintenance
