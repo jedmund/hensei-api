@@ -88,6 +88,7 @@ gem 'parallel'
 # The Sentry SDK for Rails
 gem 'sentry-rails'
 gem 'sentry-ruby'
+gem 'sentry-sidekiq'
 gem 'stackprof'
 
 # Loaded in all environments: the granblue parsers call `ap` in debug/error
