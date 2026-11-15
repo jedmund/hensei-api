@@ -49,4 +49,21 @@ namespace :granblue do
       result[:summary].write_changed(ENV['changed_out'])
     end
   end
+
+  desc <<~DESC
+    Store the Japanese aura row for summons with no page of their own on gbf-wiki.com (R and
+    SR summons, and SSRs whose page isn't written yet), from the 召喚石R / 召喚石SR / 召喚石SSR
+    list pages: three requests, at least 2s apart. A summon's own page is never replaced.
+
+    Usage:
+      rake granblue:download_jp_summon_lists
+      rake granblue:download_jp_summon_lists ids=2020012000,2040454000
+  DESC
+  task download_jp_summon_lists: :environment do
+    ActiveRecord::Base.logger.level = Logger::WARN if ActiveRecord::Base.logger
+    ids = ENV['ids'].presence&.split(',')&.map(&:strip)
+    Granblue::Downloaders::JpSummonListDownloader.backfill(
+      ids: ids, throttle: (ENV['throttle'] || Granblue::Downloaders::JpWikiDownloader::DEFAULT_THROTTLE).to_f
+    )
+  end
 end
