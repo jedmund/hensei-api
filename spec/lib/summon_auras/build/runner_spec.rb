@@ -30,6 +30,16 @@ RSpec.describe SummonAuras::Build::Runner do
     WIKI
   end
 
+  it 'stores the aura name in write mode, and only prints it in shadow mode' do
+    put_source(first, :wiki_raw, "#{wiki}\n|aura_name=Spec's Aura\n")
+    run(mode: 'shadow')
+    expect(first.reload.aura_name_en).to be_nil
+    expect(io.string).to include("aura_name_en: nil → \"Spec's Aura\"")
+
+    run
+    expect(first.reload.aura_name_en).to eq("Spec's Aura")
+  end
+
   it 'builds every stale summon and stores its fingerprint' do
     summary = run
     expect(summary).to have_attributes(in_scope: 2, stale: 2, built: 2, failed: 0)

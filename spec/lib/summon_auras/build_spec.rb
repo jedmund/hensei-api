@@ -30,4 +30,23 @@ RSpec.describe SummonAuras::Build do
     summon.update!(wiki_raw_jp: nil)
     expect(described_class.for(summon.reload).pluck('description_jp').uniq).to eq([nil])
   end
+
+  describe '.names' do
+    it 'takes the English name from aura_name and the Japanese one from the 加護 name cell' do
+      summon.update!(wiki_raw: "#{wiki}\n|aura_name=Spec's Aura\n|jpaura_name=英語ページの加護\n")
+      page = jp_page.sub('<td>名</td>', '<td>スペックの加護</td>')
+      summon.update!(wiki_raw_jp: page)
+      expect(described_class.names(summon.reload)).to eq('aura_name_en' => "Spec's Aura", 'aura_name_jp' => 'スペックの加護')
+    end
+
+    it "falls back to the English page's jpaura_name without a Japanese page" do
+      summon.update!(wiki_raw: "#{wiki}\n|aura_name=Spec's Aura\n|jpaura_name=英語ページの加護\n", wiki_raw_jp: nil)
+      expect(described_class.names(summon.reload)).to eq('aura_name_en' => "Spec's Aura", 'aura_name_jp' => '英語ページの加護')
+    end
+
+    it 'is nil where the pages have no name' do
+      summon.update!(wiki_raw_jp: nil)
+      expect(described_class.names(summon.reload)).to eq('aura_name_en' => nil, 'aura_name_jp' => nil)
+    end
+  end
 end

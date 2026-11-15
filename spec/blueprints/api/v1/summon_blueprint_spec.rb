@@ -16,4 +16,10 @@ RSpec.describe Api::V1::SummonBlueprint do
 
     expect(described_class.render_as_hash(summon, view: :list)[:series]).to be_nil
   end
+
+  it 'sends the aura name in both languages in the full view' do
+    summon = Summon.without_aura_build { create(:summon) }
+    summon.update_columns(aura_name_en: "Spec's Aura", aura_name_jp: 'スペックの加護')
+    expect(described_class.render_as_hash(summon, view: :full)[:aura_name]).to eq(en: "Spec's Aura", ja: 'スペックの加護')
+  end
 end

@@ -136,8 +136,10 @@ module SummonAuras
         # surrounding (shadow) transaction usable.
         ActiveRecord::Base.transaction(requires_new: true) do
           report = Writer.call(summon.granblue_id, records)
+          names = Build.names(summon)
+          note_name_changes(summon, names)
           # rubocop:disable-next Rails/SkipsModelValidations -- build bookkeeping; no summon callbacks
-          summon.update_columns(summon_aura_build_fingerprint: fingerprint) if @mode == 'write'
+          summon.update_columns(summon_aura_build_fingerprint: fingerprint, **names) if @mode == 'write'
         end
         @summary.counts.merge!(report)
         @summary.built += 1
@@ -147,6 +149,14 @@ module SummonAuras
         @summary.errors << [summon.granblue_id, e]
         @summary.results << Result.new(summon: summon, status: 'failed', error: e)
         @io.puts "#{label(summon)}: #{e.class}: #{e.message.lines.first&.strip}"
+      end
+
+      # Aura name changes go in the printed diff, so a shadow run shows them too.
+      def note_name_changes(summon, names)
+        names.each do |column, name|
+          before = summon.public_send(column)
+          @io.puts "  name #{label(summon)} #{column}: #{before.inspect} → #{name.inspect}" if before != name
+        end
       end
 
       def no_source(summon)
