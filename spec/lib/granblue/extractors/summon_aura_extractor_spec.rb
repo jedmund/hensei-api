@@ -195,4 +195,66 @@ RSpec.describe Granblue::Extractors::SummonAuraExtractor do
       expect(tier(5)[:scaling]['bonus_at']).to eq(5)
     end
   end
+
+  describe "auras capped with '(Up to N%)' (GBF-265)" do
+    def tier(text, uncap: 0, slot: 'main', element: 'water', series: nil)
+      key = slot == 'sub' ? 'subaura1' : 'aura1'
+      recs = ex.extract(summon(key => text), granblue_id: '10', series: series, element: element)
+      recs.find { |r| r[:slot] == slot && r[:uncap_level] == uncap }
+    end
+
+    it 'reads the cap of an aura that scales with the team and leaves value empty' do
+      r = tier('Boost to Water [[Damage Formula|Elemental]] ATK based on number of ' \
+               '[[:Category: Water Summons|Water summons]] equipped (Up to 100%).')
+      expect(r).to include(target: 'elemental_atk', element: 'water', value: nil, max_value: 100.0, condition: 'variable')
+    end
+
+    it 'reads the cap of a sub aura' do
+      r = tier("Boost to Earth allies' Earth [[Damage Formula|Elemental]] ATK based on their number of " \
+               '{{status|Wasteland Crest}} (Up to 15%).', slot: 'sub', element: 'earth')
+      expect(r).to include(target: 'elemental_atk', element: 'earth', value: nil, max_value: 15.0, condition: 'variable')
+    end
+
+    it 'reads the cap when the text before it contains another percentage' do
+      r = tier("Boost to Wind allies' ATK as total party HP nears 50% (Up to 120%)", element: 'wind')
+      expect(r).to include(target: 'elemental_atk', element: 'wind', value: nil, max_value: 120.0, condition: 'variable')
+    end
+
+    it "reads a race-count aura's cap" do
+      r = tier('Boost to Dark [[Damage Formula|Elemental]] ATK based on number of main allies\' ' \
+               '{{tt|races|Called "Types" in-game}} (Up to 80%).', element: 'dark')
+      expect(r).to include(target: 'elemental_atk', value: nil, max_value: 80.0, condition: 'variable')
+    end
+
+    it 'keeps the capped clause, and its cap, in a tier with more clauses' do
+      r = tier('Boost to Water [[Damage Formula|Elemental]] ATK based on number of Water summons equipped ' \
+               "(Up to 130%).<br /> 10% boost to Water allies' DEF.<br />MC starts battle with " \
+               '{{status|Final Uncap: Bonito|t=i}}.')
+      expect(r).to include(target: 'elemental_atk', value: nil, max_value: 130.0, condition: 'variable')
+    end
+
+    it 'splits a sentence that starts with a percentage from the capped clause' do
+      r = tier("Boost to dark ATK based on number of dark summons equipped (Up to 70%). 10% boost to dark allies' HP",
+               element: 'dark')
+      expect(r).to include(target: 'elemental_atk', element: 'dark', value: nil, max_value: 70.0, condition: 'variable')
+    end
+
+    it "keeps the starting amount of a boost that rises to a '[Up to N%]' cap" do
+      r = tier('60% boost to Fire [[Damage Formula|Elemental]] ATK. (Boost rises by 4% per turn passed [Up to 100%].)',
+               element: 'fire')
+      expect(r).to include(target: 'elemental_atk', value: 60.0, max_value: 100.0, condition: nil)
+    end
+
+    it "doesn't give a capped clause's cap to the clause that is kept" do
+      r = tier("50% boost to Wind and Dark ATK. Boost to Wind and Dark allies' C.A. DMG based on number of " \
+               'weapon types equipped (Up to 10%).', element: 'wind')
+      expect(r).to include(target: 'elemental_atk', value: 50.0, max_value: nil)
+    end
+
+    it "leaves an Odious summon's '[Max: N%]' unread" do
+      r = tier("40% boost to Taboo Allowater's weapon skills.<br />(Boost to specs based on equipped Water Odious " \
+               "weapons' exorcision lvl [Max: 60%].)", series: 'odious')
+      expect(r).to include(target: 'odious_frame', value: 40.0, max_value: nil, condition: nil)
+    end
+  end
 end
