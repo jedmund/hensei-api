@@ -9,6 +9,11 @@ module Api
         aura.value&.to_f
       end
 
+      # The aura's stated cap ("(Max: 200%)"); value is then the amount per step
+      field :max_value do |aura|
+        aura.max_value&.to_f
+      end
+
       field :description do |aura|
         {
           en: aura.description_en,

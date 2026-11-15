@@ -285,6 +285,22 @@ class Party < ApplicationRecord
     result
   end
 
+  # The front-line character slots; the MC is the party's job.
+  MAIN_ALLY_POSITIONS = (0..2)
+
+  # How many distinct weapon specialties the main allies have: the MC's job plus the front-line
+  # characters, each with one or two (Grand Order's aura scales with it).
+  # @return [Integer]
+  def main_weapon_group_count
+    proficiencies = [job&.proficiency1, job&.proficiency2]
+    characters.each do |grid_character|
+      next unless MAIN_ALLY_POSITIONS.cover?(grid_character.position)
+
+      proficiencies.push(grid_character.character&.proficiency1, grid_character.character&.proficiency2)
+    end
+    proficiencies.compact.reject(&:zero?).uniq.size
+  end
+
   ##
   # Returns true iff any grid item in this party has at least one substitution.
   #

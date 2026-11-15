@@ -7,13 +7,13 @@ module SummonAuras
   module Build
     # Bump whenever the builder's output changes on purpose: every summon becomes stale and
     # the next deploy rebuilds it.
-    VERSION = 5
+    VERSION = 7
 
     ELEMENT_WORD = GranblueEnums::ELEMENT_ENUM.invert.transform_values(&:to_s).freeze
 
     # The natural key of a summon_auras row, and the columns the build writes.
     KEY = %w[summon_granblue_id slot uncap_level transcendence_stage].freeze
-    COLUMNS = %w[target element value condition description_en description_jp].freeze
+    COLUMNS = %w[target element value max_value scaling condition description_en description_jp].freeze
 
     module_function
 
@@ -43,13 +43,17 @@ module SummonAuras
 
     # The Japanese text for one tier, from the summon's gbf-wiki.com page or list row. None for
     # transcendence stages (the wiki doesn't say which stage adds what), and none when the
-    # tier has a value the Japanese text doesn't state: the wiki page hasn't caught up with
-    # that uncap, and an older number would contradict the English.
+    # text doesn't state the tier's numbers: the wiki page hasn't caught up with that uncap,
+    # and an older number would contradict the English. A tier with a cap ("Max: 200%") needs
+    # the cap in the text, and then the cap is enough: Grand Order's Japanese gives only caps
+    # (最大200%), never its per-group amount.
     def description_jp(extractor, jp_aura, record)
       return if record['transcendence_stage'].to_i.positive?
 
       text = extractor.text(jp_aura, record['slot'], record['uncap_level'])
-      return text if text.nil? || record['value'].nil?
+      return text if text.nil?
+      return (states_value?(text, record['max_value']) ? text : nil) if record['max_value']
+      return text if record['value'].nil?
 
       states_value?(text, record['value']) ? text : nil
     end

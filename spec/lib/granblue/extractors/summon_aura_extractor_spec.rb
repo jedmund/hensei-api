@@ -160,4 +160,39 @@ RSpec.describe Granblue::Extractors::SummonAuraExtractor do
       end
     end
   end
+
+  describe 'Grand Order: an amount per weapon group, with a cap (GBF-55)' do
+    let(:recs) do
+      ex.extract(summon(
+                   'aura1' => "Boost to Normal ATK (Max: 100%) for each weapon group among main allies' weapon specialties.",
+                   'aura3' => '40% boost to Normal ATK (Max: 200%) and 10% boost to DEF (Max: 50%) for each weapon group ' \
+                              "among main allies' weapon specialties.",
+                   'aura4' => '40% boost to Normal ATK (Max: 200%) and 10% boost to DEF (Max: 50%) for each weapon group ' \
+                              "among main allies' weapon specialties.<br />('''When at 5 or more groups:''' All allies " \
+                              'start battle with +10% charge bar. MC starts battle with {{status|Skywish Blade|t=3T}}.)'
+                 ), granblue_id: '9')
+    end
+
+    def tier(uncap) = recs.find { |r| r[:slot] == 'main' && r[:uncap_level] == uncap }
+
+    it 'keeps the per-group amount in value and the cap in max_value' do
+      expect(tier(4)).to include(target: 'normal_atk', value: 40.0, max_value: 200.0, condition: 'per_weapon_group')
+    end
+
+    it 'leaves value empty when the tier states only a cap' do
+      expect(tier(0)).to include(target: 'normal_atk', value: nil, max_value: 100.0, condition: 'per_weapon_group')
+    end
+
+    it 'stores every per-group effect with its cap' do
+      expect(tier(0)[:scaling]).to eq('effects' => [{ 'target' => 'normal_atk', 'value' => nil, 'max' => 100.0 }],
+                                      'bonus_at' => nil)
+      expect(tier(4)[:scaling]).to eq('effects' => [{ 'target' => 'normal_atk', 'value' => 40.0, 'max' => 200.0 },
+                                                    { 'target' => 'def', 'value' => 10.0, 'max' => 50.0 }],
+                                      'bonus_at' => nil)
+    end
+
+    it 'stores the group count the bonus needs on the tier that states it' do
+      expect(tier(5)[:scaling]['bonus_at']).to eq(5)
+    end
+  end
 end
