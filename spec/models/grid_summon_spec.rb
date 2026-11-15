@@ -206,6 +206,35 @@ RSpec.describe GridSummon, type: :model do
     end
   end
 
+  describe 'slot flags' do
+    let(:party) { create(:party) }
+
+    it 'flags only the main slot as main and the friend slot as friend' do
+      sub = create(:grid_summon, party: party, position: 4, main: true, friend: true)
+      main = create(:grid_summon, party: party, position: -1, main: false)
+      friend = create(:grid_summon, party: party, position: 6, friend: false)
+
+      expect(sub.reload).to have_attributes(main: false, friend: false)
+      expect(main.reload).to have_attributes(main: true, friend: false)
+      expect(friend.reload).to have_attributes(main: false, friend: true)
+    end
+
+    it 'follows a move out of the main slot' do
+      grid_summon = create(:grid_summon, party: party, position: -1)
+
+      grid_summon.update!(position: 2)
+
+      expect(grid_summon.reload.main).to be false
+    end
+
+    it 'leaves substitutes alone' do
+      grid_summon = build(:grid_summon, party: party, position: -1, main: false, is_substitute: true)
+      grid_summon.valid?
+
+      expect(grid_summon.main).to be false
+    end
+  end
+
   describe '#compatible_with_position' do
     let(:party) { create(:party) }
     let(:summon_without_subaura) do
@@ -219,8 +248,7 @@ RSpec.describe GridSummon, type: :model do
       grid_summon = build(:grid_summon,
                           party: party,
                           summon: summon_without_subaura,
-                          position: 4,
-                          friend: true,
+                          position: 6,
                           uncap_level: 3,
                           transcendence_step: 0)
       expect(grid_summon).to be_valid
@@ -501,7 +529,7 @@ RSpec.describe GridSummon, type: :model do
 
     it 'updates party boost columns when a main summon is created' do
       party = create(:party)
-      described_class.create!(party: party, summon: bahamut, position: 4, main: false, friend: true, uncap_level: 3, transcendence_step: 0)
+      described_class.create!(party: party, summon: bahamut, position: 6, main: false, friend: true, uncap_level: 3, transcendence_step: 0)
 
       described_class.create!(party: party, summon: colossus, position: -1, main: true, friend: false, uncap_level: 3, transcendence_step: 0)
 
@@ -521,10 +549,21 @@ RSpec.describe GridSummon, type: :model do
       expect(party.boost_side).to eq('double')
     end
 
+    it 'recomputes when the main summon moves to a sub slot' do
+      party = create(:party)
+      described_class.create!(party: party, summon: bahamut, position: 6, uncap_level: 3, transcendence_step: 0)
+      main = described_class.create!(party: party, summon: colossus, position: -1, uncap_level: 3, transcendence_step: 0)
+      expect(party.reload.boost_mod).to eq('omega')
+
+      main.update!(position: 1)
+
+      expect(party.reload.boost_mod).to be_nil
+    end
+
     it 'skips the recompute when the party is destroyed with its main and friend summons' do
       party = create(:party)
       described_class.create!(party: party, summon: colossus, position: -1, main: true, friend: false, uncap_level: 3, transcendence_step: 0)
-      described_class.create!(party: party, summon: bahamut, position: 4, main: false, friend: true, uncap_level: 3, transcendence_step: 0)
+      described_class.create!(party: party, summon: bahamut, position: 6, main: false, friend: true, uncap_level: 3, transcendence_step: 0)
 
       expect { party.reload.destroy! }.not_to raise_error
       expect(Party.exists?(party.id)).to be false

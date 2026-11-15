@@ -43,7 +43,7 @@ RSpec.describe GridDamage::Calculator do
     SummonAura.create!(summon_granblue_id: summon.granblue_id, slot: 'main',
                        target: 'normal_frame', uncap_level: 0, transcendence_stage: 0,
                        value: normal_aura)
-    create(:grid_summon, party: party, summon: summon, main: true, position: 0)
+    create(:grid_summon, party: party, summon: summon, main: true, position: -1)
   end
 
   context 'with a 100% Optimus aura (enhancement factor 2.0)' do
