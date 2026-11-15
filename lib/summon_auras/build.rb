@@ -7,7 +7,7 @@ module SummonAuras
   module Build
     # Bump whenever the builder's output changes on purpose: every summon becomes stale and
     # the next deploy rebuilds it.
-    VERSION = 4
+    VERSION = 5
 
     ELEMENT_WORD = GranblueEnums::ELEMENT_ENUM.invert.transform_values(&:to_s).freeze
 
@@ -30,6 +30,15 @@ module SummonAuras
       ).map { |record| record.transform_keys(&:to_s) }
        .each { |record| record['description_jp'] = description_jp(jp, jp_aura, record) }
        .sort_by { |record| record.values_at(*KEY) }
+    end
+
+    # The summon's aura name in each language, stored on the summon (one name covers its main
+    # and sub aura): English from the page's aura_name; Japanese from the Japanese page's
+    # 加護 name cell, else the English page's jpaura_name. Pure.
+    def names(summon)
+      en_page = Granblue::Extractors::SummonAuraExtractor.new.aura_names(summon.wiki_raw)
+      jp_page = Granblue::Extractors::SummonAuraJpExtractor.new.extract(summon.wiki_raw_jp)
+      { 'aura_name_en' => en_page[:en], 'aura_name_jp' => jp_page&.name.presence || en_page[:ja] }
     end
 
     # The Japanese text for one tier, from the summon's gbf-wiki.com page or list row. None for

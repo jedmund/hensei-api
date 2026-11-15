@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_05_070000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_15_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1215,10 +1215,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_05_070000) do
     t.boolean "extra"
     t.integer "player_count", default: 18, null: false
     t.date "released_at"
-    t.string "short_name_en"
-    t.string "short_name_jp"
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.string "short_name_en"
+    t.string "short_name_jp"
     t.index ["released_at"], name: "index_raids_on_released_at"
     t.index ["slug"], name: "index_raids_on_slug", unique: true
     t.index ["updated_at"], name: "index_raids_on_updated_at"
@@ -1491,6 +1491,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_05_070000) do
     t.string "summon_aura_build_fingerprint"
     t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.string "aura_name_en"
+    t.string "aura_name_jp"
     t.index ["granblue_id"], name: "index_summons_on_granblue_id_unique", unique: true
     t.index ["latest_date", "id"], name: "index_summons_on_latest_date", order: { latest_date: :desc }
     t.index ["name_en"], name: "index_summons_on_name_en", opclass: :gin_trgm_ops, using: :gin

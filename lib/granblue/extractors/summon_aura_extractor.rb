@@ -48,6 +48,13 @@ module Granblue
         records
       end
 
+      # The summon's aura names from its page: { en: aura_name, ja: jpaura_name }, nil when
+      # a field is absent or blank. One name covers the main and sub aura.
+      def aura_names(wikitext)
+        fields = parse_fields(wikitext)
+        { en: fields['aura_name'].presence, ja: fields['jpaura_name'].presence }
+      end
+
       private
 
       # Scan |key=value template params (aura values are single-line).

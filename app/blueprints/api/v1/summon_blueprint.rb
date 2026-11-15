@@ -111,6 +111,11 @@ module Api
 
         fields :gamewith, :kamigame
 
+        # The aura's name ("Zephyrus's Aura" / ゼピュロスの加護), one for the main and sub aura
+        field :aura_name do |s|
+          { en: s.aura_name_en, ja: s.aura_name_jp }
+        end
+
         # Structured per-tier auras (the calculator's source), main then sub.
         association :auras, blueprint: SummonAuraBlueprint, name: :summon_auras do |s|
           s.auras.sort_by { |a| [a.slot == 'main' ? 0 : 1, a.uncap_level, a.transcendence_stage] }
