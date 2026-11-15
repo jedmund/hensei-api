@@ -94,28 +94,32 @@ module Granblue
 
         {
           summon_granblue_id: granblue_id, slot: slot, target: best[:target], element: best[:element],
-          value: best[:value], uncap_level: uncap_level, transcendence_stage: transcendence_stage,
+          value: best[:value], max_value: best[:max_value], uncap_level: uncap_level,
+          transcendence_stage: transcendence_stage,
           condition: best[:condition], description_en: clean.strip
         }
       end
 
+      # value: the amount the clause states (per weapon group for Grand Order); max_value: its
+      # "(Max: N%)" cap. A clause that states only a cap ("Boost to Normal ATK (Max: 100%) for
+      # each weapon group") has no value: the per-group amount isn't given.
       def parse_clause(clause, series:, summon_element:)
         value = nil
         condition = nil
+        max_value = clause[/\(max:\s*(\d+(?:\.\d+)?)%\)/i, 1]&.to_f
         if clause =~ /(\d+(?:\.\d+)?)%\s*boost to\s+(.+)/i
           value = Regexp.last_match(1).to_f
           phrase = Regexp.last_match(2)
-        elsif clause =~ /boost to\s+(.+?)\s*\(max:\s*(\d+(?:\.\d+)?)%\)/i
+        elsif clause =~ /boost to\s+(.+?)\s*\(max:\s*\d+(?:\.\d+)?%\)/i
           phrase = Regexp.last_match(1)
-          value = Regexp.last_match(2).to_f
           condition = 'variable'
         else
           phrase = clause
         end
 
         target, element = classify(phrase, series: series, summon_element: summon_element)
-        condition ||= detect_condition(clause)
-        { target: target, element: element, value: value, condition: condition }
+        condition = detect_condition(clause) || condition
+        { target: target, element: element, value: value, max_value: max_value, condition: condition }
       end
 
       def strip_markup(text)

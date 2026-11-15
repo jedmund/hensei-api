@@ -51,6 +51,19 @@ RSpec.describe 'Parties API', type: :request do
         expect(response.parsed_body.dig('party', 'name')).to eq('Visible Party')
       end
 
+      it "includes Grand Order's weapon-group count and value" do
+        party.update!(job: create(:job, proficiency1: 1, proficiency2: 10))
+        create(:grid_character, party: party, character: create(:character, proficiency1: 5), position: 0)
+        grid = create(:grid_summon, party: party, main: true, position: -1, uncap_level: 3)
+        create(:summon_aura, summon_granblue_id: grid.summon.granblue_id, slot: 'main', uncap_level: 3,
+                             target: 'normal_atk', value: 40, max_value: 200, condition: 'per_weapon_group')
+
+        get "/api/v1/parties/#{party.shortcode}", headers: headers
+
+        summon = response.parsed_body.dig('party', 'summons').find { |s| s['main'] }
+        expect(summon['active_aura_scaling']).to eq('weapon_groups' => 3, 'value' => 120.0)
+      end
+
       it "includes each summon's active aura" do
         grid = create(:grid_summon, party: party, main: true, position: -1, uncap_level: 3)
         create(:summon_aura, summon_granblue_id: grid.summon.granblue_id, slot: 'main', uncap_level: 3,

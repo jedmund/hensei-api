@@ -37,6 +37,18 @@ class GridSummon < ApplicationRecord
                                      uncap: uncap_level.to_i, transcendence_step: transcendence_step.to_i)
   end
 
+  # For an active aura that scales with the main allies' weapon specialties (Grand Order):
+  # { weapon_groups:, value: } with value = groups × the tier's per-group amount, up to its
+  # cap; value is nil when the tier states no per-group amount. nil for other auras.
+  def active_aura_scaling
+    aura = active_aura
+    return unless aura&.condition == 'per_weapon_group' && party
+
+    groups = party.main_weapon_group_count
+    value = aura.value && [groups * aura.value.to_f, aura.max_value&.to_f].compact.min
+    { weapon_groups: groups, value: value }
+  end
+
   # Associations the nested blueprint walks. Reused by controllers and the
   # polymorphic substitute-grid preloader so a single source of truth keeps
   # them in sync as the blueprint evolves.

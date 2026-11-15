@@ -31,6 +31,10 @@ module Api
         association :summon, blueprint: SummonBlueprint, view: :full
         # The one aura this summon gives the team (GridSummon#active_aura).
         association :active_aura, blueprint: SummonAuraBlueprint
+        # Grand Order: the main allies' weapon groups and what the aura gives at that count
+        field :active_aura_scaling, if: ->(_field, gs, _options) { gs.active_aura_scaling } do |gs|
+          gs.active_aura_scaling
+        end
 
         field :description, if: ->(_field_name, gs, _options) { gs.description.present? }
         association :substitutions, blueprint: SubstitutionBlueprint,

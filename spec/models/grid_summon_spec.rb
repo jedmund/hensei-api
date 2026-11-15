@@ -594,4 +594,48 @@ RSpec.describe GridSummon, type: :model do
       expect(aura_for(position: 0, uncap_level: 3)).to be_nil
     end
   end
+
+  describe '#active_aura_scaling' do
+    # Proficiencies (GranblueEnums::PROFICIENCY): 1 Sabre, 2 Dagger, 3 Spear, 5 Staff, 8 Bow, 10 Katana
+    let(:job) { create(:job, proficiency1: 1, proficiency2: 10) }
+    let(:party) { create(:party, job: job) }
+    let(:grand_order) do
+      Summon.without_aura_build { create(:summon, granblue_id: '2040900088', flb: true, ulb: true) }
+    end
+
+    before do
+      create(:summon_aura, summon_granblue_id: grand_order.granblue_id, slot: 'main', uncap_level: 0,
+                           target: 'normal_atk', value: nil, max_value: 100, condition: 'per_weapon_group')
+      create(:summon_aura, summon_granblue_id: grand_order.granblue_id, slot: 'main', uncap_level: 4,
+                           target: 'normal_atk', value: 40, max_value: 200, condition: 'per_weapon_group')
+      [[0, 5, nil], [1, 1, nil], [2, 8, nil], [3, 3, nil]].each do |position, prof1, prof2|
+        character = create(:character, proficiency1: prof1, proficiency2: prof2)
+        create(:grid_character, party: party, character: character, position: position)
+      end
+    end
+
+    def scaling(uncap)
+      build(:grid_summon, party: party.reload, summon: grand_order, main: true, position: -1,
+                          uncap_level: uncap).active_aura_scaling
+    end
+
+    it "counts the main allies' distinct specialties and multiplies the per-group amount" do
+      # Job Sabre/Katana, front line Staff, Sabre, Bow; the back-line Spear doesn't count → 4
+      expect(scaling(4)).to eq(weapon_groups: 4, value: 160.0)
+    end
+
+    it 'gives the count alone when the tier states no per-group amount' do
+      expect(scaling(0)).to eq(weapon_groups: 4, value: nil)
+    end
+
+    it 'stops at the cap' do
+      party.characters.find_by(position: 0).character.update!(proficiency2: 2)
+      party.characters.find_by(position: 2).character.update!(proficiency2: 4)
+      expect(scaling(4)).to eq(weapon_groups: 6, value: 200.0)
+    end
+
+    it 'is nil for other auras' do
+      expect(build(:grid_summon, party: party, uncap_level: 3).active_aura_scaling).to be_nil
+    end
+  end
 end

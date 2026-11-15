@@ -7,13 +7,13 @@ module SummonAuras
   module Build
     # Bump whenever the builder's output changes on purpose: every summon becomes stale and
     # the next deploy rebuilds it.
-    VERSION = 5
+    VERSION = 6
 
     ELEMENT_WORD = GranblueEnums::ELEMENT_ENUM.invert.transform_values(&:to_s).freeze
 
     # The natural key of a summon_auras row, and the columns the build writes.
     KEY = %w[summon_granblue_id slot uncap_level transcendence_stage].freeze
-    COLUMNS = %w[target element value condition description_en description_jp].freeze
+    COLUMNS = %w[target element value max_value condition description_en description_jp].freeze
 
     module_function
 
