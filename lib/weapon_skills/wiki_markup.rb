@@ -121,10 +121,12 @@ module WeaponSkills
         end
       end
 
-      # <br>/<hr> → line break; <ref>…</ref> dropped; any other tag stripped (content kept).
+      # <br>/<hr> → line break; <ref>…</ref> and <!-- comments --> dropped; any other tag
+      # stripped (content kept).
       def tag_node
         rest = @text[@pos..]
-        m = rest.match(%r{\A<ref\b[^>]*/>}i) || rest.match(%r{\A<ref\b[^>]*>.*?</ref\s*>}im) ||
+        m = rest.match(/\A<!--.*?-->/m) ||
+            rest.match(%r{\A<ref\b[^>]*/>}i) || rest.match(%r{\A<ref\b[^>]*>.*?</ref\s*>}im) ||
             rest.match(/\A<(?:br|hr)\b[^>]*>/i) || rest.match(%r{\A</?[a-z][^>]*>}i)
         return nil unless m
 

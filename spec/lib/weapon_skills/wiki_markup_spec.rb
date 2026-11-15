@@ -10,6 +10,10 @@ RSpec.describe WeaponSkills::WikiMarkup do
     expect(segments("Big boost to fire allies' ATK")).to eq([{ text: "Big boost to fire allies' ATK" }])
   end
 
+  it 'drops HTML comments' do
+    expect(described_class.plain("Supplement damage based on <!--1% of -->the foe's max HP.")).to eq("Supplement damage based on the foe's max HP.")
+  end
+
   it 'turns {{tt}} into text with a tooltip' do
     expect(segments('Take {{tt|5% damage|Based on max HP.}} every turn')).to eq(
       [{ text: 'Take ' }, { text: '5% damage', tooltip: 'Based on max HP.' }, { text: ' every turn' }]
