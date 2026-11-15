@@ -96,6 +96,7 @@ module Granblue
           summon_granblue_id: granblue_id, slot: slot, target: best[:target], element: best[:element],
           value: best[:value], max_value: best[:max_value], uncap_level: uncap_level,
           transcendence_stage: transcendence_stage,
+          scaling: best[:condition] == 'per_weapon_group' ? weapon_group_scaling(clean) : nil,
           condition: best[:condition], description_en: clean.strip
         }
       end
@@ -120,6 +121,22 @@ module Granblue
         target, element = classify(phrase, series: series, summon_element: summon_element)
         condition = detect_condition(clause) || condition
         { target: target, element: element, value: value, max_value: max_value, condition: condition }
+      end
+
+      # Grand Order: every effect the aura gives per weapon group, with its cap ("40% boost to
+      # Normal ATK (Max: 200%) and 10% boost to DEF (Max: 50%) for each weapon group"), and the
+      # group count that unlocks its bonus ("When at 5 or more groups: …"). An effect that
+      # states only a cap has no value.
+      SCALED_EFFECT = /(?:(\d+(?:\.\d+)?)%\s+)?boost to\s+(.+?)\s*\(max:\s*(\d+(?:\.\d+)?)%\)/i
+      SCALED_TARGETS = { 'normal atk' => 'normal_atk', 'def' => 'def' }.freeze
+      private_constant :SCALED_EFFECT, :SCALED_TARGETS
+
+      def weapon_group_scaling(text)
+        effects = text.scan(SCALED_EFFECT).map do |value, phrase, max|
+          { 'target' => SCALED_TARGETS.fetch(phrase.downcase, phrase.downcase.tr(' ', '_')),
+            'value' => value&.to_f, 'max' => max.to_f }
+        end
+        { 'effects' => effects, 'bonus_at' => text[/when at (\d+) or more groups/i, 1]&.to_i }
       end
 
       def strip_markup(text)

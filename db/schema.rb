@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_15_130000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_15_160000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1420,6 +1420,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_15_130000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.decimal "max_value"
+    t.jsonb "scaling"
     t.index ["summon_granblue_id", "slot", "uncap_level", "transcendence_stage"], name: "index_summon_auras_on_summon_tier", unique: true
     t.index ["summon_granblue_id"], name: "index_summon_auras_on_summon_granblue_id"
   end

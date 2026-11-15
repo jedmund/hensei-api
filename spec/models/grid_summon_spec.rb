@@ -641,12 +641,20 @@ RSpec.describe GridSummon, type: :model do
     let(:grand_order) do
       Summon.without_aura_build { create(:summon, granblue_id: '2040900088', flb: true, ulb: true) }
     end
+    let(:atk_and_def) do
+      [{ 'target' => 'normal_atk', 'value' => 40.0, 'max' => 200.0 }, { 'target' => 'def', 'value' => 10.0, 'max' => 50.0 }]
+    end
 
     before do
-      create(:summon_aura, summon_granblue_id: grand_order.granblue_id, slot: 'main', uncap_level: 0,
-                           target: 'normal_atk', value: nil, max_value: 100, condition: 'per_weapon_group')
-      create(:summon_aura, summon_granblue_id: grand_order.granblue_id, slot: 'main', uncap_level: 4,
-                           target: 'normal_atk', value: 40, max_value: 200, condition: 'per_weapon_group')
+      tiers = {
+        0 => { 'effects' => [{ 'target' => 'normal_atk', 'value' => nil, 'max' => 100.0 }], 'bonus_at' => nil },
+        4 => { 'effects' => atk_and_def, 'bonus_at' => nil },
+        5 => { 'effects' => atk_and_def, 'bonus_at' => 5 }
+      }
+      tiers.each do |uncap, scaling|
+        create(:summon_aura, summon_granblue_id: grand_order.granblue_id, slot: 'main', uncap_level: uncap,
+                             target: 'normal_atk', condition: 'per_weapon_group', scaling: scaling)
+      end
       [[0, 5, nil], [1, 1, nil], [2, 8, nil], [3, 3, nil]].each do |position, prof1, prof2|
         character = create(:character, proficiency1: prof1, proficiency2: prof2)
         create(:grid_character, party: party, character: character, position: position)
@@ -658,19 +666,31 @@ RSpec.describe GridSummon, type: :model do
                           uncap_level: uncap).active_aura_scaling
     end
 
-    it "counts the main allies' distinct specialties and multiplies the per-group amount" do
-      # Job Sabre/Katana, front line Staff, Sabre, Bow; the back-line Spear doesn't count → 4
-      expect(scaling(4)).to eq(weapon_groups: 4, value: 160.0)
-    end
-
-    it 'gives the count alone when the tier states no per-group amount' do
-      expect(scaling(0)).to eq(weapon_groups: 4, value: nil)
-    end
-
-    it 'stops at the cap' do
+    def add_specialties
       party.characters.find_by(position: 0).character.update!(proficiency2: 2)
       party.characters.find_by(position: 2).character.update!(proficiency2: 4)
-      expect(scaling(4)).to eq(weapon_groups: 6, value: 200.0)
+    end
+
+    it "counts the main allies' distinct specialties and multiplies each per-group amount" do
+      # Job Sabre/Katana, front line Staff, Sabre, Bow; the back-line Spear doesn't count → 4
+      expect(scaling(4)).to eq(weapon_groups: 4, bonus_at: nil, bonus_active: false,
+                               effects: [{ target: 'normal_atk', value: 160.0 }, { target: 'def', value: 40.0 }])
+    end
+
+    it 'gives cap / 5 per group when the tier states only its cap' do
+      expect(scaling(0)[:effects]).to eq([{ target: 'normal_atk', value: 80.0 }])
+    end
+
+    it 'stops each effect at its cap' do
+      add_specialties
+      expect(scaling(4)[:effects]).to eq([{ target: 'normal_atk', value: 200.0 }, { target: 'def', value: 50.0 }])
+    end
+
+    it 'activates the bonus at 5 groups only on the tier that has it' do
+      expect(scaling(5)).to include(bonus_at: 5, bonus_active: false)
+      add_specialties
+      expect(scaling(5)).to include(weapon_groups: 6, bonus_at: 5, bonus_active: true)
+      expect(scaling(4)).to include(bonus_at: nil, bonus_active: false)
     end
 
     it 'is nil for other auras' do

@@ -37,16 +37,28 @@ class GridSummon < ApplicationRecord
                                      uncap: uncap_level.to_i, transcendence_step: transcendence_step.to_i)
   end
 
+  # An aura that scales with the main allies' weapon groups reaches its cap at this many
+  # groups, so a tier that states only its cap gives cap / 5 per group (Grand Order: 20% at
+  # 0-3★ for Max 100%, 40% at 4-5★ for Max 200%, 10% DEF for Max 50%).
+  WEAPON_GROUPS_AT_CAP = 5
+
   # For an active aura that scales with the main allies' weapon specialties (Grand Order):
-  # { weapon_groups:, value: } with value = groups × the tier's per-group amount, up to its
-  # cap; value is nil when the tier states no per-group amount. nil for other auras.
+  # { weapon_groups:, effects: [{ target:, value: }], bonus_at:, bonus_active: }. Each
+  # effect's value is groups × its per-group amount, up to its cap. bonus_at is the group
+  # count the tier's bonus needs (nil when the tier has none). nil for other auras.
   def active_aura_scaling
     aura = active_aura
     return unless aura&.condition == 'per_weapon_group' && party
 
     groups = party.main_weapon_group_count
-    value = aura.value && [groups * aura.value.to_f, aura.max_value&.to_f].compact.min
-    { weapon_groups: groups, value: value }
+    scaling = aura.scaling || {}
+    effects = Array(scaling['effects']).map do |effect|
+      cap = effect['max']&.to_f
+      per_group = effect['value']&.to_f || (cap && (cap / WEAPON_GROUPS_AT_CAP))
+      { target: effect['target'], value: per_group && [groups * per_group, cap].compact.min }
+    end
+    bonus_at = scaling['bonus_at']
+    { weapon_groups: groups, effects: effects, bonus_at: bonus_at, bonus_active: bonus_at.present? && groups >= bonus_at }
   end
 
   # Associations the nested blueprint walks. Reused by controllers and the
