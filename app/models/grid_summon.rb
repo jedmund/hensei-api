@@ -77,6 +77,7 @@ class GridSummon < ApplicationRecord
   validate :no_friend_summon_on_solomonis_party, unless: :is_substitute?
 
   before_validation :set_default_uncap_level, on: :create
+  before_validation :set_slot_flags, unless: :is_substitute?
 
   after_create :increment_party_counter, unless: :is_substitute?
   after_destroy :decrement_party_counter, unless: :is_substitute?
@@ -213,6 +214,15 @@ class GridSummon < ApplicationRecord
     self.uncap_level ||= 0
   end
 
+  # The main and friend flags follow the slot: -1 is the main summon, 6 the friend. Imports,
+  # remixes and moves then can't leave a sub summon flagged main, or a main summon unflagged.
+  def set_slot_flags
+    return if position.nil?
+
+    self.main = position.to_i == -1
+    self.friend = position.to_i == FRIEND_POSITION
+  end
+
   # Hand-rolled counter cache: one SQL increment, no Party callbacks.
   # rubocop:disable Rails/SkipsModelValidations
   def increment_party_counter
@@ -226,7 +236,8 @@ class GridSummon < ApplicationRecord
 
   def recompute_party_boost!
     return if is_substitute?
-    return unless main? || friend?
+    # a summon moved out of the main or friend slot changes the boost too
+    return unless main? || friend? || main_before_last_save || friend_before_last_save
     # destroying the party destroys its summons; there's nothing left to recompute
     return unless Party.exists?(party_id)
 
@@ -310,12 +321,11 @@ class GridSummon < ApplicationRecord
   ##
   # Validates whether the grid summon can be added to the desired position.
   #
-  # Sub summon positions (5+) require the summon to have subaura.
-  # Friend summons are exempt from this check.
+  # Sub summon positions (4 and 5) require the summon to have subaura.
   #
   # @return [void]
   def compatible_with_position
-    return unless summon && !friend && position.to_i.in?(4..5) && !summon.subaura
+    return unless summon && position.to_i.in?(4..5) && !summon.subaura
 
     errors.add(:position, 'must have subaura for position')
   end
