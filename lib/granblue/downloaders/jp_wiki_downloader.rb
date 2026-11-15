@@ -10,6 +10,9 @@ module Granblue
     class JpWikiDownloader
       DEFAULT_THROTTLE = Granblue::WikiThrottle::MIN_DELAY # seconds between requests
 
+      # The namespace a model's pages live in on gbf-wiki.com.
+      TITLE_PREFIX = { Weapon => '武器/', Summon => '召喚石/' }.freeze
+
       RARITY_SUFFIX = {
         1 => '(R)',
         2 => '(SR)',
@@ -104,8 +107,9 @@ module Granblue
       #     EUC-JP); raises Granblue::JpWikiTitle::InvalidTitle when it can't be decoded,
       #     so the backfill reports the row instead of fetching a garbled title
       #   - Otherwise: construct from name_jp + rarity suffix
-      # Weapons get a 武器/ prefix on gbf-wiki.com unless the title already names a path
-      # (武器/…, or a series page like 武器概要/…); characters/summons do not.
+      # Weapons get a 武器/ prefix and summons a 召喚石/ prefix on gbf-wiki.com unless the
+      # title already names a path (武器/…, 召喚石/…, or a series page like 武器概要/…);
+      # characters get none. A summon's bare title is often a "Runtime error" page.
       def self.resolve_title(record)
         wiki_ja = Granblue::JpWikiTitle.decode!(record.wiki_ja.to_s)
 
@@ -119,7 +123,8 @@ module Granblue
                   "#{name_jp} #{suffix}".strip
                 end
 
-        record.is_a?(Weapon) && title.exclude?('/') ? "武器/#{title}" : title
+        prefix = TITLE_PREFIX[record.class]
+        prefix && title.exclude?('/') ? "#{prefix}#{title}" : title
       end
 
       def self.print_progress(current, total, name, status, start_time, io: $stdout)
