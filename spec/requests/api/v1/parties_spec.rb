@@ -50,6 +50,18 @@ RSpec.describe 'Parties API', type: :request do
         expect(response).to have_http_status(:ok)
         expect(response.parsed_body.dig('party', 'name')).to eq('Visible Party')
       end
+
+      it "includes each summon's active aura" do
+        grid = create(:grid_summon, party: party, main: true, position: -1, uncap_level: 3)
+        create(:summon_aura, summon_granblue_id: grid.summon.granblue_id, slot: 'main', uncap_level: 3,
+                             target: 'elemental_atk', description_en: "'''Main:''' 120% boost.")
+
+        get "/api/v1/parties/#{party.shortcode}", headers: headers
+
+        aura = response.parsed_body.dig('party', 'summons').first['active_aura']
+        expect(aura).to include('slot' => 'main', 'uncap_level' => 3)
+        expect(aura.dig('description_segments', 'en').first).to include('text' => 'Main:', 'strong' => true)
+      end
     end
 
     context 'when the party is private and not owned' do

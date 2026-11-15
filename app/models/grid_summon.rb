@@ -25,12 +25,24 @@ class GridSummon < ApplicationRecord
   has_many :substitute_of, class_name: 'Substitution', as: :substitute_grid, dependent: :destroy
   validates :party, presence: true # rubocop:disable Rails/RedundantPresenceValidationOnBelongsTo -- keeps the "can't be blank" message
 
+  # The aura this summon gives the team, at its uncap level and transcendence step: the
+  # main and support summons give their main aura, every other slot its sub aura. The same
+  # rule and tier choice as the calculator (GridDamage::SummonAuras). nil when the summon
+  # has no aura for its slot.
+  def active_aura
+    return unless summon
+
+    slot = GridDamage::SummonAuras.slot_for(self)
+    GridDamage::SummonAuras.best_row(summon.auras.select { |aura| aura.slot == slot },
+                                     uncap: uncap_level.to_i, transcendence_step: transcendence_step.to_i)
+  end
+
   # Associations the nested blueprint walks. Reused by controllers and the
   # polymorphic substitute-grid preloader so a single source of truth keeps
   # them in sync as the blueprint evolves.
   NESTED_BLUEPRINT_PRELOADS = [
     :collection_summon,
-    { summon: :summon_series }
+    { summon: %i[summon_series auras] }
   ].freeze
 
   # Orphan status scopes
