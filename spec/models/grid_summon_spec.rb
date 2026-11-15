@@ -556,4 +556,42 @@ RSpec.describe GridSummon, type: :model do
       expect(grid_summon.transcendence_step).to eq(0)
     end
   end
+
+  describe '#active_aura' do
+    let(:summon) do
+      Summon.without_aura_build { create(:summon, granblue_id: '2040900077', flb: true, ulb: true, transcendence: true) }
+    end
+
+    before do
+      [['main', 0, 0, 80], ['main', 3, 0, 120], ['main', 5, 0, 150], ['main', 5, 3, 160],
+       ['sub', 0, 0, 10], ['sub', 4, 0, 20]].each do |slot, uncap, stage, value|
+        create(:summon_aura, summon_granblue_id: summon.granblue_id, slot: slot, uncap_level: uncap,
+                             transcendence_stage: stage, target: 'normal_frame', value: value)
+      end
+    end
+
+    def aura_for(**attributes)
+      build(:grid_summon, summon: summon, **attributes).active_aura
+    end
+
+    it "gives the main summon's and the support summon's main aura at their uncap" do
+      expect(aura_for(main: true, position: -1, uncap_level: 4)).to have_attributes(slot: 'main', value: 120)
+      expect(aura_for(friend: true, position: 6, uncap_level: 5)).to have_attributes(slot: 'main', value: 150)
+    end
+
+    it 'uses the transcendence stages up to the step' do
+      expect(aura_for(main: true, position: -1, uncap_level: 6, transcendence_step: 2)).to have_attributes(value: 150)
+      expect(aura_for(main: true, position: -1, uncap_level: 6, transcendence_step: 3)).to have_attributes(value: 160)
+    end
+
+    it 'gives the sub aura from every other slot' do
+      expect(aura_for(position: 0, uncap_level: 3)).to have_attributes(slot: 'sub', value: 10)
+      expect(aura_for(position: 4, uncap_level: 4)).to have_attributes(slot: 'sub', value: 20)
+    end
+
+    it 'is nil when the summon has no aura for its slot' do
+      SummonAura.where(summon_granblue_id: summon.granblue_id, slot: 'sub').delete_all
+      expect(aura_for(position: 0, uncap_level: 3)).to be_nil
+    end
+  end
 end

@@ -29,6 +29,8 @@ module Api
 
       view :nested do
         association :summon, blueprint: SummonBlueprint, view: :full
+        # The one aura this summon gives the team (GridSummon#active_aura).
+        association :active_aura, blueprint: SummonAuraBlueprint
 
         field :description, if: ->(_field_name, gs, _options) { gs.description.present? }
         association :substitutions, blueprint: SubstitutionBlueprint,
