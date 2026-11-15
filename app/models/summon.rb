@@ -23,7 +23,7 @@ class Summon < ApplicationRecord
                    primary_key: :granblue_id, inverse_of: :summon, dependent: :destroy
 
   # Aura build: a new summon, or a change to anything its auras are built from
-  # (SummonAuras::Build::Fingerprint: its wiki_raw and ATTRIBUTES), queues
+  # (SummonAuras::Build::Fingerprint: its wiki_raw, wiki_raw_jp and ATTRIBUTES), queues
   # SummonAuras::BuildJob. Covers every writer: a save of the summon, or a Source.put for it
   # (.source_changed). Bulk work can skip it with Summon.without_aura_build { ... }; the
   # deploy build picks those summons up.

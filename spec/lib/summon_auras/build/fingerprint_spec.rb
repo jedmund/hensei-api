@@ -23,6 +23,13 @@ RSpec.describe SummonAuras::Build::Fingerprint do
     expect(digest).not_to eq(before)
   end
 
+  it 'changes with the stored Japanese page' do
+    before = digest
+    put_source(summon, :wiki_raw_jp, '<div id="body">加護</div>')
+    expect(digest).not_to eq(before)
+    expect(described_class.new.for_relation(Summon.where(id: summon.id))).to eq(summon.id => digest)
+  end
+
   it 'changes with the element and the series slug' do
     before = digest
     summon.update_columns(element: 1)
