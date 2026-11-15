@@ -35,7 +35,7 @@ RSpec.describe 'Party skill boosts API', type: :request do
                          target: 'normal_frame', uncap_level: 0,
                          transcendence_stage: 0, value: 150)
       create(:grid_summon, party: party, summon: summon, main: true,
-                           position: 0, uncap_level: 0)
+                           position: -1, uncap_level: 0)
 
       sandalphon = create(:character, granblue_id: '3040515000', element: 5,
                                       name_en: 'Sandalphon (Grand)')

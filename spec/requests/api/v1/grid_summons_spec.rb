@@ -104,7 +104,7 @@ RSpec.describe 'GridSummons API', type: :request do
           post '/api/v1/grid_summons', params: valid_params.to_json, headers: headers
         end.to change(GridSummon, :count).by(1)
         expect(response).to have_http_status(:created)
-        expect(response.parsed_body['grid_summon']).to include('position' => 0, 'main' => true)
+        expect(response.parsed_body['grid_summon']).to include('position' => 0, 'main' => false)
       end
     end
 

@@ -234,7 +234,7 @@ RSpec.describe Party, type: :model do
       position = if main
                    -1
                  elsif friend
-                   4
+                   6
                  else
                    1
                  end
@@ -424,7 +424,7 @@ RSpec.describe Party, type: :model do
       position = if main
                    -1
                  elsif friend
-                   4
+                   6
                  else
                    1
                  end
@@ -467,7 +467,7 @@ RSpec.describe Party, type: :model do
       position = if main
                    -1
                  elsif friend
-                   4
+                   6
                  else
                    1
                  end
