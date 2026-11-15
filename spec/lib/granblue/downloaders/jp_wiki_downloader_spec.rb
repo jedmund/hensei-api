@@ -86,6 +86,30 @@ RSpec.describe Granblue::Downloaders::JpWikiDownloader do
     end
   end
 
+  describe '.resolve_title without a stored title' do
+    def blank_title(factory, **attributes)
+      record = Character.without_skill_build { create(factory, wiki_raw_jp: nil, **attributes) }
+      record.update_columns(wiki_ja: nil)
+      record
+    end
+
+    it 'puts a constructed summon title under 召喚石/' do
+      summon = Summon.without_aura_build { blank_title(:summon, name_jp: 'トール', rarity: 3) }
+      expect(described_class.resolve_title(summon)).to eq('召喚石/トール (SSR)')
+    end
+
+    it 'puts a stored summon title without a path under 召喚石/' do
+      summon = Summon.without_aura_build { blank_title(:summon, name_jp: 'バステト', rarity: 3) }
+      summon.update_columns(wiki_ja: 'バステト (SSR)')
+      expect(described_class.resolve_title(summon)).to eq('召喚石/バステト (SSR)')
+    end
+
+    it 'leaves a constructed character title bare' do
+      character = blank_title(:character, name_jp: 'ジークフリート', rarity: 3)
+      expect(described_class.resolve_title(character)).to eq('ジークフリート (SSR)')
+    end
+  end
+
   describe 'stored percent-encoded titles' do
     let(:siegfried) do
       '%E3%82%B8%E3%83%BC%E3%82%AF%E3%83%95%E3%83%AA%E3%83%BC%E3%83%88+%28SSR%29' \
