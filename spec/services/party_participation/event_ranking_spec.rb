@@ -65,6 +65,27 @@ RSpec.describe PartyParticipation::EventRanking do
     expect(described_class.call(raid_ids: [raid.id], window_event: event)[raid.id]).to eq([kept.id])
   end
 
+  it 'tops up and fills several raids each in their own order, without a query per raid' do
+    raids = [raid, create(:raid), create(:raid)]
+    expected = raids.to_h do |r|
+      stored = create(:party, :complete, raid: r, visibility: 1)
+      stored.update_columns(participation_score: 2)
+      newer = create(:party, :complete, raid: r, visibility: 1, last_updated: 1.hour.ago)
+      older = create(:party, :complete, raid: r, visibility: 1, last_updated: 2.days.ago)
+      create(:party, :complete, raid: r, visibility: 1, last_updated: 3.days.ago) # past the limit
+      [r.id, [stored.id, newer.id, older.id]]
+    end
+
+    queries = 0
+    counter = ->(*, payload) { queries += 1 unless payload[:name] == 'SCHEMA' || payload[:cached] }
+    result = ActiveSupport::Notifications.subscribed(counter, 'sql.active_record') do
+      described_class.call(raid_ids: raids.map(&:id), window_event: nil, limit: 3)
+    end
+
+    expect(result).to eq(expected)
+    expect(queries).to be <= 3
+  end
+
   it 'returns every raid, even without parties' do
     other = create(:raid)
     expect(described_class.call(raid_ids: [raid.id, other.id], window_event: nil)).to eq(raid.id => [], other.id => [])
