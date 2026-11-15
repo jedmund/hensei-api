@@ -4,7 +4,7 @@ module SummonAuras
   module Build
     # What a summon's auras are built from, as one SHA256:
     #   - Build::VERSION;
-    #   - the sha256 of the summon's wiki_raw `sources` row ("-" when there is none);
+    #   - the sha256 of the summon's wiki_raw and wiki_raw_jp `sources` rows ("-" when absent);
     #   - the summons columns the extractor reads: granblue_id and element;
     #   - its series slug (Odious and Magna summons' frames are told apart by it).
     # Stored on summons.summon_aura_build_fingerprint after a write; a run without all: true
@@ -15,13 +15,14 @@ module SummonAuras
     #   - #for_relation(relation) reads only the rows' sha256, so a deploy loads no page text
     #     just to find nothing stale.
     class Fingerprint
-      SOURCES = %w[wiki_raw].freeze
+      SOURCES = %w[wiki_raw wiki_raw_jp].freeze
       # Columns besides the sources that change the build's output. A series is read by its slug.
       ATTRIBUTES = %w[granblue_id element summon_series_id].freeze
       NONE = '-'
 
       def for(summon)
-        combine(summon.source_sha256(:wiki_raw), summon.granblue_id, summon.element, summon.summon_series_id)
+        combine(SOURCES.map { |kind| summon.source_sha256(kind) }, summon.granblue_id, summon.element,
+                summon.summon_series_id)
       end
 
       # → { summon id => fingerprint } for every summon in relation, without loading any
@@ -29,14 +30,15 @@ module SummonAuras
       def for_relation(relation)
         rows = relation.pluck(:id, *ATTRIBUTES)
         shas = Source.where(owner_type: Summon.polymorphic_name, owner_id: rows.map(&:first), kind: SOURCES, key: '')
-                     .pluck(:owner_id, :sha256).to_h
-        rows.to_h { |id, *values| [id, combine(shas[id], *values)] }
+                     .pluck(:owner_id, :kind, :sha256).to_h { |id, kind, sha| [[id, kind], sha] }
+        rows.to_h { |id, *values| [id, combine(SOURCES.map { |kind| shas[[id, kind]] }, *values)] }
       end
 
       private
 
-      def combine(wiki_sha, granblue_id, element, series_id)
-        parts = ["version:#{VERSION}", "wiki_raw:#{wiki_sha || NONE}", "granblue_id:#{granblue_id || NONE}",
+      def combine(source_shas, granblue_id, element, series_id)
+        sources = SOURCES.zip(source_shas).map { |kind, sha| "#{kind}:#{sha || NONE}" }
+        parts = ["version:#{VERSION}", *sources, "granblue_id:#{granblue_id || NONE}",
                  "element:#{element || NONE}", "series:#{series_slugs[series_id] || NONE}"]
         Digest::SHA256.hexdigest(parts.join("\n"))
       end
