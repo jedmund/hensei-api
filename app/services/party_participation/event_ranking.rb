@@ -18,6 +18,17 @@ module PartyParticipation
   #
   # Returns { raid_id => [party_id, …] } with every raid present (possibly []).
   class EventRanking
+    # Each party's place within its raid, for taking every raid's first rows
+    # in one query: by stored score, and newest first.
+    SCORE_RANK = Arel.sql(
+      'ROW_NUMBER() OVER (PARTITION BY parties.raid_id ' \
+      'ORDER BY parties.participation_score DESC, parties.id ASC) AS raid_rank'
+    )
+    RECENT_RANK = Arel.sql(
+      'ROW_NUMBER() OVER (PARTITION BY parties.raid_id ' \
+      'ORDER BY parties.last_updated DESC NULLS LAST, parties.id ASC) AS raid_rank'
+    )
+
     def self.call(**)
       new(**).call
     end
@@ -64,11 +75,10 @@ module PartyParticipation
       end
     end
 
-    # Each raid's first `limit` rows of `scope` in `order_sql`, as
-    # { raid_id => [[column, …], …] } in that order.
-    def first_per_raid(scope, order_sql, columns)
-      numbered = scope.select(:raid_id, *columns,
-                              Arel.sql("ROW_NUMBER() OVER (PARTITION BY parties.raid_id ORDER BY #{order_sql}) AS raid_rank"))
+    # Each raid's first `limit` rows of `scope` in the order `rank` numbers
+    # them (SCORE_RANK or RECENT_RANK), as { raid_id => [[column, …], …] }.
+    def first_per_raid(scope, rank, columns)
+      numbered = scope.select(:raid_id, *columns, rank)
       Party.unscoped.from(numbered, :parties)
            .where(parties: { raid_rank: ..@limit })
            .order(:raid_rank)
@@ -102,14 +112,14 @@ module PartyParticipation
     # Parties by stored participation_score, best first.
     def top_up(raid_ids, taken)
       scope = candidates.where(raid_id: raid_ids).where.not(id: taken).where('parties.participation_score > 0')
-      first_per_raid(scope, 'parties.participation_score DESC, parties.id ASC', %i[id element participation_score])
+      first_per_raid(scope, SCORE_RANK, %i[id element participation_score])
         .transform_values { |rows| order(rows.map { |id, element, score| [id, element, score.to_f] }) }
     end
 
     # Unscored public parties, newest first.
     def recent(raid_ids, taken)
       scope = candidates.where(raid_id: raid_ids).where.not(id: taken)
-      first_per_raid(scope, 'parties.last_updated DESC NULLS LAST, parties.id ASC', %i[id element])
+      first_per_raid(scope, RECENT_RANK, %i[id element])
     end
   end
 end
