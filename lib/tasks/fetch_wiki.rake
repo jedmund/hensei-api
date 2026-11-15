@@ -96,4 +96,28 @@ namespace :granblue do
     puts "Refreshed #{count}/#{total} weapons. Errors: #{errors.size}"
     errors.each { |e| puts "  - #{e}" }
   end
+
+  desc <<~DESC
+    Refetch summon pages that are likely older than gbf.wiki (SummonAuras::StalePages): no
+    stored page, latest_date after the fetch, aura tiers short of the summon's max uncap, or a
+    transcendable summon without stage-5 tiers. Each stored page rebuilds that summon's auras.
+    Runs weekly too (SummonAuras::RefreshStalePagesJob).
+
+    Usage:
+      rake granblue:refresh_stale_summon_pages              # refetch every stale summon
+      rake granblue:refresh_stale_summon_pages dry_run=true # list them only
+      rake granblue:refresh_stale_summon_pages limit=20 delay=3.0
+  DESC
+  task refresh_stale_summon_pages: :environment do
+    ActiveRecord::Base.logger.level = Logger::WARN if ActiveRecord::Base.logger
+    if ENV['dry_run'] == 'true'
+      stale = SummonAuras::StalePages.scope.to_a
+      puts "#{stale.size} stale summon pages:"
+      stale.each { |s| puts "  #{s.granblue_id} #{s.name_en}" }
+      next
+    end
+
+    delay = Granblue::WikiThrottle.clamp(ENV['delay'].presence, warn: method(:puts))
+    SummonAuras::StalePages.refresh(limit: ENV['limit'].presence&.to_i, delay: delay)
+  end
 end
