@@ -17,6 +17,10 @@ RSpec.describe SummonSeries, type: :model do
     it { is_expected.to validate_presence_of(:slug) }
     it { is_expected.to validate_uniqueness_of(:slug) }
     it { is_expected.to validate_numericality_of(:order).only_integer }
+
+    it 'rejects a slug that is not lowercase words joined by hyphens' do
+      expect(build(:summon_series, slug: 'six_dragons')).not_to be_valid
+    end
   end
 
   describe 'scopes' do

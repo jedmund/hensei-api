@@ -2,7 +2,8 @@
 
 require 'rails_helper'
 
-# The database editor's weapon series, character series and awakening lists
+# The database editor's weapon series, character series, summon series and
+# awakening lists
 # (GBF-143). The test database is seeded with real series and awakenings, so
 # each example narrows to the rows it creates with a search.
 RSpec.describe 'Admin series and awakenings collections', type: :request do
@@ -82,6 +83,28 @@ RSpec.describe 'Admin series and awakenings collections', type: :request do
 
     it 'rejects a signed-out request' do
       fetch(path, {}, {})
+      expect(response).to have_http_status(:unauthorized)
+    end
+  end
+
+  describe 'GET /admin/summon_series' do
+    let(:path) { '/api/v1/admin/summon_series' }
+    let!(:alpha) { create(:summon_series, slug: 'zz-alpha', name_en: 'Zz Alpha', order: 9002) }
+
+    before do
+      create(:summon_series, slug: 'zz-bravo', name_en: 'Zz Bravo', order: 9001)
+      create(:summon, summon_series: alpha)
+    end
+
+    it 'lists by order and counts summons on request' do
+      body = fetch(path, q: 'zz-', fields: 'slug,summon_count')
+      expect(response).to have_http_status(:ok)
+      expect(slugs(body)).to eq(%w[zz-bravo zz-alpha])
+      expect(body['results'].pluck('summon_count')).to eq([0, 1])
+    end
+
+    it 'rejects a non-editor' do
+      fetch(path, {}, auth_headers(create(:user, role: 3)))
       expect(response).to have_http_status(:unauthorized)
     end
   end

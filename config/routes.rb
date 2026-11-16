@@ -435,6 +435,9 @@ Rails.application.routes.draw do
       resources :character_series, only: :index do
         get :schema, on: :collection
       end
+      resources :summon_series, only: :index do
+        get :schema, on: :collection
+      end
       resources :awakenings, only: :index do
         get :schema, on: :collection
       end
