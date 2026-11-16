@@ -12,6 +12,7 @@ RSpec.describe GachaRatesFetcher do
   let(:list) { { 'legend' => { 'lineup' => [payload['banner'].merge('id' => '211961', 'times' => '1'), payload['banner']] } } }
   let(:requests) { [] }
   let(:uploads) { [] }
+  let(:refetch_requested_at) { nil }
 
   after { FileUtils.remove_entry(dir) }
 
@@ -32,6 +33,7 @@ RSpec.describe GachaRatesFetcher do
       uploads << body
       { 'game_id' => '211960', 'items' => 9, 'unmatched' => 0 }
     end
+    allow(fetcher).to receive(:refetch_requested_at) { refetch_requested_at }
     allow(fetcher).to receive(:puts).and_call_original
     allow(fetcher).to receive(:puts).with(/\ASaved \d+ cookies/)
     fetcher.import_cookies("Cookie: wing=abc; t=1; access_gbtk=x; access_gbtk=y\n")
@@ -70,6 +72,49 @@ RSpec.describe GachaRatesFetcher do
       allow(forced).to receive(:get) { |uri, **| respond(uri.path) }
       allow(forced).to receive(:upload).and_return({ 'game_id' => '211960', 'items' => 9, 'unmatched' => 0 })
       expect { forced.run }.to output(/Uploaded/).to_stdout
+    end
+  end
+
+  context 'when a curator asks for a re-fetch while the banner is running' do
+    let(:state_file) { File.join(dir, 'cookies-state.json') }
+
+    before do
+      travel_to Time.zone.parse('2026-10-10 12:00 JST')
+      allow(fetcher).to receive(:puts)
+      fetcher.run
+      allow(fetcher).to receive(:puts).and_call_original
+      requests.clear
+      uploads.clear
+    end
+
+    it 'checks the game once and uploads the banner again' do
+      allow(fetcher).to receive(:refetch_requested_at).and_return('2026-10-10T03:30:00.000Z')
+      expect { fetcher.run }.to output(/re-fetch was requested.*Uploaded banner 211960/m).to_stdout
+      expect(uploads.size).to eq(1)
+      expect(JSON.parse(File.read(state_file)))
+        .to eq('game_id' => '211960', 'ends_at' => '2026-10-12T19:00:00+09:00', 'refetched' => '2026-10-10T03:30:00.000Z')
+
+      requests.clear
+      expect { fetcher.run }.to output(/runs until/).to_stdout
+      expect(requests).to be_empty
+    end
+
+    it "doesn't retry a request it already acted on when the game check fails" do
+      allow(fetcher).to receive(:refetch_requested_at).and_return('2026-10-10T03:30:00.000Z')
+      allow(fetcher).to receive(:game_version).and_raise(described_class::SignedOut, 'no game version')
+      allow(fetcher).to receive(:alert)
+      expect { fetcher.run }.to raise_error(SystemExit).and output(/signed out/).to_stderr
+
+      allow(fetcher).to receive(:game_version).and_call_original
+      requests.clear
+      expect { fetcher.run }.to output(/runs until/).to_stdout
+      expect(requests).to be_empty
+    end
+
+    it 'waits as usual when the API is unreachable' do
+      allow(fetcher).to receive(:refetch_requested_at).and_raise(Errno::ECONNREFUSED)
+      expect { fetcher.run }.to output(/runs until/).to_stdout.and output(/Couldn't check for a re-fetch/).to_stderr
+      expect(requests).to be_empty
     end
   end
 

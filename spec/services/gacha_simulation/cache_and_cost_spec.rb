@@ -20,6 +20,38 @@ RSpec.describe 'Gacha cache and purchase estimates' do
     end
   end
 
+  it 'reloads the catalogue when a curator refreshes, before its 15 minutes are up', :gacha_refresh do
+    catalogue = GachaSimulation::Catalogue
+    original = catalogue.instance_variable_get(:@snapshot)
+    begin
+      catalogue.instance_variable_set(:@snapshot, nil)
+      allow(catalogue).to receive(:load_items).and_return([{ 'identity' => 'Weapon:old', 'name' => 'item' }])
+      snapshot = catalogue.snapshot
+      allow(catalogue).to receive(:load_items).and_return([{ 'identity' => 'Weapon:new', 'name' => 'item' }])
+      expect(catalogue.snapshot).to equal(snapshot)
+
+      GachaSimulation::Refresh.request!
+      expect(catalogue.snapshot['items'].pluck('identity')).to eq(['Weapon:new'])
+      expect(catalogue).to have_received(:load_items).twice
+    ensure
+      catalogue.instance_variable_set(:@snapshot, original)
+    end
+  end
+
+  it 'keeps the catalogue on its usual schedule when Redis is down' do
+    catalogue = GachaSimulation::Catalogue
+    original = catalogue.instance_variable_get(:@snapshot)
+    begin
+      catalogue.instance_variable_set(:@snapshot, nil)
+      allow(Sidekiq).to receive(:redis).and_raise(RedisClient::CannotConnectError)
+      allow(catalogue).to receive(:load_items).and_return([{ 'identity' => 'Weapon:fixture', 'name' => 'item' }])
+      snapshot = catalogue.snapshot
+      expect(catalogue.snapshot).to equal(snapshot)
+    ensure
+      catalogue.instance_variable_set(:@snapshot, original)
+    end
+  end
+
   it 'identifies the character a weapon recruits' do
     character = create(:character, name_en: 'Vira', name_jp: 'ヴィーラ')
     weapon = create(:weapon, rarity: 3, recruits: character.granblue_id, release_date: Date.new(2026, 3, 16))
