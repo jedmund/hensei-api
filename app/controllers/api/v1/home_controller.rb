@@ -14,7 +14,7 @@ module Api
       CHARACTER_TAG_FIELDS = %i[element season series series_names style_swap].freeze
 
       def show
-        payload = Rails.cache.fetch(HomeFeed::CACHE_KEY, expires_in: CACHE_TTL) { build_payload }
+        payload = Rails.cache.fetch(HomeFeed.cache_key, expires_in: CACHE_TTL) { build_payload }
         payload = with_my_stickers(payload.deep_dup) if current_user
 
         render json: payload

@@ -21,6 +21,12 @@ module Api
         render json: { error: 'Expected JSON' }, status: :bad_request
       end
 
+      # Whether a curator asked for the game's banner to be read again (see
+      # GachaSimulation::Refresh)
+      def refetch
+        render json: { requested_at: GachaSimulation::Refresh.refetch_requested_at&.iso8601(3) }
+      end
+
       private
 
       def authenticate_fetcher

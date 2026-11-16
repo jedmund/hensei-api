@@ -37,6 +37,8 @@ module GachaSimulation
 
       tabs = @tabs.slice('1', '2').to_h { |tab, data| [tab.to_i, parse_tab(data)] }
       banner, created = store(game_id, tabs)
+      # The fetcher has just read the game, which answers any waiting re-fetch request
+      Refresh.clear_refetch
       # A new character release: refresh the wiki's status list once the wiki has caught up.
       Sources::FetchWikiStatusListJob.after_release(banner.starts_at) if created
       { 'game_id' => banner.game_id, 'items' => banner.rates.where(tab: 1).count,

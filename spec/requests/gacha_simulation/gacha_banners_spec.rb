@@ -43,6 +43,28 @@ RSpec.describe 'Gacha banner rates', type: :request do
     end
   end
 
+  describe 'GET /gacha/banners/refetch', :refresh_redis do
+    it "tells the fetcher about a curator's request until the next banner import" do
+      get '/api/v1/gacha/banners/refetch', headers: headers
+      expect(response.parsed_body).to eq('requested_at' => nil)
+
+      GachaSimulation::Refresh.request!
+      get '/api/v1/gacha/banners/refetch', headers: headers
+      expect(response.parsed_body).to eq('requested_at' => '2026-10-10T00:00:00.000Z')
+
+      post '/api/v1/gacha/banners', params: gacha_banner_payload.to_json, headers: headers
+      get '/api/v1/gacha/banners/refetch', headers: headers
+      expect(response.parsed_body).to eq('requested_at' => nil)
+    end
+
+    it 'needs the fetcher token' do
+      get '/api/v1/gacha/banners/refetch', headers: headers.merge('Authorization' => 'Bearer nope')
+      expect(response).to have_http_status(:unauthorized)
+      get '/api/v1/gacha/banners/refetch'
+      expect(response).to have_http_status(:unauthorized)
+    end
+  end
+
   describe 'the current banner' do
     it 'is only offered once a banner is stored' do
       get '/api/v1/gacha/catalogue'

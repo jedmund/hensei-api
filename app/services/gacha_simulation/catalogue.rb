@@ -8,7 +8,10 @@ module GachaSimulation
       def snapshot
         LOCK.synchronize do
           now = Time.now.to_i
-          return @snapshot if @snapshot && now - @snapshot['loaded_at'] < 900
+          # A curator's refresh (Refresh.request!) changes the epoch
+          epoch = Refresh.catalogue_epoch
+          fresh = epoch.nil? || epoch == @epoch
+          return @snapshot if @snapshot && fresh && now - @snapshot['loaded_at'] < 900
 
           begin
             items = load_items.sort_by { |item| item['identity'] }
@@ -16,6 +19,8 @@ module GachaSimulation
 
             @snapshot = deep_freeze({ 'items' => items, 'loaded_at' => now,
                                       'fingerprint' => Digest::SHA256.hexdigest(JSON.generate(items)) })
+            @epoch = epoch unless epoch.nil?
+            @snapshot
           rescue StandardError => e
             Rails.logger.warn("gacha catalogue refresh failed: #{e.class}")
             raise Unavailable, 'Catalogue temporarily unavailable' unless @snapshot && now - @snapshot['loaded_at'] <= 3600

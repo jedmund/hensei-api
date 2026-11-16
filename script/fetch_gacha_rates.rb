@@ -29,6 +29,10 @@
 #   GACHA_RATES_TOKEN    the API's GACHA_RATES_TOKEN
 #   GACHA_ALERT_WEBHOOK  optional Discord webhook for failures
 #
+# While it waits, each run asks the API (GET <GACHA_RATES_URL>/refetch, not the
+# game) whether a curator asked for the banner to be read again from the
+# Database; it then checks the game once, as with --force.
+#
 # Options: --force checks the game and uploads even if the banner hasn't ended
 # or changed; --dry-run prints the payload instead of uploading it.
 
@@ -81,17 +85,23 @@ class GachaRatesFetcher
     abort 'Set GACHA_RATES_URL and GACHA_RATES_TOKEN' unless @dry_run || (@api && @token)
 
     state = load_state
+    force = @force
     ends_at = state['ends_at'] && Time.iso8601(state['ends_at'])
-    if !@force && ends_at && Time.now < ends_at
-      puts "Banner #{state['game_id']} runs until #{ends_at.iso8601}"
-      return
+    if !force && ends_at && Time.now < ends_at
+      requested = new_refetch_request(state)
+      return puts("Banner #{state['game_id']} runs until #{ends_at.iso8601}") unless requested
+
+      # Recorded before contacting the game, so a failed check isn't retried hourly
+      save_state(state.merge('refetched' => requested)) unless @dry_run
+      puts "A re-fetch was requested at #{requested}"
+      force = true
     end
 
     @cookies = load_cookies
     version = game_version
     banner = current_banner(version)
     ends_at = banner_end(banner)
-    if !@force && state['game_id'] == banner['id'] && state['uploaded'] != false
+    if !force && state['game_id'] == banner['id'] && state['uploaded'] != false
       # The game hasn't listed the next banner yet, or extended this one
       save_state('game_id' => banner['id'], 'ends_at' => ends_at.iso8601)
       puts "Banner #{banner['id']} is unchanged"
@@ -229,16 +239,37 @@ class GachaRatesFetcher
   end
 
   def upload(payload)
-    uri = URI(@api)
-    request = Net::HTTP::Post.new(uri)
-    request['Authorization'] = "Bearer #{@token}"
+    request = Net::HTTP::Post.new(URI(@api))
     request['Content-Type'] = 'application/json'
     request.body = JSON.generate(payload)
+    api(request)
+  end
+
+  def api(request)
+    request['Authorization'] = "Bearer #{@token}"
+    uri = request.uri
     response = Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == 'https', open_timeout: 15,
                                                    read_timeout: 60) { |http| http.request(request) }
     raise "The API returned #{response.code}: #{response.body.to_s[0, 200]}" unless response.is_a?(Net::HTTPSuccess)
 
     JSON.parse(response.body)
+  end
+
+  # A curator's re-fetch request (Database > Refresh) that this script hasn't
+  # acted on yet, as its ISO 8601 time. Asks the API, not the game; any
+  # failure counts as no request.
+  def new_refetch_request(state)
+    return if @api.nil? || @token.nil?
+
+    requested = refetch_requested_at
+    requested if requested && (!state['refetched'] || Time.iso8601(requested) > Time.iso8601(state['refetched']))
+  rescue StandardError => e
+    warn "Couldn't check for a re-fetch request: #{e.class}: #{e.message}"
+    nil
+  end
+
+  def refetch_requested_at
+    api(Net::HTTP::Get.new(URI("#{@api.chomp('/')}/refetch")))['requested_at']
   end
 
   def load_cookies
@@ -256,7 +287,9 @@ class GachaRatesFetcher
     File.exist?(@state_file) ? JSON.parse(File.read(@state_file)) : {}
   end
 
+  # Keeps the last re-fetch request acted on across banners
   def save_state(state)
+    state = state.merge('refetched' => state['refetched'] || load_state['refetched']).compact
     File.write(@state_file, JSON.generate(state))
   end
 

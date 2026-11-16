@@ -18,6 +18,7 @@ Rails.application.routes.draw do
     post 'gacha/odds', to: 'gacha#odds'
     get 'gacha/jobs/:token', to: 'gacha#job'
     post 'gacha/banners', to: 'gacha_banners#create'
+    get 'gacha/banners/refetch', to: 'gacha_banners#refetch'
     resources :parties, only: %i[index create update destroy]
     get 'users/me', to: 'users#me'
     get 'users/me/identities', to: 'user_identities#index'
@@ -450,6 +451,11 @@ Rails.application.routes.draw do
       resources :users, only: %i[index show] do
         get :crews, on: :collection
         patch :role, on: :member, action: :update_role
+      end
+      # Curators refresh Home and the gacha rate-ups (GBF-279)
+      resource :refreshes, only: :show do
+        post :home
+        post :gacha
       end
     end
 
