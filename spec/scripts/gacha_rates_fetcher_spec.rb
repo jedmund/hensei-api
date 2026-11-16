@@ -111,6 +111,14 @@ RSpec.describe GachaRatesFetcher do
       expect(requests).to be_empty
     end
 
+    it "doesn't use up a request on a dry run" do
+      dry = described_class.new(env, dry_run: true)
+      allow(dry).to receive_messages(refetch_requested_at: '2026-10-10T03:30:00.000Z', get: nil)
+      allow(dry).to receive(:get) { |uri, **| respond(uri.path) }
+      expect { dry.run }.to output(/re-fetch was requested/).to_stdout
+      expect(JSON.parse(File.read(state_file))).not_to have_key('refetched')
+    end
+
     it 'waits as usual when the API is unreachable' do
       allow(fetcher).to receive(:refetch_requested_at).and_raise(Errno::ECONNREFUSED)
       expect { fetcher.run }.to output(/runs until/).to_stdout.and output(/Couldn't check for a re-fetch/).to_stderr

@@ -92,7 +92,7 @@ class GachaRatesFetcher
       return puts("Banner #{state['game_id']} runs until #{ends_at.iso8601}") unless requested
 
       # Recorded before contacting the game, so a failed check isn't retried hourly
-      save_state(state.merge('refetched' => requested))
+      save_state(state.merge('refetched' => requested)) unless @dry_run
       puts "A re-fetch was requested at #{requested}"
       force = true
     end

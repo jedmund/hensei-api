@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe ExpiresHomeFeed do
+RSpec.describe ExpiresHomeFeed, :refresh_redis do
   around do |example|
     original = Rails.cache
     Rails.cache = ActiveSupport::Cache::MemoryStore.new
@@ -12,11 +12,11 @@ RSpec.describe ExpiresHomeFeed do
   end
 
   def cached?
-    Rails.cache.exist?(HomeFeed::CACHE_KEY)
+    Rails.cache.exist?(HomeFeed.cache_key)
   end
 
   def warm
-    Rails.cache.write(HomeFeed::CACHE_KEY, { current: [] })
+    Rails.cache.write(HomeFeed.cache_key, { current: [] })
   end
 
   it 'clears the cached Home feed when an event changes' do
@@ -34,6 +34,15 @@ RSpec.describe ExpiresHomeFeed do
 
     warm
     link.destroy!
+    expect(cached?).to be(false)
+  end
+
+  it "clears other processes' copies too, through the shared epoch" do
+    warm
+    other_process = Rails.cache
+    Rails.cache = ActiveSupport::Cache::MemoryStore.new
+    create(:event)
+    Rails.cache = other_process
     expect(cached?).to be(false)
   end
 

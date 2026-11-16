@@ -20,7 +20,7 @@ RSpec.describe 'Gacha cache and purchase estimates' do
     end
   end
 
-  it 'reloads the catalogue when a curator refreshes, before its 15 minutes are up', :gacha_refresh do
+  it 'reloads the catalogue when a curator refreshes, before its 15 minutes are up', :refresh_redis do
     catalogue = GachaSimulation::Catalogue
     original = catalogue.instance_variable_get(:@snapshot)
     begin

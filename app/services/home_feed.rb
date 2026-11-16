@@ -41,15 +41,24 @@ class HomeFeed
   NewItem = Struct.new(:type, :item, :change, :recent_ids, :trending_ids, :has_more, keyword_init: true)
   NewBattle = Struct.new(:raid, :recent_ids, :trending_ids, :has_more, keyword_init: true)
 
-  # The cached GET /home payload (see HomeController)
+  # The cached GET /home payload (see HomeController), under the current
+  # CacheEpoch so expiring it reaches every process
   CACHE_KEY = 'home/v6'
+  CACHE_EPOCH = 'home'
 
   def self.call(**)
     new(**).call
   end
 
+  def self.cache_key
+    "#{CACHE_KEY}/#{CacheEpoch.current(CACHE_EPOCH)}"
+  end
+
+  # Clears the payload in every process. Deleting this process's copy also
+  # covers a Redis outage, when the key has no epoch.
   def self.expire
-    Rails.cache.delete(CACHE_KEY)
+    Rails.cache.delete(cache_key)
+    CacheEpoch.bump(CACHE_EPOCH)
   end
 
   def initialize(now: Time.current)

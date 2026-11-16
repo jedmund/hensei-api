@@ -43,7 +43,7 @@ RSpec.describe 'Gacha banner rates', type: :request do
     end
   end
 
-  describe 'GET /gacha/banners/refetch', :gacha_refresh do
+  describe 'GET /gacha/banners/refetch', :refresh_redis do
     it "tells the fetcher about a curator's request until the next banner import" do
       get '/api/v1/gacha/banners/refetch', headers: headers
       expect(response.parsed_body).to eq('requested_at' => nil)

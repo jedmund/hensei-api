@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Admin refreshes', :gacha_refresh, type: :request do
+RSpec.describe 'Admin refreshes', :refresh_redis, type: :request do
   let(:path) { '/api/v1/admin/refreshes' }
   let(:curator_headers) { auth_headers(create(:user, role: 6)) }
 
@@ -51,11 +51,28 @@ RSpec.describe 'Admin refreshes', :gacha_refresh, type: :request do
   end
 
   describe 'POST /admin/refreshes/home' do
-    it 'clears the cached Home feed' do
-      allow(HomeFeed).to receive(:expire)
+    around do |example|
+      original = Rails.cache
+      Rails.cache = ActiveSupport::Cache::MemoryStore.new
+      example.run
+    ensure
+      Rails.cache = original
+    end
+
+    def new_battle_names
+      get '/api/v1/home'
+      response.parsed_body['new_battles'].map { |battle| battle.dig('raid', 'name', 'en') }
+    end
+
+    it 'shows changes Home would otherwise keep for 5 minutes' do
+      expect(new_battle_names).to be_empty
+      # New raids don't expire Home themselves
+      create(:raid, name_en: 'Fresh Raid', released_at: Date.new(2026, 10, 1))
+      expect(new_battle_names).to be_empty
+
       post "#{path}/home", headers: curator_headers
       expect(response).to have_http_status(:ok)
-      expect(HomeFeed).to have_received(:expire)
+      expect(new_battle_names).to eq(['Fresh Raid'])
     end
   end
 
