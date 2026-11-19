@@ -6,7 +6,7 @@ gem 'rack-cors'
 gem 'rails'
 
 # A Ruby Web Server Built For Concurrency
-gem 'puma', '~> 8.0'
+gem 'puma', '~> 8.1'
 
 # Pg is the Ruby interface to the PostgreSQL RDBMS
 gem 'pg'
