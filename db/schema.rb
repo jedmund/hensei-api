@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_15_160000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_21_100000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -386,6 +386,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_15_160000) do
     t.index ["weapon_key2_id"], name: "index_collection_weapons_on_weapon_key2_id"
     t.index ["weapon_key3_id"], name: "index_collection_weapons_on_weapon_key3_id"
     t.index ["weapon_key4_id"], name: "index_collection_weapons_on_weapon_key4_id"
+  end
+
+  create_table "collection_wonders", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.uuid "wonder_id", null: false
+    t.boolean "active", default: true, null: false
+    t.integer "level"
+    t.integer "evolution"
+    t.integer "possession"
+    t.string "image"
+    t.jsonb "imported_bonuses"
+    t.datetime "synced_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "wonder_id"], name: "index_collection_wonders_on_user_id_and_wonder_id", unique: true
+    t.index ["wonder_id"], name: "index_collection_wonders_on_wonder_id"
   end
 
   create_table "crew_gw_participations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1113,6 +1129,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_15_160000) do
     t.datetime "updated_at", null: false
     t.index ["date"], name: "index_party_view_days_on_date"
     t.index ["party_id", "date"], name: "index_party_view_days_on_party_id_and_date", unique: true
+  end
+
+  create_table "party_wonders", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "party_id", null: false
+    t.uuid "wonder_id", null: false
+    t.integer "level"
+    t.integer "evolution"
+    t.integer "possession"
+    t.string "image"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["party_id", "wonder_id"], name: "index_party_wonders_on_party_id_and_wonder_id", unique: true
+    t.index ["wonder_id"], name: "index_party_wonders_on_wonder_id"
   end
 
   create_table "pg_search_documents", force: :cascade do |t|
@@ -1891,6 +1920,76 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_15_160000) do
     t.index ["weapon_series_variant_id"], name: "index_weapons_on_weapon_series_variant_id"
   end
 
+  create_table "wonder_categories", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "granblue_id", null: false
+    t.string "name_en", null: false
+    t.string "name_jp"
+    t.integer "category_type", null: false
+    t.integer "sort_order", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["granblue_id"], name: "index_wonder_categories_on_granblue_id", unique: true
+  end
+
+  create_table "wonder_effect_links", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "wonder_id", null: false
+    t.uuid "wonder_effect_id", null: false
+    t.integer "position", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["wonder_effect_id"], name: "index_wonder_effect_links_on_wonder_effect_id"
+    t.index ["wonder_id", "position"], name: "index_wonder_effect_links_on_wonder_id_and_position", unique: true
+  end
+
+  create_table "wonder_effects", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.integer "action_id"
+    t.text "text_en"
+    t.text "text_jp"
+    t.jsonb "details", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["action_id"], name: "index_wonder_effects_on_action_id", unique: true, where: "(action_id IS NOT NULL)"
+  end
+
+  create_table "wonder_evolution_caps", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "wonder_id", null: false
+    t.integer "evolution", null: false
+    t.integer "max_level", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["wonder_id", "evolution"], name: "index_wonder_evolution_caps_on_wonder_id_and_evolution", unique: true
+  end
+
+  create_table "wonder_level_bonuses", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "wonder_id", null: false
+    t.integer "level", null: false
+    t.string "stat", null: false
+    t.integer "value", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["wonder_id", "level"], name: "index_wonder_level_bonuses_on_wonder_id_and_level", unique: true
+  end
+
+  create_table "wonders", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "granblue_id", null: false
+    t.uuid "wonder_category_id", null: false
+    t.string "name_en", null: false
+    t.string "name_jp"
+    t.text "description_en"
+    t.text "description_jp"
+    t.string "kind", default: "fixed", null: false
+    t.integer "max_level"
+    t.integer "max_evolution", default: 0, null: false
+    t.integer "element"
+    t.boolean "battle_relevant", default: false, null: false
+    t.boolean "hidden_in_unite_and_fight", default: false, null: false
+    t.integer "sort_order", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["granblue_id"], name: "index_wonders_on_granblue_id", unique: true
+    t.index ["wonder_category_id"], name: "index_wonders_on_wonder_category_id"
+  end
+
   add_foreign_key "arcarum_blessing_levels", "arcarum_blessings", on_delete: :cascade
   add_foreign_key "character_series_memberships", "character_series"
   add_foreign_key "character_series_memberships", "characters"
@@ -1922,6 +2021,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_15_160000) do
   add_foreign_key "collection_weapons", "weapon_stat_modifiers", column: "ax_modifier2_id"
   add_foreign_key "collection_weapons", "weapon_stat_modifiers", column: "befoulment_modifier_id"
   add_foreign_key "collection_weapons", "weapons"
+  add_foreign_key "collection_wonders", "users", on_delete: :cascade
+  add_foreign_key "collection_wonders", "wonders"
   add_foreign_key "crew_gw_participations", "crews"
   add_foreign_key "crew_gw_participations", "events"
   add_foreign_key "crew_invitations", "crews"
@@ -1997,6 +2098,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_15_160000) do
   add_foreign_key "party_stickers", "stickers"
   add_foreign_key "party_stickers", "users"
   add_foreign_key "party_view_days", "parties", on_delete: :cascade
+  add_foreign_key "party_wonders", "parties", on_delete: :cascade
+  add_foreign_key "party_wonders", "wonders"
   add_foreign_key "phantom_players", "crew_memberships", column: "claimed_from_membership_id"
   add_foreign_key "phantom_players", "crews"
   add_foreign_key "phantom_players", "users", column: "claimed_by_id"
@@ -2032,4 +2135,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_15_160000) do
   add_foreign_key "weapon_skill_versions", "weapon_skills"
   add_foreign_key "weapons", "weapon_series"
   add_foreign_key "weapons", "weapon_series_variants"
+  add_foreign_key "wonder_effect_links", "wonder_effects"
+  add_foreign_key "wonder_effect_links", "wonders", on_delete: :cascade
+  add_foreign_key "wonder_evolution_caps", "wonders", on_delete: :cascade
+  add_foreign_key "wonder_level_bonuses", "wonders", on_delete: :cascade
+  add_foreign_key "wonders", "wonder_categories"
 end
