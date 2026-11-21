@@ -1223,7 +1223,7 @@
       "granblue_id": "2001",
       "category": "8",
       "name_en": "Ring of Justice",
-      "name_jp": null,
+      "name_jp": "リング・オブ・ジャスティス",
       "description_en": "A ring made to manifest through the focused power of providence grains. It is proof of the oath that the primal beast paradigmatic of Justice shares with The Empress who defends her reclaimed throne.",
       "description_jp": null,
       "kind": "fixed",
@@ -1238,7 +1238,7 @@
           "position": 1,
           "action_id": null,
           "text_en": "Gives a 30% boost to water allies' HP.",
-          "text_jp": null,
+          "text_jp": "水属性キャラのHPが30％UPする。",
           "details": {
             "no_stack_with_summon": "Justice"
           }
@@ -1316,7 +1316,7 @@
       "granblue_id": "2004",
       "category": "8",
       "name_en": "Ring of Temperance",
-      "name_jp": null,
+      "name_jp": "リング・オブ・テンパランス",
       "description_en": "A ring made to manifest through the focused power of providence grains. It is proof of the oath that the primal beast paradigmatic of Temperance shares with The Hermit who reaches into the wisdom of the universe.",
       "description_jp": null,
       "kind": "fixed",
@@ -1331,7 +1331,7 @@
           "position": 1,
           "action_id": null,
           "text_en": "Gives a 30% boost to wind allies' HP.",
-          "text_jp": null,
+          "text_jp": "風属性キャラのHPが30％UPする。",
           "details": {
             "no_stack_with_summon": "Temperance"
           }
@@ -1344,7 +1344,7 @@
       "granblue_id": "2005",
       "category": "8",
       "name_en": "Ring of The Devil",
-      "name_jp": null,
+      "name_jp": "リング・オブ・デビル",
       "description_en": "A ring made to manifest through the focused power of providence grains. It is proof of the oath that the primal beast paradigmatic of The Devil shares with Strength who delves into the depths of the abyss.",
       "description_jp": null,
       "kind": "fixed",
@@ -1359,7 +1359,7 @@
           "position": 1,
           "action_id": null,
           "text_en": "Gives a 30% boost to fire allies' HP.",
-          "text_jp": null,
+          "text_jp": "火属性キャラのHPが30％UPする。",
           "details": {
             "no_stack_with_summon": "The Devil"
           }

@@ -246,21 +246,30 @@ module Wonders
       Array(item&.dig('action_list')).index_by { |action| action['action_no'].to_i }
     end
 
+    # Override values win over the captures and the wiki, except those under
+    # `derived:` (text inferred rather than seen in the game), which only
+    # fill fields that are still blank, so real capture text replaces them
+    # once a capture has it.
     def apply_overrides(wonder)
       override = override_wonders[wonder['granblue_id']]
       return wonder unless override
 
-      unknown = override.keys - WONDER_OVERRIDE_FIELDS - ['effects']
-      raise Error, "Unknown override fields for #{wonder['granblue_id']}: #{unknown.join(', ')}" if unknown.any?
-
-      WONDER_OVERRIDE_FIELDS.each { |field| wonder[field] = override[field] unless override[field].nil? }
-      (override['effects'] || {}).each do |position, fields|
-        apply_effect_override(wonder, position.to_i, fields || {})
-      end
+      apply_override_fields(wonder, override.except('derived'), derived: false)
+      apply_override_fields(wonder, override['derived'], derived: true) if override['derived']
       wonder
     end
 
-    def apply_effect_override(wonder, position, fields)
+    def apply_override_fields(wonder, override, derived:)
+      unknown = override.keys - WONDER_OVERRIDE_FIELDS - ['effects']
+      raise Error, "Unknown override fields for #{wonder['granblue_id']}: #{unknown.join(', ')}" if unknown.any?
+
+      WONDER_OVERRIDE_FIELDS.each { |field| assign_override(wonder, field, override[field], derived) }
+      (override['effects'] || {}).each do |position, fields|
+        apply_effect_override(wonder, position.to_i, fields || {}, derived)
+      end
+    end
+
+    def apply_effect_override(wonder, position, fields, derived)
       unknown = fields.keys - EFFECT_OVERRIDE_FIELDS
       raise Error, "Unknown effect override fields for #{wonder['granblue_id']}: #{unknown.join(', ')}" if unknown.any?
 
@@ -271,10 +280,19 @@ module Wonders
         wonder['effects'].sort_by! { |e| e['position'] }
       end
       EFFECT_OVERRIDE_FIELDS.each do |field|
-        next if fields[field].nil?
-
-        effect[field] = field == 'details' ? effect['details'].merge(fields[field]) : fields[field]
+        if field == 'details'
+          effect['details'] = effect['details'].merge(fields['details']) if fields['details']
+        else
+          assign_override(effect, field, fields[field], derived)
+        end
       end
+    end
+
+    def assign_override(target, field, value, derived)
+      return if value.nil?
+      return if derived && !target[field].nil?
+
+      target[field] = value
     end
 
     def en_items_by_name

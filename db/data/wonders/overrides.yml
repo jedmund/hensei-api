@@ -9,9 +9,13 @@
 #   Wonder fields: name_en, name_jp, description_en, description_jp,
 #   element, battle_relevant.
 #   effects: by position (1, 2, …): action_id, text_en, text_jp, details.
-#   Values here win over the captures and the wiki. Once a capture includes
-#   one of these Wonders, its game text and action_ids come in on their own;
-#   drop the entries here that the game text makes unnecessary.
+#   Values here win over the captures and the wiki. Text inferred rather
+#   than seen in the game goes under `derived:` (same fields): derived
+#   values only fill blanks, so real capture text replaces them as soon as
+#   a capture has it.
+#   Once a capture includes one of these Wonders, its game text and
+#   action_ids come in on their own; drop entries the game text makes
+#   unnecessary.
 
 ids:
   # Rings: matched by identical image bytes on the wiki and the game CDN
@@ -25,13 +29,18 @@ ids:
 
 wonders:
   "2001":
-    name_jp: ~
     description_jp: ~
     effects:
       1:
         text_en: "Gives a 30% boost to water allies' HP."
-        text_jp: ~
         action_id: ~
+    # JA name and effect follow the captured Rings (Ring of Death,
+    # Ring of The Hanged Man); the flavor text can't be derived.
+    derived:
+      name_jp: "リング・オブ・ジャスティス"
+      effects:
+        1:
+          text_jp: "水属性キャラのHPが30％UPする。"
   "2002":
     name_jp: ~
     description_jp: ~
@@ -41,21 +50,31 @@ wonders:
         text_jp: ~
         action_id: ~
   "2004":
-    name_jp: ~
     description_jp: ~
     effects:
       1:
         text_en: "Gives a 30% boost to wind allies' HP."
-        text_jp: ~
         action_id: ~
+    # JA name and effect follow the captured Rings (Ring of Death,
+    # Ring of The Hanged Man); the flavor text can't be derived.
+    derived:
+      name_jp: "リング・オブ・テンパランス"
+      effects:
+        1:
+          text_jp: "風属性キャラのHPが30％UPする。"
   "2005":
-    name_jp: ~
     description_jp: ~
     effects:
       1:
         text_en: "Gives a 30% boost to fire allies' HP."
-        text_jp: ~
         action_id: ~
+    # JA name and effect follow the captured Rings (Ring of Death,
+    # Ring of The Hanged Man); the flavor text can't be derived.
+    derived:
+      name_jp: "リング・オブ・デビル"
+      effects:
+        1:
+          text_jp: "火属性キャラのHPが30％UPする。"
   "9001":
     name_jp: ~
     description_jp: ~
