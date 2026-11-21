@@ -173,7 +173,8 @@
       {
         "kind": "inclusion",
         "in": [
-          "solomonis"
+          "solomonis",
+          "unite_and_fight"
         ],
         "allow_nil": true
       }

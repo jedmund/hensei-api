@@ -1089,7 +1089,8 @@ RSpec.describe Party, type: :model do
 
     it 'runs the create hooks in their declared order' do
       expect(chain(:_create_callbacks)).to eq(
-        [%i[after create_remapped_substitutions], %i[before set_shortcode], %i[before set_edit_key]]
+        [%i[after create_remapped_substitutions], %i[after snapshot_wonders], %i[before set_shortcode],
+         %i[before set_edit_key]]
       )
     end
 
