@@ -1,0 +1,74 @@
+# Hand-maintained input to `bin/rails wonders:generate_seed`, which rebuilds
+# catalogue.json from the gbf.wiki Wonders page and the game captures.
+#
+# ids: game ids for wiki Wonders no capture has, by their wiki name. The
+#   generator fails when a wiki Wonder has neither a capture nor an id here.
+#
+# wonders: fills or corrects fields per granblue_id. A blank (~) value
+#   changes nothing, so the placeholders below are safe to leave empty.
+#   Wonder fields: name_en, name_jp, description_en, description_jp,
+#   element, battle_relevant.
+#   effects: by position (1, 2, …): action_id, text_en, text_jp, details.
+#   Values here win over the captures and the wiki. Once a capture includes
+#   one of these Wonders, its game text and action_ids come in on their own;
+#   drop the entries here that the game text makes unnecessary.
+
+ids:
+  # Rings: matched by identical image bytes on the wiki and the game CDN
+  Ring of Justice: "2001"
+  Ring of The Hanged Man: "2002"
+  Ring of Temperance: "2004"
+  Ring of The Devil: "2005"
+  # From the wiki image names (wonder9001.jpg, wonder9004.jpg)
+  Thief's Map: "9001"
+  Premium FRIED SHRIMP: "9004"
+
+wonders:
+  "2001":
+    name_jp: ~
+    description_jp: ~
+    effects:
+      1:
+        text_en: "Gives a 30% boost to water allies' HP."
+        text_jp: ~
+        action_id: ~
+  "2002":
+    name_jp: ~
+    description_jp: ~
+    effects:
+      1:
+        text_en: "Amplifies earth allies' DMG against water foes by 10%."
+        text_jp: ~
+        action_id: ~
+  "2004":
+    name_jp: ~
+    description_jp: ~
+    effects:
+      1:
+        text_en: "Gives a 30% boost to wind allies' HP."
+        text_jp: ~
+        action_id: ~
+  "2005":
+    name_jp: ~
+    description_jp: ~
+    effects:
+      1:
+        text_en: "Gives a 30% boost to fire allies' HP."
+        text_jp: ~
+        action_id: ~
+  "9001":
+    name_jp: ~
+    description_jp: ~
+    effects:
+      1:
+        text_en: "Gives a 1% boost to upgrade grand success rate."
+        text_jp: ~
+        action_id: ~
+  "9004":
+    name_jp: ~
+    description_jp: ~
+    effects:
+      1:
+        text_en: "Gives a 1% boost to EXP earned on Fridays, Saturdays, and Sundays (JST)."
+        text_jp: ~
+        action_id: ~

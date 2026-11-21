@@ -1,0 +1,492 @@
+'''Wonders''' are rewards that grant a passive buff. They are usually obtained by clearing [[Main Quests|main quests]].
+
+The Wonders screen can be accessed by going to ''Menu > Supplies > Wonders tab''. As of 1 Feb 2017, wonders can be manually toggled on and off here.
+
+==Main Quest==
+===Girl in Blue===
+{| class="wikitable" style="max-width: 1200px"
+!Icon!!Name!!Description!!Effect!!Obtained
+|-
+|[[File:tiamat wonder.png|80px|link=]]
+|Morning Calm of Tiamat
+|Earned in victory against Tiamat.
+|Gives a 10% boost to [[Player Rank#RP Table|RP]].
+|Complete Chapter 4
+|-
+|[[File:colossus wonder.png|80px|link=]]
+|Steel of the Iron Giant
+|Earned in victory against Colossus.
+|Gives a 5% boost to EXP for upgrades to characters and items.
+|Complete Chapter 8
+|-
+|[[File:leviathan wonder.png|80px|link=]]
+|Dew of Leviathan
+|Earned in victory against Leviathan.
+|Gives a 2% boost to upgrade '''Grand Success''' rate.
+|Complete Chapter 12
+|-
+|[[File:yggdrasil wonder.png|80px|link=]]
+|Leaf of Yggdrasil
+|Earned in victory against Yggdrasil.
+|Gives a 5% boost to EXP.
+|Complete Chapter 16
+|-
+|[[File:luminiera wonder.png|80px|link=]]
+|Pride of Luminiera
+|Earned in victory against Luminiera.
+|Gives a 5% boost to rupies in quests.
+|Complete Chapter 20
+|-
+|[[File:celest wonder.png|80px|link=]]
+|Anchor of Celeste
+|Earned in victory against Celeste.
+|Gives a 5% boost to EXP for upgrades to Dark characters and items.
+|Complete Chapter 24
+|-
+|[[File:wonder7.jpg|80px|link=]]
+|Gear of Mithra
+|Earned in victory against Mithra.
+|Gives a 50% boost to [[Crew#Airships|tuning points]].
+|Complete Chapter 28
+|-
+|[[File:wonder8.jpg|80px|link=]]
+|Scale of Order
+|Earned in victory against Monika and Lecia.
+|Gives a 5% boost to EXP for upgrades to Wind characters and items.
+|Complete Chapter 32
+|-
+|[[File:wonder9.jpg|80px|link=]]
+|Mystical Golem Kiln
+|Old artifact found in former capital Mephorash.
+|Gives a 5% boost to EXP for upgrades to Earth characters and items.
+|Complete Chapter 36
+|-
+|[[File:wonder10.jpg|80px|link=]]
+|Tattered Parchment
+|Worn and barely legible, but believed to be written by the Astrals.
+|Gives a 5% boost to EXP for element upgrade skill.
+|Complete Chapter 40
+|-
+|[[File:wonder11.jpg|80px|link=]]
+|Flame of Discipline
+|Earned in rescue of Amalthea Island from the Empire.
+|Gives a 5% boost to EXP for upgrades to Fire characters and items.
+|Complete Chapter 44
+|-
+|[[File:wonder12.jpg|80px|link=]]
+|Golden Apple
+|Rare and exquisite fruit found in Golden Fog Woods.
+|Gives a 5% boost to EXP for upgrades to Light characters and items.
+|Complete Chapter 48
+|-
+|[[File:wonder13.jpg|80px|link=]]
+|Red Leaf of Malice
+|Earned in rescue of Yggdrasil from Malice.
+|Gives a 5% boost to EXP for upgrades to Earth characters and items.
+|Complete Chapter 52
+|-
+|[[File:wonder14.jpg|80px|link=]]
+|Void Blossom
+|Earned in victory against Akasha.
+|Boosts rare foe encounter rate.
+|Complete Chapter 62
+|}
+
+===Dawning Sky===
+{| class="wikitable" style="max-width: 1200px"
+!Icon!!Name!!Description!!Effect!!Obtained
+|-
+|[[File:wonder15.jpg|80px|link=]]
+|Atmosphere Afloat
+|Earned in victory against Kikuri.
+|Gives a 50% boost to rewards for providing support.
+|Complete Chapter 69
+|-
+|[[File:wonder16.jpg|80px|link=]]
+|Delirium Medallion
+|Earned in victory against Freesia.
+|Gives a 5% boost to EXP for upgrades to Light characters and items.
+|Complete Chapter 73
+|-
+|[[File:wonder17.jpg|80px|link=]]
+|Silver Gorget
+|Earned in victory against Dykotomus.
+|Gives a 5% boost to rupies earned when selling weapons.
+|Complete Chapter 79
+|-
+|[[File:wonder18.jpg|80px|link=]]
+|Jade Piercing
+|Earned in victory against Reinhardtzar.
+|Gives a 5% boost to EXP for upgrades to Fire characters and items.
+|Complete Chapter 83
+|-
+|[[File:wonder19.jpg|80px|link=]]
+|Hallowed Robe
+|Earned in victory against Zeyen.
+|Gives a 5% boost to EXP for upgrades to Wind characters and items.
+|Complete Chapter 89
+|-
+|[[File:wonder20.jpg|80px|link=]]
+|Prismatic Fleur
+|An ethereal flower that blooms deep within Bestia Island.
+|Gives a 5% boost to EXP for upgrades to Water characters and items.
+|Complete Chapter 93
+|-
+|[[File:wonder21.jpg|80px|link=]]
+|Crown Jewel of Ruin
+|A crown found in the ruins of Starke Island's royal castle. Although weather-beaten from years of exposure to the elements, its inlaid jewel hasn't lost luster.
+|Increases the chances of encountering a rare monster in the Nalhegrande Skydom.
+|Complete Chapter 110
+|-
+|[[File:wonder22.jpg|80px|link=]]
+|Ebisu's Flame
+|This fire was captured and contained from Ebisu's eruption. It continues to burn with no signs of extinguishing.
+|Gives a 5% boost to rupies earned from selling summons.
+|Complete Chapter 114
+|}
+
+===Wayfaring Astral===
+{| class="wikitable" style="max-width: 1200px"
+!Icon!!Name!!Description!!Effect!!Obtained
+|-
+|[[File:wonder23.jpg|80px|link=]]
+|Royal Philos Institute Diploma
+|Proof that a student has graduated from the Royal Philos Institute. With this certificate, students are recognized as adults and are ready to be assigned their role in society.
+|Gives a 5% boost to EXP for upgrades to Dark characters and items.
+|Complete Chapter 140
+|-
+|[[File:wonder24.jpg|80px|link=]]
+|Hive God's Mask
+|The mask of Hive God Anima Animus, which came loose in battle. Despite the loss of its owner, a sinister power not found in other masks remains.
+|Gives a 5% boost to EXP.
+|Complete Chapter 147
+|-
+|[[File:wonder25.jpg|80px|link=]]
+|Blue Scarf
+|Entrusted to the shrine priestess, this symbol of the BLF instills its members with a sense of belonging.
+|Gives a 2% boost to upgrade '''Grand Success''' rate.
+|Complete Chapter 156
+|-
+|[[File:wonder26.jpg|80px|link=]]
+|King's Testament
+|A testament to a monarch's divine right to rule, this golden bangle is outfitted with all five of Istavion's Sky Map fragments. It is said the fragments will appear only for a king worthy of the throne, but whoever bears the testament is assuredly a being capable of perceiving all creation—including past darkness of the Otherworld.
+|Gives a 5% boost to EXP for upgrades.
+|Complete Chapter 162
+|-
+|[[File:wonder27.jpg|80px|link=]]
+|Primal Beast Sibyl
+|A ring serving as proof of succession for the True King. It also served as a symbol of commitment for a loving couple at one point, but now only the current True King is aware of this.
+|Gives a 50% boost to rewards for providing support.
+|Complete Chapter 170
+|-
+|[[File:wonder28.jpg|80px|link=]]
+|Disastrous Dragon's Horn
+|A relic left behind by the Otherworld Dragon following its demise. Whether or not the beast's desire was just, so long as both sides refused to yield, such an outcome was inevitable.
+|Gives a 5% boost to EXP for upgrades to Dark characters and items.
+|Complete Chapter 174
+|-
+|[[File:wonder29.jpg|80px|link=]]
+|Letters from Dad
+|Letters that tie together the beginning and end of a journey. With dreams undimmed, the traveler presses on.
+|Boosts the stats of Lyria, Katalina, Rackam, Io, Eugen, and Rosetta.
+|Complete Chapter 191
+|}
+
+==Cardinal Saint Yupei and Longxin==
+{| class="wikitable" style="max-width: 1200px"
+!Icon!!Name!!Description
+! style="width: 30%;" |Effect
+!Obtained
+|-
+|[[File:Zhurong's Yupei square.jpg|80px|link=]]
+|Zhurong's Yupei
+|An ornament infused with the power of vermilion flame that engenders cooperation and coexistence. It resonates with the the cardinal beast of the south.<br />A buff effect will be applied to all fire characters.
+|Strength varies depending on its level up to a maximum of:
+*{{Icon|bonus fire}} Fire ATK +10%
+*{{ClassBonus|DEF}} +10%
+*{{ClassBonus|Skill DMG}} +5%
+*{{ClassBonus|C.A. DMG}} +5%
+*{{Icon|bonus atk}} DMG Amplify vs. Wind +5%
+*{{Icon|bonus atk}} N.A. DMG Cap +5%
+*{{Icon|bonus skill dmg}} Skill DMG Cap +5%
+*{{Icon|bonus ca dmg}} C.A. DMG Cap +5%
+|[[Rise of the Beasts]]<br />([[Rise of the Beasts#Chichiri|Recruit Chichiri]])
+|-
+|[[File:Xuanming's Yupei square.jpg|80px|link=]]
+|Xuanming's Yupei
+|An ornament infused with the power of black water that cleanses malice and misfortune. It resonates with the cardinal beast of the north.<br />A buff effect will be applied to all water characters.
+|Strength varies depending on its level up to a maximum of:
+*{{Icon|bonus water}} Water ATK +10%
+*{{ClassBonus|DEF}} +10%
+*{{ClassBonus|Skill DMG}} +5%
+*{{ClassBonus|C.A. DMG}} +5%
+*{{Icon|bonus atk}} DMG Amplify vs. Fire +5%
+*{{Icon|bonus atk}} N.A. DMG Cap +5%
+*{{Icon|bonus skill dmg}} Skill DMG Cap +5%
+*{{Icon|bonus ca dmg}} C.A. DMG Cap +5%
+|[[Rise of the Beasts]]<br />([[Rise of the Beasts#Uruki|Recruit Uruki]])
+|-
+|[[File:Rushou's Yupei square.jpg|80px|link=]]
+|Rushou's Yupei
+|An ornament infused with the power of white stone that shapes mountains, rivers, and even nations. It resonates with the cardinal beast of the west.<br />A buff effect will be applied to all earth characters.
+|Strength varies depending on its level up to a maximum of:
+*{{Icon|bonus earth}} Earth ATK +10%
+*{{ClassBonus|DEF}} +10%
+*{{ClassBonus|Skill DMG}} +5%
+*{{ClassBonus|C.A. DMG}} +5%
+*{{Icon|bonus atk}} DMG Amplify vs. Water +5%
+*{{Icon|bonus atk}} N.A. DMG Cap +5%
+*{{Icon|bonus skill dmg}} Skill DMG Cap +5%
+*{{Icon|bonus ca dmg}} C.A. DMG Cap +5%
+|[[Rise of the Beasts]]<br />([[Rise of the Beasts#Shushuku|Recruit Shushuku]])
+|-
+|[[File:Goumang's Yupei square.jpg|80px|link=]]
+|Goumang's Yupei
+|An ornament infused with the power of azure wind that produces ore veins and water sources. It resonates with the the cardinal beast of the east.<br />A buff effect will be applied to all wind characters.
+|Strength varies depending on its level up to a maximum of:
+*{{Icon|bonus wind}} Wind ATK +10%
+*{{ClassBonus|DEF}} +10%
+*{{ClassBonus|Skill DMG}} +5%
+*{{ClassBonus|C.A. DMG}} +5%
+*{{Icon|bonus atk}} DMG Amplify vs. Earth +5%
+*{{Icon|bonus atk}} N.A. DMG Cap +5%
+*{{Icon|bonus skill dmg}} Skill DMG Cap +5%
+*{{Icon|bonus ca dmg}} C.A. DMG Cap +5%
+|[[Rise of the Beasts]]<br />([[Rise of the Beasts#Ami|Recruit Ami]])
+|-
+|[[File:Golden Longxin square.jpg|80px|link=]]
+|Golden Longxin
+|A majestic gold steeped in the power of shimmering brilliance that bestows life and blessings. It resonates with the beast that sits at the center of all directions.<br />A buff effect will be applied to all light characters.
+|Strength varies depending on its level up to a maximum of:
+*{{Icon|bonus light}} Light ATK +10%
+*{{ClassBonus|DEF}} +10%
+*{{ClassBonus|Skill DMG}} +5%
+*{{ClassBonus|C.A. DMG}} +5%
+*{{Icon|bonus atk}} DMG Amplify vs. Dark +5%
+*{{Icon|bonus atk}} N.A. DMG Cap +5%
+*{{Icon|bonus skill dmg}} Skill DMG Cap +5%
+*{{Icon|bonus ca dmg}} C.A. DMG Cap +5%
+|[[Rise of the Beasts]]<br />([[Rise of the Beasts#Pijiu|Recruit Pijiu]])
+|-
+|[[File:Obsidian Longxin square.jpg|80px|link=]]
+|Obsidian Longxin
+|A beautiful stone steeped in the power of everlasting darkness that brings calamity and destruction. It resonates with the beast that sits at the center of all directions.<br />A buff effect will be applied to all dark characters.
+|Strength varies depending on its level up to a maximum of:
+*{{Icon|bonus dark}} Dark ATK +10%
+*{{ClassBonus|DEF}} +10%
+*{{ClassBonus|Skill DMG}} +5%
+*{{ClassBonus|C.A. DMG}} +5%
+*{{Icon|bonus atk}} DMG Amplify vs. Light +5%
+*{{Icon|bonus atk}} N.A. DMG Cap +5%
+*{{Icon|bonus skill dmg}} Skill DMG Cap +5%
+*{{Icon|bonus ca dmg}} C.A. DMG Cap +5%
+|[[Rise of the Beasts]]<br />([[Rise of the Beasts#Koku|Recruit Koku]])
+|}
+
+==Arcarum Evoker Rings of Fate==
+{| class="wikitable" style="max-width: 1200px"
+!Icon!!Name!!Description
+! style="width: 30%;" |Effect
+! style="width:240px" |Obtained
+|-
+|[[File:Ring of Justice square.jpg|80px|link=]]
+|Ring of Justice
+|A ring made to manifest through the focused power of providence grains. It is proof of the oath that the primal beast paradigmatic of Justice shares with The Empress who defends her reclaimed throne.
+|Gives a 30% boost to Water allies' HP<br/>''Effect does not stack with {{itm|Justice (SSR)}}''.
+|Uncap {{itm|Maria Theresa}} to Lvl 110
+|-
+|[[File:Ring of The Hanged Man square.jpg|80px|link=]]
+|Ring of The Hanged Man
+|A ring made to manifest through the focused power of providence grains. It is proof of the oath that the primal beast paradigmatic of The Hanged Man shares with The Fool who allows his innate talent to bloom.
+|Amplifies Earth allies' DMG against Water foes by 10%.<br/>''Effect does not stack with {{itm|The Hanged Man (SSR)}}''.
+|Uncap {{itm|Caim}} to Lvl 110
+|-
+|[[File:Ring of Death square.jpg|80px|link=]]
+|Ring of Death
+|A ring made to manifest through the focused power of providence grains. It is proof of the oath that the primal beast paradigmatic of Death shares with The Lovers who resolves to share life together.
+|Gives a 30% boost to Dark allies' HP.<br/>Amplifies Dark allies' DMG against Light foes by 10%.<br/>''Effect does not stack with {{itm|Death (SSR)}}''.
+|Uncap {{itm|Nier}} to Lvl 110
+|-
+|[[File:Ring of Temperance square.jpg|80px|link=]]
+|Ring of Temperance
+|A ring made to manifest through the focused power of providence grains. It is proof of the oath that the primal beast paradigmatic of Temperance shares with The Hermit who reaches into the wisdom of the universe.
+|Gives a 30% boost to Wind allies' HP.<br/>''Effect does not stack with {{itm|Temperance (SSR)}}''.
+|Uncap {{itm|Estarriola}} to Lvl 110
+|-
+|[[File:Ring of The Devil square.jpg|80px|link=]]
+|Ring of The Devil
+|A ring made to manifest through the focused power of providence grains. It is proof of the oath that the primal beast paradigmatic of The Devil shares with Strength who delves into the depths of the abyss.
+|Gives a 30% boost to Fire allies' HP.<br/>''Effect does not stack with {{itm|The Devil (SSR)}}''.
+|Uncap {{itm|Fraux}} to Lvl 110
+|-
+|}
+
+==Event/Other==
+===Crucible Seal===
+{| class="wikitable" style="max-width: 1200px"
+!Icon!!Name!!Description!!Effect!!Obtained
+|-
+|[[File:wonder9009.jpg|80px|link=]]
+|Seal of the Blazing Bodhisattva
+|A mysterious crest that bestows the power to steal the throne of the blazing bodhisattva.<br />A buff effect will be applied to all fire characters.
+|Buff to all fire characters outside of [[Unite and Fight]] battles. Strength varies depending on its level up to a maximum of:
+*{{ClassBonus|Wind Resistance|+10%}}
+*{{ClassBonus|DEF|+12%}}
+*{{ClassBonus|Double Attack Rate|+6%}}
+*{{ClassBonus|Triple Attack Rate|+7%}}
+*{{ClassBonus|Healing Cap|+12%}}
+*{{ClassBonus|Debuff Resistance|+10%}}
+*{{ClassBonus|Debuff Success Rate|+5%}}
+|[[Exo Ifrit Crucible]]<br />[[Xeno Ifrit Clash]]
+|-
+|[[File:wonder9008.jpg|80px|link=]]
+|Seal of the Underworld Emperor
+|A mysterious crest that bestows the power to usurp the tyranny of the underworld emperor.<br />A buff effect will be applied to all water characters.
+|Buff to all water characters outside of [[Unite and Fight]] battles. Strength varies depending on its level up to a maximum of:
+*{{ClassBonus|Fire Resistance|+10%}}
+*{{ClassBonus|DEF|+12%}}
+*{{ClassBonus|Double Attack Rate|+6%}}
+*{{ClassBonus|Triple Attack Rate|+7%}}
+*{{ClassBonus|Healing Cap|+12%}}
+*{{ClassBonus|Debuff Resistance|+10%}}
+*{{ClassBonus|Debuff Success Rate|+5%}}
+|[[Exo Cocytus Crucible]]<br />[[Xeno Cocytus Clash]]
+|-
+|[[File:wonder9007.jpg|80px|link=]]
+|Seal of the Judicious Divine
+|A mysterious crest that bestows the power to overcome the verdict of the righteous deity of judgment.<br />A buff effect will be applied to all earth characters.
+|Buff to all earth characters outside of [[Unite and Fight]] battles. Strength varies depending on its level up to a maximum of:
+*{{ClassBonus|Water Resistance|+10%}}
+*{{ClassBonus|DEF|+12%}}
+*{{ClassBonus|Double Attack Rate|+6%}}
+*{{ClassBonus|Triple Attack Rate|+7%}}
+*{{ClassBonus|Healing Cap|+12%}}
+*{{ClassBonus|Debuff Resistance|+10%}}
+*{{ClassBonus|Debuff Success Rate|+5%}}
+|[[Exo Vohu Manah Crucible]]<br />[[Xeno Vohu Manah Clash]]
+|-
+|[[File:wonder9006.jpg|80px|link=]]
+|Seal of the Soaring Archer
+|A mysterious crest that bestows the power to shoot down the wings of the soaring wind archer.<br />A buff effect will be applied to all wind characters.
+|Buff to all wind characters outside of [[Unite and Fight]] battles. Strength varies depending on its level up to a maximum of:
+*{{ClassBonus|Earth Resistance|+10%}}
+*{{ClassBonus|DEF|+12%}}
+*{{ClassBonus|Double Attack Rate|+6%}}
+*{{ClassBonus|Triple Attack Rate|+7%}}
+*{{ClassBonus|Healing Cap|+12%}}
+*{{ClassBonus|Debuff Resistance|+10%}}
+*{{ClassBonus|Debuff Success Rate|+5%}}
+|[[Exo Sagittarius Crucible]]<br />[[Xeno Sagittarius Clash]]
+|-
+|[[File:wonder9010.jpg|80px|link=]]
+|Seal of the Radiant Queen
+|A mysterious crest that bestows the power to eclipse the luminosity of the radiant queen.<br />A buff effect will be applied to all light characters.
+|Buff to all light characters outside of [[Unite and Fight]] battles. Strength varies depending on its level up to a maximum of:
+*{{ClassBonus|Dark Resistance|+10%}}
+*{{ClassBonus|DEF|+12%}}
+*{{ClassBonus|Double Attack Rate|+6%}}
+*{{ClassBonus|Triple Attack Rate|+7%}}
+*{{ClassBonus|Healing Cap|+12%}}
+*{{ClassBonus|Debuff Resistance|+10%}}
+*{{ClassBonus|Debuff Success Rate|+5%}}
+|[[Exo Corow Crucible]]<br />[[Xeno Corow Clash]]
+|-
+|[[File:Seal of the Calamitous Demon square.jpg|80px|link=]]
+|Seal of the Calamitous Demon
+|A mysterious crest that bestows the power to banish the shadow of the calamitous demon.<br />A buff effect will be applied to all dark characters.
+|Buff to all dark characters outside of [[Unite and Fight]] battles. Strength varies depending on its level up to a maximum of:
+*{{ClassBonus|Light Resistance|+10%}}
+*{{ClassBonus|DEF|+12%}}
+*{{ClassBonus|Double Attack Rate|+6%}}
+*{{ClassBonus|Triple Attack Rate|+7%}}
+*{{ClassBonus|Healing Cap|+12%}}
+*{{ClassBonus|Debuff Resistance|+10%}}
+*{{ClassBonus|Debuff Success Rate|+5%}}
+|[[Exo Diablo Crucible]]<br />[[Xeno Diablo Clash]]
+|}
+
+===Other===
+{| class="wikitable" style="max-width: 1200px"
+!Icon!!Name!!Description!!Effect!!Obtained
+|-
+|[[File:wonder9001.jpg|80px|link=]]
+|Thief's Map
+|Map with clues to the thief's plot.
+|Gives a 1% boost to upgrade '''Grand Success''' rate
+|[[Detective Barawa and the Jewel Resort Incident]]
+|-
+|[[File:wonder9003.jpg|80px|link=]]
+|Shield of Eternal Splendor
+|This wonder certifies that the owner directs all ten of the Eternals. Its transparency symbolizes the quiet, protective attitude it takes to lead the sky's most powerful adventurers.
+|Grants {{icon|eternals}}[[:Category:The_Eternals|Eternals]] characters the following effects:
+*10% HP Up
+*10% {{atkmod|ATK|m=p}} Up
+*+10% charge bar at battle start
+|Recruit all 10 [[Eternals]].<br />The seasonal and event versions of Eternals characters do not count towards the recruitment total.
+|-
+|[[File:wonder9004.jpg|80px|link=]]
+|Premium FRIED SHRIMP
+|A statue that spreads the message of healthy work hours and leading a more balanced life.
+|Gives a 1% boost to EXP earned on Fridays, Saturdays, and Sundays (JST)
+|[[Premium Friday]]
+|-
+|[[File:wonder9005.jpg|80px|link=]]
+|Everlasting Premium Friday‎
+|A golden statue sculpted in hopes that Premium Friday will continue until the end of time.
+|Earn items by logging in between 3 p.m. (JST) on the last Friday of every month and the end of that weekend
+|[[Premium Friday Collection]]
+|-
+|[[File:Liber Initii square.jpg|80px|link=]]
+|Liber Initii
+|Stars come and go, while the skies stretch on and on. To learn how it all began, one must only search inside this book.
+|3% boost to item drop rate.
+|Defeat each [[Impossible Omega Raids|Omega (Impossible)]] foe 2000 times.
+|-
+|[[File:Signum Heredis square.jpg|80px|link=]]
+|Signum Heredis
+|Its splendor serves as testimony to both the adoration and dread it inspires. Only the skies know which path the coronated shall take.
+|3% boost to all Elemental ATK.
+|Defeat each [[Impossible_Omega_II_Raids|Regalia]] foe 2000 times.
+|-
+|[[File:Oppressus Fragor square.jpg|80px|link=]]
+|Oppressus Fragor
+| A font of power held in check only by the combined pressures of the six. The equilibrium required is beyond delicate—the slightest touch would mean the beginning of the end.
+|3% boost to all allies' DMG cap.
+|Defeat each [[Six-Dragon_Raids|Six Dragon]] foe 2000 times.
+|-
+|{{ItmGSI/Symbolum Amicitiae|title=|width=80|height=80|size=80px}}
+|Symbolum Amicitiae
+|A symbol given to those who travel the skies with trusted comrades. It resonates alongside conviction shared, shining brighter when wills are aligned.
+|Amplify all allies' damage based on the number of characters recruited (Max: 5%).
+*For 300 Recruited: {{icon|bonus atk}} DMG&nbsp;Amplify&nbsp;+0.5%
+*For 600 Recruited: {{icon|bonus atk}} DMG&nbsp;Amplify&nbsp;+0.5%
+*Each 10 After 600: {{icon|bonus atk}} DMG&nbsp;Amplify&nbsp;+0.1%
+|Fellowship Bound [[Trophy|Trophy Reward]]<br />(Recruit 300 characters)<hr />Collab Characters and characters currently left unclaimed in the crate aren't included in the count.<br />This wonder's icon changes based on your number of recruited characters.
+|-
+|[[File:Divine Stamp Book square.jpg|80px|link=]]
+|Divine Stamp Book
+|A book containing stamps imbued with the prayers and blessings of the Divine Generals. The ritualistic rope wrapped around the tome wards off all impurities and Kleshas. The scent of cherry blossoms emanating from the parchment, embellished with sigils of the year spirit, purifies the mind and body of its holder. Boosts the Divine Generals' stats and charge bars at battle start.
+|
+Grants {{icon|12generals}}[[12 Generals]] characters the following effects:
+*10% HP Up
+*10% {{atkmod|ATK|m=p}} Up
+*+10% charge bar at battle start
+| [[Romance of the Divine Generals]]<br />[[Shop#Romance of the Divine Generals|Treasure Trade Shop]]
+|-
+|[[File:Tri-Realm Bracelet square.jpg|80px|link=]]
+|Tri-Realm Bracelet
+|A synthesis of wisdom belonging to the three realms—Sky, Earth, and Astral. It tethers a star bound for oblivion to the skies, granting a brief moment of respite.
+|
+Gives a 5% boost to chain burst specs.
+| [[PS, the Astrals...]]
+|-
+|[[File:Memory Book square.jpg|80px|link=]]
+|Memory Book
+|A notebook detailing the growth of crewmates that were turned into babies by a [[Vyrn? (NPC)|mysterious power]]. While some want all records erased, other are curious about its contents. We should keep this safe.
+|
+No effect.<br />Used to view the [[Happy Panicky Baby#Memory Book Photos|baby artwork for characters]] featured in [[Happy Panicky Baby]]. 
+| [[Happy Panicky Baby]]
+|}
+
+[[Category:Starting]]
+[[Category:Gameplay]]
