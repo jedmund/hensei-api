@@ -16,7 +16,7 @@ namespace :wonders do
     EN_FILES:       comma-separated EN /item/memorial_list/1 responses
                     (default spec/fixtures/wonders/memorial_list.en.json).
     JA_FILES:       comma-separated JA responses (default spec/fixtures/wonders/memorial_list.ja.json
-                    and memorial_list.ja.account2.json). All captures are merged by item_id.
+                    memorial_list.ja.account2.json and .account3.json). All captures are merged by item_id.
     OVERRIDES_FILE: hand-maintained ids and corrections (default db/data/wonders/overrides.yml).
     OUT_FILE:       defaults to db/data/wonders/catalogue.json.
 

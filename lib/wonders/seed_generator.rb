@@ -74,7 +74,8 @@ module Wonders
     EFFECT_OVERRIDE_FIELDS = %w[action_id text_en text_jp details].freeze
     DEFAULT_EN_CAPTURES = %w[spec/fixtures/wonders/memorial_list.en.json].freeze
     DEFAULT_JA_CAPTURES = %w[spec/fixtures/wonders/memorial_list.ja.json
-                             spec/fixtures/wonders/memorial_list.ja.account2.json].freeze
+                             spec/fixtures/wonders/memorial_list.ja.account2.json
+                             spec/fixtures/wonders/memorial_list.ja.account3.json].freeze
     INVISIBLE = /[\u200B-\u200F\u202A-\u202E\u2060\uFEFF]/
 
     # @param wikitext [String] the gbf.wiki "Wonders" page

@@ -1346,7 +1346,7 @@
       "name_en": "Ring of The Devil",
       "name_jp": "リング・オブ・デビル",
       "description_en": "A ring made to manifest through the focused power of providence grains. It is proof of the oath that the primal beast paradigmatic of The Devil shares with Strength who delves into the depths of the abyss.",
-      "description_jp": null,
+      "description_jp": "「理の沙」の力が結実し、具現化した指輪。\nこれは\"悪魔\"を冠する星晶獣と契り、その深淵に踏み込まんとする\"力\"の証。",
       "kind": "fixed",
       "max_level": null,
       "max_evolution": 0,
@@ -1357,7 +1357,7 @@
       "effects": [
         {
           "position": 1,
-          "action_id": null,
+          "action_id": 200501,
           "text_en": "Gives a 30% boost to fire allies' HP.",
           "text_jp": "火属性キャラのHPが30％UPする。",
           "details": {

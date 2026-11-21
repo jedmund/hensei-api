@@ -63,18 +63,10 @@ wonders:
         1:
           text_jp: "風属性キャラのHPが30％UPする。"
   "2005":
-    description_jp: ~
+    # JA text and the action_id come from a capture; EN from the wiki
     effects:
       1:
         text_en: "Gives a 30% boost to fire allies' HP."
-        action_id: ~
-    # JA name and effect follow the captured Rings (Ring of Death,
-    # Ring of The Hanged Man); the flavor text can't be derived.
-    derived:
-      name_jp: "リング・オブ・デビル"
-      effects:
-        1:
-          text_jp: "火属性キャラのHPが30％UPする。"
   "9001":
     name_jp: ~
     description_jp: ~
