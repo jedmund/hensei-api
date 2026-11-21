@@ -2245,9 +2245,9 @@
       "granblue_id": "9004",
       "category": "5",
       "name_en": "Premium FRIED SHRIMP",
-      "name_jp": null,
+      "name_jp": "プレミアムエビフライ",
       "description_en": "A statue that spreads the message of healthy work hours and leading a more balanced life.",
-      "description_jp": null,
+      "description_jp": "ゆとりある豊かな生活をもたらす黄金の像。",
       "kind": "fixed",
       "max_level": null,
       "max_evolution": 0,
@@ -2258,9 +2258,9 @@
       "effects": [
         {
           "position": 1,
-          "action_id": null,
+          "action_id": 109004,
           "text_en": "Gives a 1% boost to EXP earned on Fridays, Saturdays, and Sundays (JST).",
-          "text_jp": null,
+          "text_jp": "金曜日から日曜日までEXPが1％上昇する。",
           "details": {}
         }
       ],

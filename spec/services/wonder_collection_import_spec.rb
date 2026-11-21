@@ -101,6 +101,13 @@ RSpec.describe WonderCollectionImport do
     expect(row('9015').bonuses).to eq([{ stat: 'dmg_amplify', value: 2.5 }])
   end
 
+  it 'imports the fourth account, with Premium FRIED SHRIMP' do
+    result = import(wonder_capture('ja.account4'))
+
+    expect(result.as_json).to include(skipped: [], warnings: [])
+    expect(row('9004')).to be_present
+  end
+
   it 'skips and reports a Wonder the catalogue does not know, without adding it' do
     data = wonder_capture('en')
     data.first['item'] << { 'item_id' => '9999', 'name' => 'Not In Catalogue', 'set_flg' => '1', 'category_id' => '1' }

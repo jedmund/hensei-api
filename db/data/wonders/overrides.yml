@@ -76,8 +76,7 @@ wonders:
         text_jp: ~
         action_id: ~
   "9004":
-    name_jp: ~
-    description_jp: ~
+    # JA text and the action_id come from a capture; EN from the wiki
     effects:
       1:
         text_en: "Gives a 1% boost to EXP earned on Fridays, Saturdays, and Sundays (JST)."

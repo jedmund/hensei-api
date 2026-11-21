@@ -56,12 +56,22 @@ RSpec.describe Wonders::SeedGenerator do
                                               'text_en' => "Gives a 30% boost to fire allies' HP.")
   end
 
-  it 'keeps unknown JA text and action_ids null' do
+  it 'keeps derived JA text but leaves the unknown description and action_id null' do
+    %w[2001 2004].each do |granblue_id|
+      ring = wonder(generate, granblue_id)
+
+      expect(ring['name_jp']).to be_present
+      expect(ring['description_jp']).to be_nil
+      expect(ring['effects'].first['action_id']).to be_nil
+    end
+    expect(wonder(generate, '2004')['effects'].first['text_jp']).to eq('風属性キャラのHPが30％UPする。')
+  end
+
+  it 'fills Premium FRIED SHRIMP from the fourth capture' do
     shrimp = wonder(generate, '9004')
 
-    expect(shrimp['name_jp']).to be_nil
-    expect(shrimp['effects'].first['action_id']).to be_nil
-    expect(wonder(generate, '2001')['effects'].first['action_id']).to be_nil
+    expect(shrimp).to include('name_jp' => 'プレミアムエビフライ', 'description_jp' => 'ゆとりある豊かな生活をもたらす黄金の像。')
+    expect(shrimp['effects'].first).to include('action_id' => 109_004, 'text_jp' => '金曜日から日曜日までEXPが1％上昇する。')
   end
 
   it 'records which summon a Ring does not stack with' do

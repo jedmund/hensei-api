@@ -52,9 +52,10 @@ RSpec.describe 'Wonders API', type: :request do
       expect(ring['effects'].first).to eq('action_id' => 200_301, 'position' => 1,
                                           'text' => { 'en' => "Gives a 30% boost to dark allies' HP.",
                                                       'ja' => '闇属性キャラのHPが30％UPする。' })
-      shrimp = body['wonders'].find { |w| w['granblue_id'] == '9004' }
-      expect(shrimp['name']).to eq('en' => 'Premium FRIED SHRIMP', 'ja' => 'Premium FRIED SHRIMP')
-      expect(shrimp['effects'].first['action_id']).to be_nil
+      justice = body['wonders'].find { |w| w['granblue_id'] == '2001' }
+      expect(justice['name']).to eq('en' => 'Ring of Justice', 'ja' => 'リング・オブ・ジャスティス')
+      expect(justice['description']['ja']).to eq(justice['description']['en'])
+      expect(justice['effects'].first['action_id']).to be_nil
     end
   end
 
