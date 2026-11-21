@@ -48,6 +48,20 @@ RSpec.describe 'Wonders data migrations' do
       expect(wonder.reload.name_en).to eq('Seal of the Underworld Emperor')
       expect(wonder.level_bonuses.find_by!(level: 1).value).to eq(5)
     end
+
+    it 'moves a wiki-only effect onto its action_id once a capture gives one, leaving no orphan' do
+      seed_wonder_catalogue!
+      data = JSON.parse(LoadWonderCatalogue::SEED_PATH.read)
+      data['wonders'].find { |w| w['granblue_id'] == '2001' }['effects'].first['action_id'] = 200_101
+      path = Rails.root.join('tmp/wonders_catalogue_spec.json')
+      path.write(data.to_json)
+
+      expect { LoadWonderCatalogue.load!(path) }.not_to change(WonderEffect, :count)
+      expect(Wonder.find_by!(granblue_id: '2001').wonder_effects.map(&:action_id)).to eq([200_101])
+      expect(WonderEffect.where.missing(:wonder_effect_links)).to be_empty
+    ensure
+      path&.delete if path&.exist?
+    end
   end
 
   describe 'MarkUniteAndFightRaidGroup' do
