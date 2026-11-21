@@ -3,8 +3,10 @@
 class RaidGroup < ApplicationRecord
   # Special content a group's parties carry. `solomonis`: Evoking Solomonis,
   # whose raids are zones and whose parties have a SolomonisExpedition.
+  # `unite_and_fight`: Unite and Fight, where Crucible Seals don't apply.
   SOLOMONIS = 'solomonis'
-  CONTENT_MODES = [SOLOMONIS].freeze
+  UNITE_AND_FIGHT = 'unite_and_fight'
+  CONTENT_MODES = [SOLOMONIS, UNITE_AND_FIGHT].freeze
   # Where a group sits in the raid picker. Farming is 0.
   SECTIONS = { 'farming' => 0, 'raid' => 1, 'event' => 2, 'solo' => 3 }.freeze
 
@@ -30,5 +32,9 @@ class RaidGroup < ApplicationRecord
 
   def solomonis?
     content_mode == SOLOMONIS
+  end
+
+  def unite_and_fight?
+    content_mode == UNITE_AND_FIGHT
   end
 end
