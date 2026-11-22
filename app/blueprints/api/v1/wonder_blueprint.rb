@@ -12,6 +12,10 @@ module Api
 
       field :category_id, &:wonder_category_id
 
+      # Granblue ids of the characters a character-specific Wonder boosts;
+      # teams show it only when one of them is in the grid. Empty otherwise.
+      field :required_character_ids, &:required_character_ids
+
       field :name do |wonder|
         { en: wonder.name_en, ja: wonder.name_jp.presence || wonder.name_en }
       end

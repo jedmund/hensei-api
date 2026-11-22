@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_21_100000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_22_100000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1986,6 +1986,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_21_100000) do
     t.integer "sort_order", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "required_character_series"
+    t.integer "required_character_game_ids", default: [], null: false, array: true
     t.index ["granblue_id"], name: "index_wonders_on_granblue_id", unique: true
     t.index ["wonder_category_id"], name: "index_wonders_on_wonder_category_id"
   end

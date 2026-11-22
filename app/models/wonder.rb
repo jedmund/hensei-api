@@ -8,6 +8,9 @@
 # - `fixed`: everything else; its effects are the linked wonder_effects.
 #
 # element is a GranblueEnums::ELEMENTS value, or nil for all elements.
+# Some Wonders only boost certain characters (every version counts, duo
+# units don't): a character series (required_character_series) or game
+# character ids (required_character_game_ids). See #required_character_ids.
 # Seeded by a data migration from db/data/wonders/catalogue.json.
 class Wonder < ApplicationRecord
   KINDS = %w[fixed leveled scaling].freeze
@@ -31,6 +34,33 @@ class Wonder < ApplicationRecord
   validates :element, inclusion: { in: GranblueEnums::ELEMENTS.values }, allow_nil: true
 
   scope :ordered, -> { joins(:wonder_category).order('wonder_categories.sort_order', :sort_order) }
+
+  def character_specific?
+    required_character_series.present? || required_character_game_ids.present?
+  end
+
+  ##
+  # Granblue ids of every character this Wonder boosts: the single-character
+  # members of its required series, and every version of its required game
+  # characters. Duo units (several game character ids) never count. Empty
+  # when the Wonder isn't character-specific. Resolved live, so new versions
+  # count.
+  def required_character_ids
+    return [] unless character_specific?
+
+    singles = Character.where('cardinality(characters.character_id) = 1')
+    ids = []
+    if required_character_series.present?
+      members = CharacterSeriesMembership.joins(:character_series)
+                                         .where(character_series: { slug: required_character_series })
+      ids.concat(singles.where(id: members.select(:character_id)).pluck(:granblue_id))
+    end
+    if required_character_game_ids.present?
+      ids.concat(singles.where('characters.character_id && ARRAY[?]::integer[]', required_character_game_ids)
+                        .pluck(:granblue_id))
+    end
+    ids.compact.uniq.sort
+  end
 
   KINDS.each do |name|
     define_method(:"#{name}?") { kind == name }
