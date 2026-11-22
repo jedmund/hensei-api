@@ -247,6 +247,20 @@ RSpec.describe 'Wonders API', type: :request do
     end
   end
 
+  describe 'GET /api/v1/wonders character requirements' do
+    it 'sends the ids of the characters a character-specific Wonder boosts' do
+      katalina = create(:character, character_id: [2005])
+      letters = create(:wonder, required_character_game_ids: [2005])
+      everyone = create(:wonder)
+
+      get '/api/v1/wonders'
+
+      rows = body['wonders'].index_by { |w| w['granblue_id'] }
+      expect(rows[letters.granblue_id]['required_character_ids']).to eq([katalina.granblue_id])
+      expect(rows[everyone.granblue_id]['required_character_ids']).to eq([])
+    end
+  end
+
   describe 'POST /api/v1/parties/:id/wonders/sync' do
     let(:party) { create(:party, user: user) }
     let(:others_party) { create(:party, user: other_user) }
