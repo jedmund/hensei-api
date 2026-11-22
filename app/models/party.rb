@@ -177,6 +177,7 @@ class Party < ApplicationRecord
   has_many :playlist_parties, dependent: :destroy
   has_many :playlists, through: :playlist_parties
   has_many :party_shares, dependent: :destroy
+  has_many :party_wonders, dependent: :delete_all, inverse_of: :party
   has_many :shared_crews, through: :party_shares, source: :shareable, source_type: 'Crew'
 
   # Public-facing nested attributes target the filtered associations (no substitutes),
@@ -192,6 +193,10 @@ class Party < ApplicationRecord
 
   before_create :set_shortcode
   before_create :set_edit_key
+
+  # Records the account's Wonders as they are now (not on remixes, which copy
+  # the source party's through amoeba).
+  after_create :snapshot_wonders
 
   after_commit :update_element!, on: %i[create update]
   after_commit :update_extra!, on: %i[create update]
@@ -229,6 +234,8 @@ class Party < ApplicationRecord
     # the original expedition.
     include_association :solomonis_expedition
     include_association :party_blessings
+    # A remix keeps the source team's Wonders, not the remixer's.
+    include_association :party_wonders
   end
 
   # ActiveRecord Validations
@@ -435,6 +442,10 @@ class Party < ApplicationRecord
     update_column(:extra, new_extra) if extra != new_extra
   end
   # rubocop:enable Rails/SkipsModelValidations
+
+  def snapshot_wonders
+    PartyWonderSnapshot.new(self).call
+  end
 
   ##
   # Sets a unique shortcode for the party before creation.

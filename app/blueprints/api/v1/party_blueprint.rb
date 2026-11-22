@@ -157,6 +157,10 @@ module Api
           PartyStickerSummary.breakdown_for(party.id)
         end
 
+        # The team's Wonders, as snapshotted at creation or set by the owner.
+        # Shown even when the owner's collection is private, like grid items.
+        association :party_wonders, name: :wonders, blueprint: PartyWonderBlueprint
+
         # Evoking Solomonis expedition, blessings and guidebook, or null.
         field :solomonis do |party, options|
           next nil unless party.solomonis?

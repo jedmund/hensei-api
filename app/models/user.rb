@@ -15,6 +15,7 @@ class User < ApplicationRecord
   has_many :collection_summons, dependent: :destroy
   has_many :collection_job_accessories, dependent: :destroy
   has_many :collection_artifacts, dependent: :destroy
+  has_many :collection_wonders, dependent: :delete_all
   has_many :support_summons, dependent: :destroy
 
   # Crew associations

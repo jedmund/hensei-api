@@ -1,0 +1,1924 @@
+[
+  {
+    "category_id": "1",
+    "name": "Girl in Blue",
+    "type": "1",
+    "item": [
+      {
+        "item_id": "1",
+        "image": "1",
+        "name": "Morning Calm of Tiamat",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "Earned in victory against Tiamat.",
+        "number": "1",
+        "category_id": "1",
+        "sort_id": "",
+        "action_list": [
+          {
+            "action_no": 1,
+            "action_id": 100001,
+            "comment": "Gives a 10% boost to RP.",
+            "set_flg": 1
+          }
+        ]
+      },
+      {
+        "item_id": "2",
+        "image": "2",
+        "name": "Steel of the Iron Giant",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "Earned in victory against Colossus.",
+        "number": "1",
+        "category_id": "1",
+        "sort_id": "",
+        "action_list": [
+          {
+            "action_no": 1,
+            "action_id": 100002,
+            "comment": "Gives a 5% boost to EXP for upgrades to characters and items.",
+            "set_flg": 1
+          }
+        ]
+      },
+      {
+        "item_id": "3",
+        "image": "3",
+        "name": "Dew of Leviathan",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "Earned in victory against Leviathan.",
+        "number": "1",
+        "category_id": "1",
+        "sort_id": "",
+        "action_list": [
+          {
+            "action_no": 1,
+            "action_id": 100003,
+            "comment": "Gives a 2% boost to upgrade grand success rate.",
+            "set_flg": 1
+          }
+        ]
+      },
+      {
+        "item_id": "4",
+        "image": "4",
+        "name": "Leaf of Yggdrasil",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "Earned in victory against Yggdrasil.",
+        "number": "1",
+        "category_id": "1",
+        "sort_id": "",
+        "action_list": [
+          {
+            "action_no": 1,
+            "action_id": 100004,
+            "comment": "Gives a 5% boost to EXP.",
+            "set_flg": 1
+          }
+        ]
+      },
+      {
+        "item_id": "5",
+        "image": "5",
+        "name": "Pride of Luminiera",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "Earned in victory against Luminiera.",
+        "number": "1",
+        "category_id": "1",
+        "sort_id": "",
+        "action_list": [
+          {
+            "action_no": 1,
+            "action_id": 100005,
+            "comment": "Gives a 5% boost to rupies in quests.",
+            "set_flg": 1
+          }
+        ]
+      },
+      {
+        "item_id": "6",
+        "image": "6",
+        "name": "Anchor of Celeste",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "Earned in victory against Celeste.",
+        "number": "1",
+        "category_id": "1",
+        "sort_id": "",
+        "action_list": [
+          {
+            "action_no": 1,
+            "action_id": 100006,
+            "comment": "Gives a 5% boost to EXP for upgrades to dark characters and items.",
+            "set_flg": 1
+          }
+        ]
+      },
+      {
+        "item_id": "7",
+        "image": "7",
+        "name": "Gear of Mithra",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "Earned in victory against Mithra.",
+        "number": "1",
+        "category_id": "1",
+        "sort_id": "",
+        "action_list": [
+          {
+            "action_no": 1,
+            "action_id": 100007,
+            "comment": "Gives a 50% boost to tuning points.",
+            "set_flg": 1
+          }
+        ]
+      },
+      {
+        "item_id": "8",
+        "image": "8",
+        "name": "Scale of Order",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "Earned in victory against Monika and Lecia.",
+        "number": "1",
+        "category_id": "1",
+        "sort_id": "",
+        "action_list": [
+          {
+            "action_no": 1,
+            "action_id": 100008,
+            "comment": "Gives a 5% boost to EXP for upgrades to wind characters and items.",
+            "set_flg": 1
+          }
+        ]
+      },
+      {
+        "item_id": "9",
+        "image": "9",
+        "name": "Mystical Golem Kiln",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "Old artifact found in Former Capital Mephorash.",
+        "number": "1",
+        "category_id": "1",
+        "sort_id": "",
+        "action_list": [
+          {
+            "action_no": 1,
+            "action_id": 100009,
+            "comment": "Gives a 5% boost to EXP for upgrades to earth characters and items.",
+            "set_flg": 1
+          }
+        ]
+      },
+      {
+        "item_id": "10",
+        "image": "10",
+        "name": "Tattered Parchment",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "Worn and barely legible,<br>but believed to be written by the Astrals.",
+        "number": "1",
+        "category_id": "1",
+        "sort_id": "",
+        "action_list": [
+          {
+            "action_no": 1,
+            "action_id": 100010,
+            "comment": "Gives a 5% boost to EXP for element upgrade skill.",
+            "set_flg": 1
+          }
+        ]
+      },
+      {
+        "item_id": "11",
+        "image": "11",
+        "name": "Flame of Discipline",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "Earned in rescue of Amalthea Island from the Empire.",
+        "number": "1",
+        "category_id": "1",
+        "sort_id": "",
+        "action_list": [
+          {
+            "action_no": 1,
+            "action_id": 100011,
+            "comment": "Gives a 5% boost to EXP for upgrades to fire characters and items.",
+            "set_flg": 1
+          }
+        ]
+      },
+      {
+        "item_id": "12",
+        "image": "12",
+        "name": "Golden Apple",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "Rare and exquisite fruit found in Golden Fog Woods. ",
+        "number": "1",
+        "category_id": "1",
+        "sort_id": "",
+        "action_list": [
+          {
+            "action_no": 1,
+            "action_id": 100012,
+            "comment": "Gives a 5% boost to EXP for upgrades to light characters and items.",
+            "set_flg": 1
+          }
+        ]
+      },
+      {
+        "item_id": "13",
+        "image": "13",
+        "name": "Red Leaf of Malice",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "Earned in rescue of Yggdrasil from Malice.",
+        "number": "1",
+        "category_id": "1",
+        "sort_id": "",
+        "action_list": [
+          {
+            "action_no": 1,
+            "action_id": 100009,
+            "comment": "Gives a 5% boost to EXP for upgrades to earth characters and items.",
+            "set_flg": 1
+          }
+        ]
+      },
+      {
+        "item_id": "14",
+        "image": "14",
+        "name": "Void Blossom",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "Earned in victory against Akasha. Boosts rare foe encounter rate.",
+        "number": "1",
+        "category_id": "1",
+        "sort_id": "",
+        "action_list": [
+          {
+            "action_no": 1,
+            "action_id": 100014,
+            "comment": "Boosts rare foe encounter rate.",
+            "set_flg": 1
+          }
+        ]
+      }
+    ],
+    "is_active": false
+  },
+  {
+    "category_id": "2",
+    "name": "Dawning Sky",
+    "type": "1",
+    "item": [
+      {
+        "item_id": "15",
+        "image": "15",
+        "name": "Atmosphere Afloat",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "Earned in victory against Kikuri.",
+        "number": "1",
+        "category_id": "2",
+        "sort_id": "",
+        "action_list": [
+          {
+            "action_no": 1,
+            "action_id": 100015,
+            "comment": "Gives a 50% boost to rewards for providing support.",
+            "set_flg": 1
+          }
+        ]
+      },
+      {
+        "item_id": "16",
+        "image": "16",
+        "name": "Delirium Medallion",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "Earned in victory against Freesia.",
+        "number": "1",
+        "category_id": "2",
+        "sort_id": "",
+        "action_list": [
+          {
+            "action_no": 1,
+            "action_id": 100012,
+            "comment": "Gives a 5% boost to EXP for upgrades to light characters and items.",
+            "set_flg": 1
+          }
+        ]
+      },
+      {
+        "item_id": "17",
+        "image": "17",
+        "name": "Silver Gorget",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "Earned in victory against Dykotomus. Gives a 5% boost to rupies earned when selling weapons.",
+        "number": "1",
+        "category_id": "2",
+        "sort_id": "",
+        "action_list": [
+          {
+            "action_no": 1,
+            "action_id": 100017,
+            "comment": "Gives a 5% boost to rupies earned when selling weapons.",
+            "set_flg": 1
+          }
+        ]
+      },
+      {
+        "item_id": "18",
+        "image": "18",
+        "name": "Jade Piercing",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "Earned in victory against Reinhardtzar.",
+        "number": "1",
+        "category_id": "2",
+        "sort_id": "",
+        "action_list": [
+          {
+            "action_no": 1,
+            "action_id": 100011,
+            "comment": "Gives a 5% boost to EXP for upgrades to fire characters and items.",
+            "set_flg": 1
+          }
+        ]
+      },
+      {
+        "item_id": "19",
+        "image": "19",
+        "name": "Hallowed Robe",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "Earned in victory against Zeyen.",
+        "number": "1",
+        "category_id": "2",
+        "sort_id": "",
+        "action_list": [
+          {
+            "action_no": 1,
+            "action_id": 100008,
+            "comment": "Gives a 5% boost to EXP for upgrades to wind characters and items.",
+            "set_flg": 1
+          }
+        ]
+      },
+      {
+        "item_id": "20",
+        "image": "20",
+        "name": "Prismatic Fleur",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "An ethereal flower that blooms deep within Bestia Island.",
+        "number": "1",
+        "category_id": "2",
+        "sort_id": "",
+        "action_list": [
+          {
+            "action_no": 1,
+            "action_id": 100029,
+            "comment": "Gives a 5% boost to EXP for upgrades to water characters and items.",
+            "set_flg": 1
+          }
+        ]
+      },
+      {
+        "item_id": "21",
+        "image": "21",
+        "name": "Crown Jewel of Ruin",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "A crown found in the ruins of Starke Island's royal castle. Although weather-beaten from years of exposure to the elements, its inlaid jewel hasn't lost luster. ",
+        "number": "1",
+        "category_id": "2",
+        "sort_id": "",
+        "action_list": [
+          {
+            "action_no": 1,
+            "action_id": 100021,
+            "comment": "Increases the chances of encountering a rare monster in the Nalhegrande Skydom.",
+            "set_flg": 1
+          }
+        ]
+      },
+      {
+        "item_id": "22",
+        "image": "22",
+        "name": "Ebisu's Flame",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "This fire was captured and contained from Ebisu's eruption. It continues to burn with no signs of extinguishing.",
+        "number": "1",
+        "category_id": "2",
+        "sort_id": "",
+        "action_list": [
+          {
+            "action_no": 1,
+            "action_id": 100022,
+            "comment": "5% boost to rupies earned from selling summons.",
+            "set_flg": 1
+          }
+        ]
+      }
+    ],
+    "is_active": false
+  },
+  {
+    "category_id": "3",
+    "name": "Wayfaring Astral",
+    "type": "1",
+    "item": [
+      {
+        "item_id": "23",
+        "image": "23",
+        "name": "Royal Philos Institute Diploma",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "Proof that a student has graduated from the Royal Philos Institute. With this certificate, students are recognized as adults and are ready to be assigned their role in society.",
+        "number": "1",
+        "category_id": "3",
+        "sort_id": "",
+        "action_list": [
+          {
+            "action_no": 1,
+            "action_id": 100006,
+            "comment": "Gives a 5% boost to EXP for upgrades to dark characters and items.",
+            "set_flg": 1
+          }
+        ]
+      },
+      {
+        "item_id": "24",
+        "image": "24",
+        "name": "Hive God's Mask",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "The mask of Hive God Anima Animus, which came loose in battle. Despite the loss of its owner, a sinister power not found in other masks remains.",
+        "number": "1",
+        "category_id": "3",
+        "sort_id": "",
+        "action_list": [
+          {
+            "action_no": 1,
+            "action_id": 100024,
+            "comment": "Gives a 5% boost to EXP. ",
+            "set_flg": 1
+          }
+        ]
+      },
+      {
+        "item_id": "25",
+        "image": "25",
+        "name": "Blue Scarf",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "Entrusted to the shrine priestess, this symbol of the BLF instills its members with a sense of belonging.",
+        "number": "1",
+        "category_id": "3",
+        "sort_id": "",
+        "action_list": [
+          {
+            "action_no": 1,
+            "action_id": 100025,
+            "comment": "Gives a 2% boost to upgrade grand success rate.",
+            "set_flg": 1
+          }
+        ]
+      },
+      {
+        "item_id": "26",
+        "image": "26",
+        "name": "King's Testament",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "A testament to a monarch's divine right to rule, this golden bangle is outfitted with all five of Istavion's Sky Map fragments. It is said the fragments will appear only for a king worthy of the throne, but whoever bears the testament is assuredly a being capable of perceiving all creation—including past darkness of the Otherworld.",
+        "number": "1",
+        "category_id": "3",
+        "sort_id": "",
+        "action_list": [
+          {
+            "action_no": 1,
+            "action_id": 100026,
+            "comment": "Gives a 5% boost to EXP for upgrades.",
+            "set_flg": 1
+          }
+        ]
+      },
+      {
+        "item_id": "27",
+        "image": "27",
+        "name": "Primal Beast Sibyl",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "A ring serving as proof of succession for the True King. It also served as a symbol of commitment for a loving couple at one point, but now only the current True King is aware of this.",
+        "number": "1",
+        "category_id": "3",
+        "sort_id": "",
+        "action_list": [
+          {
+            "action_no": 1,
+            "action_id": 100027,
+            "comment": "Gives a 50% boost to rewards for providing support.",
+            "set_flg": 1
+          }
+        ]
+      },
+      {
+        "item_id": "28",
+        "image": "28",
+        "name": "Disastrous Dragon's Horn",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "A relic left behind by the Otherworld Dragon following its demise. Whether or not the beast's desire was just, so long as both sides refused to yield, such an outcome was inevitable.",
+        "number": "1",
+        "category_id": "3",
+        "sort_id": "",
+        "action_list": [
+          {
+            "action_no": 1,
+            "action_id": 100028,
+            "comment": "Gives a 5% boost to EXP for upgrades to dark characters and items.",
+            "set_flg": 1
+          }
+        ]
+      },
+      {
+        "item_id": "29",
+        "image": "29",
+        "name": "Letters from Dad",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "Letters that tie together the beginning and end of a journey. With dreams undimmed, the traveler presses on.",
+        "number": "1",
+        "category_id": "3",
+        "sort_id": "",
+        "action_list": [
+          {
+            "action_no": 1,
+            "action_id": 109007,
+            "comment": "Boosts the stats of Lyria, Katalina, Rackam, Io, Eugen, and Rosetta.",
+            "set_flg": 1
+          }
+        ]
+      }
+    ],
+    "is_active": false
+  },
+  {
+    "category_id": "4",
+    "name": "Crucible Seal",
+    "type": "2",
+    "item": [
+      {
+        "item_id": "9009",
+        "image": "9009",
+        "name": "Seal of the Blazing Bodhisattva",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "A mysterious crest that bestows the power to steal the throne of the blazing bodhisattva. A buff effect will be applied to all fire characters.",
+        "number": "1",
+        "category_id": "4",
+        "sort_id": "1",
+        "action_list": [],
+        "level": "20",
+        "exp": "438000",
+        "total_exp": 438000,
+        "effective_acquired_bonus": [
+          {
+            "name": "Wind Resistance",
+            "detail": "+10%",
+            "image": "bonus_7"
+          },
+          {
+            "name": "DEF ",
+            "detail": "+12%",
+            "image": "bonus_2"
+          },
+          {
+            "name": "Double Attack Rate ",
+            "detail": "+6%",
+            "image": "bonus_20"
+          },
+          {
+            "name": "Healing Cap",
+            "detail": "+12%",
+            "image": "bonus_13"
+          },
+          {
+            "name": "Debuff Resistance ",
+            "detail": "+10%",
+            "image": "bonus_3"
+          },
+          {
+            "name": "Triple Attack Rate ",
+            "detail": "+7%",
+            "image": "bonus_21"
+          },
+          {
+            "name": "Debuff Success Rate ",
+            "detail": "+5%",
+            "image": "bonus_4"
+          }
+        ],
+        "max_level": 20,
+        "is_level_max": true,
+        "is_limited_level": true,
+        "evolution": "3",
+        "max_evolution": 3,
+        "evolution_info": {
+          "level": "20",
+          "evolution": "3",
+          "max_level": 20,
+          "max_evolution": 3,
+          "is_max_level": true,
+          "is_limited_level": true,
+          "use_item": [
+            {
+              "use_item_id": "10596",
+              "use_item_kind": "10",
+              "use_item_num": "12",
+              "use_item_name": "Ardens Lapis",
+              "has_num": 33,
+              "has_item": true
+            },
+            {
+              "use_item_id": "10664",
+              "use_item_kind": "10",
+              "use_item_num": "8",
+              "use_item_name": "Essence of the Enlightener",
+              "has_num": 29,
+              "has_item": true
+            },
+            {
+              "use_item_id": "10509",
+              "use_item_kind": "10",
+              "use_item_num": "20",
+              "use_item_name": "True Exo Ifrit Anima",
+              "has_num": 896,
+              "has_item": true
+            },
+            {
+              "use_item_id": "10508",
+              "use_item_kind": "10",
+              "use_item_num": "70",
+              "use_item_name": "Conflagrant Lotus Petal",
+              "has_num": 1709,
+              "has_item": true
+            }
+          ],
+          "has_item": true,
+          "can_evolution": false,
+          "condition_text": [],
+          "next_evolution_max_level": 20
+        }
+      },
+      {
+        "item_id": "9008",
+        "image": "9008",
+        "name": "Seal of the Underworld Emperor",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "A mysterious crest that bestows the power to usurp the tyranny of the underworld emperor.",
+        "number": "1",
+        "category_id": "4",
+        "sort_id": "2",
+        "action_list": [],
+        "level": "20",
+        "exp": "438000",
+        "total_exp": 438000,
+        "effective_acquired_bonus": [
+          {
+            "name": "Fire Resistance",
+            "detail": "+10%",
+            "image": "bonus_8"
+          },
+          {
+            "name": "DEF ",
+            "detail": "+12%",
+            "image": "bonus_2"
+          },
+          {
+            "name": "Double Attack Rate ",
+            "detail": "+6%",
+            "image": "bonus_20"
+          },
+          {
+            "name": "Healing Cap",
+            "detail": "+12%",
+            "image": "bonus_13"
+          },
+          {
+            "name": "Debuff Resistance ",
+            "detail": "+10%",
+            "image": "bonus_3"
+          },
+          {
+            "name": "Triple Attack Rate ",
+            "detail": "+7%",
+            "image": "bonus_21"
+          },
+          {
+            "name": "Debuff Success Rate ",
+            "detail": "+5%",
+            "image": "bonus_4"
+          }
+        ],
+        "max_level": 20,
+        "is_level_max": true,
+        "is_limited_level": true,
+        "evolution": "3",
+        "max_evolution": 3,
+        "evolution_info": {
+          "level": "20",
+          "evolution": "3",
+          "max_level": 20,
+          "max_evolution": 3,
+          "is_max_level": true,
+          "is_limited_level": true,
+          "use_item": [
+            {
+              "use_item_id": "10584",
+              "use_item_kind": "10",
+              "use_item_num": "12",
+              "use_item_name": "Stirian Lapis",
+              "has_num": 93,
+              "has_item": true
+            },
+            {
+              "use_item_id": "10646",
+              "use_item_kind": "10",
+              "use_item_num": "8",
+              "use_item_name": "Essence of the Chthonian",
+              "has_num": 36,
+              "has_item": true
+            },
+            {
+              "use_item_id": "10500",
+              "use_item_kind": "10",
+              "use_item_num": "20",
+              "use_item_name": "True Exo Cocytus Anima",
+              "has_num": 487,
+              "has_item": true
+            },
+            {
+              "use_item_id": "10499",
+              "use_item_kind": "10",
+              "use_item_num": "70",
+              "use_item_name": "Luminous Ice Horn",
+              "has_num": 1032,
+              "has_item": true
+            }
+          ],
+          "has_item": true,
+          "can_evolution": false,
+          "condition_text": [],
+          "next_evolution_max_level": 20
+        }
+      },
+      {
+        "item_id": "9007",
+        "image": "9007",
+        "name": "Seal of the Judicious Divine",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "A mysterious crest that bestows the power to overcome the verdict of the righteous deity of judgment.",
+        "number": "1",
+        "category_id": "4",
+        "sort_id": "3",
+        "action_list": [],
+        "level": "20",
+        "exp": "438000",
+        "total_exp": 438000,
+        "effective_acquired_bonus": [
+          {
+            "name": "Water Resistance",
+            "detail": "+10%",
+            "image": "bonus_9"
+          },
+          {
+            "name": "DEF ",
+            "detail": "+12%",
+            "image": "bonus_2"
+          },
+          {
+            "name": "Double Attack Rate ",
+            "detail": "+6%",
+            "image": "bonus_20"
+          },
+          {
+            "name": "Healing Cap",
+            "detail": "+12%",
+            "image": "bonus_13"
+          },
+          {
+            "name": "Debuff Resistance ",
+            "detail": "+10%",
+            "image": "bonus_3"
+          },
+          {
+            "name": "Triple Attack Rate ",
+            "detail": "+7%",
+            "image": "bonus_21"
+          },
+          {
+            "name": "Debuff Success Rate ",
+            "detail": "+5%",
+            "image": "bonus_4"
+          }
+        ],
+        "max_level": 20,
+        "is_level_max": true,
+        "is_limited_level": true,
+        "evolution": "3",
+        "max_evolution": 3,
+        "evolution_info": {
+          "level": "20",
+          "evolution": "3",
+          "max_level": 20,
+          "max_evolution": 3,
+          "is_max_level": true,
+          "is_limited_level": true,
+          "use_item": [
+            {
+              "use_item_id": "10548",
+              "use_item_kind": "10",
+              "use_item_num": "12",
+              "use_item_name": "Adjudicator Lapis",
+              "has_num": 38,
+              "has_item": true
+            },
+            {
+              "use_item_id": "10635",
+              "use_item_kind": "10",
+              "use_item_num": "8",
+              "use_item_name": "Essence of the Empyrean",
+              "has_num": 8,
+              "has_item": true
+            },
+            {
+              "use_item_id": "10488",
+              "use_item_kind": "10",
+              "use_item_num": "20",
+              "use_item_name": "True Exo Vohu Manah Anima",
+              "has_num": 425,
+              "has_item": true
+            },
+            {
+              "use_item_id": "10487",
+              "use_item_kind": "10",
+              "use_item_num": "70",
+              "use_item_name": "Arbiter's Mask",
+              "has_num": 604,
+              "has_item": true
+            }
+          ],
+          "has_item": true,
+          "can_evolution": false,
+          "condition_text": [],
+          "next_evolution_max_level": 20
+        }
+      },
+      {
+        "item_id": "9006",
+        "image": "9006",
+        "name": "Seal of the Soaring Archer",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "A mysterious crest that bestows the power to shoot down the wings of the soaring wind archer.",
+        "number": "1",
+        "category_id": "4",
+        "sort_id": "4",
+        "action_list": [],
+        "level": "20",
+        "exp": "438000",
+        "total_exp": 438000,
+        "effective_acquired_bonus": [
+          {
+            "name": "Earth Resistance",
+            "detail": "+10%",
+            "image": "bonus_10"
+          },
+          {
+            "name": "DEF ",
+            "detail": "+12%",
+            "image": "bonus_2"
+          },
+          {
+            "name": "Double Attack Rate ",
+            "detail": "+6%",
+            "image": "bonus_20"
+          },
+          {
+            "name": "Healing Cap",
+            "detail": "+12%",
+            "image": "bonus_13"
+          },
+          {
+            "name": "Debuff Resistance ",
+            "detail": "+10%",
+            "image": "bonus_3"
+          },
+          {
+            "name": "Triple Attack Rate ",
+            "detail": "+7%",
+            "image": "bonus_21"
+          },
+          {
+            "name": "Debuff Success Rate ",
+            "detail": "+5%",
+            "image": "bonus_4"
+          }
+        ],
+        "max_level": 20,
+        "is_level_max": true,
+        "is_limited_level": true,
+        "evolution": "3",
+        "max_evolution": 3,
+        "evolution_info": {
+          "level": "20",
+          "evolution": "3",
+          "max_level": 20,
+          "max_evolution": 3,
+          "is_max_level": true,
+          "is_limited_level": true,
+          "use_item": [
+            {
+              "use_item_id": "10554",
+              "use_item_kind": "10",
+              "use_item_num": "12",
+              "use_item_name": "Equestrian Lapis",
+              "has_num": 44,
+              "has_item": true
+            },
+            {
+              "use_item_id": "10625",
+              "use_item_kind": "10",
+              "use_item_num": "8",
+              "use_item_name": "Essence of the Elysian",
+              "has_num": 40,
+              "has_item": true
+            },
+            {
+              "use_item_id": "10480",
+              "use_item_kind": "10",
+              "use_item_num": "20",
+              "use_item_name": "True Exo Sagittarius Anima",
+              "has_num": 328,
+              "has_item": true
+            },
+            {
+              "use_item_id": "10479",
+              "use_item_kind": "10",
+              "use_item_num": "70",
+              "use_item_name": "Centaur's Armor",
+              "has_num": 569,
+              "has_item": true
+            }
+          ],
+          "has_item": true,
+          "can_evolution": false,
+          "condition_text": [],
+          "next_evolution_max_level": 20
+        }
+      },
+      {
+        "item_id": "9010",
+        "image": "9010",
+        "name": "Seal of the Radiant Queen",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "A mysterious crest that bestows the power to eclipse the luminosity of the radiant queen.",
+        "number": "1",
+        "category_id": "4",
+        "sort_id": "5",
+        "action_list": [],
+        "level": "20",
+        "exp": "438000",
+        "total_exp": 438000,
+        "effective_acquired_bonus": [
+          {
+            "name": "Dark Resistance",
+            "detail": "+10%",
+            "image": "bonus_12"
+          },
+          {
+            "name": "DEF ",
+            "detail": "+12%",
+            "image": "bonus_2"
+          },
+          {
+            "name": "Double Attack Rate ",
+            "detail": "+6%",
+            "image": "bonus_20"
+          },
+          {
+            "name": "Healing Cap",
+            "detail": "+12%",
+            "image": "bonus_13"
+          },
+          {
+            "name": "Debuff Resistance ",
+            "detail": "+10%",
+            "image": "bonus_3"
+          },
+          {
+            "name": "Triple Attack Rate ",
+            "detail": "+7%",
+            "image": "bonus_21"
+          },
+          {
+            "name": "Debuff Success Rate ",
+            "detail": "+5%",
+            "image": "bonus_4"
+          }
+        ],
+        "max_level": 20,
+        "is_level_max": true,
+        "is_limited_level": true,
+        "evolution": "3",
+        "max_evolution": 3,
+        "evolution_info": {
+          "level": "20",
+          "evolution": "3",
+          "max_level": 20,
+          "max_evolution": 3,
+          "is_max_level": true,
+          "is_limited_level": true,
+          "use_item": [
+            {
+              "use_item_id": "10590",
+              "use_item_kind": "10",
+              "use_item_num": "12",
+              "use_item_name": "Solaris Lapis",
+              "has_num": 37,
+              "has_item": true
+            },
+            {
+              "use_item_id": "10680",
+              "use_item_kind": "10",
+              "use_item_num": "8",
+              "use_item_name": "Essence of the Resplendent",
+              "has_num": 24,
+              "has_item": true
+            },
+            {
+              "use_item_id": "10522",
+              "use_item_kind": "10",
+              "use_item_num": "20",
+              "use_item_name": "True Exo Corow Anima",
+              "has_num": 143,
+              "has_item": true
+            },
+            {
+              "use_item_id": "10521",
+              "use_item_kind": "10",
+              "use_item_num": "70",
+              "use_item_name": "Queen's Crown Fragment",
+              "has_num": 256,
+              "has_item": true
+            }
+          ],
+          "has_item": true,
+          "can_evolution": false,
+          "condition_text": [],
+          "next_evolution_max_level": 20
+        }
+      },
+      {
+        "item_id": "9011",
+        "image": "9011",
+        "name": "Seal of the Calamitous Demon",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "A mysterious crest that bestows the power to banish the shadow of the calamitous demon. ",
+        "number": "1",
+        "category_id": "4",
+        "sort_id": "6",
+        "action_list": [],
+        "level": "20",
+        "exp": "438000",
+        "total_exp": 438000,
+        "effective_acquired_bonus": [
+          {
+            "name": "Light Resistance",
+            "detail": "+10%",
+            "image": "bonus_11"
+          },
+          {
+            "name": "DEF ",
+            "detail": "+12%",
+            "image": "bonus_2"
+          },
+          {
+            "name": "Double Attack Rate ",
+            "detail": "+6%",
+            "image": "bonus_20"
+          },
+          {
+            "name": "Healing Cap",
+            "detail": "+12%",
+            "image": "bonus_13"
+          },
+          {
+            "name": "Debuff Resistance ",
+            "detail": "+10%",
+            "image": "bonus_3"
+          },
+          {
+            "name": "Triple Attack Rate ",
+            "detail": "+7%",
+            "image": "bonus_21"
+          },
+          {
+            "name": "Debuff Success Rate ",
+            "detail": "+5%",
+            "image": "bonus_4"
+          }
+        ],
+        "max_level": 20,
+        "is_level_max": true,
+        "is_limited_level": true,
+        "evolution": "3",
+        "max_evolution": 3,
+        "evolution_info": {
+          "level": "20",
+          "evolution": "3",
+          "max_level": 20,
+          "max_evolution": 3,
+          "is_max_level": true,
+          "is_limited_level": true,
+          "use_item": [
+            {
+              "use_item_id": "10612",
+              "use_item_kind": "10",
+              "use_item_num": "12",
+              "use_item_name": "Tenebrae Lapis",
+              "has_num": 71,
+              "has_item": true
+            },
+            {
+              "use_item_id": "10686",
+              "use_item_kind": "10",
+              "use_item_num": "8",
+              "use_item_name": "Essence of the Hellbringer",
+              "has_num": 27,
+              "has_item": true
+            },
+            {
+              "use_item_id": "10543",
+              "use_item_kind": "10",
+              "use_item_num": "20",
+              "use_item_name": "True Exo Diablo Anima",
+              "has_num": 239,
+              "has_item": true
+            },
+            {
+              "use_item_id": "10542",
+              "use_item_kind": "10",
+              "use_item_num": "70",
+              "use_item_name": "Bloodstained Claw",
+              "has_num": 497,
+              "has_item": true
+            }
+          ],
+          "has_item": true,
+          "can_evolution": false,
+          "condition_text": [],
+          "next_evolution_max_level": 20
+        }
+      }
+    ],
+    "is_active": true
+  },
+  {
+    "category_id": "5",
+    "name": "Other",
+    "type": "2",
+    "item": [
+      {
+        "item_id": "9003",
+        "image": "9003",
+        "name": "Shield of Eternal Splendor",
+        "set_flg": "0",
+        "change_possible_at": null,
+        "comment": "This wonder certifies that the owner directs all ten of the Eternals. Its transparency symbolizes the quiet, protective attitude it takes to lead the sky's most powerful adventurers.",
+        "number": "1",
+        "category_id": "5",
+        "sort_id": "",
+        "action_list": [
+          {
+            "action_no": 1,
+            "action_id": 109003,
+            "comment": "Boosts stats and charge bars of Eternals characters at battle start.",
+            "set_flg": 0
+          }
+        ],
+        "level": "1",
+        "exp": "0",
+        "total_exp": 0,
+        "max_level": 0,
+        "is_level_max": true,
+        "is_limited_level": true,
+        "evolution": "0",
+        "max_evolution": 0,
+        "evolution_info": []
+      },
+      {
+        "item_id": "9005",
+        "image": "9005",
+        "name": "Everlasting Premium Friday",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "A golden statue sculpted in hopes that Premium Friday will continue until the end of time.",
+        "number": "1",
+        "category_id": "5",
+        "sort_id": "",
+        "action_list": [
+          {
+            "action_no": 1,
+            "action_id": 109005,
+            "comment": "Earn items by logging in between 3 p.m. (JST) on the last Friday of every month and the end of that weekend.",
+            "set_flg": 1
+          }
+        ],
+        "level": "1",
+        "exp": "0",
+        "total_exp": 0,
+        "max_level": 0,
+        "is_level_max": true,
+        "is_limited_level": true,
+        "evolution": "0",
+        "max_evolution": 0,
+        "evolution_info": []
+      },
+      {
+        "item_id": "9012",
+        "image": "9012",
+        "name": "Liber Initii",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "Stars come and go, while the skies stretch on and on. To learn how it all began, one must only search inside this book.",
+        "number": "1",
+        "category_id": "5",
+        "sort_id": "",
+        "action_list": [
+          {
+            "action_no": 1,
+            "action_id": 109012,
+            "comment": "3% boost to item drop rate.",
+            "set_flg": 1
+          }
+        ],
+        "level": "1",
+        "exp": "0",
+        "total_exp": 0,
+        "max_level": 1,
+        "is_level_max": true,
+        "is_limited_level": true,
+        "evolution": "0",
+        "max_evolution": 0,
+        "evolution_info": []
+      },
+      {
+        "item_id": "9013",
+        "image": "9013",
+        "name": "Signum Heredis",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "Its splendor serves as testimony to both the adoration and dread it inspires. Only the skies know which path the coronated shall take.",
+        "number": "1",
+        "category_id": "5",
+        "sort_id": "",
+        "action_list": [
+          {
+            "action_no": 1,
+            "action_id": 109009,
+            "comment": "3% boost to all elemental ATK.",
+            "set_flg": 1
+          }
+        ],
+        "level": "1",
+        "exp": "0",
+        "total_exp": 0,
+        "max_level": 1,
+        "is_level_max": true,
+        "is_limited_level": true,
+        "evolution": "0",
+        "max_evolution": 0,
+        "evolution_info": []
+      },
+      {
+        "item_id": "9014",
+        "image": "9014",
+        "name": "Oppressus Fragor",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "A font of power held in check only by the combined pressures of the six. The equilibirum required is beyond delicate—the slightest touch would mean the beginning of the end.",
+        "number": "1",
+        "category_id": "5",
+        "sort_id": "",
+        "action_list": [
+          {
+            "action_no": 1,
+            "action_id": 109010,
+            "comment": "3% boost to all allies' DMG cap.",
+            "set_flg": 1
+          }
+        ],
+        "level": "1",
+        "exp": "0",
+        "total_exp": 0,
+        "max_level": 1,
+        "is_level_max": true,
+        "is_limited_level": true,
+        "evolution": "0",
+        "max_evolution": 0,
+        "evolution_info": []
+      },
+      {
+        "item_id": "9015",
+        "image": "9015_10",
+        "name": "Symbolum Amicitiae",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "A symbol given to those who travel the skies with trusted comrades. It resonates alongside conviction shared, shining brighter when wills are aligned.",
+        "number": "1",
+        "category_id": 5,
+        "sort_id": "",
+        "action_list": [
+          {
+            "action_no": 1,
+            "action_id": 109011,
+            "comment": "Amplify all allies' DMG.",
+            "set_flg": 1
+          }
+        ],
+        "level": "1",
+        "exp": "0",
+        "total_exp": 0,
+        "max_level": 0,
+        "is_level_max": true,
+        "is_limited_level": true,
+        "evolution": "0",
+        "max_evolution": 0,
+        "evolution_info": [],
+        "effective_acquired_bonus": {
+          "current_bonus": {
+            "possession": 900,
+            "buff_kind": 110,
+            "ailment_id": "1950016001",
+            "value": 4,
+            "target_attribute": null,
+            "category_id": 7,
+            "is_max": false,
+            "bonus": 4,
+            "name": "DMG Amplify",
+            "image": "bonus_1",
+            "detail": "+4%",
+            "next_upgrade": 910
+          },
+          "memorial_current_bonus": [
+            {
+              "detail": "+0.5%",
+              "name": "DMG Amplify",
+              "image": "bonus_1",
+              "requirement_add_value": null,
+              "requirement_value": 300,
+              "is_open": true
+            },
+            {
+              "detail": "+0.5%",
+              "name": "DMG Amplify",
+              "image": "bonus_1",
+              "requirement_add_value": null,
+              "requirement_value": 600,
+              "is_open": true
+            },
+            {
+              "detail": "+0.1%",
+              "name": "DMG Amplify",
+              "image": "bonus_1",
+              "requirement_add_value": "10",
+              "requirement_value": 600,
+              "is_open": true
+            }
+          ]
+        }
+      },
+      {
+        "item_id": "9016",
+        "image": "9016",
+        "name": "Divine Stamp Book",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "A book containing stamps imbued with the prayers and blessings of the Divine Generals. The ritualistic rope wrapped around the tome wards off all impurities and Kleshas. The scent of cherry blossoms emanating from the parchment, embellished with sigils of the year spirit, purifies the mind and body of its holder.",
+        "number": "1",
+        "category_id": "5",
+        "sort_id": "",
+        "action_list": [
+          {
+            "action_no": 1,
+            "action_id": 109006,
+            "comment": "Boosts the Divine Generals' stats and charge bars at battle start.",
+            "set_flg": 1
+          }
+        ],
+        "level": "1",
+        "exp": "0",
+        "total_exp": 0,
+        "max_level": 0,
+        "is_level_max": true,
+        "is_limited_level": true,
+        "evolution": "0",
+        "max_evolution": 0,
+        "evolution_info": []
+      },
+      {
+        "item_id": "9017",
+        "image": "9017",
+        "name": "Tri-Realm Bracelet",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "A synthesis of wisdom belonging to the three realms—Sky, Earth, and Astral. It tethers a star bound for oblivion to the skies, granting a brief moment of respite.",
+        "number": "1",
+        "category_id": "5",
+        "sort_id": "",
+        "action_list": [
+          {
+            "action_no": 1,
+            "action_id": 109008,
+            "comment": "Gives a 5% boost to chain burst specs.",
+            "set_flg": 1
+          }
+        ],
+        "level": "1",
+        "exp": "0",
+        "total_exp": 0,
+        "max_level": 0,
+        "is_level_max": true,
+        "is_limited_level": true,
+        "evolution": "0",
+        "max_evolution": 0,
+        "evolution_info": []
+      },
+      {
+        "item_id": "9018",
+        "image": "9018",
+        "name": "Memory Book",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "A notebook detailing the growth of crewmates that were turned into babies by a mysterious power. While some want all records erased, others are curious about its contents. We should keep this safe. <br><font color=\"#ffa826\">(No effect when set.)</font>",
+        "number": "1",
+        "category_id": "5",
+        "sort_id": "",
+        "action_list": [
+          {
+            "action_no": 1,
+            "action_id": 109002,
+            "comment": "",
+            "set_flg": 1
+          }
+        ],
+        "level": "1",
+        "exp": "0",
+        "total_exp": 0,
+        "max_level": 0,
+        "is_level_max": true,
+        "is_limited_level": true,
+        "evolution": "0",
+        "max_evolution": 0,
+        "evolution_info": []
+      }
+    ],
+    "is_active": true
+  },
+  {
+    "category_id": "6",
+    "name": "Cardinal Saint Yupei",
+    "type": "3",
+    "item": [
+      {
+        "item_id": "1001",
+        "image": "1001",
+        "name": "Zhurong's Yupei",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "An ornament infused with the power of vermilion flame that engenders cooperation and coexistence. It resonates with the cardinal beast of the south.<br>A buff effect will be applied to all fire characters.",
+        "number": "1",
+        "category_id": "6",
+        "sort_id": "",
+        "action_list": [],
+        "level": "10",
+        "exp": "200000",
+        "total_exp": 200000,
+        "effective_acquired_bonus": [
+          {
+            "name": "Fire ATK",
+            "detail": "+10%",
+            "image": "bonus_8"
+          },
+          {
+            "name": "DEF ",
+            "detail": "+10%",
+            "image": "bonus_2"
+          },
+          {
+            "name": "Skill DMG",
+            "detail": "+5%",
+            "image": "bonus_18"
+          },
+          {
+            "name": "C.A. DMG",
+            "detail": "+5%",
+            "image": "bonus_19"
+          },
+          {
+            "name": "DMG Amplify vs. Wind",
+            "detail": "+5%",
+            "image": "bonus_1"
+          },
+          {
+            "name": "N.A. DMG Cap",
+            "detail": "+5%",
+            "image": "bonus_1"
+          },
+          {
+            "name": "Skill DMG Cap",
+            "detail": "+5%",
+            "image": "bonus_18"
+          },
+          {
+            "name": "C.A. DMG Cap",
+            "detail": "+5%",
+            "image": "bonus_19"
+          }
+        ],
+        "max_level": 10,
+        "is_level_max": true,
+        "is_limited_level": true,
+        "evolution": "0",
+        "max_evolution": 0,
+        "evolution_info": []
+      },
+      {
+        "item_id": "1002",
+        "image": "1002",
+        "name": "Xuanming's Yupei",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "An ornament infused with the power of black water that cleanses malice and misfortune. It resonates with the cardinal beast of the north.<br>A buff effect will be applied to all water characters.",
+        "number": "1",
+        "category_id": "6",
+        "sort_id": "",
+        "action_list": [],
+        "level": "10",
+        "exp": "200000",
+        "total_exp": 200000,
+        "effective_acquired_bonus": [
+          {
+            "name": "Water ATK",
+            "detail": "+10%",
+            "image": "bonus_9"
+          },
+          {
+            "name": "DEF ",
+            "detail": "+10%",
+            "image": "bonus_2"
+          },
+          {
+            "name": "Skill DMG",
+            "detail": "+5%",
+            "image": "bonus_18"
+          },
+          {
+            "name": "C.A. DMG",
+            "detail": "+5%",
+            "image": "bonus_19"
+          },
+          {
+            "name": "DMG Amplify vs. Fire",
+            "detail": "+5%",
+            "image": "bonus_1"
+          },
+          {
+            "name": "N.A. DMG Cap",
+            "detail": "+5%",
+            "image": "bonus_1"
+          },
+          {
+            "name": "Skill DMG Cap",
+            "detail": "+5%",
+            "image": "bonus_18"
+          },
+          {
+            "name": "C.A. DMG Cap",
+            "detail": "+5%",
+            "image": "bonus_19"
+          }
+        ],
+        "max_level": 10,
+        "is_level_max": true,
+        "is_limited_level": true,
+        "evolution": "0",
+        "max_evolution": 0,
+        "evolution_info": []
+      },
+      {
+        "item_id": "1003",
+        "image": "1003",
+        "name": "Rushou's Yupei",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "An ornament infused with the power of white stone that shapes mountains, rivers, and even nations. It resonates with the cardinal beast of the west.<br>A buff effect will be applied to all earth characters.",
+        "number": "1",
+        "category_id": "6",
+        "sort_id": "",
+        "action_list": [],
+        "level": "10",
+        "exp": "200000",
+        "total_exp": 200000,
+        "effective_acquired_bonus": [
+          {
+            "name": "Earth ATK",
+            "detail": "+10%",
+            "image": "bonus_10"
+          },
+          {
+            "name": "DEF ",
+            "detail": "+10%",
+            "image": "bonus_2"
+          },
+          {
+            "name": "Skill DMG",
+            "detail": "+5%",
+            "image": "bonus_18"
+          },
+          {
+            "name": "C.A. DMG",
+            "detail": "+5%",
+            "image": "bonus_19"
+          },
+          {
+            "name": "DMG Amplify vs. Water",
+            "detail": "+5%",
+            "image": "bonus_1"
+          },
+          {
+            "name": "N.A. DMG Cap",
+            "detail": "+5%",
+            "image": "bonus_1"
+          },
+          {
+            "name": "Skill DMG Cap",
+            "detail": "+5%",
+            "image": "bonus_18"
+          },
+          {
+            "name": "C.A. DMG Cap",
+            "detail": "+5%",
+            "image": "bonus_19"
+          }
+        ],
+        "max_level": 10,
+        "is_level_max": true,
+        "is_limited_level": true,
+        "evolution": "0",
+        "max_evolution": 0,
+        "evolution_info": []
+      },
+      {
+        "item_id": "1004",
+        "image": "1004",
+        "name": "Goumang's Yupei",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "An ornament infused with the power of azure wind that produces ore veins and water sources. It resonates with the cardinal beast of the east.<br>A buff effect will be applied to all wind characters.",
+        "number": "1",
+        "category_id": "6",
+        "sort_id": "",
+        "action_list": [],
+        "level": "10",
+        "exp": "200000",
+        "total_exp": 200000,
+        "effective_acquired_bonus": [
+          {
+            "name": "Wind ATK",
+            "detail": "+10%",
+            "image": "bonus_7"
+          },
+          {
+            "name": "DEF ",
+            "detail": "+10%",
+            "image": "bonus_2"
+          },
+          {
+            "name": "Skill DMG",
+            "detail": "+5%",
+            "image": "bonus_18"
+          },
+          {
+            "name": "C.A. DMG",
+            "detail": "+5%",
+            "image": "bonus_19"
+          },
+          {
+            "name": "DMG Amplify vs. Earth",
+            "detail": "+5%",
+            "image": "bonus_1"
+          },
+          {
+            "name": "N.A. DMG Cap",
+            "detail": "+5%",
+            "image": "bonus_1"
+          },
+          {
+            "name": "Skill DMG Cap",
+            "detail": "+5%",
+            "image": "bonus_18"
+          },
+          {
+            "name": "C.A. DMG Cap",
+            "detail": "+5%",
+            "image": "bonus_19"
+          }
+        ],
+        "max_level": 10,
+        "is_level_max": true,
+        "is_limited_level": true,
+        "evolution": "0",
+        "max_evolution": 0,
+        "evolution_info": []
+      },
+      {
+        "item_id": "1005",
+        "image": "1005",
+        "name": "Golden Longxin",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "A majestic gold steeped in the power of shimmering brilliance that bestows life and blessings. It resonates with the beast that sits at the center of all directions.<br>A buff effect will be applied to all light characters.",
+        "number": "1",
+        "category_id": "6",
+        "sort_id": "",
+        "action_list": [],
+        "level": "10",
+        "exp": "200000",
+        "total_exp": 200000,
+        "effective_acquired_bonus": [
+          {
+            "name": "Light ATK",
+            "detail": "+10%",
+            "image": "bonus_11"
+          },
+          {
+            "name": "DEF ",
+            "detail": "+10%",
+            "image": "bonus_2"
+          },
+          {
+            "name": "Skill DMG",
+            "detail": "+5%",
+            "image": "bonus_18"
+          },
+          {
+            "name": "C.A. DMG",
+            "detail": "+5%",
+            "image": "bonus_19"
+          },
+          {
+            "name": "DMG Amplify vs. Dark",
+            "detail": "+5%",
+            "image": "bonus_1"
+          },
+          {
+            "name": "N.A. DMG Cap",
+            "detail": "+5%",
+            "image": "bonus_1"
+          },
+          {
+            "name": "Skill DMG Cap",
+            "detail": "+5%",
+            "image": "bonus_18"
+          },
+          {
+            "name": "C.A. DMG Cap",
+            "detail": "+5%",
+            "image": "bonus_19"
+          }
+        ],
+        "max_level": 10,
+        "is_level_max": true,
+        "is_limited_level": true,
+        "evolution": "0",
+        "max_evolution": 0,
+        "evolution_info": []
+      },
+      {
+        "item_id": "1006",
+        "image": "1006",
+        "name": "Obsidian Longxin",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "A beautiful stone steeped in the power of everlasting darkness that brings calamity and destruction. It resonates with the beast that sits at the center of all directions.<br>A buff effect will be applied to all dark characters.",
+        "number": "1",
+        "category_id": "6",
+        "sort_id": "",
+        "action_list": [],
+        "level": "10",
+        "exp": "200000",
+        "total_exp": 200000,
+        "effective_acquired_bonus": [
+          {
+            "name": "Dark ATK",
+            "detail": "+10%",
+            "image": "bonus_12"
+          },
+          {
+            "name": "DEF ",
+            "detail": "+10%",
+            "image": "bonus_2"
+          },
+          {
+            "name": "Skill DMG",
+            "detail": "+5%",
+            "image": "bonus_18"
+          },
+          {
+            "name": "C.A. DMG",
+            "detail": "+5%",
+            "image": "bonus_19"
+          },
+          {
+            "name": "DMG Amplify vs. Light",
+            "detail": "+5%",
+            "image": "bonus_1"
+          },
+          {
+            "name": "N.A. DMG Cap",
+            "detail": "+5%",
+            "image": "bonus_1"
+          },
+          {
+            "name": "Skill DMG Cap",
+            "detail": "+5%",
+            "image": "bonus_18"
+          },
+          {
+            "name": "C.A. DMG Cap",
+            "detail": "+5%",
+            "image": "bonus_19"
+          }
+        ],
+        "max_level": 10,
+        "is_level_max": true,
+        "is_limited_level": true,
+        "evolution": "0",
+        "max_evolution": 0,
+        "evolution_info": []
+      }
+    ],
+    "is_active": false
+  },
+  {
+    "category_id": "8",
+    "name": "Rings of Fate",
+    "type": "2",
+    "item": [
+      {
+        "item_id": "2003",
+        "image": "2003",
+        "name": "Ring of Death",
+        "set_flg": "1",
+        "change_possible_at": null,
+        "comment": "A ring made to manifest through the focused power of providence grains. It is proof of the oath that the primal beast paradigmatic of Death shares with The Lovers who resolves to share life together.",
+        "number": "1",
+        "category_id": "8",
+        "sort_id": "",
+        "action_list": [
+          {
+            "action_no": 1,
+            "action_id": 200301,
+            "comment": "Gives a 30% boost to dark allies' HP.",
+            "set_flg": 1
+          },
+          {
+            "action_no": 2,
+            "action_id": 200302,
+            "comment": "Amplifies dark allies' DMG against light foes by 10%.",
+            "set_flg": 1
+          }
+        ]
+      }
+    ],
+    "is_active": true
+  }
+]

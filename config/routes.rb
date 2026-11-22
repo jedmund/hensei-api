@@ -128,6 +128,10 @@ Rails.application.routes.draw do
     get 'solomonis/blessings', to: 'solomonis#blessings'
     get 'solomonis/guide_effects', to: 'solomonis#guide_effects'
 
+    # Wonders: the catalogue, and a team's whole-list write
+    get 'wonders', to: 'wonders#index'
+    put 'parties/:id/wonders', to: 'party_wonders#update'
+
     # Stickers on parties (:id is the party UUID)
     put 'parties/:id/sticker', to: 'party_stickers#update'
     delete 'parties/:id/sticker', to: 'party_stickers#destroy'
@@ -517,6 +521,7 @@ Rails.application.routes.draw do
         resources :weapons, only: [:index, :show], controller: '/api/v1/collection_weapons'
         resources :summons, only: [:index, :show], controller: '/api/v1/collection_summons'
         resources :artifacts, only: [:index, :show], controller: '/api/v1/collection_artifacts'
+        resources :wonders, only: [:index], controller: '/api/v1/collection_wonders'
       end
 
       resources :support_summons, only: [:index], controller: '/api/v1/support_summons'
@@ -560,6 +565,11 @@ Rails.application.routes.draw do
           delete :batch_destroy
           post :import
           post :preview_sync
+        end
+      end
+      resources :wonders, only: [:create, :update, :destroy], controller: '/api/v1/collection_wonders' do
+        collection do
+          post :import
         end
       end
     end

@@ -22,7 +22,8 @@ module PartyFullLoading
       { party_shares: :shareable },
       { solomonis_expedition: :route_evoker },
       { party_blessings: %i[arcarum_blessing arcarum_blessing_level] },
-      { expedition_guide_effects: :solomonis_guide_effect }
+      { expedition_guide_effects: :solomonis_guide_effect },
+      { party_wonders: { wonder: :level_bonuses } }
     ]
   end
 
