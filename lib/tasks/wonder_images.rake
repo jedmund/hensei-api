@@ -2,7 +2,7 @@
 
 namespace :granblue do
   desc <<~DESC
-    Download Wonder art from the game CDN to wonders/<image>.jpg (S3 and/or local),
+    Download Wonder art from the game CDN to wonders/square/<image>.jpg (S3 and/or local),
     including every level's art for Crucible Seals and Yupei and Symbolum's variants.
     Usage:
       rake granblue:download_wonder_images                       # storage=both

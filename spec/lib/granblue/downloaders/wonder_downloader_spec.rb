@@ -37,8 +37,8 @@ RSpec.describe Granblue::Downloaders::WonderDownloader do
   describe 'storage keys' do
     let(:wonder) { build(:wonder, granblue_id: '9008', kind: 'leveled', max_level: 20) }
 
-    it 'stores files directly under wonders/' do
-      expect(downloader.send(:build_s3_key, 'square', '9008_20.jpg')).to eq('wonders/9008_20.jpg')
+    it 'stores files under wonders/square/' do
+      expect(downloader.send(:build_s3_key, 'square', '9008_20.jpg')).to eq('wonders/square/9008_20.jpg')
     end
   end
 end

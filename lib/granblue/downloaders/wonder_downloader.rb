@@ -2,13 +2,13 @@
 
 module Granblue
   module Downloaders
-    # Downloads a Wonder's art from the game CDN to `wonders/<image>.jpg`.
+    # Downloads a Wonder's art from the game CDN to `wonders/square/<image>.jpg`.
     #
     # The game has one 130x130 size (`s/`). Leveled Wonders (Crucible Seals,
     # Yupei) are shown as `<id>_<level>`, and the CDN serves a file for every
     # level, so each level is copied and the web app never needs to know
     # where the art changes. Symbolum Amicitiae's art varies with the
-    # character count (`9015_2` .. `9015_11`); missing suffixes 404 and are
+    # character count (`9015_2` .. `9015_12`); missing suffixes 404 and are
     # skipped.
     #
     # @example
@@ -60,9 +60,9 @@ module Granblue
         's'
       end
 
-      # One size, so no size folder: wonders/<image>.jpg
+      # One size: wonders/square/<image>.jpg (bonus icons sit in wonders/bonuses/)
       def build_s3_key(_size, filename)
-        "#{bucket_directory}/#{filename}"
+        "#{bucket_directory}/square/#{filename}"
       end
 
       def download_path(_size)
