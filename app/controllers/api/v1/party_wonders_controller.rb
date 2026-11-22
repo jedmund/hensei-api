@@ -4,7 +4,8 @@ module Api
   module V1
     ##
     # PUT /parties/:id/wonders replaces a team's Wonders, like
-    # PUT /parties/:id/blessings. The party is loaded by its id and authorized
+    # PUT /parties/:id/blessings. POST /parties/:id/wonders/sync replaces them
+    # with the account's current collection, as a new team's snapshot does. The party is loaded by its id and authorized
     # against its real owner or edit key; Wonders are looked up in the
     # catalogue, and no ownership fields are read from params.
     class PartyWondersController < Api::V1::ApiController
@@ -38,10 +39,32 @@ module Api
 
         replace!(entries, wonders)
         @party.mark_updated!
-        render json: { wonders: PartyWonderBlueprint.render_as_hash(@party.party_wonders.includes(wonder: :level_bonuses)) }
+        render_wonders
+      end
+
+      # POST /parties/:id/wonders/sync
+      # Reads the same account a new team's snapshot does (its collection
+      # source, else its owner), and only when the requester may still see
+      # that collection.
+      def sync
+        snapshot = PartyWonderSnapshot.new(@party)
+        source = snapshot.source_user
+        return render_list_error('this team has no account to sync from') unless source
+        return render_forbidden_response('Collection is not accessible') unless source.collection_viewable_by?(current_user)
+
+        Party.transaction do
+          Party.where(id: @party.id).lock.pick(:id)
+          snapshot.sync!
+        end
+        @party.mark_updated!
+        render_wonders
       end
 
       private
+
+      def render_wonders
+        render json: { wonders: PartyWonderBlueprint.render_as_hash(@party.party_wonders.includes(wonder: :level_bonuses)) }
+      end
 
       def set_party
         @party = Party.find_by(id: params[:id])

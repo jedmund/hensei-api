@@ -247,6 +247,70 @@ RSpec.describe 'Wonders API', type: :request do
     end
   end
 
+  describe 'POST /api/v1/parties/:id/wonders/sync' do
+    let(:party) { create(:party, user: user) }
+    let(:others_party) { create(:party, user: other_user) }
+
+    def sync(target, with_headers = headers)
+      post "/api/v1/parties/#{target.id}/wonders/sync", headers: with_headers
+    end
+
+    it "replaces the team's Wonders with the owner's active, battle-relevant ones" do
+      create(:collection_wonder, user: user, wonder: seal, level: 15, evolution: 1)
+      create(:collection_wonder, user: user, wonder: fixed, active: false)
+      create(:collection_wonder, user: user, wonder: create(:wonder, :not_battle_relevant))
+      create(:party_wonder, party: party, wonder: symbolum, possession: 900)
+
+      sync(party)
+
+      expect(response).to have_http_status(:ok)
+      expect(body['wonders'].pluck('wonder_id')).to eq([seal.id])
+      expect(body['wonders'].first).to include('level' => 15, 'evolution' => 1)
+      expect(party.party_wonders.pluck(:wonder_id)).to eq([seal.id])
+    end
+
+    it "reads the collection source's Wonders for a team built from someone else's collection" do
+      other_user.update!(collection_privacy: :everyone)
+      create(:collection_wonder, user: other_user, wonder: seal, level: 20, evolution: 3)
+      create(:collection_wonder, user: user, wonder: fixed)
+      party.update_columns(collection_source_user_id: other_user.id)
+
+      sync(party)
+
+      expect(response).to have_http_status(:ok)
+      expect(body['wonders'].pluck('wonder_id')).to eq([seal.id])
+    end
+
+    it "refuses once the collection source's collection is private" do
+      other_user.update!(collection_privacy: :private_collection)
+      create(:collection_wonder, user: other_user, wonder: seal, level: 20, evolution: 3)
+      create(:party_wonder, party: party, wonder: fixed)
+      party.update_columns(collection_source_user_id: other_user.id)
+
+      sync(party)
+
+      expect(response).to have_http_status(:forbidden)
+      expect(party.party_wonders.pluck(:wonder_id)).to eq([fixed.id])
+    end
+
+    it "can't sync someone else's party" do
+      create(:party_wonder, party: others_party, wonder: fixed)
+
+      sync(others_party)
+
+      expect(response).to have_http_status(:unauthorized)
+      expect(others_party.party_wonders.pluck(:wonder_id)).to eq([fixed.id])
+    end
+
+    it 'has no account to sync an anonymous team from' do
+      anon = create(:party, user: nil).tap { |p| p.update_columns(edit_key: 'anonsecret') }
+
+      sync(anon, json_headers.merge('X-Edit-Key' => 'anonsecret'))
+
+      expect(response).to have_http_status(:unprocessable_content)
+    end
+  end
+
   describe 'PUT /api/v1/parties/:id/wonders' do
     let(:party) { create(:party, user: user) }
     let(:others_party) { create(:party, user: other_user) }

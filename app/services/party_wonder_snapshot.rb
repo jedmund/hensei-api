@@ -12,6 +12,9 @@
 #
 # A failure here never fails the party create; it's logged and the team
 # starts without Wonders.
+#
+# #sync! is the owner's "sync from collection": it replaces the team's
+# Wonders with the same account's current ones, and raises on failure.
 class PartyWonderSnapshot
   COPIED_FIELDS = %w[wonder_id level evolution possession image].freeze
 
@@ -23,7 +26,7 @@ class PartyWonderSnapshot
     return if @party.source_party_id.present? || @party.remix
     return if @party.party_wonders.any?
 
-    user = @party.collection_source_user || @party.user
+    user = source_user
     return unless user
 
     rows = snapshot_rows(user)
@@ -33,6 +36,23 @@ class PartyWonderSnapshot
     @party.party_wonders.reset
   rescue ActiveRecord::ActiveRecordError => e
     Rails.logger.warn("[PartyWonderSnapshot] party=#{@party.id} skipped: #{e.class}: #{e.message}")
+  end
+
+  # The account a team's Wonders come from: its collection source, else its owner.
+  def source_user
+    @party.collection_source_user || @party.user
+  end
+
+  # Replaces the team's Wonders with the account's current active,
+  # battle-relevant ones. The caller holds the party's row lock.
+  def sync!
+    user = source_user
+    raise ArgumentError, 'party has no account to sync from' unless user
+
+    rows = snapshot_rows(user)
+    @party.party_wonders.delete_all
+    PartyWonder.insert_all!(rows) if rows.any?
+    @party.party_wonders.reset
   end
 
   private

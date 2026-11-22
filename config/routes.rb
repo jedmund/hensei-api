@@ -131,6 +131,7 @@ Rails.application.routes.draw do
     # Wonders: the catalogue, and a team's whole-list write
     get 'wonders', to: 'wonders#index'
     put 'parties/:id/wonders', to: 'party_wonders#update'
+    post 'parties/:id/wonders/sync', to: 'party_wonders#sync'
 
     # Stickers on parties (:id is the party UUID)
     put 'parties/:id/sticker', to: 'party_stickers#update'
