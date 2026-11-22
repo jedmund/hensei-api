@@ -80,9 +80,9 @@ module Api
       end
 
       # Slim view for party list cards — only fields GridRep actually renders
+      # (button/chain/summon counts and clear time feed its optional pills)
       view :list do
-        excludes :local_id, :description, :element, :extra,
-                 :button_count, :turn_count, :chain_count, :summon_count, :clear_time,
+        excludes :local_id, :description, :element, :extra, :turn_count,
                  :auto_guard, :auto_summon, :solo, :video_url,
                  :collection_source_user_id,
                  :created_at, :updated_at,

@@ -18,7 +18,8 @@ module Api
 
       # Minimal view for party list cards
       view :list do
-        fields :unlimited, :content_mode
+        # section: cards show clear time and button counts on Event teams only
+        fields :unlimited, :content_mode, :section
       end
 
       view :full do
