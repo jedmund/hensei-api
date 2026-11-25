@@ -58,8 +58,13 @@ module Api
       # External pages: a gbf.wiki title, a GameWith article id, a Kamigame path under /グラブル/
       fields :wiki_en, :gamewith, :kamigame
 
+      # Each raid with the day it opens on (whole days after the start) and
+      # when that is; both null when it opens with the event
       field :raids do |event|
-        RaidBlueprint.render_as_hash(event.event_raids.map(&:raid), view: :list)
+        event.event_raids.map do |row|
+          RaidBlueprint.render_as_hash(row.raid, view: :list)
+                       .merge(unlock_day: row.unlock_day, unlocks_at: row.unlocks_at)
+        end
       end
 
       field :event_number, if: ->(_field, _event, options) { options[:editor] }

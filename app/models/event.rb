@@ -36,6 +36,14 @@ class Event < ApplicationRecord
   # Kinds themed around a boss element: they require an element, and their
   # home sections only show teams of the advantaged element(s).
   ELEMENT_THEMED_KINDS = %w[unite_and_fight dread_barrage exo_crucible records_of_the_ten].freeze
+  # Raids that open after the event starts, as days after starts_at, by kind
+  # and raid slug (owner, 2026-11-24). Linking one fills in its unlock_day,
+  # which editors can change per event; other raids, and every raid of other
+  # kinds, open with the event.
+  RAID_UNLOCK_DAYS = {
+    'unite_and_fight' => { 'nm100' => 2, 'nm150' => 2, 'nm200' => 3, 'nm250' => 4 },
+    'dread_barrage' => { 'db135' => 2, 'db175' => 3, 'db215' => 4 }
+  }.freeze
   enum :status, { draft: 0, approved: 1, hidden: 2 }, validate: true
   enum :element, ELEMENTS, validate: { allow_nil: true }
   # A second boss element, for runs whose bosses share two weaknesses (Records
@@ -151,6 +159,38 @@ class Event < ApplicationRecord
     self
   end
 
+  # The day `raid` opens on by the schedule (RAID_UNLOCK_DAYS), or nil when
+  # it opens with the event.
+  def scheduled_unlock_day(raid)
+    RAID_UNLOCK_DAYS.dig(kind, raid&.slug)
+  end
+
+  # Sets the days linked raids open on, from { raid_id => whole days after
+  # the start }; a blank day opens the raid with the event. Raids left out
+  # keep their day. Returns self, or nil (with errors on :raid_unlock_days)
+  # for a raid that isn't linked, a day that isn't a whole number, or one
+  # after the event.
+  def assign_raid_unlock_days(days)
+    days = parse_unlock_days(days)
+    rows = event_raids.index_by(&:raid_id)
+    unlinked = days.keys - rows.keys
+    if unlinked.any?
+      errors.add(:raid_unlock_days, "not linked: #{unlinked.join(', ')}")
+      return nil
+    end
+
+    days.each { |raid_id, day| rows[raid_id].unlock_day = day }
+    invalid = rows.values_at(*days.keys).reject(&:valid?)
+    invalid.each { |row| errors.add(:raid_unlock_days, "#{row.raid_id} #{row.errors.full_messages.to_sentence}") }
+    return nil if invalid.any?
+
+    transaction { rows.each_value { |row| row.save! if row.changed? } }
+    self
+  rescue ArgumentError, TypeError
+    errors.add(:raid_unlock_days, 'must be whole numbers of days')
+    nil
+  end
+
   # First and last JST calendar days, as Guild War pages show them.
   def start_date
     starts_at&.in_time_zone(GW_TIME_ZONE)&.to_date
@@ -204,6 +244,14 @@ class Event < ApplicationRecord
   end
 
   private
+
+  # { raid_id => Integer or nil } from { raid_id => day or blank }. Raises
+  # ArgumentError on a day that isn't a whole number.
+  def parse_unlock_days(days)
+    (days.respond_to?(:to_h) ? days.to_h : {}).to_h do |raid_id, day|
+      [raid_id.to_s, day.presence && Integer(day.to_s, 10)]
+    end
+  end
 
   def ends_after_start
     return unless starts_at && ends_at

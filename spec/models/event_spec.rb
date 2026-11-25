@@ -94,6 +94,52 @@ RSpec.describe Event do
     end
   end
 
+  describe 'raid unlock days' do
+    let(:event) { create(:gw_event, event_number: 90) }
+    let(:finals_raid) { create(:raid, slug: 'nm100') }
+    let(:last_raid) { create(:raid, slug: 'nm250') }
+    let(:ex) { create(:raid, slug: 'ex') }
+
+    it 'opens scheduled raids on their day when linked' do
+      event.assign_raid_ids([ex.id, finals_raid.id, last_raid.id])
+      days = event.event_raids.to_h { |row| [row.raid_id, row.unlock_day] }
+      expect(days).to eq(ex.id => nil, finals_raid.id => 2, last_raid.id => 4)
+      expect(event.event_raids.find_by(raid: last_raid).unlocks_at).to eq(event.starts_at + 4.days)
+    end
+
+    it 'schedules Dread Barrage raids' do
+      barrage = create(:event, :dread_barrage, starts_at: 1.day.from_now, ends_at: 9.days.from_now)
+      days = %w[db95 db135 db175 db215].map { |slug| barrage.scheduled_unlock_day(build(:raid, slug: slug)) }
+      expect(days).to eq([nil, 2, 3, 4])
+    end
+
+    it 'leaves the day blank when the event ends before it' do
+      short = create(:gw_event, event_number: 91)
+      short.update!(ends_at: short.starts_at + 3.days)
+      expect(short.assign_raid_ids([last_raid.id])).to eq(short)
+      expect(short.event_raids.first.unlock_day).to be_nil
+    end
+
+    it 'opens every raid of other kinds with the event' do
+      story = create(:event)
+      story.assign_raid_ids([finals_raid.id])
+      expect(story.event_raids.first.unlock_day).to be_nil
+    end
+
+    it 'keeps a day given for a raid already linked' do
+      event.assign_raid_ids([finals_raid.id])
+      event.assign_raid_unlock_days(finals_raid.id => 1)
+      event.assign_raid_ids([finals_raid.id, ex.id])
+      expect(event.event_raids.find_by(raid: finals_raid).unlock_day).to eq(1)
+    end
+
+    it 'moves the opening time with the start' do
+      event.assign_raid_ids([finals_raid.id])
+      event.update!(starts_at: event.starts_at + 1.day, ends_at: event.ends_at + 1.day)
+      expect(event.event_raids.reload.first.unlocks_at).to eq(event.starts_at + 2.days)
+    end
+  end
+
   describe 'Guild Wars' do
     let(:jst) { Time.find_zone('Asia/Tokyo') }
 
