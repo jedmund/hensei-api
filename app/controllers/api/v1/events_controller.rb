@@ -13,7 +13,7 @@ module Api
       # { raid_id => days after the start, or blank }, sets the days the named
       # raids open on (Event#assign_raid_unlock_days); neither is an attribute.
       PERMITTED = [:name_en, :name_jp, :kind, :series, :element, :second_element, :starts_at, :ends_at, :event_number,
-                   :wiki_en, :gamewith, :kamigame, { raid_ids: [] }, { raid_unlock_days: {} }].freeze
+                   :raid_unlock_hour, :wiki_en, :gamewith, :kamigame, { raid_ids: [] }, { raid_unlock_days: {} }].freeze
       EDITOR_ACTIONS = %i[create update approve hide upload_image sync].freeze
       SCOPES = %w[current upcoming past].freeze
       MAX_IMAGE_DIMENSION = 2048

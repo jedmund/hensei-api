@@ -176,7 +176,8 @@ RSpec.describe 'Api::V1::Events', type: :request do
       expect(response).to have_http_status(:created)
       by_id = json_response['raids'].index_by { |raid| raid['id'] }
       expect(by_id[raids.first.id]['unlock_day']).to eq(2)
-      expect(Time.zone.parse(by_id[raids.first.id]['unlocks_at'])).to eq(Time.zone.parse(json_response['starts_at']) + 2.days)
+      midnight = Time.zone.parse(json_response['starts_at']).in_time_zone('Asia/Tokyo').beginning_of_day
+      expect(Time.zone.parse(by_id[raids.first.id]['unlocks_at'])).to eq(midnight + 2.days)
       expect(by_id[raids.second.id]).to include('unlock_day' => nil, 'unlocks_at' => nil)
     end
 
@@ -303,6 +304,13 @@ RSpec.describe 'Api::V1::Events', type: :request do
       def put_days(days, headers: editor_headers, **extra)
         put "/api/v1/events/#{event.id}", params: { event: { raid_unlock_days: days, **extra } },
                                           headers: headers, as: :json
+      end
+
+      it 'sets the hour raids open at' do
+        put "/api/v1/events/#{event.id}", params: { event: { raid_unlock_hour: 5 } }, headers: editor_headers, as: :json
+        expect(response).to have_http_status(:ok)
+        expect(json_response['raid_unlock_hour']).to eq(5)
+        expect(event.reload.raid_unlock_hour).to eq(5)
       end
 
       it 'sets and returns the day a raid opens on' do
