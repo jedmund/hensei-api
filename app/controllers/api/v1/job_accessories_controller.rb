@@ -110,13 +110,19 @@ module Api
       end
 
       # GET /jobs/:id/accessories
-      # Legacy endpoint - get accessories for a specific job
+      # Accessories a job can equip. Accessories are stored against one job
+      # (manaturas on Manadiver, shields on Paladin), but every job of the
+      # same accessory type can use them, e.g. Wizard Origin and Shieldsworn.
       def job
         job = Job.find_by_route_id(params[:id])
         return render_not_found_response('job') unless job
 
-        accessories = JobAccessory.where(job_id: job.id)
-        render json: JobAccessoryBlueprint.render(accessories)
+        accessories = if job.accessory && job.accessory_type.to_i.positive?
+                        JobAccessory.where(accessory_type: job.accessory_type)
+                      else
+                        JobAccessory.where(job_id: job.id)
+                      end
+        render json: JobAccessoryBlueprint.render(accessories.order(:granblue_id))
       end
 
       private
