@@ -306,6 +306,13 @@ RSpec.describe 'Api::V1::Events', type: :request do
                                           headers: headers, as: :json
       end
 
+      it 'sets the hour raids open at' do
+        put "/api/v1/events/#{event.id}", params: { event: { raid_unlock_hour: 5 } }, headers: editor_headers, as: :json
+        expect(response).to have_http_status(:ok)
+        expect(json_response['raid_unlock_hour']).to eq(5)
+        expect(event.reload.raid_unlock_hour).to eq(5)
+      end
+
       it 'sets and returns the day a raid opens on' do
         put_days({ raid.id => 2 })
         expect(response).to have_http_status(:ok)

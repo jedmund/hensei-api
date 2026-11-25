@@ -144,20 +144,32 @@ RSpec.describe Event do
     describe '#raid_unlocks_at' do
       let(:jst) { Time.find_zone('Asia/Tokyo') }
 
-      it 'opens Guild War raids at 0:00 JST on their day' do
-        war = build(:event, :unite_and_fight, starts_at: jst.local(2026, 11, 21, 17))
-        expect(war.raid_unlocks_at(2)).to eq(jst.local(2026, 11, 23, 0))
+      it 'gives new Guild Wars 0:00 JST and Dread Barrages 19:00 JST' do
+        expect(create(:gw_event, event_number: 92).raid_unlock_hour).to eq(0)
+        expect(create(:event, :dread_barrage).raid_unlock_hour).to eq(19)
+        expect(create(:event).raid_unlock_hour).to be_nil
       end
 
-      it 'opens Dread Barrage raids at 19:00 JST on their day' do
-        barrage = build(:event, :dread_barrage, starts_at: jst.local(2026, 12, 10, 17))
+      it 'keeps an hour given for a new event' do
+        expect(create(:event, :dread_barrage, raid_unlock_hour: 12).raid_unlock_hour).to eq(12)
+      end
+
+      it 'opens raids at the hour, JST, on their day' do
+        war = build(:event, :unite_and_fight, starts_at: jst.local(2026, 11, 21, 17), raid_unlock_hour: 0)
+        expect(war.raid_unlocks_at(2)).to eq(jst.local(2026, 11, 23, 0))
+        barrage = build(:event, :dread_barrage, starts_at: jst.local(2026, 12, 10, 17), raid_unlock_hour: 19)
         expect(barrage.raid_unlocks_at(2)).to eq(jst.local(2026, 12, 12, 19))
       end
 
-      it 'counts whole days from the start for other kinds' do
+      it 'counts whole days from the start without an hour' do
         story = build(:event, starts_at: jst.local(2026, 12, 10, 17))
         expect(story.raid_unlocks_at(2)).to eq(jst.local(2026, 12, 12, 17))
         expect(story.raid_unlocks_at(nil)).to be_nil
+      end
+
+      it 'takes hours 0 to 23' do
+        expect(build(:event, raid_unlock_hour: 24)).not_to be_valid
+        expect(build(:event, raid_unlock_hour: 23)).to be_valid
       end
     end
   end

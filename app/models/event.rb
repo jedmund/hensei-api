@@ -44,8 +44,8 @@ class Event < ApplicationRecord
     'unite_and_fight' => { 'nm100' => 2, 'nm150' => 2, 'nm200' => 3, 'nm250' => 4 },
     'dread_barrage' => { 'db135' => 2, 'db175' => 3, 'db215' => 4 }
   }.freeze
-  # The JST hour those raids open at on their day (owner, 2026-11-25). Other
-  # kinds open them unlock_day whole days after starts_at.
+  # The JST hour new events of these kinds open scheduled raids at, on their
+  # day (owner, 2026-11-25); editors can change raid_unlock_hour per event.
   RAID_UNLOCK_HOURS = { 'unite_and_fight' => 0, 'dread_barrage' => 19 }.freeze
   enum :status, { draft: 0, approved: 1, hidden: 2 }, validate: true
   enum :element, ELEMENTS, validate: { allow_nil: true }
@@ -71,11 +71,14 @@ class Event < ApplicationRecord
   validates :starts_at, :ends_at, presence: true
   validates :series, inclusion: { in: SERIES }, allow_nil: true
   validates :element, presence: true, if: :element_themed?
+  validates :raid_unlock_hour, numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 23 }, allow_nil: true
   validates :event_number, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
   validates :event_number, uniqueness: { conditions: -> { where(kind: kinds[:unite_and_fight]) } },
                            allow_nil: true, if: :unite_and_fight?
   # The crew pages find a Guild War by its number.
   validates :event_number, presence: true, if: :unite_and_fight?
+  # A new Guild War or Dread Barrage opens its scheduled raids at the kind's hour
+  before_validation(on: :create) { self.raid_unlock_hour ||= RAID_UNLOCK_HOURS[kind] }
   validate :ends_after_start
   validate :second_element_pairs_with_element
 
@@ -163,14 +166,13 @@ class Event < ApplicationRecord
   end
 
   # When a raid with this unlock_day opens: on the JST calendar day that many
-  # days after the start, at the kind's reset hour
+  # days after the start, at raid_unlock_hour; without an hour, that many
+  # whole days after the start
   def raid_unlocks_at(day)
     return unless day && starts_at
+    return starts_at + day.days unless raid_unlock_hour
 
-    hour = RAID_UNLOCK_HOURS[kind]
-    return starts_at + day.days unless hour
-
-    (starts_at.in_time_zone(GW_TIME_ZONE).to_date + day).in_time_zone(GW_TIME_ZONE).change(hour: hour)
+    (starts_at.in_time_zone(GW_TIME_ZONE).to_date + day).in_time_zone(GW_TIME_ZONE).change(hour: raid_unlock_hour)
   end
 
   # The day `raid` opens on by the schedule (RAID_UNLOCK_DAYS), or nil when

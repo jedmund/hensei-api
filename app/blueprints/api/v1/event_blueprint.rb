@@ -9,7 +9,7 @@ module Api
         { en: event.name_en, ja: event.name_jp }
       end
 
-      fields :kind, :series, :starts_at, :ends_at, :status
+      fields :kind, :series, :starts_at, :ends_at, :status, :raid_unlock_hour
 
       # The boss's element, as an integer from GranblueEnums::ELEMENTS (like
       # parties.element).
