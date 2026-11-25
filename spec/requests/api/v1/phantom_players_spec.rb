@@ -235,4 +235,19 @@ RSpec.describe 'Api::V1::PhantomPlayers', type: :request do
       expect(json['code']).to eq('not_claimed_by_user')
     end
   end
+
+  describe 'GET /api/v1/crew/phantom_players/:id/gw_scores' do
+    it 'sends each Guild War with its boss element and the element crews bring' do
+      phantom = create(:phantom_player, crew: crew)
+      event = create(:event, :unite_and_fight, element: 'Wind')
+      participation = create(:crew_gw_participation, crew: crew, event: event)
+      create(:gw_individual_score, crew_gw_participation: participation, crew_membership: nil, phantom_player: phantom)
+
+      get "/api/v1/crew/phantom_players/#{phantom.id}/gw_scores", headers: auth_headers
+
+      expect(response).to have_http_status(:ok)
+      gw_event = response.parsed_body['event_scores'].first['gw_event']
+      expect(gw_event).to include('event_number' => event.event_number, 'element' => 4, 'advantage_element' => 1)
+    end
+  end
 end
