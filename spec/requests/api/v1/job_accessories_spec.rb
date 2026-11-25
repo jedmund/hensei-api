@@ -154,5 +154,31 @@ RSpec.describe 'Api::V1::JobAccessories', type: :request do
       expect(json.first['id']).to eq(accessory.id)
       expect(json.first['name']['en']).to eq(accessory.name_en)
     end
+
+    context 'when another job shares the accessory type' do
+      let!(:manadiver) { create(:job, accessory: true, accessory_type: 2) }
+      let!(:wizard_origin) { create(:job, accessory: true, accessory_type: 2) }
+      let!(:manatura) { create(:job_accessory, job: manadiver, accessory_type: 2) }
+
+      it 'returns accessories of that type for every job that uses it' do
+        get "/api/v1/jobs/#{wizard_origin.granblue_id}/accessories"
+        expect(response).to have_http_status(:ok)
+
+        ids = response.parsed_body.pluck('id')
+        expect(ids).to include(manatura.id)
+        expect(ids).to match_array(JobAccessory.where(accessory_type: 2).pluck(:id))
+        expect(ids).not_to include(accessory.id)
+      end
+    end
+
+    context 'when the job has no accessory' do
+      let!(:plain_job) { create(:job, accessory: false, accessory_type: 0) }
+
+      it 'returns an empty list' do
+        get "/api/v1/jobs/#{plain_job.granblue_id}/accessories"
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body).to eq([])
+      end
+    end
   end
 end
