@@ -221,4 +221,21 @@ RSpec.describe 'Api::V1::CrewMemberships', type: :request do
       end
     end
   end
+
+  describe 'GET /api/v1/crew/memberships/:id/gw_scores' do
+    before { create(:crew_membership, crew: crew, user: user, role: :member) }
+
+    it 'sends each Guild War with its boss element and the element crews bring' do
+      event = create(:event, :unite_and_fight, element: 'Light')
+      participation = create(:crew_gw_participation, crew: crew, event: event)
+      create(:gw_individual_score, crew_gw_participation: participation, crew_membership: target_membership)
+
+      get "/api/v1/crew/memberships/#{target_membership.id}/gw_scores", headers: auth_headers
+
+      expect(response).to have_http_status(:ok)
+      gw_event = response.parsed_body['event_scores'].first['gw_event']
+      expect(gw_event).to include('event_number' => event.event_number, 'element' => 5, 'advantage_element' => 6,
+                                  'start_date' => event.start_date.to_s, 'end_date' => event.end_date.to_s)
+    end
+  end
 end

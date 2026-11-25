@@ -91,10 +91,9 @@ module Api
       # GET /crew/phantom_players/:id/gw_scores
       def gw_scores
         # Get all crew GW events to identify gaps
-        all_crew_events = @crew.crew_gw_participations
-                               .joins(:event)
-                               .order('events.event_number DESC')
-                               .pluck('events.id, events.event_number, events.element, events.starts_at, events.ends_at')
+        all_crew_events = Event.joins(:crew_gw_participations)
+                               .where(crew_gw_participations: { crew_id: @crew.id })
+                               .order(event_number: :desc)
 
         # Get scores for this phantom
         scores_by_event = GwIndividualScore
@@ -105,12 +104,11 @@ module Api
                           .to_h
 
         # Build event scores with gap markers
-        event_scores = all_crew_events.map do |event_id, event_number, element, starts_at, ends_at|
-          score = scores_by_event[event_id]
+        event_scores = all_crew_events.map do |event|
+          score = scores_by_event[event.id]
           {
-            gw_event: { id: event_id, event_number: event_number, element: element,
-                        start_date: starts_at.in_time_zone(Event::GW_TIME_ZONE).to_date,
-                        end_date: ends_at.in_time_zone(Event::GW_TIME_ZONE).to_date },
+            # The blueprint adds advantage_element, the element crew pages show
+            gw_event: GwEventBlueprint.render_as_hash(event),
             total_score: score&.to_i,
             in_crew: score.present?
           }
