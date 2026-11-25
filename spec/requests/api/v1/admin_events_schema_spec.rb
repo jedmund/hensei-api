@@ -68,7 +68,7 @@ RSpec.describe 'Admin events schema', type: :request do
     # Every writable key with a value of its shape, plus fields that must
     # never be mass-assigned.
     def sample(shape)
-      { 'scalar' => '1', 'array' => %w[1 2] }.fetch(shape)
+      { 'scalar' => '1', 'array' => %w[1 2], 'hash' => { 'a' => '1' } }.fetch(shape)
     end
 
     it 'is exactly what the events strong params permit' do

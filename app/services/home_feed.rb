@@ -43,7 +43,7 @@ class HomeFeed
 
   # The cached GET /home payload (see HomeController), under the current
   # CacheEpoch so expiring it reaches every process
-  CACHE_KEY = 'home/v6'
+  CACHE_KEY = 'home/v7'
   CACHE_EPOCH = 'home'
 
   def self.call(**)

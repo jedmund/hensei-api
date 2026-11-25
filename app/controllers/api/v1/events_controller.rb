@@ -9,9 +9,11 @@ module Api
       include EditorImageUpload
 
       # What create and update accept; the admin schema publishes it. raid_ids
-      # replaces the linked raids (Event#assign_raid_ids), not an attribute.
+      # replaces the linked raids (Event#assign_raid_ids) and raid_unlock_days,
+      # { raid_id => days after the start, or blank }, sets the days the named
+      # raids open on (Event#assign_raid_unlock_days); neither is an attribute.
       PERMITTED = [:name_en, :name_jp, :kind, :series, :element, :second_element, :starts_at, :ends_at, :event_number,
-                   :wiki_en, :gamewith, :kamigame, { raid_ids: [] }].freeze
+                   :wiki_en, :gamewith, :kamigame, { raid_ids: [] }, { raid_unlock_days: {} }].freeze
       EDITOR_ACTIONS = %i[create update approve hide upload_image sync].freeze
       SCOPES = %w[current upcoming past].freeze
       MAX_IMAGE_DIMENSION = 2048
@@ -45,9 +47,8 @@ module Api
         event = Event.new(event_attributes.merge(status: :approved))
         saved = Event.transaction do
           next false unless event.save
-          next true unless params[:event].key?(:raid_ids)
 
-          event.assign_raid_ids(params[:event][:raid_ids]) || raise(ActiveRecord::Rollback)
+          raids_saved?(event) || raise(ActiveRecord::Rollback)
         end
 
         return render_validation_error_response(event) unless saved
@@ -60,9 +61,8 @@ module Api
       def update
         saved = Event.transaction do
           next false unless @event.update(event_attributes)
-          next true unless params[:event].key?(:raid_ids)
 
-          @event.assign_raid_ids(params[:event][:raid_ids]) || raise(ActiveRecord::Rollback)
+          raids_saved?(@event) || raise(ActiveRecord::Rollback)
         end
 
         return render_validation_error_response(@event) unless saved
@@ -144,8 +144,16 @@ module Api
         params.expect(event: [*PERMITTED])
       end
 
+      # Links the given raids, then sets when they open. Both are optional.
+      def raids_saved?(event)
+        return false if params[:event].key?(:raid_ids) && !event.assign_raid_ids(params[:event][:raid_ids])
+        return true unless params[:event].key?(:raid_unlock_days)
+
+        event.assign_raid_unlock_days(event_params[:raid_unlock_days]).present?
+      end
+
       def event_attributes
-        attrs = event_params.except(:raid_ids)
+        attrs = event_params.except(:raid_ids, :raid_unlock_days)
         attrs[:series] = attrs[:series].presence if attrs.key?(:series)
         %i[element second_element].each do |key|
           attrs[key] = Event.normalize_element(attrs[key]) if attrs.key?(key)

@@ -170,6 +170,35 @@ RSpec.describe 'Api::V1::Events', type: :request do
       expect(response.body).to include('raid_ids')
     end
 
+    it 'sets the day each raid opens on' do
+      post '/api/v1/events', params: params.deep_merge(event: { raid_unlock_days: { raids.first.id => 2 } }),
+                             headers: editor_headers, as: :json
+      expect(response).to have_http_status(:created)
+      by_id = json_response['raids'].index_by { |raid| raid['id'] }
+      expect(by_id[raids.first.id]['unlock_day']).to eq(2)
+      expect(Time.zone.parse(by_id[raids.first.id]['unlocks_at'])).to eq(Time.zone.parse(json_response['starts_at']) + 2.days)
+      expect(by_id[raids.second.id]).to include('unlock_day' => nil, 'unlocks_at' => nil)
+    end
+
+    it 'accepts a null raid_unlock_days, as the editor sends with no days' do
+      post '/api/v1/events', params: params.deep_merge(event: { raid_unlock_days: nil }),
+                             headers: editor_headers, as: :json
+      expect(response).to have_http_status(:created)
+      expect(json_response['raids'].pluck('unlock_day')).to eq([nil, nil])
+    end
+
+    it 'opens scheduled Guild War raids on their day' do
+      nm200 = create(:raid, slug: 'nm200')
+      ex = create(:raid, slug: 'ex')
+      post '/api/v1/events', params: params.deep_merge(event: { raid_ids: [ex.id, nm200.id] }),
+                             headers: editor_headers, as: :json
+      expect(response).to have_http_status(:created)
+      event = Event.find(json_response['id'])
+      rows = event.event_raids.index_by(&:raid_id)
+      expect(rows[ex.id].unlock_day).to be_nil
+      expect(rows[nm200.id].unlock_day).to eq(3)
+    end
+
     it 'rejects an end before the start' do
       post '/api/v1/events', params: params.deep_merge(event: { ends_at: 1.day.ago.iso8601 }), headers: editor_headers
       expect(response).to have_http_status(:unprocessable_content)
@@ -264,6 +293,90 @@ RSpec.describe 'Api::V1::Events', type: :request do
       put "/api/v1/events/#{event.id}", params: { event: { raid_ids: ['nope'] } }, headers: editor_headers
       expect(response).to have_http_status(:unprocessable_content)
       expect(event.reload.event_raids.map(&:raid_id)).to eq([raid.id])
+    end
+
+    describe 'raid_unlock_days' do
+      def day_of(row_raid = raid)
+        event.event_raids.reload.find_by(raid: row_raid).unlock_day
+      end
+
+      def put_days(days, headers: editor_headers, **extra)
+        put "/api/v1/events/#{event.id}", params: { event: { raid_unlock_days: days, **extra } },
+                                          headers: headers, as: :json
+      end
+
+      it 'sets and returns the day a raid opens on' do
+        put_days({ raid.id => 2 })
+        expect(response).to have_http_status(:ok)
+        expect(json_response['raids'].first['unlock_day']).to eq(2)
+        expect(Time.zone.parse(json_response['raids'].first['unlocks_at'])).to be_within(1.second).of(event.starts_at + 2.days)
+        expect(day_of).to eq(2)
+      end
+
+      it 'accepts a day as a string' do
+        put_days({ raid.id => '3' })
+        expect(day_of).to eq(3)
+      end
+
+      it 'clears a blank day and keeps raids left out' do
+        other = create(:raid)
+        create(:event_raid, event: event, raid: other, position: 1, unlock_day: 2)
+        event.event_raids.find_by(raid: raid).update!(unlock_day: 2)
+        put_days({ raid.id => '' })
+        expect(response).to have_http_status(:ok)
+        expect(day_of).to be_nil
+        expect(day_of(other)).to eq(2)
+      end
+
+      it 'keeps days for a null raid_unlock_days' do
+        event.event_raids.first.update!(unlock_day: 2)
+        put "/api/v1/events/#{event.id}", params: { event: { name_en: 'Renamed', raid_unlock_days: nil } },
+                                          headers: editor_headers, as: :json
+        expect(response).to have_http_status(:ok)
+        expect(json_response['name']['en']).to eq('Renamed')
+        expect(day_of).to eq(2)
+      end
+
+      it 'keeps days when raid_unlock_days is omitted' do
+        event.event_raids.first.update!(unlock_day: 2)
+        put "/api/v1/events/#{event.id}", params: { event: { name_en: 'Renamed' } }, headers: editor_headers, as: :json
+        expect(day_of).to eq(2)
+      end
+
+      it 'sets days for raids linked in the same request' do
+        other = create(:raid)
+        put_days({ other.id => 2 }, raid_ids: [raid.id, other.id])
+        expect(response).to have_http_status(:ok)
+        expect(json_response['raids'].pluck('unlock_day')).to eq([nil, 2])
+      end
+
+      it 'rejects a raid that is not linked, and changes nothing' do
+        put_days({ create(:raid).id => 2 }, name_en: 'Renamed')
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(response.body).to include('raid_unlock_days')
+        expect(event.reload.name_en).not_to eq('Renamed')
+      end
+
+      it 'rejects a day that is not a whole number' do
+        put_days({ raid.id => '1.5' })
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(day_of).to be_nil
+      end
+
+      it 'rejects day 0 and a day after the event' do
+        put_days({ raid.id => 0 })
+        expect(response).to have_http_status(:unprocessable_content)
+
+        put_days({ raid.id => 30 })
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(day_of).to be_nil
+      end
+
+      it 'returns 401 for members, and changes nothing' do
+        put_days({ raid.id => 2 }, headers: member_headers)
+        expect(response).to have_http_status(:unauthorized)
+        expect(day_of).to be_nil
+      end
     end
 
     it 'returns 401 for non-editors and curators' do
