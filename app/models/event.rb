@@ -44,6 +44,9 @@ class Event < ApplicationRecord
     'unite_and_fight' => { 'nm100' => 2, 'nm150' => 2, 'nm200' => 3, 'nm250' => 4 },
     'dread_barrage' => { 'db135' => 2, 'db175' => 3, 'db215' => 4 }
   }.freeze
+  # The JST hour those raids open at on their day (owner, 2026-11-25). Other
+  # kinds open them unlock_day whole days after starts_at.
+  RAID_UNLOCK_HOURS = { 'unite_and_fight' => 0, 'dread_barrage' => 19 }.freeze
   enum :status, { draft: 0, approved: 1, hidden: 2 }, validate: true
   enum :element, ELEMENTS, validate: { allow_nil: true }
   # A second boss element, for runs whose bosses share two weaknesses (Records
@@ -157,6 +160,17 @@ class Event < ApplicationRecord
     end
     event_raids.reset
     self
+  end
+
+  # When a raid with this unlock_day opens: on the JST calendar day that many
+  # days after the start, at the kind's reset hour
+  def raid_unlocks_at(day)
+    return unless day && starts_at
+
+    hour = RAID_UNLOCK_HOURS[kind]
+    return starts_at + day.days unless hour
+
+    (starts_at.in_time_zone(GW_TIME_ZONE).to_date + day).in_time_zone(GW_TIME_ZONE).change(hour: hour)
   end
 
   # The day `raid` opens on by the schedule (RAID_UNLOCK_DAYS), or nil when

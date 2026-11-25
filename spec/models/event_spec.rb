@@ -104,7 +104,8 @@ RSpec.describe Event do
       event.assign_raid_ids([ex.id, finals_raid.id, last_raid.id])
       days = event.event_raids.to_h { |row| [row.raid_id, row.unlock_day] }
       expect(days).to eq(ex.id => nil, finals_raid.id => 2, last_raid.id => 4)
-      expect(event.event_raids.find_by(raid: last_raid).unlocks_at).to eq(event.starts_at + 4.days)
+      midnight = event.starts_at.in_time_zone('Asia/Tokyo').beginning_of_day
+      expect(event.event_raids.find_by(raid: last_raid).unlocks_at).to eq(midnight + 4.days)
     end
 
     it 'schedules Dread Barrage raids' do
@@ -136,7 +137,28 @@ RSpec.describe Event do
     it 'moves the opening time with the start' do
       event.assign_raid_ids([finals_raid.id])
       event.update!(starts_at: event.starts_at + 1.day, ends_at: event.ends_at + 1.day)
-      expect(event.event_raids.reload.first.unlocks_at).to eq(event.starts_at + 2.days)
+      midnight = event.starts_at.in_time_zone('Asia/Tokyo').beginning_of_day
+      expect(event.event_raids.reload.first.unlocks_at).to eq(midnight + 2.days)
+    end
+
+    describe '#raid_unlocks_at' do
+      let(:jst) { Time.find_zone('Asia/Tokyo') }
+
+      it 'opens Guild War raids at 0:00 JST on their day' do
+        war = build(:event, :unite_and_fight, starts_at: jst.local(2026, 11, 21, 17))
+        expect(war.raid_unlocks_at(2)).to eq(jst.local(2026, 11, 23, 0))
+      end
+
+      it 'opens Dread Barrage raids at 19:00 JST on their day' do
+        barrage = build(:event, :dread_barrage, starts_at: jst.local(2026, 12, 10, 17))
+        expect(barrage.raid_unlocks_at(2)).to eq(jst.local(2026, 12, 12, 19))
+      end
+
+      it 'counts whole days from the start for other kinds' do
+        story = build(:event, starts_at: jst.local(2026, 12, 10, 17))
+        expect(story.raid_unlocks_at(2)).to eq(jst.local(2026, 12, 12, 17))
+        expect(story.raid_unlocks_at(nil)).to be_nil
+      end
     end
   end
 
