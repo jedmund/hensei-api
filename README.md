@@ -2,29 +2,23 @@
 
 ## Project Overview
 
-Hensei is a Ruby on Rails API for managing Granblue Fantasy party configurations, providing comprehensive tools for team building, character management, and game data tracking.
+The Rails API behind [granblue.team](https://granblue.team), a team builder for Granblue Fantasy. It stores parties, users and their collections, and the catalogue of characters, weapons and summons. The web app ([jedmund/hensei-web](https://github.com/jedmund/hensei-web)) and the browser extension ([jedmund/hensei-extractor](https://github.com/jedmund/hensei-extractor)) both talk to it.
 
 ## Prerequisites
 
-- Ruby 3.4.4
-- Rails 8.0.1
-- PostgreSQL
-- AWS S3 Account (for image storage)
-
-## System Dependencies
-
-- Ruby version manager (rbenv or RVM recommended)
+- Ruby 3.4.4 (see `.ruby-version`), with a version manager such as rbenv
 - Bundler
 - PostgreSQL
-- Redis (for background jobs)
-- ImageMagick (for image processing)
+- Redis, for Sidekiq background jobs
+- AWS S3 access, only for image uploads and the image download tasks
+- ImageMagick, only for the event banner rake tasks
 
 ## Initial Setup
 
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-organization/hensei-api.git
+git clone https://github.com/jedmund/hensei-api.git
 cd hensei-api
 ```
 
@@ -47,12 +41,13 @@ bundle install
 ### 4. Database Configuration
 
 1. Ensure PostgreSQL is running
-2. Create the database configuration:
+2. Create the database, load the schema and run the seeds in `lib/seeds/`:
 
 ```bash
-rails db:create
-rails db:migrate
+bin/rails db:setup
 ```
+
+After pulling new migrations, run `bin/rails db:migrate:with_data`. That runs the schema migrations and the data migrations in `db/data/`.
 
 Without `DATABASE_URL`, the test database is `hensei_test` in the main checkout and `hensei_test_<hash>` in each linked git worktree, so parallel worktrees don't share one. A new worktree needs it created once:
 
@@ -62,39 +57,54 @@ RAILS_ENV=test bin/rails db:create db:schema:load
 
 ### 5. AWS S3 Configuration
 
-Hensei requires an AWS S3 bucket for storing images. Configure your credentials:
+Images live in the `siero-img` S3 bucket. `AwsService` looks for credentials in this order:
 
-```bash
-EDITOR=vim rails credentials:edit
-```
+1. Rails credentials (`bin/rails credentials:edit`, which needs the master key):
 
-Add the following structure to your credentials:
+   ```yaml
+   aws:
+     access_key_id: your-access-key
+     secret_access_key: your-secret-key
+     region: your-aws-region
+     bucket_name: your-bucket-name
+   ```
 
-```yaml
-aws:
-  s3:
-    bucket: your-bucket-name
-    access_key_id: your-access-key
-    secret_access_key: your-secret-key
-    region: your-aws-region
-```
+2. `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION` and `AWS_BUCKET_NAME` environment variables.
+3. The AWS SDK's default chain, such as an `aws login` session. The bucket then defaults to `siero-img`.
+
+You can skip this if you aren't working on image uploads or downloads.
 
 ### 6. Run Initial Data Import (Optional)
 
+This imports weapon, summon and character CSVs that you put in `db/seed/updates` (the repo only has `.example` files there):
+
 ```bash
-rails data:import
+bin/rails granblue:import_data
 ```
 
 ### 7. Start the Server
 
 ```bash
-rails server
+bin/rails server          # http://localhost:3000
+bundle exec sidekiq       # background and scheduled jobs
 ```
+
+In development and test, routes are mounted at `/api/v1` (`/v1` in production). Point the web app at this server with `PUBLIC_SIERO_API_URL=http://localhost:3000`.
+
+### 8. Run the Tests and Linter
+
+```bash
+bundle exec rspec
+bundle exec rubocop
+```
+
+Running a single spec file fails the SimpleCov minimum coverage check even when the specs pass. That's expected.
 
 ### Testing from a phone
 
-Connect your Mac and phone to the same Wi-Fi network. Find your Mac's Wi-Fi address
-with `ipconfig getifaddr en0` (use the active network interface if it is not `en0`).
+Connect your computer and phone to the same network. Find your computer's local
+network address: `ipconfig getifaddr en0` on macOS, `hostname -I` on Linux, or
+`ipconfig` on Windows (look for the IPv4 address).
 For an address of `192.168.1.50`, start the development API with:
 
 ```bash
@@ -117,8 +127,11 @@ troubleshooting.
 While most configurations use Rails credentials, you may need to set:
 
 - `DATABASE_URL`
-- `RAILS_MASTER_KEY`
-- `REDIS_URL`
+- `RAILS_MASTER_KEY`: required in production only. You don't need it to work locally; use the `AWS_*` variables below instead of the encrypted credentials.
+- `REDIS_URL` (defaults to `redis://localhost:6379/0`)
+- `AWS_*` (see AWS S3 Configuration above)
+- `RATE_LIMIT_MODE`: `log` (the default) only logs clients that would be rate limited; `enforce` returns 429s
+- `API_INTERNAL_SECRET`: a secret shared with the web app; set the same value on both
 - `DEV_CORS_ORIGINS` (optional, development only; see phone testing above)
 
 ## Performance Considerations
@@ -135,15 +148,30 @@ While most configurations use Rails credentials, you may need to set:
 
 ## Deployment
 
-Recommended platforms:
-- Railway.app (We use this)i98-i
-- Heroku
-- DigitalOcean App Platform
+The API runs anywhere that can host a Rails app with PostgreSQL and Redis. It needs two processes: the Puma web server and a Sidekiq worker.
 
-Deployment steps:
-1. Precompile assets: `rails assets:precompile`
-2. Run migrations: `rails db:migrate`
-3. Start the server with a production-ready web server like Puma
+1. Set `RAILS_ENV=production`, `DATABASE_URL`, `REDIS_URL` and `RAILS_MASTER_KEY`. The encrypted credentials in this repo belong to granblue.team, so for your own copy, delete `config/credentials.yml.enc` and run `bin/rails credentials:edit` to create a new file and key.
+2. Add your web app's origin to the production list in `config/initializers/cors.rb`. Only the origins listed there can call the API from a browser.
+3. Install gems without the development and test groups:
+
+   ```bash
+   BUNDLE_WITHOUT=development:test bundle install
+   ```
+
+4. Run the schema and data migrations before starting each new version:
+
+   ```bash
+   bin/rails db:migrate:with_data
+   ```
+
+5. Start both processes:
+
+   ```bash
+   bundle exec puma -C config/puma.rb   # listens on $PORT, default 3000
+   bundle exec sidekiq
+   ```
+
+In production, routes are mounted at `/v1` instead of `/api/v1`. Set `RAILS_LOG_TO_STDOUT=1` to log to standard output.
 
 ## Troubleshooting
 
