@@ -34,6 +34,16 @@ RSpec.describe 'Gacha API', type: :request do
     expect(response.parsed_body['seasons']).to include('formal')
   end
 
+  it 'serves every SSR that any gacha offers for mode=all' do
+    items << items.last.merge('identity' => 'Summon:00000000-0000-0000-0000-000000000099', 'granblue_id' => '99',
+                              'promotions' => [10])
+    items << items.last.merge('identity' => 'Summon:00000000-0000-0000-0000-000000000098', 'granblue_id' => '98',
+                              'promotions' => [])
+    get '/api/v1/gacha/catalogue', params: { mode: 'all' }
+    expect(response).to have_http_status(:ok)
+    expect(response.parsed_body['items'].pluck('granblue_id')).to contain_exactly('30', '31', '32', '99')
+  end
+
   it "searches a recruit's names but not its season and series" do
     items.first['recruits'] = { 'granblue_id' => '3040000000', 'en' => 'Katalina', 'ja' => 'カタリナ',
                                 'season' => nil, 'series' => [{ 'id' => 1, 'slug' => 'grand', 'name' => { 'en' => 'Grand' } }] }
