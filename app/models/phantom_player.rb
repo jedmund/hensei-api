@@ -44,14 +44,17 @@ class PhantomPlayer < ApplicationRecord
   end
 
   # Confirm the claim (user action)
-  # After confirmation, soft deletes the phantom since scores have been transferred
+  # After confirmation, soft deletes the phantom since scores have been transferred.
+  # Runs in a transaction so a failure leaves the claim pending and the scores untouched.
   def confirm_claim!(user)
     raise CrewErrors::NotClaimedByUserError unless claimed_by == user
 
-    self.claim_confirmed = true
-    self.deleted_at = Time.current
-    transfer_to_membership!
-    save!
+    transaction do
+      self.claim_confirmed = true
+      self.deleted_at = Time.current
+      transfer_to_membership!
+      save!
+    end
   end
 
   # Soft delete the phantom (keeps record for logging)
@@ -96,6 +99,14 @@ class PhantomPlayer < ApplicationRecord
     membership = claimed_by.active_crew_membership
     return unless membership
 
+    dropped = drop_scores_overlapping(membership)
+    if dropped.positive?
+      Rails.logger.info(
+        "[PhantomPlayer] Claim of phantom #{id} by membership #{membership.id}: " \
+        "dropped #{dropped} phantom score(s) where the member already had a score"
+      )
+    end
+
     gw_individual_scores.update_all(
       crew_membership_id: membership.id,
       phantom_player_id: nil
@@ -105,5 +116,23 @@ class PhantomPlayer < ApplicationRecord
 
     # rubocop:disable-next Rails/SkipsModelValidations -- a claim mustn't fail on the membership's role limits
     membership.update_columns(joined_at: joined_at)
+  end
+
+  # The member's own score wins: delete this phantom's scores for any
+  # (participation, round) the membership already has a score for, so the
+  # move below can't hit idx_gw_individual_scores_unique. round is NOT NULL,
+  # so plain equality matches the index exactly. Returns the number deleted.
+  def drop_scores_overlapping(membership)
+    GwIndividualScore
+      .where(phantom_player_id: id)
+      .where(<<~SQL.squish, membership_id: membership.id)
+        EXISTS (
+          SELECT 1 FROM gw_individual_scores member_scores
+          WHERE member_scores.crew_membership_id = :membership_id
+            AND member_scores.crew_gw_participation_id = gw_individual_scores.crew_gw_participation_id
+            AND member_scores.round = gw_individual_scores.round
+        )
+      SQL
+      .delete_all
   end
 end

@@ -152,6 +152,77 @@ RSpec.describe PhantomPlayer, type: :model do
         expect(phantom_score.crew_membership).to eq(membership)
         expect(phantom_score.phantom_player).to be_nil
       end
+
+      it 'moves every score when the member has none for the same rounds' do
+        interlude = create(:gw_individual_score, crew_gw_participation: participation, phantom_player: phantom,
+                                                 crew_membership: nil, round: :interlude)
+        other_round = create(:gw_individual_score, crew_gw_participation: participation, crew_membership: membership,
+                                                   round: :finals_day_1)
+
+        phantom.confirm_claim!(member)
+
+        expect(GwIndividualScore.where(crew_membership: membership))
+          .to contain_exactly(phantom_score, interlude, other_round)
+        expect(GwIndividualScore.where(phantom_player: phantom)).to be_empty
+      end
+
+      context 'when the member already has a score for the same round' do
+        let!(:member_score) do
+          create(:gw_individual_score,
+                 crew_gw_participation: participation,
+                 crew_membership: membership,
+                 round: :preliminaries,
+                 score: 2_000_000)
+        end
+        let!(:phantom_finals) do
+          create(:gw_individual_score,
+                 crew_gw_participation: participation,
+                 phantom_player: phantom,
+                 crew_membership: nil,
+                 round: :finals_day_1,
+                 score: 3_000_000)
+        end
+        let!(:other_participation_score) do
+          create(:gw_individual_score,
+                 crew_gw_participation: create(:crew_gw_participation, crew: crew),
+                 phantom_player: phantom,
+                 crew_membership: nil,
+                 round: :preliminaries,
+                 score: 4_000_000)
+        end
+
+        it "keeps the member's score and drops the phantom's" do
+          phantom.confirm_claim!(member)
+
+          expect(member_score.reload.score).to eq(2_000_000)
+          expect(GwIndividualScore.exists?(phantom_score.id)).to be false
+        end
+
+        it 'moves the phantom scores that do not overlap' do
+          phantom.confirm_claim!(member)
+
+          expect(phantom_finals.reload.crew_membership).to eq(membership)
+          expect(other_participation_score.reload.crew_membership).to eq(membership)
+          expect(GwIndividualScore.where(crew_membership: membership).count).to eq(3)
+        end
+
+        it 'confirms and soft deletes the phantom' do
+          phantom.confirm_claim!(member)
+          phantom.reload
+
+          expect(phantom.claim_confirmed).to be true
+          expect(phantom.deleted_at).to be_present
+        end
+      end
+
+      it 'leaves the claim pending and the scores untouched when the save fails' do
+        allow(phantom).to receive(:save!).and_raise(ActiveRecord::RecordInvalid)
+
+        expect { phantom.confirm_claim!(member) }.to raise_error(ActiveRecord::RecordInvalid)
+        expect(phantom.reload.claim_confirmed).to be false
+        expect(phantom_score.reload.phantom_player).to eq(phantom)
+        expect(phantom_score.crew_membership).to be_nil
+      end
     end
 
     describe 'joined_at transfer' do
