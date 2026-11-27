@@ -173,6 +173,7 @@ class Party < ApplicationRecord
 
   has_many :favorites, dependent: :destroy
   has_many :party_stickers, dependent: :delete_all
+  has_many :notifications, as: :subject, dependent: :delete_all
   has_many :featured_parties, dependent: :delete_all
   has_many :playlist_parties, dependent: :destroy
   has_many :playlists, through: :playlist_parties
@@ -200,6 +201,7 @@ class Party < ApplicationRecord
 
   after_commit :update_element!, on: %i[create update]
   after_commit :update_extra!, on: %i[create update]
+  after_create_commit :notify_remix, if: -> { remix? && source_party_id? }
 
   # Included here, after the associations and the commit hooks above, so
   # their callbacks keep their place in the chains: the remix after_create
@@ -389,6 +391,10 @@ class Party < ApplicationRecord
   end
 
   private
+
+  def notify_remix
+    Notifications::Publisher.party_remixed(self)
+  end
 
   ##
   # The boost a main and friend summon series give together.

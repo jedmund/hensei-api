@@ -70,7 +70,7 @@ module Api
       # POST /crews/:crew_id/phantom_players/:id/assign
       def assign
         user = User.find(params.expect(:user_id))
-        @phantom.assign_to(user)
+        @phantom.assign_to(user, by: current_user)
         render json: PhantomPlayerBlueprint.render(@phantom, view: :with_claimed_by, root: :phantom_player)
       end
 

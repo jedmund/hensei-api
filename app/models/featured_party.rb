@@ -17,6 +17,8 @@ class FeaturedParty < ApplicationRecord
   validates :note_en, :note_jp, length: { maximum: 500 }
   validate :party_is_public
 
+  after_create_commit { Notifications::Publisher.party_featured(self) }
+
   scope :general, -> { where(event_id: nil) }
   # General picks whose window has passed
   scope :expired, ->(now = Time.current) { general.where(created_at: ..(now - GENERAL_WINDOW)) }

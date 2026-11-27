@@ -1083,7 +1083,8 @@ RSpec.describe Party, type: :model do
 
     it 'runs the commit hooks in their declared order' do
       expect(chain(:_commit_callbacks)).to eq(
-        [%i[after update_element!], %i[after update_extra!], %i[after enqueue_difficulty_recompute_if_scoring_changed!]]
+        [%i[after update_element!], %i[after update_extra!], %i[after notify_remix],
+         %i[after enqueue_difficulty_recompute_if_scoring_changed!]]
       )
     end
 

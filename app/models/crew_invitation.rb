@@ -21,6 +21,9 @@ class CrewInvitation < ApplicationRecord
   scope :active, -> { where(status: :pending).where('expires_at IS NULL OR expires_at > ?', Time.current) }
 
   before_create :set_expiration
+  after_create_commit { Notifications::Publisher.crew_invited(self) }
+
+  has_many :notifications, as: :subject, dependent: :delete_all
 
   # Accept the invitation and create membership
   # If a phantom was pre-assigned, auto-assign it to the new member
@@ -36,7 +39,7 @@ class CrewInvitation < ApplicationRecord
 
       if phantom_player.present? && phantom_player.claimed_by_id.nil?
         user.reload
-        phantom_player.assign_to(user)
+        phantom_player.assign_to(user, by: invited_by)
       end
     end
   end

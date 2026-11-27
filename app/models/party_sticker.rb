@@ -23,6 +23,7 @@ class PartySticker < ApplicationRecord
   # A team's score counts its stickers and when each was given, so moving or
   # swapping one doesn't change it
   after_commit :enqueue_participation_recompute, on: %i[create destroy]
+  after_create_commit { Notifications::Publisher.sticker_received(self) }
 
   private
 

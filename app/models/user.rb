@@ -10,6 +10,7 @@ class User < ApplicationRecord
   has_many :playlists, dependent: :destroy
   has_many :favorites, dependent: :destroy
   has_many :party_stickers, dependent: :destroy
+  has_many :notifications, foreign_key: :recipient_id, inverse_of: :recipient, dependent: :delete_all
   has_many :collection_characters, dependent: :destroy
   has_many :collection_weapons, dependent: :destroy
   has_many :collection_summons, dependent: :destroy
