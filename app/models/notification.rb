@@ -39,14 +39,27 @@ class Notification < ApplicationRecord
     passive.count + pending_for(user).count
   end
 
-  def self.pending_for(user)
-    invitations = CrewInvitation.active.where(user_id: user.id).select(:id)
-    phantoms = PhantomPlayer.not_deleted.where(claimed_by_id: user.id, claim_confirmed: false).select(:id)
+  # Actionable rows still waiting on their recipient, across all users:
+  # active invitations to them, and phantoms still claimed by them and not
+  # yet confirmed. Rows whose subject is gone never match.
+  scope :pending, lambda {
+    invitations = CrewInvitation.active.where('crew_invitations.id = notifications.subject_id')
+                                .where('crew_invitations.user_id = notifications.recipient_id')
+    phantoms = PhantomPlayer.not_deleted.where(claim_confirmed: false)
+                            .where('phantom_players.id = notifications.subject_id')
+                            .where('phantom_players.claimed_by_id = notifications.recipient_id')
 
-    where(recipient: user).and(
-      where(kind: :crew_invited, subject_type: 'CrewInvitation', subject_id: invitations)
-        .or(where(kind: :phantom_assigned, subject_type: 'PhantomPlayer', subject_id: phantoms))
-    )
+    pending_invitations = where(kind: :crew_invited, subject_type: 'CrewInvitation').where(invitations.arel.exists)
+    pending_phantoms = where(kind: :phantom_assigned, subject_type: 'PhantomPlayer').where(phantoms.arel.exists)
+
+    pending_invitations.or(pending_phantoms)
+  }
+  # Actionable rows that no longer need anything: accepted, declined,
+  # expired, reassigned, or whose subject was deleted.
+  scope :resolved, -> { where(kind: ACTIONABLE_KINDS).where.not(id: pending.select(:id)) }
+
+  def self.pending_for(user)
+    where(recipient: user).pending
   end
 
   def actionable?
