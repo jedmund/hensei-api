@@ -58,7 +58,8 @@ RSpec.describe 'Gacha cache and purchase estimates' do
     item = GachaSimulation::Catalogue.send(:load_items).find { |row| row['drawable_id'] == weapon.id }
     expect(item['category']).to eq('characterWeapon')
     expect(item['release_date']).to eq('2026-03-16')
-    expect(item['recruits']).to include('granblue_id' => character.granblue_id, 'en' => 'Vira', 'ja' => 'ヴィーラ')
+    expect(item['recruits']).to include('id' => character.id, 'granblue_id' => character.granblue_id,
+                                        'en' => 'Vira', 'ja' => 'ヴィーラ')
   end
 
   it 'includes the season and series a recruited character is tagged with' do

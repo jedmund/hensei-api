@@ -5,6 +5,8 @@ module Api
     class GachaController < ApiController
       # Draws above this run in the background
       QUEUED_ABOVE = 10_000
+      # Not a pool you can draw from: every SSR any gacha has offered, for the spark maker
+      ALL = 'all'
 
       before_action :computation_limit, only: %i[simulations until_result odds]
       around_action :measure_gacha
@@ -17,6 +19,8 @@ module Api
       end
 
       def catalogue
+        return everything if params[:mode] == ALL
+
         config = GachaSimulation::Configuration.normalize(params.permit(:mode, :season, :purchase, :banner).to_h)
         snapshot = GachaSimulation::Catalogue.snapshot
         banner = current_banner(config, snapshot['items'])
@@ -67,6 +71,13 @@ module Api
       end
 
       private
+
+      def everything
+        snapshot = GachaSimulation::Catalogue.snapshot
+        items = snapshot['items'].select { |item| item['rarity'] == 3 && item['promotions'].any? }
+        render json: { items: search_catalogue(items, params[:q].to_s.downcase.first(100)),
+                       catalogue_fingerprint: snapshot['fingerprint'], loaded_at: snapshot['loaded_at'] }
+      end
 
       # The current banner is a mode once one has been stored
       def catalogue_modes

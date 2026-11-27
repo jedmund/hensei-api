@@ -523,6 +523,9 @@ Rails.application.routes.draw do
       resources :parties, controller: 'playlist_parties', only: [:create, :destroy]
     end
 
+    # The current user's saved sparks (private to their owner)
+    resources :sparks, controller: 'saved_sparks', only: %i[index show create update destroy]
+
     # Reading collections - works for any user with privacy check
     scope 'users/:user_id', user_id: /[^\/]+/ do
       namespace :collection do

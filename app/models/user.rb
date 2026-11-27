@@ -8,6 +8,7 @@ class User < ApplicationRecord
   ##### ActiveRecord Associations
   has_many :parties, dependent: :destroy
   has_many :playlists, dependent: :destroy
+  has_many :saved_sparks, dependent: :delete_all
   has_many :favorites, dependent: :destroy
   has_many :party_stickers, dependent: :destroy
   has_many :notifications, foreign_key: :recipient_id, inverse_of: :recipient, dependent: :delete_all
