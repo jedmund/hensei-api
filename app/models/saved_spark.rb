@@ -17,6 +17,13 @@ class SavedSpark < ApplicationRecord
   SEASONS = %w[valentines summer halloween holiday formal].freeze
   # Pools that never run a seasonal version
   SEASONLESS_POOLS = %w[collab classic classic_ii classic_iii].freeze
+  # The day each Classic pool opened (CLASSIC_OPENED in pools.ts); before it,
+  # its items were in the Premium pool
+  POOL_OPENED = {
+    'classic' => Date.new(2022, 3, 10),
+    'classic_ii' => Date.new(2024, 3, 10),
+    'classic_iii' => Date.new(2026, 3, 10)
+  }.freeze
   MAX_PER_COLUMN = 60
   MAX_DRAWS = 99_999
   # Granblue Fantasy's release; earlier dates are typos
@@ -30,6 +37,7 @@ class SavedSpark < ApplicationRecord
   validates :pool, inclusion: { in: POOLS }, allow_nil: true
   validates :season, inclusion: { in: SEASONS }, allow_nil: true
   validate :season_fits_pool
+  validate :pool_open_on_spark_date
   validate :spark_date_in_range
   validate :items_valid
   validate :sparked_mark_valid
@@ -55,6 +63,13 @@ class SavedSpark < ApplicationRecord
 
   def season_fits_pool
     errors.add(:season, 'is not offered on that pool') if season && SEASONLESS_POOLS.include?(pool)
+  end
+
+  def pool_open_on_spark_date
+    opened = POOL_OPENED[pool]
+    return if opened.nil? || spark_date.nil? || spark_date >= opened
+
+    errors.add(:pool, 'had not opened by the spark date')
   end
 
   def items_valid

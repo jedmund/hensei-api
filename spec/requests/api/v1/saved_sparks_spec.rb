@@ -160,6 +160,16 @@ RSpec.describe 'Api::V1::SavedSparks', type: :request do
       expect(response.parsed_body['errors']).to have_key('spark_date')
     end
 
+    it 'rejects a Classic pool dated before it opened' do
+      body = valid_body.deep_merge(spark: { spark_date: '2021-06-01', pool: 'classic', season: nil })
+      expect do
+        post '/api/v1/sparks', params: body.to_json, headers: headers
+      end.not_to change(SavedSpark, :count)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.parsed_body['errors']).to have_key('pool')
+    end
+
     it 'rejects a mark that is not an object' do
       body = valid_body.deep_merge(spark: { sparked: 'c1' })
       post '/api/v1/sparks', params: body.to_json, headers: headers

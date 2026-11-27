@@ -151,6 +151,22 @@ RSpec.describe SavedSpark do
     expect(spark).to be_valid
   end
 
+  it 'takes a Classic pool only from the day it opened' do
+    { 'classic' => Date.new(2022, 3, 10), 'classic_ii' => Date.new(2024, 3, 10),
+      'classic_iii' => Date.new(2026, 3, 10) }.each do |pool, opened|
+      spark.assign_attributes(pool: pool, season: nil, spark_date: opened - 1)
+      expect(spark).not_to be_valid
+      expect(spark.errors[:pool]).to be_present
+      spark.spark_date = opened
+      expect(spark).to be_valid
+    end
+  end
+
+  it 'takes other pools on any date' do
+    spark.assign_attributes(pool: 'premium', spark_date: Date.new(2015, 1, 1))
+    expect(spark).to be_valid
+  end
+
   it 'is deleted with its user' do
     spark.save!
     spark.user.destroy!
