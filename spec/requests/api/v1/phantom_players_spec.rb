@@ -226,6 +226,22 @@ RSpec.describe 'Api::V1::PhantomPlayers', type: :request do
       expect(json['phantom_player']['claim_confirmed']).to be true
     end
 
+    it "confirms the claim when the member already has a score for the phantom's round" do
+      participation = create(:crew_gw_participation, crew: crew)
+      member_score = create(:gw_individual_score, crew_gw_participation: participation,
+                                                  crew_membership: claimer.active_crew_membership, score: 2_000_000)
+      phantom_score = create(:gw_individual_score, crew_gw_participation: participation,
+                                                   crew_membership: nil, phantom_player: phantom, score: 1_000_000)
+
+      post "/api/v1/crews/#{crew.id}/phantom_players/#{phantom.id}/confirm_claim",
+           headers: claimer_headers
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body['phantom_player']['claim_confirmed']).to be true
+      expect(member_score.reload.score).to eq(2_000_000)
+      expect(GwIndividualScore.exists?(phantom_score.id)).to be false
+    end
+
     it 'returns error for wrong user' do
       post "/api/v1/crews/#{crew.id}/phantom_players/#{phantom.id}/confirm_claim",
            headers: auth_headers
