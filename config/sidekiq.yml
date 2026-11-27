@@ -26,6 +26,10 @@
       cron: "30 4 * * *" # Daily at 04:30 UTC
       class: AccountDeletion::PurgeJob
       queue: maintenance
+    notification_cleanup:
+      cron: "20 4 * * *" # Daily at 04:20 UTC
+      class: Notifications::CleanupJob
+      queue: maintenance
     gacha_exchange_rate:
       cron: "0 17 * * *"
       class: GachaSimulation::ExchangeRateJob
