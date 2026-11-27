@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_26_100000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_27_100000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1274,6 +1274,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_26_100000) do
     t.index ["updated_at"], name: "index_raids_on_updated_at"
   end
 
+  create_table "saved_sparks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "user_id", null: false
+    t.date "spark_date", null: false
+    t.integer "draws", default: 300, null: false
+    t.string "pool"
+    t.string "season"
+    t.string "characters", default: [], null: false, array: true
+    t.string "moons", default: [], null: false, array: true
+    t.string "summons", default: [], null: false, array: true
+    t.string "sparked_column"
+    t.integer "sparked_index"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "spark_date"], name: "index_saved_sparks_on_user_id_and_spark_date"
+  end
+
   create_table "skill_effects", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "character_skill_version_id", null: false
     t.uuid "status_id"
@@ -2133,6 +2149,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_26_100000) do
   add_foreign_key "playlist_parties", "playlists"
   add_foreign_key "playlists", "users"
   add_foreign_key "raids", "raid_groups", column: "group_id", name: "raids_group_id_fkey"
+  add_foreign_key "saved_sparks", "users", on_delete: :cascade
   add_foreign_key "skill_effects", "character_skill_versions"
   add_foreign_key "skill_effects", "statuses"
   add_foreign_key "skill_values", "skills"
