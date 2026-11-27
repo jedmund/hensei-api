@@ -464,6 +464,16 @@ Rails.application.routes.draw do
       end
     end
 
+    # The current user's notifications (GBF-82)
+    resources :notifications, only: :index do
+      collection do
+        get :unread_count
+        post :seen
+        post :read_all
+      end
+      post :read, on: :member
+    end
+
     # Pending phantom claims for current user (outside crew context)
     get :pending_phantom_claims, to: 'phantom_claims#index'
 

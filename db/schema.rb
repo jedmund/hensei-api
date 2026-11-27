@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_25_100000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_26_100000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -951,6 +951,25 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_25_100000) do
     t.index ["updated_at"], name: "index_jobs_on_updated_at"
   end
 
+  create_table "notifications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "recipient_id", null: false
+    t.uuid "actor_id"
+    t.integer "kind", null: false
+    t.string "subject_type", null: false
+    t.uuid "subject_id", null: false
+    t.string "group_key"
+    t.integer "count", default: 1, null: false
+    t.jsonb "payload", default: {}, null: false
+    t.datetime "read_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["actor_id"], name: "index_notifications_on_actor_id"
+    t.index ["recipient_id", "group_key"], name: "index_notifications_on_recipient_id_and_group_key", where: "(read_at IS NULL)"
+    t.index ["recipient_id", "updated_at"], name: "index_notifications_on_recipient_id_and_updated_at"
+    t.index ["recipient_id"], name: "index_notifications_on_recipient_id"
+    t.index ["subject_type", "subject_id"], name: "index_notifications_on_subject_type_and_subject_id"
+  end
+
   create_table "oauth_access_grants", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "resource_owner_id", null: false
     t.uuid "application_id", null: false
@@ -1619,6 +1638,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_25_100000) do
     t.datetime "deletion_scheduled_at"
     t.datetime "wiki_export_guidelines_accepted_at"
     t.datetime "last_seen_at"
+    t.datetime "notifications_seen_at"
     t.index "lower((display_name)::text) text_pattern_ops", name: "index_users_on_lower_display_name"
     t.index "lower((username)::text) text_pattern_ops", name: "index_users_on_lower_username", unique: true
     t.index ["collection_privacy"], name: "index_users_on_collection_privacy"
@@ -2077,6 +2097,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_25_100000) do
   add_foreign_key "gw_individual_scores", "crew_memberships"
   add_foreign_key "gw_individual_scores", "phantom_players"
   add_foreign_key "gw_individual_scores", "users", column: "recorded_by_id"
+  add_foreign_key "notifications", "users", column: "actor_id", on_delete: :nullify
+  add_foreign_key "notifications", "users", column: "recipient_id", on_delete: :cascade
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "parties", "difficulties"

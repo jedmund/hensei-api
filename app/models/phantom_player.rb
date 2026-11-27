@@ -6,6 +6,7 @@ class PhantomPlayer < ApplicationRecord
   belongs_to :claimed_from_membership, class_name: 'CrewMembership', optional: true
 
   has_many :gw_individual_scores, dependent: :nullify
+  has_many :notifications, as: :subject, dependent: :delete_all
 
   before_validation :set_joined_at, on: :create
 
@@ -31,13 +32,15 @@ class PhantomPlayer < ApplicationRecord
       .where(joined_at: ..end_date)
   }
 
-  # Assign this phantom to a user (officer action)
-  def assign_to(user)
+  # Assign this phantom to a user (officer action). `by` is who assigned it,
+  # for their notification.
+  def assign_to(user, by: nil)
     raise CrewErrors::MemberNotFoundError unless user.crew == crew
 
     self.claimed_by = user
     self.claim_confirmed = false
     save!
+    Notifications::Publisher.phantom_assigned(self, actor: by)
   end
 
   # Confirm the claim (user action)
