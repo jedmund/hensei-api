@@ -41,12 +41,13 @@ module GachaSimulation
         value.freeze
       end
 
-      # The recruited character, with the season and series its tags show
+      # The recruited character, with the season and series its tags show; its
+      # id lets a client add it to a collection
       def recruit(character)
         series = character.ordered_series_records.map do |record|
           { 'id' => record.id, 'slug' => record.slug, 'name' => { 'en' => record.name_en, 'ja' => record.name_jp } }
         end
-        { 'granblue_id' => character.granblue_id, 'en' => character.name_en, 'ja' => character.name_jp,
+        { 'id' => character.id, 'granblue_id' => character.granblue_id, 'en' => character.name_en, 'ja' => character.name_jp,
           'season' => character.season, 'series' => series.presence || character.series }
       end
 
