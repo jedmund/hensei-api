@@ -32,6 +32,16 @@ RSpec.describe Notifications::Publisher do
       expect(owner.notifications.sole.count).to eq(1)
     end
 
+    it 'counts a new giver after another removed theirs' do
+      first = create(:user)
+      create(:party_sticker, party: party, user: first, sticker: sticker)
+      create(:party_sticker, party: party, user: create(:user), sticker: sticker)
+      PartySticker.find_by(user: first).destroy!
+      create(:party_sticker, party: party, user: create(:user), sticker: sticker)
+
+      expect(owner.notifications.sole.count).to eq(3)
+    end
+
     it 'starts a new row once the old one is read' do
       create(:party_sticker, party: party, user: create(:user), sticker: sticker)
       owner.notifications.update_all(read_at: Time.current)
@@ -127,6 +137,15 @@ RSpec.describe Notifications::Publisher do
     it "doesn't notify an officer who assigns a phantom to themselves" do
       phantom = create(:phantom_player, crew: crew)
       expect { phantom.assign_to(captain, by: captain) }.not_to change(Notification, :count)
+    end
+  end
+
+  it "keeps the caller's transaction usable when writing fails" do
+    allow(Notification).to receive(:create!).and_raise(ActiveRecord::StatementInvalid, 'boom')
+
+    ActiveRecord::Base.transaction do
+      create(:party_sticker, party: party, user: create(:user), sticker: sticker)
+      expect(User.count).to be_positive
     end
   end
 

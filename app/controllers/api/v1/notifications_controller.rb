@@ -16,10 +16,10 @@ module Api
         notifications = current_user.notifications.newest_first
                                     .paginate(page: params[:page], per_page: per_page || PER_PAGE)
 
+        related = Notifications::Related.new(notifications)
         render json: {
-          notifications: NotificationBlueprint.render_as_hash(
-            notifications, related: Notifications::Related.new(notifications)
-          ),
+          # A row whose subject is gone (deleted without callbacks) is skipped
+          notifications: NotificationBlueprint.render_as_hash(notifications.select(&:subject), related: related),
           meta: pagination_meta(notifications),
           unread_count: Notification.unread_count_for(current_user)
         }

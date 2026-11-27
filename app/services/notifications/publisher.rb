@@ -12,8 +12,9 @@ module Notifications
 
     # A giver's first sticker on a team. Changing or moving it doesn't come
     # here (the row is updated, not created). Repeats group into the unread
-    # row, whose count is the stickers given since it started, so removing
-    # and re-adding one doesn't count twice. The giver is never stored.
+    # row, which counts givers, so removing and re-adding one doesn't count
+    # twice. Givers are never stored: the row keeps keyed digests only, to
+    # tell repeats apart, and they are never serialized.
     def sticker_received(party_sticker)
       safely do
         party = party_sticker.party
@@ -21,17 +22,18 @@ module Notifications
         next if recipient_id.nil? || recipient_id == party_sticker.user_id
 
         key = "sticker:#{party.id}"
+        giver = giver_digest(party, party_sticker.user_id)
         row = unread_row(recipient_id, key)
         if row
-          since = Time.zone.parse(row.payload['since'])
-          count = party.party_stickers.where(created_at: since..).count
-          next if count <= row.count
+          givers = Array(row.payload['givers'])
+          next if givers.include?(giver)
 
-          row.update!(count: count, payload: row.payload.merge('sticker_id' => party_sticker.sticker_id))
+          givers << giver
+          row.update!(count: givers.size,
+                      payload: row.payload.merge('givers' => givers, 'sticker_id' => party_sticker.sticker_id))
         else
           Notification.create!(recipient_id: recipient_id, kind: :sticker_received, subject: party, group_key: key,
-                               payload: { 'since' => party_sticker.created_at.iso8601(6),
-                                          'sticker_id' => party_sticker.sticker_id })
+                               payload: { 'givers' => [giver], 'sticker_id' => party_sticker.sticker_id })
         end
       end
     end
@@ -99,8 +101,15 @@ module Notifications
       Notification.unread.where(recipient_id: recipient_id, group_key: key).order(created_at: :desc).first
     end
 
-    def safely
-      yield
+    # Per team, so digests can't be matched across teams
+    def giver_digest(party, user_id)
+      OpenSSL::HMAC.hexdigest('SHA256', Rails.application.secret_key_base, "#{party.id}:#{user_id}")[0, 16]
+    end
+
+    # A savepoint, so a failed write doesn't abort a caller's transaction
+    # (a phantom assigned inside CrewInvitation#accept!)
+    def safely(&)
+      Notification.transaction(requires_new: true, &)
     rescue StandardError => e
       Rails.error.report(e, handled: true, context: { source: 'notifications' })
       nil

@@ -39,6 +39,7 @@ RSpec.describe 'Api::V1::Notifications', type: :request do
 
       row = response.parsed_body['notifications'].sole
       expect(row['actor']).to be_nil
+      expect(row).not_to have_key('payload')
       expect(row['party']).to eq('shortcode' => party.shortcode, 'name' => 'Mine')
       expect(row['sticker']).to include('slug')
     end
@@ -57,6 +58,27 @@ RSpec.describe 'Api::V1::Notifications', type: :request do
       row = response.parsed_body['notifications'].sole
       expect(row['actor']).to be_nil
       expect(row['remix']).to be_nil
+    end
+
+    it 'notifies the source owner through the remix endpoint, once' do
+      remixer = create(:user)
+
+      expect do
+        post "/api/v1/parties/#{party.shortcode}/remix", params: {}.to_json,
+                                                         headers: bearer_headers(remixer).merge('Content-Type' => 'application/json')
+      end.to change(Notification, :count).by(1)
+
+      expect(response).to have_http_status(:created)
+      expect(Notification.sole).to have_attributes(recipient_id: owner.id, subject: party, actor_id: remixer.id)
+    end
+
+    it 'skips a row whose subject is gone' do
+      give_sticker
+      owner.notifications.update_all(subject_id: SecureRandom.uuid)
+
+      get '/api/v1/notifications', headers: headers
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body['notifications']).to eq([])
     end
 
     it 'shows the state of a crew invitation' do
