@@ -25,6 +25,8 @@ class SavedSpark < ApplicationRecord
     'classic_iii' => Date.new(2026, 3, 10)
   }.freeze
   MAX_PER_COLUMN = 60
+  # A spark is 300 draws: one sparked item per 300 (DRAWS_PER_SPARK in spark.ts)
+  DRAWS_PER_SPARK = 300
   # Replaced by sparked_marks; dropped in a later migration
   self.ignored_columns += %w[sparked_column sparked_index]
   MAX_DRAWS = 99_999
@@ -90,6 +92,9 @@ class SavedSpark < ApplicationRecord
 
   def sparked_marks_valid
     return errors.add(:sparked, 'must be a list') unless sparked_marks.is_a?(Array)
+
+    allowed = draws.is_a?(Integer) ? draws / DRAWS_PER_SPARK : 0
+    errors.add(:sparked, "allows one item per #{DRAWS_PER_SPARK} draws") if sparked_marks.size > allowed
 
     sparked_marks.each do |mark|
       column = mark.is_a?(Hash) ? mark['column'] : nil

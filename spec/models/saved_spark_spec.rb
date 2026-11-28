@@ -104,12 +104,23 @@ RSpec.describe SavedSpark do
       expect(spark.sparked).to be_nil
     end
 
+    it 'allows one per 300 draws' do
+      spark.sparked_marks = [mark.call('characters', 0), mark.call('moons', 0)]
+      spark.draws = 599
+      expect(spark).not_to be_valid
+      expect(spark.errors[:sparked]).to include('allows one item per 300 draws')
+      spark.draws = 600
+      expect(spark).to be_valid
+    end
+
     it 'may point at any item in any column' do
+      spark.draws = 900
       spark.sparked_marks = [mark.call('summons', 0), mark.call('characters', 1), mark.call('moons', 0)]
       expect(spark).to be_valid
     end
 
     it 'keeps several marks in column order, each once' do
+      spark.draws = 900
       spark.sparked_marks = [{ column: 'moons', index: 0 }, mark.call('characters', 1),
                              mark.call('characters', 0), mark.call('moons', 0)]
       expect(spark.sparked_marks).to eq([mark.call('characters', 0), mark.call('characters', 1),

@@ -12,7 +12,7 @@ RSpec.describe 'Api::V1::SavedSparks', type: :request do
     {
       spark: {
         spark_date: (Date.current - 3).iso8601,
-        draws: 280,
+        draws: 600,
         pool: 'flash',
         season: 'halloween',
         characters: %w[1040000000 1040000100],
@@ -65,7 +65,7 @@ RSpec.describe 'Api::V1::SavedSparks', type: :request do
 
   describe 'GET /api/v1/sparks/:id' do
     let(:spark) do
-      create(:saved_spark, user: owner, spark_date: Date.new(2026, 11, 1), draws: 250,
+      create(:saved_spark, user: owner, spark_date: Date.new(2026, 11, 1), draws: 600,
                            sparked_marks: [{ column: 'summons', index: 0 }, { column: 'moons', index: 0 }])
     end
 
@@ -76,7 +76,7 @@ RSpec.describe 'Api::V1::SavedSparks', type: :request do
       expect(response.parsed_body['spark']).to include(
         'id' => spark.id,
         'spark_date' => '2026-11-01',
-        'draws' => 250,
+        'draws' => 600,
         'pool' => nil,
         'season' => nil,
         'characters' => %w[1040000000 1040000100],
@@ -117,7 +117,7 @@ RSpec.describe 'Api::V1::SavedSparks', type: :request do
 
       expect(response).to have_http_status(:created)
       spark = SavedSpark.sole
-      expect(spark).to have_attributes(user_id: owner.id, draws: 280, pool: 'flash', season: 'halloween',
+      expect(spark).to have_attributes(user_id: owner.id, draws: 600, pool: 'flash', season: 'halloween',
                                        characters: %w[1040000000 1040000100])
       expect(spark.sparked_marks).to eq([{ 'column' => 'characters', 'index' => 1 },
                                          { 'column' => 'moons', 'index' => 0 }])
@@ -171,6 +171,14 @@ RSpec.describe 'Api::V1::SavedSparks', type: :request do
       expect(response.parsed_body['errors']).to have_key('pool')
     end
 
+    it 'allows one sparked item per 300 draws' do
+      body = valid_body.deep_merge(spark: { draws: 599 })
+      post '/api/v1/sparks', params: body.to_json, headers: headers
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.parsed_body['errors']['sparked']).to include('allows one item per 300 draws')
+    end
+
     it 'still takes one mark as sparked, from older clients' do
       body = valid_body.deep_merge(spark: { sparked: { column: 'moons', index: 0 } })
       body[:spark].delete(:sparked_marks)
@@ -214,7 +222,7 @@ RSpec.describe 'Api::V1::SavedSparks', type: :request do
       patch "/api/v1/sparks/#{spark.id}", params: valid_body.to_json, headers: headers
 
       expect(response).to have_http_status(:ok)
-      expect(spark.reload).to have_attributes(draws: 280, spark_date: Date.current - 3)
+      expect(spark.reload).to have_attributes(draws: 600, spark_date: Date.current - 3)
       expect(spark.sparked_marks.size).to eq(2)
     end
 
@@ -228,14 +236,14 @@ RSpec.describe 'Api::V1::SavedSparks', type: :request do
     end
 
     it 'leaves the mark alone when it is not sent' do
-      patch "/api/v1/sparks/#{spark.id}", params: { spark: { draws: 123 } }.to_json, headers: headers
+      patch "/api/v1/sparks/#{spark.id}", params: { spark: { draws: 450 } }.to_json, headers: headers
 
       expect(response).to have_http_status(:ok)
-      expect(spark.reload).to have_attributes(draws: 123, sparked_marks: [{ 'column' => 'characters', 'index' => 0 }])
+      expect(spark.reload).to have_attributes(draws: 450, sparked_marks: [{ 'column' => 'characters', 'index' => 0 }])
     end
 
     it 'cannot move the spark to another user' do
-      patch "/api/v1/sparks/#{spark.id}", params: { spark: { user_id: stranger.id, draws: 5 } }.to_json,
+      patch "/api/v1/sparks/#{spark.id}", params: { spark: { user_id: stranger.id, draws: 500 } }.to_json,
                                           headers: headers
 
       expect(response).to have_http_status(:ok)
