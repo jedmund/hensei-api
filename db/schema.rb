@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_27_100000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_28_100000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -1287,6 +1287,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_27_100000) do
     t.integer "sparked_index"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.jsonb "sparked_marks", default: [], null: false
     t.index ["user_id", "spark_date"], name: "index_saved_sparks_on_user_id_and_spark_date"
   end
 

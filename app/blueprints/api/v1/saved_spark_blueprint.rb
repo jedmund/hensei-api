@@ -11,6 +11,10 @@ module Api
 
       fields :draws, :pool, :season, :characters, :moons, :summons
 
+      field :sparked_marks, &:sparked_marks
+
+      # The first mark, for clients that know only one (until hensei-web reads
+      # sparked_marks)
       field :sparked, &:sparked
 
       fields :created_at, :updated_at
