@@ -30,7 +30,12 @@ module BannerHistory
     }.freeze
 
     TITLE_ROW = %r{^\|[^\n]*?'''(?<title>.+?)'''\s*\n\|\s*(?<date>\d{4}-\d{2}-\d{2})(?:<br\s*/?>\s*\((?<time>\d{1,2}:\d{2})\))?}
-    LIST_ROW = /^\|\s*colspan="\d+"\s*\|\s*(?:\{\{tt\|(?<tt>[^|}]+)(?:\|(?<rate>[^}]*))?\}\}|(?<label>[A-Za-z][A-Za-z &\/]*?))\s*:\s*(?<items>.*)$/
+    LIST_ROW = %r~
+      ^\|\s*colspan="\d+"\s*\|\s*
+      (?:\{\{tt\|(?<tt>[^|}]+)(?:\|(?<rate>[^|}]*))?[^}]*\}\}   # {{tt|Label|rate|options}}
+       |(?<label>[A-Za-z][A-Za-z\ &/]*?))                      # or a plain label
+      \s*:\s*(?<items>.*)$
+    ~x
 
     module_function
 
