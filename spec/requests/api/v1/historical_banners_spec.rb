@@ -15,9 +15,38 @@ RSpec.describe 'Api::V1::HistoricalBanners', type: :request do
   end
 
   before do
-    banner('summon', 'premium', '2026-11-13 19:00', '2026-11-16 11:59', [%w[1040000001 featured]])
+    banner('summon', 'premium', '2026-11-13 19:00', '2026-11-16 11:59', [%w[1040000001 rate_up], %w[1040000009 featured]])
     banner('flash', 'flash', '2026-11-16 12:00', '2026-11-19 18:59', [%w[1040000002 rate_up], %w[1040000003 zodiac]])
     banner('collab', 'collab', '2026-11-10 17:00', '2026-11-22 20:59', [%w[1040000004 collab], %w[1040000005 pool]])
+  end
+
+  it "prefers a stored game banner's own rate-ups, pooled by the wiki banner it matches" do
+    game = GachaBanner.create!(game_id: '297520', name: 'Star Premium Draw Set', starts_at: jst('2026-11-16 12:00'),
+                               ends_at: jst('2026-11-19 19:00'), fetched_at: Time.current,
+                               rarity_rates: { '1' => { '3' => '0.06' } })
+    game.rates.create!(tab: 1, reward_id: '1040000007', rarity: 3, category: 'characterWeapon', percent: 0.3, rate_up: true)
+    game.rates.create!(tab: 1, reward_id: '1040000008', rarity: 3, category: 'characterWeapon', percent: 0.01)
+
+    get '/api/v1/gacha/rate_ups', params: { date: '2026-11-17', pool: 'flash' }
+    expect(response.parsed_body['rate_ups']).to eq(%w[1040000007])
+    expect(response.parsed_body['banners'].pluck('kind', 'source')).to eq([%w[flash game]])
+
+    get '/api/v1/gacha/rate_ups', params: { date: '2026-11-17', pool: 'legend' }
+    expect(response.parsed_body['rate_ups']).to eq([])
+  end
+
+  it 'counts an unmatched 6% game banner for either gala pool' do
+    game = GachaBanner.create!(game_id: '300001', name: 'Premium 10-Part Draw', starts_at: jst('2026-12-16 12:00'),
+                               ends_at: jst('2026-12-19 19:00'), fetched_at: Time.current,
+                               rarity_rates: { '1' => { '3' => '0.06' } })
+    game.rates.create!(tab: 1, reward_id: '1040000010', rarity: 3, category: 'characterWeapon', percent: 0.3, rate_up: true)
+
+    %w[flash legend].each do |pool|
+      get '/api/v1/gacha/rate_ups', params: { date: '2026-12-17', pool: pool }
+      expect(response.parsed_body['rate_ups']).to eq(%w[1040000010])
+    end
+    get '/api/v1/gacha/rate_ups', params: { date: '2026-12-17', pool: 'premium' }
+    expect(response.parsed_body['rate_ups']).to eq([])
   end
 
   it 'returns a pool banner and its rate-ups, leaving zodiacs out' do

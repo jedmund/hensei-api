@@ -1,11 +1,20 @@
 # frozen_string_literal: true
 
 module BannerHistory
-  # What a banner features, and the role each list plays: rate-ups (and
-  # zodiacs) on galas, featured items on other draws, a collab's own items
-  # (and the ordinary ones in its pool). 2014's banners list theirs as
+  # What a banner features, and the role each list plays. rate_up lists are
+  # the items the game boosted, as far as the wiki says: everything a gala
+  # lists, any rateup_* list, and the showcased ("sparkable") lists on the
+  # banners where those matched the game's rate-ups. A poll's or an
+  # all-element banner's showcase reaches past its rate-ups, and the archive
+  # labels plain "Sparkable" lists apart, so those are only featured. Element
+  # banners boost more than the wiki lists; those extra rate-ups aren't known.
+  # Zodiacs are available on galas, not boosted. 2014's banners list theirs as
   # legacy_* fields.
   module Featured
+    # Types whose showcase matched the game's rate-ups (checked against the
+    # banners the game fetcher stored, Oct–Nov 2026)
+    SHOWCASE_IS_RATE_UP = %w[character_generic seasonal weapon_4star character_element summon].freeze
+
     module_function
 
     # { field => [wiki names] } for the lists a banner features
@@ -23,8 +32,10 @@ module BannerHistory
     def role(entry, field)
       return 'zodiac' if field == 'zodiacs'
       return field == 'noncollab_wep' ? 'pool' : 'collab' if entry.collab?
+      return 'rate_up' if entry.gala? || field.start_with?('rateup_', 'legacy_rateup')
+      return 'rate_up' if field.start_with?('sparkable') && SHOWCASE_IS_RATE_UP.include?(entry.type)
 
-      entry.gala? ? 'rate_up' : 'featured'
+      'featured'
     end
   end
 end

@@ -42,6 +42,7 @@ RSpec.describe BannerHistory::Import do
     expect(gala.items.pluck(:granblue_id, :item_type, :role)).to contain_exactly(
       %w[1049990003 Weapon rate_up], %w[2049990004 Summon rate_up], %w[1049990002 Weapon zodiac]
     )
+    # A poll's showcase reaches past its rate-ups, so it's only featured
     expect(HistoricalBanner.find_by!(kind: 'poll').items.pluck(:granblue_id, :role)).to eq([%w[1049990004 featured]])
   end
 

@@ -3,9 +3,9 @@
 # A past banner from gbf.wiki's Banner History, rebuilt by BannerHistory::Import
 class HistoricalBanner < ApplicationRecord
   POOLS = %w[premium flash legend collab].freeze
-  # Roles whose items count as the banner's rate-ups: what a gala rated up, what
-  # another draw featured, a collab's own items. Zodiacs are available, not boosted.
-  RATE_UP_ROLES = %w[rate_up featured collab].freeze
+  # Roles whose items count as the banner's rate-ups (BannerHistory::Featured):
+  # what the game boosted, as far as the wiki says, and a collab's own items
+  RATE_UP_ROLES = %w[rate_up collab].freeze
   ZONE = 'Asia/Tokyo'
 
   has_many :items, class_name: 'HistoricalBannerItem', dependent: :delete_all
