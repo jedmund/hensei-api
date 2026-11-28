@@ -13,6 +13,7 @@ Rails.application.routes.draw do
 
   scope path: path_prefix, module: 'api/v1', defaults: { format: :json } do
     get 'gacha/catalogue', to: 'gacha#catalogue'
+    get 'gacha/rate_ups', to: 'historical_banners#rate_ups'
     post 'gacha/simulations', to: 'gacha#simulations'
     post 'gacha/until', to: 'gacha#until_result'
     post 'gacha/odds', to: 'gacha#odds'

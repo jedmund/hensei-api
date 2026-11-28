@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_28_100000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_28_140000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "btree_gin"
   enable_extension "pg_catalog.plpgsql"
@@ -894,6 +894,33 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_28_100000) do
     t.index ["crew_membership_id"], name: "index_gw_individual_scores_on_crew_membership_id"
     t.index ["phantom_player_id"], name: "index_gw_individual_scores_on_phantom_player_id"
     t.index ["recorded_by_id"], name: "index_gw_individual_scores_on_recorded_by_id"
+  end
+
+  create_table "historical_banner_items", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "historical_banner_id", null: false
+    t.string "granblue_id", null: false
+    t.string "item_type", null: false
+    t.string "role", null: false
+    t.string "wiki_name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["granblue_id"], name: "index_historical_banner_items_on_granblue_id"
+    t.index ["historical_banner_id", "granblue_id", "role"], name: "index_historical_banner_items_unique", unique: true
+    t.index ["historical_banner_id"], name: "index_historical_banner_items_on_historical_banner_id"
+  end
+  create_table "historical_banners", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "key", null: false
+    t.string "kind", null: false
+    t.string "pool", null: false
+    t.string "name"
+    t.datetime "starts_at", null: false
+    t.datetime "ends_at"
+    t.decimal "ssr_rate"
+    t.string "source_key", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["key"], name: "index_historical_banners_on_key", unique: true
+    t.index ["pool", "starts_at"], name: "index_historical_banners_on_pool_and_starts_at"
   end
 
   create_table "job_accessories", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -2114,6 +2141,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_28_100000) do
   add_foreign_key "gw_individual_scores", "crew_memberships"
   add_foreign_key "gw_individual_scores", "phantom_players"
   add_foreign_key "gw_individual_scores", "users", column: "recorded_by_id"
+  add_foreign_key "historical_banner_items", "historical_banners", on_delete: :cascade
   add_foreign_key "notifications", "users", column: "actor_id", on_delete: :nullify
   add_foreign_key "notifications", "users", column: "recipient_id", on_delete: :cascade
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"

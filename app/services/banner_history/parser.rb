@@ -11,8 +11,9 @@ module BannerHistory
 
     module_function
 
-    def parse(wikitext)
-      wikitext.to_s.scan(/\{\{GachaBanner(.*?)\n?\}\}/m).map { |(body)| banner(body) }
+    # source_key: the page the banners came from, kept on each
+    def parse(wikitext, source_key: nil)
+      wikitext.to_s.scan(/\{\{GachaBanner(.*?)\n?\}\}/m).map { |(body)| banner(body).merge(source_key: source_key) }
     end
 
     def banner(body)

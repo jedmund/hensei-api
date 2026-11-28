@@ -13,4 +13,12 @@ namespace :banner_history do
   task report: :environment do
     BannerHistory::Report.new.run
   end
+
+  desc 'Rebuild historical_banners and their items from the cached Banner History pages'
+  task import: :environment do
+    ActiveRecord::Base.logger.level = Logger::WARN if ActiveRecord::Base.logger && ENV['debug'] != 'true'
+    result = BannerHistory::Import.new.call
+    puts "Banners: #{result.banners}, items: #{result.items}"
+    result.unresolved.each { |(model, name), contexts| puts "  unresolved #{model}: #{name} (#{contexts.size}×)" }
+  end
 end

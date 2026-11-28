@@ -5,20 +5,6 @@ module BannerHistory
   # has, the derived timeline, the items each banner features, and every name
   # that doesn't resolve to one of our items. Nothing is stored.
   class Report
-    # What a banner shows: rate-ups (and zodiacs) on galas, featured items on
-    # other draws, a collab's own items (and the ordinary ones in its pool).
-    # 2014's banners list theirs as legacy_* fields.
-    def self.featured_lists(entry)
-      lists = entry.banner[:lists]
-      if entry.collab?
-        lists.slice('collab_wep', 'collab_sum', 'noncollab_wep')
-      elsif entry.gala?
-        lists.select { |field, _| field.start_with?('rateup_', 'legacy_') || field == 'zodiacs' }
-      else
-        lists.select { |field, _| field.start_with?('sparkable', 'rateup_', 'legacy_') }
-      end
-    end
-
     def initialize(pages: SourcePages.cached, archive: SourcePages.cached_archive, resolver: Resolver.new)
       @pages = pages
       @archive = ArchiveParser.parse(archive)
@@ -58,7 +44,7 @@ module BannerHistory
 
     def resolve_all
       @timeline.entries.to_h do |entry|
-        items = self.class.featured_lists(entry).flat_map do |field, names|
+        items = Featured.lists(entry).flat_map do |field, names|
           model = Resolver.model_for(field, entry.type)
           names.map { |name| [field, name, @resolver.resolve(model, name, context: "#{entry.banner[:start_date]} #{entry.type}")] }
         end
