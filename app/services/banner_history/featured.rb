@@ -4,9 +4,10 @@ module BannerHistory
   # What a banner features, and the role each list plays. rate_up lists are
   # the items the game boosted, as far as the wiki says: everything a gala
   # lists, any rateup_* list, and the showcased ("sparkable") lists on the
-  # banners where those matched the game's rate-ups. A poll's or an
-  # all-element banner's showcase reaches past its rate-ups, and the archive
-  # labels plain "Sparkable" lists apart, so those are only featured. Element
+  # banners where those matched the game's rate-ups. A poll boosts the
+  # characters it showcases (sparkable_wep) but not the summons it lets you
+  # spark. An all-element banner's showcase reaches past its rate-ups, and the
+  # archive labels plain "Sparkable" lists apart, so those are only featured. Element
   # banners boost more than the wiki lists; those extra rate-ups aren't known.
   # Zodiacs are available on galas, not boosted. 2014's banners list theirs as
   # legacy_* fields.
@@ -34,6 +35,7 @@ module BannerHistory
       return field == 'noncollab_wep' ? 'pool' : 'collab' if entry.collab?
       return 'rate_up' if entry.gala? || field.start_with?('rateup_', 'legacy_rateup')
       return 'rate_up' if field.start_with?('sparkable') && SHOWCASE_IS_RATE_UP.include?(entry.type)
+      return 'rate_up' if entry.type == 'poll' && field == 'sparkable_wep'
 
       'featured'
     end
