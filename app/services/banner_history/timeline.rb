@@ -4,8 +4,9 @@ module BannerHistory
   # When each banner ran, from the dates on the wiki. The main draw has no
   # gaps: a banner runs until the minute before the next one starts. Galas
   # start at 12:00 JST from the 2026-09-16 Flash Gala on and 19:00 before
-  # that; other banners start at 19:00. A start_time on the wiki wins. Collab
-  # banners run alongside the main draw, with their own start and end.
+  # that, except the 12-31 Premium Gala, which always starts at 12:00; other
+  # banners start at 19:00. A start time on the wiki wins. Collab banners run
+  # alongside the main draw, with their own start and end.
   class Timeline
     ZONE = 'Asia/Tokyo'
     # legend is 2014's Legend Festival, the Premium Gala's forerunner
@@ -49,7 +50,11 @@ module BannerHistory
     end
 
     def default_time(banner)
-      GALA_TYPES.include?(banner[:type]) && banner[:start_date] >= NOON_GALAS_FROM ? '12:00' : '19:00'
+      date = banner[:start_date]
+      return '12:00' if banner[:type] == 'premium' && date.month == 12 && date.day == 31
+      return '12:00' if GALA_TYPES.include?(banner[:type]) && date >= NOON_GALAS_FROM
+
+      '19:00'
     end
 
     # Each banner ends the minute before the next starts; the latest is still
