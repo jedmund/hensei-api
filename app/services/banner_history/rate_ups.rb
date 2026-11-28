@@ -8,7 +8,8 @@ module BannerHistory
   #
   # A stored game banner takes its pool from the wiki banner that starts with
   # it. Until the wiki has it, a 6% banner counts for either gala pool and a
-  # 3% one for Premium.
+  # 3% one for Premium. On a day the banner changes, the newer one stands.
+  # The result is a list, at most one banner, so the response keeps its shape.
   class RateUps
     Result = Struct.new(:banners, :ids, keyword_init: true)
 
@@ -24,18 +25,18 @@ module BannerHistory
     end
 
     def call
-      ids = Set.new
       covered = Set.new
-      banners = game_banners.filter_map do |game, history|
+      candidates = game_banners.map do |game, history|
         covered << history.id if history
-        ids.merge(game.rates.where(tab: 1, rate_up: true, rarity: SSR).pluck(:reward_id))
-        summary(history, game)
+        [summary(history, game), -> { game.rates.where(tab: 1, rate_up: true, rarity: SSR).pluck(:reward_id) }]
       end
       history_banners.reject { |banner| covered.include?(banner.id) }.each do |banner|
-        ids.merge(banner.items.where(role: HistoricalBanner::RATE_UP_ROLES).pluck(:granblue_id))
-        banners << summary(banner, nil)
+        candidates << [summary(banner, nil), -> { banner.items.where(role: HistoricalBanner::RATE_UP_ROLES).pluck(:granblue_id) }]
       end
-      Result.new(banners: banners.sort_by { |banner| banner[:starts_at] }, ids: ids.to_a.sort)
+      newest, ids = candidates.max_by { |banner, _| banner[:starts_at] }
+      return Result.new(banners: [], ids: []) unless newest
+
+      Result.new(banners: [newest], ids: ids.call.uniq.sort)
     end
 
     private

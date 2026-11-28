@@ -57,11 +57,16 @@ RSpec.describe 'Api::V1::HistoricalBanners', type: :request do
     expect(response.parsed_body['banners'].pluck('kind')).to eq(%w[flash])
   end
 
-  it 'takes every main-draw banner that day without a pool, but no collab' do
+  it 'takes the newer banner on a day the banner changes, and no collab without a pool' do
     get '/api/v1/gacha/rate_ups', params: { date: '2026-11-16' }
 
-    expect(response.parsed_body['banners'].pluck('kind')).to eq(%w[summon flash])
-    expect(response.parsed_body['rate_ups']).to eq(%w[1040000001 1040000002])
+    expect(response.parsed_body['banners'].pluck('kind')).to eq(%w[flash])
+    expect(response.parsed_body['rate_ups']).to eq(%w[1040000002])
+  end
+
+  it 'takes the older banner on its own day before the change' do
+    get '/api/v1/gacha/rate_ups', params: { date: '2026-11-15' }
+    expect(response.parsed_body['rate_ups']).to eq(%w[1040000001])
   end
 
   it "counts a collab's own items, not the ordinary ones in its pool" do
