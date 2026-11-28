@@ -95,41 +95,51 @@ RSpec.describe SavedSpark do
     end
   end
 
-  describe 'sparked mark' do
+  describe 'sparked marks' do
+    let(:mark) { ->(column, index) { { 'column' => column, 'index' => index } } }
+
     it 'may be empty' do
-      spark.assign_attributes(sparked_column: nil, sparked_index: nil)
+      spark.sparked_marks = []
       expect(spark).to be_valid
       expect(spark.sparked).to be_nil
     end
 
     it 'may point at any item in any column' do
-      { 'characters' => 1, 'moons' => 0, 'summons' => 0 }.each do |column, index|
-        spark.assign_attributes(sparked_column: column, sparked_index: index)
-        expect(spark).to be_valid
-        expect(spark.sparked).to eq(column: column, index: index)
-      end
+      spark.sparked_marks = [mark.call('summons', 0), mark.call('characters', 1), mark.call('moons', 0)]
+      expect(spark).to be_valid
+    end
+
+    it 'keeps several marks in column order, each once' do
+      spark.sparked_marks = [{ column: 'moons', index: 0 }, mark.call('characters', 1),
+                             mark.call('characters', 0), mark.call('moons', 0)]
+      expect(spark.sparked_marks).to eq([mark.call('characters', 0), mark.call('characters', 1),
+                                         mark.call('moons', 0)])
+      expect(spark.sparked).to eq(mark.call('characters', 0))
     end
 
     it 'must point at an existing item' do
-      spark.assign_attributes(sparked_column: 'moons', sparked_index: 1)
+      spark.sparked_marks = [mark.call('moons', 1)]
       expect(spark).not_to be_valid
       expect(spark.errors[:sparked]).to include('must point at an item in its column')
 
-      spark.assign_attributes(sparked_column: 'moons', sparked_index: -1)
+      spark.sparked_marks = [mark.call('moons', -1)]
       expect(spark).not_to be_valid
     end
 
     it 'needs a known column' do
-      spark.assign_attributes(sparked_column: 'weapons', sparked_index: 0)
+      spark.sparked_marks = [mark.call('weapons', 0)]
       expect(spark).not_to be_valid
-      expect(spark.errors[:sparked_column]).to be_present
+      expect(spark.errors[:sparked]).to include('needs a known column')
     end
 
-    it 'needs both a column and an index' do
-      spark.assign_attributes(sparked_column: 'moons', sparked_index: nil)
+    it 'needs an integer index and a list' do
+      spark.sparked_marks = [mark.call('moons', nil)]
       expect(spark).not_to be_valid
 
-      spark.assign_attributes(sparked_column: nil, sparked_index: 0)
+      spark.sparked_marks = [mark.call('moons', '0')]
+      expect(spark).to be_valid
+
+      spark.sparked_marks = 'c1'
       expect(spark).not_to be_valid
     end
   end

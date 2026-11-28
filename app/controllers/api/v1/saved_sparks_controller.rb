@@ -52,7 +52,7 @@ module Api
         @spark = current_user.saved_sparks.find(params.expect(:id))
       end
 
-      # Not params.expect: it rejects a body holding only `sparked`, which is a
+      # Not params.expect: it rejects a body holding only the marks, which is a
       # valid update.
       def spark_params
         raw = params.require(:spark)
@@ -62,22 +62,26 @@ module Api
            .merge(sparked_params(raw))
       end
 
-      # The mark arrives as { column:, index: } or null. A nested permit would
-      # drop null, and null is how the client clears the mark.
+      # The marks arrive as sparked_marks, a list of { column:, index: }, or
+      # from older clients as sparked, one mark or null. Read by hand, since a
+      # nested permit drops null and an empty list.
       def sparked_params(raw)
-        return {} unless raw.key?(:sparked)
+        if raw.key?(:sparked_marks)
+          marks = raw[:sparked_marks]
+          { sparked_marks: marks.is_a?(Array) ? marks.map { |mark| mark_param(mark) } : marks.to_s }
+        elsif raw.key?(:sparked)
+          mark = raw[:sparked]
+          { sparked_marks: mark.nil? ? [] : [mark_param(mark)] }
+        else
+          {}
+        end
+      end
 
-        mark = raw[:sparked]
-        return { sparked_column: nil, sparked_index: nil } if mark.nil?
-        # Anything else fails validation (a column without an index)
-        return { sparked_column: '', sparked_index: nil } unless mark.is_a?(ActionController::Parameters)
+      # A mark that isn't { column:, index: } fails validation
+      def mark_param(mark)
+        return { column: nil, index: nil } unless mark.is_a?(ActionController::Parameters)
 
-        column = mark[:column]
-        index = mark[:index]
-        {
-          sparked_column: column.is_a?(String) ? column : '',
-          sparked_index: index.is_a?(Integer) || index.to_s.match?(/\A\d+\z/) ? index.to_i : nil
-        }
+        { column: mark[:column].is_a?(String) ? mark[:column] : nil, index: mark[:index] }
       end
     end
   end

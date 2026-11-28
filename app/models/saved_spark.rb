@@ -2,7 +2,7 @@
 
 # A spark a user saved from the spark maker (hensei-svelte's
 # features/spark/spark.ts): three ordered lists of catalogue granblue_ids,
-# which one was sparked, and the draw count. The rules match spark.ts so a
+# which of them were sparked, and the draw count. The rules match spark.ts so a
 # saved spark always loads back into the page unchanged.
 class SavedSpark < ApplicationRecord
   COLUMNS = %w[characters moons summons].freeze
@@ -25,6 +25,8 @@ class SavedSpark < ApplicationRecord
     'classic_iii' => Date.new(2026, 3, 10)
   }.freeze
   MAX_PER_COLUMN = 60
+  # Replaced by sparked_marks; dropped in a later migration
+  self.ignored_columns += %w[sparked_column sparked_index]
   MAX_DRAWS = 99_999
   # Granblue Fantasy's release; earlier dates are typos
   EARLIEST_DATE = Date.new(2014, 3, 10)
@@ -33,22 +35,26 @@ class SavedSpark < ApplicationRecord
 
   validates :spark_date, presence: true
   validates :draws, numericality: { only_integer: true, greater_than: 0, less_than_or_equal_to: MAX_DRAWS }
-  validates :sparked_column, inclusion: { in: COLUMNS }, allow_nil: true
   validates :pool, inclusion: { in: POOLS }, allow_nil: true
   validates :season, inclusion: { in: SEASONS }, allow_nil: true
   validate :season_fits_pool
   validate :pool_open_on_spark_date
   validate :spark_date_in_range
   validate :items_valid
-  validate :sparked_mark_valid
+  validate :sparked_marks_valid
 
   scope :newest_first, -> { order(spark_date: :desc, created_at: :desc, id: :desc) }
 
-  # The sparked item as { column:, index: }, or nil
-  def sparked
-    return nil if sparked_column.nil? || sparked_index.nil?
+  # The sparked items as [{ 'column' =>, 'index' => }], in column order then
+  # by index, each once
+  def sparked_marks=(marks)
+    list = marks.is_a?(Array) ? marks.map { |mark| normalize_mark(mark) } : marks
+    super(list.is_a?(Array) ? list.uniq.sort_by { |mark| mark_order(mark) } : list)
+  end
 
-    { column: sparked_column, index: sparked_index }
+  # The first mark, for clients that know only one
+  def sparked
+    sparked_marks.first
   end
 
   private
@@ -82,14 +88,33 @@ class SavedSpark < ApplicationRecord
     end
   end
 
-  def sparked_mark_valid
-    return if sparked_column.nil? && sparked_index.nil?
-    return errors.add(:sparked, 'needs both a column and an index') if sparked_column.nil? || sparked_index.nil?
-    return unless COLUMNS.include?(sparked_column)
+  def sparked_marks_valid
+    return errors.add(:sparked, 'must be a list') unless sparked_marks.is_a?(Array)
 
-    list = self[sparked_column]
-    return if list.is_a?(Array) && sparked_index.between?(0, list.size - 1)
+    sparked_marks.each do |mark|
+      column = mark.is_a?(Hash) ? mark['column'] : nil
+      index = mark.is_a?(Hash) ? mark['index'] : nil
+      next errors.add(:sparked, 'needs a known column') unless COLUMNS.include?(column)
 
-    errors.add(:sparked, 'must point at an item in its column')
+      list = self[column]
+      next if index.is_a?(Integer) && list.is_a?(Array) && index.between?(0, list.size - 1)
+
+      errors.add(:sparked, 'must point at an item in its column')
+    end
+  end
+
+  # { column:, index: } with string or symbol keys, and the index as an
+  # integer when it's one; anything else is kept as it came, to fail validation
+  def normalize_mark(mark)
+    return mark unless mark.respond_to?(:to_h)
+
+    hash = mark.to_h.transform_keys(&:to_s)
+    index = hash['index']
+    index = index.to_i if index.is_a?(String) && index.match?(/\A\d+\z/)
+    { 'column' => hash['column'], 'index' => index }
+  end
+
+  def mark_order(mark)
+    [COLUMNS.index(mark['column']) || COLUMNS.size, mark['index'].is_a?(Integer) ? mark['index'] : 0]
   end
 end
